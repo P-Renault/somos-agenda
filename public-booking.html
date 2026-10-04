@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b5cff">
+<title>Reservar · Somos Agenda</title>
+<link rel="stylesheet" href="public-booking.css">
+</head>
+<body>
+<main class="public-shell">
+  <header class="public-header">
+    <div class="brand">SOMOS <span>AGENDA</span></div>
+    <div id="businessName" class="business-name">Agenda</div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">RESERVAS ONLINE</p>
+    <h1>Reserva tu hora</h1>
+    <p class="lead">Elige un servicio, profesional, fecha y horario disponible.</p>
+  </section>
+
+  <section class="card" id="bookingCard">
+    <div class="step"><span>1</span><div><strong>Servicio</strong><small>Qué necesitas</small></div></div>
+    <label>Servicio<select id="service"></select></label>
+    <p id="serviceDescription" class="helper"></p>
+
+    <div class="step"><span>2</span><div><strong>Profesional</strong><small>Con quién quieres atenderte</small></div></div>
+    <label>Profesional<select id="professional"></select></label>
+
+    <div class="step"><span>3</span><div><strong>Fecha y horario</strong><small>Selecciona una fecha disponible</small></div></div>
+    <label>Fecha<input id="date" type="date"></label>
+    <label>Horario<select id="slot"></select></label>
+    <p id="availabilityMessage" class="helper"></p>
+
+    <div class="step"><span>4</span><div><strong>Tus datos</strong><small>Necesarios para confirmar la reserva</small></div></div>
+    <form id="clientForm">
+      <label>Nombre<input id="firstName" required maxlength="100" autocomplete="given-name"></label>
+      <label>Apellido<input id="lastName" required maxlength="100" autocomplete="family-name"></label>
+      <label>Correo<input id="email" type="email" maxlength="200" autocomplete="email"></label>
+      <label>Teléfono<input id="phone" type="tel" maxlength="50" autocomplete="tel"></label>
+      <label>Notas (opcional)<textarea id="notes" rows="3" maxlength="1000"></textarea></label>
+      <button type="submit">Solicitar reserva</button>
+    </form>
+
+    <p id="status" class="status"></p>
+  </section>
+
+  <section id="successCard" class="card success hidden">
+    <div class="success-icon">✓</div>
+    <p class="eyebrow">SOLICITUD RECIBIDA</p>
+    <h2>Reserva solicitada</h2>
+    <p id="successText" class="lead"></p>
+    <button id="newBooking" class="secondary">Hacer otra reserva</button>
+  </section>
+
+  <footer>Powered by <strong>SOMOS SOFTWARE</strong></footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="public-booking.js"></script>
+</body>
+</html>
