@@ -1,13 +1,10 @@
-# SOMOS AGENDA
+# SOMOS AGENDA — Identity v0.1 — Auth fix
 
-## SOMOS CORE — Identity + Onboarding v0.1
+Archivos incluidos:
+- index.html
+- app.js
+- config.js
 
-Primera aplicación funcional: login/registro por email, recuperación, OAuth Google/Facebook, perfil automático, onboarding de negocio, owner y dashboard responsive.
-
-### Configuración
-Editar `config.js` y completar `SUPABASE_URL` y `SUPABASE_ANON_KEY` con los valores públicos del proyecto Supabase. Nunca colocar `service_role` ni secretos privados.
-
-### Flujo
-Login -> Auth -> Profile -> Business -> Owner -> Dashboard
-
-La migración `001_core_foundation_v0_1.sql` debe estar ejecutada.
+Reemplazar estos archivos en la raíz del repositorio `somos-agenda`.
+El `app.js` corregido inicializa después de cargar el DOM, valida Supabase,
+evita silencios cuando falta configuración y agrega manejo de errores a los botones.
