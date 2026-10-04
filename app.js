@@ -321,12 +321,12 @@ function renderCalendar(){
     </button>`;
   }
   grid.innerHTML=html;
-  grid.querySelectorAll('[data-calendar-date]').forEach(btn=>btn.onclick=()=>{calendarSelectedDate=btn.dataset.calendarDate;renderCalendarDayDetail();renderCalendar()});
+  grid.querySelectorAll('[data-calendar-date]').forEach(btn=>btn.onclick=()=>{calendarSelectedDate=btn.dataset.calendarDate;renderCalendar();setTimeout(()=>$("calendarDayDetail")?.scrollIntoView({behavior:"smooth",block:"start"}),40)});
   const monthItems=items.filter(x=>{const d=calendarParseDate(x.booking_date);return d.getFullYear()===y&&d.getMonth()===m});
   $('calendarMonthCount').textContent=monthItems.length;
   $('calendarConfirmedCount').textContent=monthItems.filter(x=>x.status==='confirmed').length;
   $('calendarPendingCount').textContent=monthItems.filter(x=>x.status==='pending').length;
-  if(!calendarSelectedDate){calendarSelectedDate=calendarDateKey(y,m,1)}
+  if(!calendarSelectedDate){const isCurrentMonth=y===today.getFullYear()&&m===today.getMonth();calendarSelectedDate=isCurrentMonth?todayKey:calendarDateKey(y,m,1)}
   renderCalendarDayDetail();
 }
 
@@ -336,12 +336,12 @@ function renderCalendarDayDetail(){
   const items=calendarFilteredBookings().filter(x=>x.booking_date===calendarSelectedDate&&x.status!=='cancelled');
   const date=calendarParseDate(calendarSelectedDate);
   const label=date.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase());
-  if(!items.length){box.innerHTML=`<h3>${esc(label)}</h3><p class="lead">No hay reservas para este día.</p>`;return}
+  if(!items.length){box.innerHTML=`<h3>${esc(label)}</h3><p class="calendar-day-empty">No hay reservas para este día.</p>`;return}
   box.innerHTML=`<h3>${esc(label)}</h3>`+items.map(x=>{
     const c=x.clients?`${x.clients.first_name} ${x.clients.last_name}`:'Cliente';
     const p=x.professionals?`${x.professionals.first_name} ${x.professionals.last_name}`:'Profesional';
     const s=x.services?.name||'Servicio';
-    return `<div class="calendar-event"><div class="calendar-event-time">${esc(x.start_time.slice(0,5))} – ${esc(x.end_time.slice(0,5))}</div><div class="calendar-event-title">${esc(c)}</div><div class="calendar-event-meta">${esc(s)} · ${esc(p)} · ${esc(calendarStatusLabel(x.status))}</div></div>`;
+    return `<div class="calendar-event"><div class="calendar-event-time">${esc(x.start_time.slice(0,5))} – ${esc(x.end_time.slice(0,5))}</div><div class="calendar-event-title">${esc(c)}</div><div class="calendar-event-meta">${esc(s)} · ${esc(p)}</div><span class="calendar-event-status">${esc(calendarStatusLabel(x.status))}</span>${x.notes?`<div class="calendar-event-meta">${esc(x.notes)}</div>`:''}</div>`;
   }).join('');
 }
 
