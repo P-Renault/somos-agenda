@@ -9,6 +9,35 @@
   #dashboardView .user-email{font-size:clamp(1.15rem,5.5vw,1.45rem);}
   #dashboardView #businessSummary{max-width:100%;overflow-wrap:anywhere;word-break:break-word;white-space:normal;}
 }
+
+/* SOMOS AGENDA · AVAILABILITY V0.1 */
+#availabilityView{margin-top:1.5rem}
+.availability-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+.availability-header h2{margin:0;font-size:clamp(1.5rem,5vw,2rem)}
+.availability-list{display:grid;gap:1rem}
+.availability-card{position:relative}
+.availability-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.availability-professional{font-size:1.15rem;font-weight:800;margin:0 0 .25rem}
+.availability-date{margin:.2rem 0;color:#6b7280}
+.availability-time{font-size:1.3rem;font-weight:800;color:#182033;margin:.75rem 0 0}
+.availability-badge{display:inline-flex;align-items:center;padding:.3rem .6rem;border-radius:999px;background:#eef4ff;color:#0b5cff;font-weight:700;font-size:.78rem;white-space:nowrap}
+.availability-badge.blocked{background:#fff1f2;color:#c62828}
+.availability-badge.inactive{background:#f1f3f5;color:#6b7280}
+.availability-note{margin:.65rem 0 0;color:#6b7280;line-height:1.45}
+.availability-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.availability-actions button{min-height:42px}
+.availability-empty{text-align:center;color:#6b7280;padding:1.5rem}
+.availability-form{margin-top:1rem}
+.availability-form .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.availability-form .form-grid label{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.availability-form .full{grid-column:1/-1}
+.availability-form select,.availability-form input[type=date],.availability-form input[type=time],.availability-form textarea{width:100%;min-height:52px;box-sizing:border-box;appearance:none;-webkit-appearance:none;border:1px solid #d8dee9;border-radius:14px;background:#fff;color:#182033;font:inherit;font-weight:600;padding:.85rem 1rem;outline:none}
+.availability-form textarea{min-height:110px;resize:vertical;font-weight:500}
+.availability-form select{padding-right:3rem;background-image:linear-gradient(45deg,transparent 50%,#64748b 50%),linear-gradient(135deg,#64748b 50%,transparent 50%);background-position:calc(100% - 20px) 22px,calc(100% - 14px) 22px;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+.availability-form select:focus,.availability-form input:focus,.availability-form textarea:focus{border-color:#0b5cff;box-shadow:0 0 0 3px rgba(11,92,255,.12)}
+.availability-form-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.availability-status{margin-top:.8rem}
+@media (max-width:700px){.availability-header{flex-direction:column}.availability-header button{width:100%}.availability-form .form-grid{grid-template-columns:1fr}.availability-form .full{grid-column:auto}.availability-card-top{flex-direction:column}.availability-actions button{flex:1 1 120px}}
 </style>
 <style>
 /* SOMOS AGENDA · SERVICES V0.1 */
@@ -234,4 +263,49 @@
       <p id="scheduleFormStatus" class="status schedules-status"></p>
     </form>
   </div>
-</div></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></body></html>
+</div></div></section>
+<div id="availabilityView" class="hidden">
+  <div class="availability-header">
+    <div><p class="eyebrow">AGENDA · DISPONIBILIDAD V0.1</p><h2>Disponibilidad</h2></div>
+    <button id="newAvailabilityBtn" type="button">+ Nueva disponibilidad</button>
+  </div>
+  <div id="availabilityList" class="availability-list"></div>
+  <div id="availabilityFormCard" class="card availability-form hidden">
+    <p class="eyebrow" id="availabilityFormEyebrow">NUEVA DISPONIBILIDAD</p>
+    <form id="availabilityForm">
+      <div class="form-grid">
+        <label class="full">Profesional
+          <select id="availabilityProfessional" required></select>
+        </label>
+        <label>Fecha
+          <input id="availabilityDate" type="date" required>
+        </label>
+        <label>Estado
+          <select id="availabilityStatusValue">
+            <option value="available">Disponible</option>
+            <option value="blocked">Bloqueado</option>
+          </select>
+        </label>
+        <label>Hora de inicio
+          <input id="availabilityStart" type="time" required>
+        </label>
+        <label>Hora de término
+          <input id="availabilityEnd" type="time" required>
+        </label>
+        <label class="full">Nota
+          <textarea id="availabilityNote" maxlength="500" placeholder="Ej. Bloque especial, feriado, permiso o disponibilidad adicional."></textarea>
+        </label>
+        <label>Estado del registro
+          <select id="availabilityActive">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </label>
+      </div>
+      <div class="availability-form-actions"><button type="submit" id="saveAvailabilityBtn">Guardar disponibilidad</button><button type="button" id="cancelAvailabilityBtn" class="secondary">Cancelar</button></div>
+      <p id="availabilityFormStatus" class="status availability-status"></p>
+    </form>
+  </div>
+</div>
+
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></body></html>
