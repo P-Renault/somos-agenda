@@ -1,0 +1,45 @@
+/* AGENDA YA · CABECERA PRINCIPAL v0.1 */
+.agenda-ya-header{
+  width:100%;
+  background:#050505;
+  border-radius:24px;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+  overflow:hidden;
+}
+.agenda-ya-header-logo{
+  display:block;
+  width:min(390px,78vw);
+  height:auto;
+  max-height:120px;
+  object-fit:contain;
+  object-position:left center;
+}
+.agenda-ya-header-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+}
+.agenda-ya-header-actions button{
+  width:auto;
+  white-space:nowrap;
+}
+@media(max-width:600px){
+  .agenda-ya-header{
+    padding:10px 12px;
+    border-radius:18px;
+    justify-content:center;
+  }
+  .agenda-ya-header-logo{
+    width:min(330px,100%);
+    max-height:110px;
+  }
+  .agenda-ya-header-actions{
+    display:none;
+  }
+}
