@@ -1,92 +1,37 @@
-AGENDA YA — UI FRAMEWORK / DESIGN SYSTEM v1.0
-=================================================
+# Agenda Ya UI Framework v1.0 — Integration Layer
 
-OBJETIVO
---------
-Esta entrega construye una plantilla general del sistema en una sola iteración.
-Es la "capa visual base" sobre la que se integrarán posteriormente Supabase,
-autenticación, CRUD, disponibilidad, reservas, calendario y marketplace.
+Base: cumulative functional project at commit c716a0e...
 
-PRINCIPIO
----------
-UI primero -> motores después.
+This package is an OVERLAY, not a replacement project.
 
-La plantilla NO contiene:
-- Supabase
-- autenticación real
-- consultas a base de datos
-- reglas de disponibilidad
-- cálculo de reservas
-- persistencia
-- lógica comercial
+Files:
+- agenda-ya-ui.css
+- agenda-ya-ui.js
+- agenda-ya-logo.svg
+- README
 
-La plantilla SÍ contiene:
-- header global con logo Agenda Ya
-- navegación desktop
-- sidebar de gestión
-- navegación móvil inferior
-- responsive desktop/tablet/mobile
-- dashboard base
-- KPIs
-- tarjetas
-- listas de reservas
-- timeline/calendario visual
-- acciones rápidas
-- encabezado reutilizable de módulos
-- estados placeholder para integración
-- contrato de eventos para conectar motores lógicos
+Integration into the cumulative project:
+1. Keep existing index.html, app.js, config.js, styles.css and all current modules.
+2. Add:
+   <link rel="stylesheet" href="agenda-ya-ui.css">
+   before </head>.
+3. Add:
+   <script src="agenda-ya-ui.js"></script>
+   after app.js.
+4. Keep agenda-ya-logo.svg in the repository root.
+5. Do not remove existing Supabase/app files.
 
-ARCHIVOS
---------
-agenda-ya-shell.css
-  Design system, layout y responsive.
+The layer waits for dashboardView to become visible, so the login/onboarding flow remains under the existing application controller.
 
-agenda-ya-shell.js
-  Navegación visual y contrato de integración.
+Current integration scope:
+- Global Agenda Ya header
+- Desktop navigation
+- Sidebar
+- Mobile navigation rail
+- Responsive dashboard
+- Navigation between existing module sections without replacing the dashboard shell
+- Public profile navigation hook
+- Settings event hook
+- agendaYa:view-change event
 
-index.html
-  Plantilla de referencia completa.
-
-assets/agenda-ya-logo-header.jpg
-  Logo utilizado por el header.
-
-CONTRATO DE INTEGRACIÓN
------------------------
-El shell emite:
-
-window.addEventListener("agendaYa:view-change", (event) => {
-  console.log(event.detail.view);
-});
-
-Ejemplo:
-- dashboard
-- services
-- professionals
-- schedules
-- availability
-- clients
-- bookings
-- calendar
-- public-profile
-- settings
-
-API disponible:
-window.AgendaYaUI.activate("services")
-window.AgendaYaUI.getCurrentView()
-
-ESTRATEGIA PARA EL PROYECTO REAL
----------------------------------
-1. Mantener esta capa como sistema visual.
-2. No reemplazar index.html/app.js del proyecto acumulativo a ciegas.
-3. Integrar el shell sobre la base funcional c716a0e...
-4. Cada módulo conserva su motor actual.
-5. La vista sólo presenta estado y captura acciones.
-6. Supabase sigue siendo la fuente de datos.
-7. Las reglas de negocio permanecen fuera de CSS/UI.
-8. El siguiente paso es conectar cada vista real al motor existente,
-   empezando por Dashboard y luego Servicios/Profesionales/Horarios.
-
-ESTADO
-------
-v1.0 — plantilla visual general.
-Diseñada para servir como "sistema operativo visual" de Agenda Ya.
+No Supabase queries, CRUD, auth, RLS, or business rules are changed.
