@@ -1,0 +1,1 @@
+# SOMOS AGENDA\n\nProducto: Somos Agenda\nCapa reutilizable: SOMOS CORE\nBackend: Supabase/PostgreSQL\n
