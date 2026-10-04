@@ -1,7 +1,14 @@
-# SOMOS AGENDA — Identity v0.1 — Create Business Fix
+# Somos Agenda — Frontend Integrado v0.1
 
-Reemplazar `app.js` y `config.js` en la raíz del repositorio.
+Paquete de recuperación/integración de la interfaz completa.
+Incluye las vistas existentes hasta Calendario v0.1.1:
+- Dashboard
+- Servicios
+- Profesionales
+- Horarios
+- Disponibilidad
+- Clientes
+- Reservas
+- Calendario
 
-Esta versión agrega diagnóstico explícito de errores del RPC `create_business` y de la consulta de `business_members`, además de inicialización DOM segura y bloqueo del botón mientras se procesa la creación.
-
-No modifica Supabase, SQL ni RLS.
+No contiene migraciones SQL.
