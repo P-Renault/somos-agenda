@@ -251,6 +251,111 @@ routeUser=async function(){
   if(currentBusiness) await loadBookings();
 };
 
+/* SOMOS AGENDA · CALENDARIO V0.1 */
+let calendarCursor=new Date();
+let calendarBookings=[];
+let calendarProfessionals=[];
+let calendarSelectedDate=null;
+
+function calendarDateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+function calendarParseDate(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function calendarMonthLabel(d){return d.toLocaleDateString('es-CL',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase())}
+function calendarStatusLabel(s){return ({pending:'Pendiente',confirmed:'Confirmada',cancelled:'Cancelada',completed:'Completada',no_show:'No asistió'})[s]||s}
+
+async function loadCalendar(){
+  if(!currentBusiness)return;
+  const [b,p]=await Promise.all([
+    client.from('bookings').select('id,client_id,service_id,professional_id,booking_date,start_time,end_time,status,notes,clients(first_name,last_name),services(name),professionals(first_name,last_name)').eq('business_id',currentBusiness.id).order('booking_date').order('start_time'),
+    client.from('professionals').select('id,first_name,last_name').eq('business_id',currentBusiness.id).order('first_name').order('last_name')
+  ]);
+  if(b.error||p.error){
+    const d=$('calendarDayDetail');
+    if(d)d.innerHTML=`<p class="status">${esc((b.error||p.error).message)}</p>`;
+    return;
+  }
+  calendarBookings=b.data||[];
+  calendarProfessionals=p.data||[];
+  const filter=$('calendarProfessionalFilter');
+  if(filter){
+    const previous=filter.value||'all';
+    filter.innerHTML='<option value="all">Todos los profesionales</option>'+calendarProfessionals.map(x=>`<option value="${x.id}">${esc(x.first_name+' '+x.last_name)}</option>`).join('');
+    filter.value=calendarProfessionals.some(x=>x.id===previous)?previous:'all';
+  }
+  renderCalendar();
+}
+
+function calendarFilteredBookings(){
+  const filter=$('calendarProfessionalFilter')?.value||'all';
+  return calendarBookings.filter(x=>filter==='all'||x.professional_id===filter);
+}
+
+function renderCalendar(){
+  const grid=$('calendarGrid');
+  if(!grid)return;
+  const y=calendarCursor.getFullYear(), m=calendarCursor.getMonth();
+  $('calendarMonthTitle').textContent=calendarMonthLabel(calendarCursor);
+  const items=calendarFilteredBookings();
+  const first=new Date(y,m,1);
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const mondayOffset=(first.getDay()+6)%7;
+  const prevDays=new Date(y,m,0).getDate();
+  const today=new Date();
+  const todayKey=calendarDateKey(today.getFullYear(),today.getMonth(),today.getDate());
+  const selected=calendarSelectedDate;
+  let html=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(x=>`<div class="calendar-weekday">${x}</div>`).join('');
+  for(let i=0;i<42;i++){
+    const dayNum=i-mondayOffset+1;
+    let dateObj, muted=false;
+    if(dayNum<1){dateObj=new Date(y,m-1,prevDays+dayNum);muted=true}
+    else if(dayNum>daysInMonth){dateObj=new Date(y,m+1,dayNum-daysInMonth);muted=true}
+    else dateObj=new Date(y,m,dayNum);
+    const key=calendarDateKey(dateObj.getFullYear(),dateObj.getMonth(),dateObj.getDate());
+    const dayItems=items.filter(x=>x.booking_date===key&&x.status!=='cancelled');
+    const classes=['calendar-day'];
+    if(muted)classes.push('muted');
+    if(key===todayKey)classes.push('today');
+    if(key===selected)classes.push('selected');
+    html+=`<button type="button" class="${classes.join(' ')}" data-calendar-date="${key}">
+      <span class="calendar-day-number">${dateObj.getDate()}</span>
+      ${dayItems.length?`<span class="calendar-event-dot"></span><span class="calendar-event-count">${dayItems.length} ${dayItems.length===1?'reserva':'reservas'}</span>`:''}
+    </button>`;
+  }
+  grid.innerHTML=html;
+  grid.querySelectorAll('[data-calendar-date]').forEach(btn=>btn.onclick=()=>{calendarSelectedDate=btn.dataset.calendarDate;renderCalendarDayDetail();renderCalendar()});
+  const monthItems=items.filter(x=>{const d=calendarParseDate(x.booking_date);return d.getFullYear()===y&&d.getMonth()===m});
+  $('calendarMonthCount').textContent=monthItems.length;
+  $('calendarConfirmedCount').textContent=monthItems.filter(x=>x.status==='confirmed').length;
+  $('calendarPendingCount').textContent=monthItems.filter(x=>x.status==='pending').length;
+  if(!calendarSelectedDate){calendarSelectedDate=calendarDateKey(y,m,1)}
+  renderCalendarDayDetail();
+}
+
+function renderCalendarDayDetail(){
+  const box=$('calendarDayDetail');
+  if(!box)return;
+  const items=calendarFilteredBookings().filter(x=>x.booking_date===calendarSelectedDate&&x.status!=='cancelled');
+  const date=calendarParseDate(calendarSelectedDate);
+  const label=date.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase());
+  if(!items.length){box.innerHTML=`<h3>${esc(label)}</h3><p class="lead">No hay reservas para este día.</p>`;return}
+  box.innerHTML=`<h3>${esc(label)}</h3>`+items.map(x=>{
+    const c=x.clients?`${x.clients.first_name} ${x.clients.last_name}`:'Cliente';
+    const p=x.professionals?`${x.professionals.first_name} ${x.professionals.last_name}`:'Profesional';
+    const s=x.services?.name||'Servicio';
+    return `<div class="calendar-event"><div class="calendar-event-time">${esc(x.start_time.slice(0,5))} – ${esc(x.end_time.slice(0,5))}</div><div class="calendar-event-title">${esc(c)}</div><div class="calendar-event-meta">${esc(s)} · ${esc(p)} · ${esc(calendarStatusLabel(x.status))}</div></div>`;
+  }).join('');
+}
+
+$('calendarPrev').onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);calendarSelectedDate=null;renderCalendar()};
+$('calendarNext').onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);calendarSelectedDate=null;renderCalendar()};
+$('calendarToday').onclick=()=>{calendarCursor=new Date();calendarSelectedDate=calendarDateKey(calendarCursor.getFullYear(),calendarCursor.getMonth(),calendarCursor.getDate());renderCalendar()};
+$('calendarProfessionalFilter').onchange=()=>{calendarSelectedDate=null;renderCalendar()};
+
+const routeUserWithCalendar=routeUser;
+routeUser=async function(){
+  await routeUserWithCalendar();
+  if(currentBusiness)await loadCalendar();
+};
+
 
 if(client)client.auth.onAuthStateChange((event,session)=>{currentUser=session?.user||null;if(session)setTimeout(()=>routeUser(),0);else if(event==="SIGNED_OUT")show(authView)});
 loadUser();
