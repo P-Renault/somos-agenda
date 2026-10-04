@@ -124,6 +124,40 @@
  .professional-card-top{flex-direction:column}
  .professional-actions button{flex:1 1 120px}
 }
+
+
+/* SOMOS AGENDA · SCHEDULES V0.1 */
+#schedulesView{margin-top:1.5rem}
+.schedules-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+.schedules-header h2{margin:0;font-size:clamp(1.5rem,5vw,2rem)}
+.schedules-list{display:grid;gap:1rem}
+.schedule-card{position:relative}
+.schedule-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.schedule-professional{font-size:1.15rem;font-weight:800;margin:0 0 .25rem}
+.schedule-day{margin:.2rem 0;color:#6b7280}
+.schedule-time{font-size:1.35rem;font-weight:800;color:#182033;margin:.75rem 0 0}
+.schedule-badge{display:inline-flex;align-items:center;padding:.3rem .6rem;border-radius:999px;background:#eef4ff;color:#0b5cff;font-weight:700;font-size:.78rem;white-space:nowrap}
+.schedule-badge.inactive{background:#f1f3f5;color:#6b7280}
+.schedule-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.schedule-actions button{min-height:42px}
+.schedules-empty{text-align:center;color:#6b7280;padding:1.5rem}
+.schedules-form{margin-top:1rem}
+.schedules-form .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.schedules-form .form-grid label{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.schedules-form .full{grid-column:1/-1}
+.schedules-form select,.schedules-form input[type=time]{width:100%;min-height:52px;box-sizing:border-box;appearance:none;-webkit-appearance:none;border:1px solid #d8dee9;border-radius:14px;background:#fff;color:#182033;font:inherit;font-weight:600;padding:.85rem 1rem;outline:none}
+.schedules-form select{padding-right:3rem;background-image:linear-gradient(45deg,transparent 50%,#64748b 50%),linear-gradient(135deg,#64748b 50%,transparent 50%);background-position:calc(100% - 20px) 22px,calc(100% - 14px) 22px;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+.schedules-form select:focus,.schedules-form input[type=time]:focus{border-color:#0b5cff;box-shadow:0 0 0 3px rgba(11,92,255,.12)}
+.schedules-form-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
+.schedules-status{margin-top:.8rem}
+@media(max-width:600px){
+ .schedules-header{flex-direction:column}
+ .schedules-header button{width:100%}
+ .schedules-form .form-grid{grid-template-columns:1fr}
+ .schedules-form .full{grid-column:auto}
+ .schedule-card-top{flex-direction:column}
+ .schedule-actions button{flex:1 1 120px}
+}
 </style></head><body><main class="app-shell"><section id="authView" class="view"><div class="brand">SOMOS <span>AGENDA</span></div><p class="eyebrow">SOMOS CORE · IDENTITY V0.1</p><h1>Tu negocio, organizado.</h1><p class="lead">Administra tu negocio y prepara tu agenda para recibir reservas.</p><form id="emailForm" class="card"><label>Email<input id="email" type="email" required></label><label>Contraseña<input id="password" type="password" minlength="6" required></label><div class="actions"><button type="submit">Iniciar sesión</button><button type="button" id="signupBtn" class="secondary">Crear cuenta</button></div><button type="button" id="recoveryBtn" class="link">Recuperar contraseña</button></form><div class="divider"><span>o continuar con</span></div><div class="socials"><button id="googleBtn" class="social">Google</button><button id="facebookBtn" class="social">Facebook</button></div><p id="status" class="status"></p></section><section id="onboardingView" class="view hidden"><div class="brand">SOMOS <span>AGENDA</span></div><p class="eyebrow">ONBOARDING · BUSINESS</p><h1>Comencemos con tu negocio.</h1><p class="lead">Esta información crea el primer negocio y te asigna como propietario.</p><form id="businessForm" class="card"><label>Nombre del negocio<input id="businessName" required maxlength="120" placeholder="Ej. Barbería Central"></label><label>Identificador público<input id="businessSlug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="80" placeholder="barberia-central"></label><label>Correo del negocio<input id="businessEmail" type="email"></label><label>Teléfono<input id="businessPhone" type="tel"></label><button type="submit">Crear negocio</button><button type="button" id="logoutOnboarding" class="secondary">Cerrar sesión</button></form><p id="onboardingStatus" class="status"></p></section><section id="dashboardView" class="view hidden"><div class="topbar"><div class="brand">SOMOS <span>AGENDA</span></div><button id="logoutBtn" class="secondary small">Salir</button></div><div class="hero card"><p class="eyebrow">DASHBOARD · CORE V0.1</p><h1 id="welcomeTitle">Hola,</h1><p id="userEmail" class="user-email"></p><p id="businessSummary" class="lead"></p></div><div class="grid"><article class="card"><span class="metric-label">Estado</span><strong>Activo</strong><p>Identidad validada.</p></article><article class="card"><span class="metric-label">Rol</span><strong id="roleValue">—</strong><p>Permisos del negocio.</p></article><article class="card"><span class="metric-label">Próximo módulo</span><strong>Servicios</strong><p>Construcción de Agenda.</p></article></div><div id="servicesView" class="hidden">
   <div class="services-header">
     <div><p class="eyebrow">AGENDA · SERVICIOS V0.1</p><h2>Servicios</h2></div>
@@ -166,4 +200,38 @@
       <p id="professionalFormStatus" class="status professionals-status"></p>
     </form>
   </div>
-</div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></body></html>
+</div>
+<div id="schedulesView" class="hidden">
+  <div class="schedules-header">
+    <div><p class="eyebrow">AGENDA · HORARIOS V0.1</p><h2>Horarios</h2></div>
+    <button id="newScheduleBtn" type="button">+ Nuevo horario</button>
+  </div>
+  <div id="schedulesList" class="schedules-list"></div>
+  <div id="scheduleFormCard" class="card schedules-form hidden">
+    <p class="eyebrow" id="scheduleFormEyebrow">NUEVO HORARIO</p>
+    <form id="scheduleForm">
+      <div class="form-grid">
+        <label class="full">Profesional
+          <select id="scheduleProfessional" required></select>
+        </label>
+        <label>Día
+          <select id="scheduleDay" required>
+            <option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option>
+            <option value="4">Jueves</option><option value="5">Viernes</option><option value="6">Sábado</option><option value="7">Domingo</option>
+          </select>
+        </label>
+        <label>Hora de inicio
+          <input id="scheduleStart" type="time" required>
+        </label>
+        <label>Hora de término
+          <input id="scheduleEnd" type="time" required>
+        </label>
+        <label>Estado
+          <select id="scheduleActive"><option value="true">Activo</option><option value="false">Inactivo</option></select>
+        </label>
+      </div>
+      <div class="schedules-form-actions"><button type="submit" id="saveScheduleBtn">Guardar horario</button><button type="button" id="cancelScheduleBtn" class="secondary">Cancelar</button></div>
+      <p id="scheduleFormStatus" class="status schedules-status"></p>
+    </form>
+  </div>
+</div></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></body></html>

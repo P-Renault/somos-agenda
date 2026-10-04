@@ -107,5 +107,101 @@ async function saveProfessional(){if(!client||!currentBusiness||!currentUser)ret
 async function deleteProfessional(id){if(!client||!currentBusiness||!canManageProfessionals())return;const item=professionalsList.querySelector(`.delete-professional[data-id="${id}"]`)?.closest(".professional-card");const name=item?.querySelector(".professional-name")?.textContent||"este profesional";if(!confirm(`¿Eliminar ${name}? Esta acción no se puede deshacer.`))return;const r=await client.from("professionals").delete().eq("id",id).eq("business_id",currentBusiness.id);if(r.error){alert("No se pudo eliminar: "+r.error.message);return}await loadProfessionals()}
 newProfessionalBtn?.addEventListener("click",()=>openProfessionalForm());cancelProfessionalBtn?.addEventListener("click",resetProfessionalForm);professionalForm?.addEventListener("submit",e=>{e.preventDefault();saveProfessional()});
 
+
+
+/* SOMOS AGENDA · SCHEDULES V0.1 · CRUD */
+let editingScheduleId=null;
+const schedulesView=document.getElementById("schedulesView");
+const schedulesList=document.getElementById("schedulesList");
+const scheduleFormCard=document.getElementById("scheduleFormCard");
+const scheduleForm=document.getElementById("scheduleForm");
+const scheduleFormEyebrow=document.getElementById("scheduleFormEyebrow");
+const scheduleFormStatus=document.getElementById("scheduleFormStatus");
+const scheduleProfessional=document.getElementById("scheduleProfessional");
+const scheduleDay=document.getElementById("scheduleDay");
+const scheduleStart=document.getElementById("scheduleStart");
+const scheduleEnd=document.getElementById("scheduleEnd");
+const scheduleActive=document.getElementById("scheduleActive");
+const newScheduleBtn=document.getElementById("newScheduleBtn");
+const cancelScheduleBtn=document.getElementById("cancelScheduleBtn");
+const saveScheduleBtn=document.getElementById("saveScheduleBtn");
+const scheduleDays={1:"Lunes",2:"Martes",3:"Miércoles",4:"Jueves",5:"Viernes",6:"Sábado",7:"Domingo"};
+let scheduleProfessionals=[];
+function canManageSchedules(){return currentBusiness&&["owner","admin"].includes(document.getElementById("roleValue")?.textContent)}
+function scheduleStatus(m="",ok=false){scheduleFormStatus.textContent=m;scheduleFormStatus.style.color=ok?"#198754":""}
+function formatTime(t){return String(t||"").slice(0,5)}
+function resetScheduleForm(){editingScheduleId=null;scheduleForm.reset();scheduleActive.value="true";scheduleFormEyebrow.textContent="NUEVO HORARIO";saveScheduleBtn.textContent="Guardar horario";scheduleFormStatus.textContent="";scheduleFormCard.classList.add("hidden")}
+function populateScheduleProfessionals(selectedId=""){
+  scheduleProfessional.innerHTML=scheduleProfessionals.length?scheduleProfessionals.map(p=>`<option value="${p.id}">${escapeHtml((p.first_name+" "+p.last_name).trim())}${p.active?"":" · Inactivo"}</option>`).join(""):"<option value=\"\">Primero crea un profesional</option>";
+  if(selectedId)scheduleProfessional.value=selectedId;
+}
+function openScheduleForm(item=null){
+  if(!canManageSchedules()){alert("Solo el propietario o administrador puede gestionar horarios.");return}
+  scheduleFormCard.classList.remove("hidden");
+  editingScheduleId=item?.id||null;
+  scheduleFormEyebrow.textContent=editingScheduleId?"EDITAR HORARIO":"NUEVO HORARIO";
+  saveScheduleBtn.textContent=editingScheduleId?"Guardar cambios":"Guardar horario";
+  populateScheduleProfessionals(item?.professional_id||scheduleProfessionals.find(p=>p.active)?.id||scheduleProfessionals[0]?.id||"");
+  scheduleDay.value=String(item?.day_of_week??1);
+  scheduleStart.value=formatTime(item?.start_time)||"09:00";
+  scheduleEnd.value=formatTime(item?.end_time)||"18:00";
+  scheduleActive.value=String(item?.active??true);
+  scheduleFormStatus.textContent=scheduleProfessionals.length?"":"Primero debes crear al menos un profesional.";
+  scheduleFormCard.scrollIntoView({behavior:"smooth",block:"start"});
+}
+async function loadScheduleProfessionals(){
+  if(!client||!currentBusiness)return;
+  const r=await client.from("professionals").select("id,first_name,last_name,active").eq("business_id",currentBusiness.id).order("active",{ascending:false}).order("last_name",{ascending:true}).order("first_name",{ascending:true});
+  if(r.error){scheduleProfessionals=[];return}
+  scheduleProfessionals=r.data||[];
+  populateScheduleProfessionals(scheduleProfessional?.value||"");
+}
+async function loadSchedules(){
+  if(!client||!currentBusiness)return;
+  schedulesView.classList.remove("hidden");
+  schedulesList.innerHTML='<div class="card schedules-empty">Cargando horarios…</div>';
+  await loadScheduleProfessionals();
+  const r=await client.from("professional_schedules").select("id,professional_id,day_of_week,start_time,end_time,active,created_at,updated_at,professionals(first_name,last_name)").eq("business_id",currentBusiness.id).order("day_of_week",{ascending:true}).order("start_time",{ascending:true});
+  if(r.error){schedulesList.innerHTML='<div class="card schedules-empty">No se pudieron cargar los horarios: '+escapeHtml(r.error.message)+"</div>";return}
+  renderSchedules(r.data||[]);
+}
+function renderSchedules(items){
+  if(!items.length){schedulesList.innerHTML='<div class="card schedules-empty">Aún no hay horarios. Crea el primero para comenzar a configurar la disponibilidad.</div>';return}
+  schedulesList.innerHTML=items.map(s=>{
+    const p=s.professionals||{};const name=((p.first_name||"")+" "+(p.last_name||"")).trim()||"Profesional";
+    return `<article class="card schedule-card"><div class="schedule-card-top"><div><p class="schedule-professional">${escapeHtml(name)}</p><p class="schedule-day">${scheduleDays[s.day_of_week]||"Día"}</p></div><span class="schedule-badge ${s.active?"":"inactive"}">${s.active?"Activo":"Inactivo"}</span></div><p class="schedule-time">${formatTime(s.start_time)} – ${formatTime(s.end_time)}</p>${canManageSchedules()?`<div class="schedule-actions"><button type="button" class="secondary edit-schedule" data-id="${s.id}">Editar</button><button type="button" class="secondary delete-schedule" data-id="${s.id}">Eliminar</button></div>`:""}</article>`
+  }).join("");
+  schedulesList.querySelectorAll(".edit-schedule").forEach(b=>b.onclick=()=>{const item=items.find(x=>x.id===b.dataset.id);if(item)openScheduleForm(item)});
+  schedulesList.querySelectorAll(".delete-schedule").forEach(b=>b.onclick=()=>deleteSchedule(b.dataset.id));
+}
+async function saveSchedule(){
+  if(!client||!currentBusiness||!currentUser)return;
+  if(!canManageSchedules()){scheduleStatus("No tienes permisos para gestionar horarios.");return}
+  const professional_id=scheduleProfessional.value,day_of_week=Number(scheduleDay.value),start_time=scheduleStart.value,end_time=scheduleEnd.value,active=scheduleActive.value==="true";
+  if(!professional_id){scheduleStatus("Selecciona un profesional.");return}
+  if(!start_time||!end_time){scheduleStatus("Debes indicar la hora de inicio y término.");return}
+  if(start_time>=end_time){scheduleStatus("La hora de inicio debe ser anterior a la hora de término.");return}
+  if(!scheduleProfessionals.some(p=>p.id===professional_id)){scheduleStatus("El profesional seleccionado no pertenece a este negocio.");return}
+  saveScheduleBtn.disabled=true;scheduleStatus("Guardando…");
+  let r;
+  if(editingScheduleId){r=await client.from("professional_schedules").update({professional_id,day_of_week,start_time,end_time,active}).eq("id",editingScheduleId).eq("business_id",currentBusiness.id).select().single()}
+  else{r=await client.from("professional_schedules").insert({business_id:currentBusiness.id,professional_id,day_of_week,start_time,end_time,active,created_by:currentUser.id}).select().single()}
+  saveScheduleBtn.disabled=false;
+  if(r.error){scheduleStatus(r.error.message);return}
+  resetScheduleForm();await loadSchedules();
+}
+async function deleteSchedule(id){
+  if(!client||!currentBusiness||!canManageSchedules())return;
+  const item=schedulesList.querySelector(`.delete-schedule[data-id="${id}"]`)?.closest(".schedule-card");
+  const name=item?.querySelector(".schedule-professional")?.textContent||"este horario";
+  if(!confirm(`¿Eliminar el horario de ${name}? Esta acción no se puede deshacer.`))return;
+  const r=await client.from("professional_schedules").delete().eq("id",id).eq("business_id",currentBusiness.id);
+  if(r.error){alert("No se pudo eliminar: "+r.error.message);return}
+  await loadSchedules();
+}
+newScheduleBtn?.addEventListener("click",()=>openScheduleForm());
+cancelScheduleBtn?.addEventListener("click",resetScheduleForm);
+scheduleForm?.addEventListener("submit",e=>{e.preventDefault();saveSchedule()});
+
 const _routeUser=routeUser;
-routeUser=async function(){await _routeUser();if(!dashboardView.classList.contains("hidden")){await loadServices();await loadProfessionals();}};
+routeUser=async function(){await _routeUser();if(!dashboardView.classList.contains("hidden")){await loadServices();await loadProfessionals();await loadSchedules();}};
