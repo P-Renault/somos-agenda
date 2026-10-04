@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agenda Ya · Perfil público</title><link rel="stylesheet" href="public-platform.css"></head>
+<body><main class="shell">
+<header><strong>AGENDA <span>YA</span></strong><a href="index.html">Volver al sistema</a></header>
+<section class="hero"><p class="eyebrow">AGENDA YA · PERFIL PÚBLICO</p><h1>Tu negocio en Agenda Ya.</h1><p>Configura la información que verán tus clientes antes de reservar.</p></section>
+<section class="card"><form id="profileForm">
+<label>Nombre público<input id="displayName" maxlength="120" required></label>
+<label>Categoría<select id="categoryId" required><option value="">Selecciona una categoría</option></select></label>
+<label>Descripción<textarea id="description" maxlength="1500" rows="5" placeholder="Describe qué ofrece tu negocio."></textarea></label>
+<div class="two"><label>Dirección<input id="address" maxlength="200"></label><label>Comuna<input id="comuna" maxlength="100"></label></div>
+<div class="two"><label>Ciudad<input id="city" maxlength="100" value="Temuco"></label><label>WhatsApp<input id="whatsapp" maxlength="50"></label></div>
+<label>Teléfono público<input id="phone" maxlength="50"></label>
+<label class="check"><input id="publicEnabled" type="checkbox"> Publicar perfil</label>
+<div class="actions"><button type="submit">Guardar perfil público</button><a class="secondary button" id="previewLink" href="#" target="_blank">Vista previa</a></div>
+<p id="status"></p></form></section>
+<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="public-profile-admin.js"></script>
+</main></body></html>
