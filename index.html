@@ -25,6 +25,75 @@
  .section-head{display:block}
  .section-head button{width:100%;margin-top:10px}
 }
+
+/* CCF/SOMOS AGENDA · FORM CONTROLS · MOBILE UI v0.2.1 */
+form label{
+  display:block;
+  width:100%;
+  margin:0 0 18px;
+  font-weight:700;
+  color:#182033;
+}
+form input,
+form select,
+form textarea{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin-top:8px;
+  min-height:58px;
+  padding:0 18px;
+  border:1px solid #d8dde7;
+  border-radius:20px;
+  background:#fff;
+  color:#182033;
+  font:inherit;
+  font-size:17px;
+  line-height:1.35;
+  outline:none;
+  box-shadow:none;
+  appearance:none;
+  -webkit-appearance:none;
+}
+form textarea{
+  min-height:126px;
+  padding:16px 18px;
+  resize:vertical;
+  line-height:1.5;
+}
+form select{
+  padding-right:48px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 17px center;
+  background-size:20px;
+}
+form input:focus,
+form select:focus,
+form textarea:focus{
+  border-color:#1761d8;
+  box-shadow:0 0 0 3px rgba(23,97,216,.12);
+}
+.module-form{
+  padding:28px 24px;
+}
+.module-form .actions{
+  margin-top:6px;
+}
+@media(max-width:640px){
+  form input,
+  form select,
+  form textarea{
+    font-size:16px;
+  }
+  form textarea{
+    min-height:132px;
+  }
+  .module-form{
+    padding:24px 18px;
+  }
+}
+
 </style>
 </head>
 <body>
