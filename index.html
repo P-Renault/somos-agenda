@@ -1,1 +1,90 @@
-<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b5cff"><title>Somos Agenda</title><link rel="stylesheet" href="styles.css"></head><body><main class="app-shell"><section id="authView" class="view"><div class="brand">SOMOS <span>AGENDA</span></div><p class="eyebrow">SOMOS CORE · IDENTITY V0.1</p><h1>Tu negocio, organizado.</h1><p class="lead">Administra tu negocio y prepara tu agenda para recibir reservas.</p><form id="emailForm" class="card"><label>Email<input id="email" type="email" required></label><label>Contraseña<input id="password" type="password" minlength="6" required></label><div class="actions"><button type="submit">Iniciar sesión</button><button type="button" id="signupBtn" class="secondary">Crear cuenta</button></div><button type="button" id="recoveryBtn" class="link">Recuperar contraseña</button></form><div class="divider"><span>o continuar con</span></div><div class="socials"><button id="googleBtn" class="social">Google</button><button id="facebookBtn" class="social">Facebook</button></div><p id="status" class="status"></p></section><section id="onboardingView" class="view hidden"><div class="brand">SOMOS <span>AGENDA</span></div><p class="eyebrow">ONBOARDING · BUSINESS</p><h1>Comencemos con tu negocio.</h1><p class="lead">Esta información crea el primer negocio y te asigna como propietario.</p><form id="businessForm" class="card"><label>Nombre del negocio<input id="businessName" required maxlength="120" placeholder="Ej. Barbería Central"></label><label>Identificador público<input id="businessSlug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="80" placeholder="barberia-central"></label><label>Correo del negocio<input id="businessEmail" type="email"></label><label>Teléfono<input id="businessPhone" type="tel"></label><button type="submit">Crear negocio</button><button type="button" id="logoutOnboarding" class="secondary">Cerrar sesión</button></form><p id="onboardingStatus" class="status"></p></section><section id="dashboardView" class="view hidden"><div class="topbar"><div class="brand">SOMOS <span>AGENDA</span></div><button id="logoutBtn" class="secondary small">Salir</button></div><div class="hero card"><p class="eyebrow">DASHBOARD · CORE V0.1</p><h1 id="welcomeTitle">Bienvenido</h1><p id="businessSummary" class="lead"></p></div><div class="grid"><article class="card"><span class="metric-label">Estado</span><strong>Activo</strong><p>Identidad validada.</p></article><article class="card"><span class="metric-label">Rol</span><strong id="roleValue">—</strong><p>Permisos del negocio.</p></article><article class="card"><span class="metric-label">Próximo módulo</span><strong>Servicios</strong><p>Construcción de Agenda.</p></article></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b5cff">
+<title>Somos Agenda</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="app-shell">
+
+<section id="authView" class="view">
+  <div class="brand">SOMOS <span>AGENDA</span></div>
+  <p class="eyebrow">SOMOS CORE · IDENTITY V0.1</p>
+  <h1>Tu negocio, organizado.</h1>
+  <p class="lead">Administra tu negocio y prepara tu agenda para recibir reservas.</p>
+
+  <form id="emailForm" class="card">
+    <label>Email<input id="email" type="email" required></label>
+    <label>Contraseña<input id="password" type="password" minlength="6" required></label>
+    <div class="actions">
+      <button type="submit" id="loginBtn">Iniciar sesión</button>
+      <button type="button" id="signupBtn" class="secondary">Crear cuenta</button>
+    </div>
+    <button type="button" id="recoveryBtn" class="link">Recuperar contraseña</button>
+  </form>
+
+  <div class="divider"><span>o continuar con</span></div>
+  <div class="socials">
+    <button type="button" id="googleBtn" class="social">Google</button>
+    <button type="button" id="facebookBtn" class="social">Facebook</button>
+  </div>
+  <p id="status" class="status" aria-live="polite"></p>
+</section>
+
+<section id="onboardingView" class="view hidden">
+  <div class="brand">SOMOS <span>AGENDA</span></div>
+  <p class="eyebrow">ONBOARDING · BUSINESS</p>
+  <h1>Comencemos con tu negocio.</h1>
+  <p class="lead">Esta información crea el primer negocio y te asigna como propietario.</p>
+
+  <form id="businessForm" class="card">
+    <label>Nombre del negocio
+      <input id="businessName" required maxlength="120" placeholder="Ej. Barbería Central">
+    </label>
+
+    <label>Identificador público
+      <input id="businessSlug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="80" placeholder="barberia-central">
+    </label>
+
+    <label>Correo del negocio
+      <input id="businessEmail" type="email">
+    </label>
+
+    <label>Teléfono
+      <input id="businessPhone" type="tel">
+    </label>
+
+    <button type="submit" id="createBusinessBtn">Crear negocio</button>
+    <button type="button" id="logoutOnboarding" class="secondary">Cerrar sesión</button>
+  </form>
+
+  <p id="onboardingStatus" class="status" aria-live="polite"></p>
+</section>
+
+<section id="dashboardView" class="view hidden">
+  <div class="topbar">
+    <div class="brand">SOMOS <span>AGENDA</span></div>
+    <button type="button" id="logoutBtn" class="secondary small">Salir</button>
+  </div>
+  <div class="hero card">
+    <p class="eyebrow">DASHBOARD · CORE V0.1</p>
+    <h1 id="welcomeTitle">Bienvenido</h1>
+    <p id="businessSummary" class="lead"></p>
+  </div>
+  <div class="grid">
+    <article class="card"><span class="metric-label">Estado</span><strong>Activo</strong><p>Identidad validada.</p></article>
+    <article class="card"><span class="metric-label">Rol</span><strong id="roleValue">—</strong><p>Permisos del negocio.</p></article>
+    <article class="card"><span class="metric-label">Próximo módulo</span><strong>Servicios</strong><p>Construcción de Agenda.</p></article>
+  </div>
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js?v=20261004-03"></script>
+<script src="app.js?v=20261004-03"></script>
+</body>
+</html>
