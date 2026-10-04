@@ -1,21 +1,13 @@
-# SOMOS AGENDA — CORE FOUNDATION v0.1
+# SOMOS AGENDA
 
-Primera iteración técnica del repositorio `somos-agenda`.
+## SOMOS CORE — Identity + Onboarding v0.1
 
-## Incluye
-- Supabase Auth / perfiles
-- Negocios multiempresa
-- Miembros y roles
-- RLS multi-tenant
-- Auditoría
-- Función transaccional de creación de negocio + owner
-- Base preparada para OAuth Google/Facebook
+Primera aplicación funcional: login/registro por email, recuperación, OAuth Google/Facebook, perfil automático, onboarding de negocio, owner y dashboard responsive.
 
-## Carga en Supabase
-1. Abrir Supabase → SQL Editor.
-2. Crear una nueva query.
-3. Pegar `supabase/migrations/001_core_foundation_v0_1.sql`.
-4. Ejecutar.
-5. Verificar tablas y políticas en `public`.
+### Configuración
+Editar `config.js` y completar `SUPABASE_URL` y `SUPABASE_ANON_KEY` con los valores públicos del proyecto Supabase. Nunca colocar `service_role` ni secretos privados.
 
-No incluye todavía Agenda, Billing ni Flow.
+### Flujo
+Login -> Auth -> Profile -> Business -> Owner -> Dashboard
+
+La migración `001_core_foundation_v0_1.sql` debe estar ejecutada.
