@@ -1,156 +1,91 @@
-/* AGENDA YA · UI INTEGRATION V1.1
-   Capa visual/adaptativa. No reemplaza auth, Supabase ni la lógica CRUD de app.js. */
+/* AGENDA YA · FRAMEWORK VISUAL CORRECTO V1.4
+   Capa visual del dashboard. NO toca autenticación, Supabase ni CRUD.
+*/
 (function(){
   'use strict';
-  const $ = s => document.querySelector(s);
-  const nav = [
-    ['dashboardView','Dashboard'],
-    ['servicesSection','Servicios'],
-    ['professionalsSection','Profesionales'],
-    ['schedulesSection','Horarios'],
-    ['availabilitySection','Disponibilidad'],
-    ['clientsSection','Clientes'],
-    ['bookingsSection','Reservas'],
-    ['calendarSection','Calendario']
+  const $=s=>document.querySelector(s);
+  const nav=[
+    ['dashboardView','Dashboard'],['servicesSection','Servicios'],['professionalsSection','Profesionales'],
+    ['schedulesSection','Horarios'],['availabilitySection','Disponibilidad'],['clientsSection','Clientes'],
+    ['bookingsSection','Reservas'],['calendarSection','Calendario']
   ];
-  let initialized = false;
-
-  function isVisible(el){ return !!el && !el.classList.contains('hidden'); }
-
-  function setActive(target){
-    document.querySelectorAll('[data-ay-nav]').forEach(el => {
-      el.classList.toggle('is-active', el.dataset.ayNav === target);
-    });
-  }
-
-  function activate(target, scroll){
-    const dashboard = $('#dashboardView');
-    if(!dashboard || !isVisible(dashboard)) return;
-    const core = $('#ayDashboardCore');
-    const sections = nav.slice(1).map(([id]) => $('#'+id)).filter(Boolean);
-
-    if(target === 'dashboardView'){
-      if(core) core.hidden = false;
-      sections.forEach(s => { s.hidden = true; s.classList.remove('ay-module-active'); });
-      if(scroll) window.scrollTo({top:0, behavior:'smooth'});
-    } else {
-      if(core) core.hidden = true;
-      sections.forEach(s => { s.hidden = s.id !== target; s.classList.toggle('ay-module-active', s.id === target); });
-      const active = $('#'+target);
-      if(scroll && active) active.scrollIntoView({behavior:'smooth', block:'start'});
+  let ready=false;
+  function visible(e){return !!e&&!e.classList.contains('hidden')}
+  function setActive(id){document.querySelectorAll('[data-ay-nav]').forEach(x=>x.classList.toggle('is-active',x.dataset.ayNav===id));}
+  function activate(id,scroll=true){
+    const dash=$('#dashboardView'); if(!visible(dash))return;
+    const core=$('#ayDashboardCore'); const sections=nav.slice(1).map(x=>$('#'+x[0])).filter(Boolean);
+    if(id==='dashboardView'){
+      if(core)core.hidden=false; sections.forEach(s=>s.hidden=true);
+      if(scroll)window.scrollTo({top:0,behavior:'smooth'});
+    }else{
+      if(core)core.hidden=true; sections.forEach(s=>s.hidden=s.id!==id);
+      const a=$('#'+id); if(a&&scroll)a.scrollIntoView({behavior:'smooth',block:'start'});
     }
-    setActive(target);
-    document.body.classList.remove('ay-menu-open');
-    window.dispatchEvent(new CustomEvent('agendaYa:view-change',{detail:{view:target}}));
+    setActive(id); document.body.classList.remove('ay-menu-open');
   }
-
-  function addButtonNav(container, mobile){
-    nav.forEach(([id,label]) => {
-      const b = document.createElement('button');
-      b.type='button';
-      b.dataset.ayNav=id;
-      b.setAttribute('aria-label',label);
-      if(mobile){
-        const icon = ['⌂','✂','♙','◷','▣','♧','▤','▦'][nav.findIndex(x=>x[0]===id)];
-        b.innerHTML = '<span class="ay-rail-icon">'+icon+'</span><small>'+label+'</small>';
-      } else {
-        b.textContent=label;
-      }
-      b.onclick=()=>activate(id,true);
-      container.appendChild(b);
-    });
+  function makeNav(){
+    const n=document.createElement('nav'); n.className='ay-topnav';
+    nav.forEach(([id,label])=>{const b=document.createElement('button');b.type='button';b.dataset.ayNav=id;b.textContent=label;b.onclick=()=>activate(id);n.appendChild(b)});
+    return n;
   }
-
   function build(){
-    const dashboard = $('#dashboardView');
-    if(!dashboard || !isVisible(dashboard) || initialized) return;
-    initialized=true;
-
-    const originalTopbar = dashboard.querySelector('.topbar');
-    const hero = dashboard.querySelector('.hero');
-    const grid = dashboard.querySelector('.grid');
-
-    // Preserve the existing dashboard DOM/data bindings; only reorganize layout.
-    if(hero && grid && !$('#ayDashboardCore')){
-      const core=document.createElement('div');
-      core.id='ayDashboardCore';
-      core.className='ay-dashboard-core';
-      hero.parentNode.insertBefore(core,hero);
-      core.append(hero,grid);
+    const dash=$('#dashboardView'); if(!visible(dash)||ready)return; ready=true;
+    const top=dash.querySelector('.topbar'), hero=dash.querySelector('.hero'), grid=dash.querySelector('.grid');
+    if(hero&&grid&&!$('#ayDashboardCore')){
+      const core=document.createElement('div');core.id='ayDashboardCore';core.className='ay-dashboard-core';
+      hero.parentNode.insertBefore(core,hero);core.append(hero,grid);
     }
-
-    // Header
-    let topbar = originalTopbar;
-    if(topbar){
-      topbar.classList.add('ay-topbar');
-      const logout = $('#logoutBtn');
-      topbar.innerHTML='';
-
-      const brand=document.createElement('div');
-      brand.className='ay-brand';
-      brand.innerHTML='<button class="ay-menu-btn" type="button" aria-label="Abrir menú">☰</button>'+
-        '<img src="agenda-ya-logo-header.jpg" alt="Agenda Ya · Encuentra. Elige. Agenda." class="ay-logo-img">';
-      topbar.appendChild(brand);
-
-      const desktopNav=document.createElement('nav');
-      desktopNav.className='ay-topnav';
-      addButtonNav(desktopNav,false);
-      topbar.appendChild(desktopNav);
-
-      const account=document.createElement('div');
-      account.className='ay-account';
-      account.innerHTML='<span class="ay-avatar">PR</span><span class="ay-account-copy"><strong>Mi negocio</strong><small>Cuenta</small></span>';
-      if(logout){ logout.classList.add('ay-logout'); account.appendChild(logout); }
-      topbar.appendChild(account);
-
-      const mobileMenu=document.createElement('aside');
-      mobileMenu.className='ay-mobile-menu';
-      mobileMenu.innerHTML='<div class="ay-mobile-menu-head"><strong>Agenda Ya</strong><button type="button" data-ay-close aria-label="Cerrar menú">×</button></div>';
-      addButtonNav(mobileMenu,true);
-      topbar.parentNode.insertBefore(mobileMenu,topbar.nextSibling);
-      const menuButton=topbar.querySelector('.ay-menu-btn');
-      menuButton.onclick=()=>document.body.classList.toggle('ay-menu-open');
-      mobileMenu.querySelector('[data-ay-close]').onclick=()=>document.body.classList.remove('ay-menu-open');
+    if(top){
+      top.classList.add('ay-topbar');
+      const logout=$('#logoutBtn');
+      top.innerHTML='';
+      const brand=document.createElement('div');brand.className='ay-brand';
+      brand.innerHTML='<button class="ay-menu-btn" type="button" aria-label="Menú">☰</button><img src="agenda-ya-logo-header.jpg" class="ay-logo-img" alt="Agenda Ya">';
+      top.append(brand,makeNav());
+      const account=document.createElement('div');account.className='ay-account';account.innerHTML='<span class="ay-avatar">PR</span><span class="ay-account-copy"><strong>Mi negocio</strong><small>Cuenta</small></span>';
+      if(logout){logout.classList.add('ay-logout');account.append(logout)}top.append(account);
+      const menu=document.createElement('aside');menu.className='ay-mobile-menu';menu.innerHTML='<div class="ay-mobile-menu-head"><strong>Agenda Ya</strong><button type="button" data-close>×</button></div>';
+      nav.forEach(([id,label])=>{const b=document.createElement('button');b.type='button';b.dataset.ayNav=id;b.textContent=label;b.onclick=()=>activate(id);menu.append(b)});
+      top.parentNode.insertBefore(menu,top.nextSibling);brand.querySelector('.ay-menu-btn').onclick=()=>document.body.classList.toggle('ay-menu-open');menu.querySelector('[data-close]').onclick=()=>document.body.classList.remove('ay-menu-open');
     }
-
-    // Desktop sidebar + content workspace.
-    const sidebar=document.createElement('aside');
-    sidebar.className='ay-sidebar';
-    sidebar.innerHTML='<div class="ay-sidebar-title">GESTIÓN</div>';
-    addButtonNav(sidebar,false);
-
-    const workspace=document.createElement('div');
-    workspace.className='ay-workspace';
-
-    // Move every dashboard child except the header/mobile menu into workspace.
-    Array.from(dashboard.children).forEach(child=>{
-      if(child!==topbar && !child.classList.contains('ay-mobile-menu')) workspace.appendChild(child);
-    });
-
-    dashboard.appendChild(sidebar);
-    dashboard.appendChild(workspace);
-
-    const rail=document.createElement('nav');
-    rail.className='ay-mobile-rail';
-    nav.slice(0,5).forEach(([id,label],i)=>{
-      const b=document.createElement('button');
-      b.type='button'; b.dataset.ayNav=id; b.setAttribute('aria-label',label);
-      b.innerHTML='<span class="ay-rail-icon">'+['⌂','✂','♙','◷','▣'][i]+'</span><small>'+label+'</small>';
-      b.onclick=()=>activate(id,true);
-      rail.appendChild(b);
-    });
-    dashboard.appendChild(rail);
-
-    // Dashboard is the landing state. Actual module sections are not duplicated here.
-    activate('dashboardView',false);
+    const side=document.createElement('aside');side.className='ay-sidebar';side.innerHTML='<div class="ay-sidebar-title">GESTIÓN</div>';
+    const icons=['⌂','✂','♙','◷','▣','♧','▤','▦'];
+    nav.forEach(([id,label],i)=>{const b=document.createElement('button');b.type='button';b.dataset.ayNav=id;b.innerHTML='<span>'+icons[i]+'</span>'+label;b.onclick=()=>activate(id);side.append(b)});
+    const workspace=document.createElement('div');workspace.className='ay-workspace';
+    while(dash.firstChild)workspace.appendChild(dash.firstChild);
+    dash.append(side,workspace);
+    const rail=document.createElement('nav');rail.className='ay-mobile-rail';
+    nav.slice(0,5).forEach(([id,label],i)=>{const b=document.createElement('button');b.type='button';b.dataset.ayNav=id;b.innerHTML='<span>'+icons[i]+'</span><small>'+label+'</small>';b.onclick=()=>activate(id);rail.append(b)});
+    dash.append(rail);
+    decorateDashboard(); activate('dashboardView',false);
   }
-
-  function watch(){
-    if(isVisible($('#dashboardView'))) build();
+  function decorateDashboard(){
+    const core=$('#ayDashboardCore'); if(!core)return;
+    const hero=core.querySelector('.hero');
+    if(hero&&!hero.querySelector('.ay-hero-actions')){
+      const actions=document.createElement('div');actions.className='ay-hero-actions';
+      actions.innerHTML='<button type="button" class="ay-primary" data-go="bookingsSection">+ Nueva reserva</button><button type="button" class="ay-secondary" data-go="calendarSection">▦ Ver calendario</button>';
+      actions.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>activate(b.dataset.go));hero.append(actions);
+    }
+    if(!core.querySelector('.ay-dashboard-panels')){
+      const panels=document.createElement('div');panels.className='ay-dashboard-panels';
+      panels.innerHTML='<article class="ay-panel"><div class="ay-panel-head"><strong>Próximas reservas</strong><button type="button" data-go="bookingsSection">Ver todas →</button></div><div id="ayUpcoming">Carga tus reservas para verlas aquí.</div></article><article class="ay-panel"><div class="ay-panel-head"><strong>Calendario de hoy</strong><button type="button" data-go="calendarSection">Abrir →</button></div><div id="ayToday">Consulta el calendario para ver tu agenda.</div></article>';
+      panels.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>activate(b.dataset.go));core.append(panels);
+      const links=document.createElement('div');links.className='ay-quick-grid';
+      [['servicesSection','Gestiona tus servicios'],['professionalsSection','Administra profesionales'],['schedulesSection','Configura horarios'],['availabilitySection','Revisa disponibilidad']].forEach(([id,t])=>{const a=document.createElement('button');a.type='button';a.innerHTML='<strong>'+t+'</strong><small>Ir a →</small>';a.onclick=()=>activate(id);links.append(a)});
+      core.append(links);
+    }
+    syncDashboard();
   }
-
-  window.AgendaYaUI={activate,build};
-  const observer=new MutationObserver(watch);
-  observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watch); else watch();
+  function syncDashboard(){
+    const core=$('#ayDashboardCore');if(!core)return;
+    const cards=core.querySelectorAll('.grid .card');
+    const counts=[['Reservas hoy',document.querySelectorAll('#bookingsList .module-card').length],['Clientes',document.querySelectorAll('#clientsList .module-card').length],['Servicios',document.querySelectorAll('#servicesList .module-card').length],['Profesionales',document.querySelectorAll('#professionalsList .module-card').length]];
+    if(cards.length>=3){cards.forEach((c,i)=>{if(counts[i]){c.querySelector('.metric-label').textContent=counts[i][0];c.querySelector('strong').textContent=counts[i][1];c.querySelector('p').textContent=i===0?'Reservas registradas':i===1?'Clientes registrados':'Activos'}})}
+    const up=$('#ayUpcoming'), list=document.querySelectorAll('#bookingsList .module-card'); if(up&&list.length){up.innerHTML=Array.from(list).slice(0,4).map(c=>{const h=c.cloneNode(true);h.querySelectorAll('button').forEach(x=>x.remove());return '<div class="ay-booking-row">'+h.innerHTML+'</div>'}).join('')}
+  }
+  const obs=new MutationObserver(()=>{if(visible($('#dashboardView'))){build();syncDashboard()}});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{obs.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});build()});else{obs.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});build()}
+  window.AgendaYaUI={activate,build,syncDashboard};
 })();

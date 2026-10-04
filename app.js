@@ -21,7 +21,7 @@ async function routeUser(){
  if(r.error){msg("status",r.error.message);return}
  if(!r.data?.length){show(onboardingView);return}
  const m=r.data[0];currentBusiness=m.businesses;
- const displayName=currentUser.user_metadata?.full_name||currentUser.user_metadata?.name||(currentUser.email||"usuario").split("@")[0].replace(/[._-]+/g," ").split(" ")[0]; $("welcomeTitle").textContent="Hola, "+displayName;
+ $("welcomeTitle").textContent="Hola, "+(currentUser.user_metadata?.full_name||currentUser.email||"usuario");
  $("businessSummary").textContent=currentBusiness.name+" · "+currentBusiness.slug;
  $("roleValue").textContent=m.role;
  show(dashboardView);
