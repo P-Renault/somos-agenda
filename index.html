@@ -5,9 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agenda Ya — UI Framework v1.0</title>
   <link rel="stylesheet" href="agenda-ya-shell.css">
+  <link rel="stylesheet" href="auth.css">
 </head>
 <body>
-  <div class="ay-app" id="ayApp">
+
+  <section class="ay-identity" id="ayIdentity" aria-label="Acceso a Agenda Ya">
+    <div class="ay-identity-panel">
+      <div class="ay-identity-logo">
+        <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+      </div>
+
+      <div class="ay-identity-card">
+        <span class="ay-eyebrow">AGENDA YA · ACCESO</span>
+        <h1 id="identityTitle">Bienvenido a Agenda Ya</h1>
+        <p id="identityLead">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
+
+        <form id="identityForm" novalidate>
+          <label>Email
+            <input id="identityEmail" type="email" autocomplete="email" required>
+          </label>
+          <label>Contraseña
+            <input id="identityPassword" type="password" minlength="6" autocomplete="current-password" required>
+          </label>
+          <label id="identityConfirmWrap" hidden>Confirmar contraseña
+            <input id="identityConfirm" type="password" minlength="6" autocomplete="new-password">
+          </label>
+          <button id="identitySubmit" class="identity-primary" type="submit">Iniciar sesión</button>
+        </form>
+
+        <button id="identityRecovery" class="identity-link" type="button">Recuperar contraseña</button>
+
+        <div class="identity-divider"><span>o continuar con</span></div>
+
+        <div class="identity-socials">
+          <button id="identityGoogle" class="identity-social" type="button">
+            <span class="identity-provider google">G</span> Continuar con Google
+          </button>
+          <button id="identityFacebook" class="identity-social" type="button">
+            <span class="identity-provider facebook">f</span> Continuar con Facebook
+          </button>
+        </div>
+
+        <button id="identityMode" class="identity-mode" type="button">
+          ¿No tienes una cuenta? <strong>Crear cuenta</strong>
+        </button>
+
+        <p id="identityStatus" class="identity-status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ay-app" id="ayApp" hidden>
     <header class="ay-header">
       <button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button>
       <a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya">
@@ -138,6 +186,9 @@
     </nav>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="agenda-ya-shell.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>
