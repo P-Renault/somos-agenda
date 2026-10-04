@@ -242,6 +242,40 @@ form textarea:focus{
     </div>
     <div id="clientsList" class="module-list"></div>
   </section>
+  <section class="agenda-section" id="bookingsSection">
+    <div class="section-head">
+      <div><p class="eyebrow">AGENDA · RESERVAS V0.1</p><h2>Reservas</h2></div>
+      <button id="newBookingBtn">+ Nueva reserva</button>
+    </div>
+
+    <div id="bookingFormWrap" class="card hidden module-form">
+      <p class="eyebrow" id="bookingFormTitle">NUEVA RESERVA</p>
+      <form id="bookingForm">
+        <label>Cliente<select id="bookingClient" required></select></label>
+        <label>Servicio<select id="bookingService" required></select></label>
+        <label>Profesional<select id="bookingProfessional" required></select></label>
+        <label>Fecha<input id="bookingDate" type="date" required></label>
+        <label>Hora de inicio<input id="bookingStart" type="time" value="09:00" required></label>
+        <label>Hora de término<input id="bookingEnd" type="time" value="09:30" required></label>
+        <label>Estado<select id="bookingStatus">
+          <option value="pending">Pendiente</option>
+          <option value="confirmed">Confirmada</option>
+          <option value="cancelled">Cancelada</option>
+          <option value="completed">Completada</option>
+          <option value="no_show">No asistió</option>
+        </select></label>
+        <label>Notas<textarea id="bookingNotes" rows="3" maxlength="1000"></textarea></label>
+        <div class="actions">
+          <button type="submit">Guardar reserva</button>
+          <button type="button" id="cancelBookingBtn" class="secondary">Cancelar</button>
+        </div>
+      </form>
+      <p id="bookingFormStatus" class="status"></p>
+    </div>
+
+    <div id="bookingsList" class="module-list"></div>
+  </section>
+
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

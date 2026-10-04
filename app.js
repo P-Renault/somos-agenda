@@ -2,7 +2,7 @@ const cfg=window.SOMOS_CONFIG||{};
 const $=id=>document.getElementById(id);
 const authView=$("authView"), onboardingView=$("onboardingView"), dashboardView=$("dashboardView");
 let client=null,currentUser=null,currentBusiness=null;
-let editing={service:null,professional:null,schedule:null,availability:null,client:null};
+let editing={service:null,professional:null,schedule:null,availability:null,client:null,booking:null};
 
 function msg(id,text){const e=$(id);if(e)e.textContent=text||""}
 function show(view){[authView,onboardingView,dashboardView].forEach(v=>v.classList.add("hidden"));view.classList.remove("hidden")}
@@ -126,6 +126,131 @@ $("newClientBtn").onclick=()=>openClient();$("cancelClientBtn").onclick=()=>{tog
 $("clientForm").onsubmit=async e=>{e.preventDefault();const p={business_id:currentBusiness.id,first_name:$("clientFirstName").value.trim(),last_name:$("clientLastName").value.trim(),email:$("clientEmail").value.trim()||null,phone:$("clientPhone").value.trim()||null,notes:$("clientNotes").value.trim()||null,active:$("clientActive").value==="true"};let r=editing.client?await client.from("clients").update(p).eq("id",editing.client):await client.from("clients").insert({...p,created_by:currentUser.id});if(r.error){msg("clientFormStatus",r.error.message);return}toggle("clientFormWrap",false);resetForm("client");await loadClients()};
 
 async function deleteRow(table,id,reload){if(!confirm("¿Eliminar este registro?"))return;const r=await client.from(table).delete().eq("id",id);if(r.error){alert(r.error.message);return}await reload()}
+
+async function loadBookingReferences(){
+  const [clients,services,professionals]=await Promise.all([
+    client.from("clients").select("id,first_name,last_name").eq("business_id",currentBusiness.id).eq("active",true).order("first_name").order("last_name"),
+    client.from("services").select("id,name,duration_minutes,price").eq("business_id",currentBusiness.id).eq("active",true).order("name"),
+    client.from("professionals").select("id,first_name,last_name").eq("business_id",currentBusiness.id).eq("active",true).order("first_name").order("last_name")
+  ]);
+  if(clients.error||services.error||professionals.error){
+    msg("bookingFormStatus",(clients.error||services.error||professionals.error).message);
+    return false;
+  }
+  $("bookingClient").innerHTML=(clients.data||[]).map(x=>`<option value="${x.id}">${esc(x.first_name+" "+x.last_name)}</option>`).join("");
+  $("bookingService").innerHTML=(services.data||[]).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("");
+  $("bookingProfessional").innerHTML=(professionals.data||[]).map(x=>`<option value="${x.id}">${esc(x.first_name+" "+x.last_name)}</option>`).join("");
+  return true;
+}
+
+function bookingStatusLabel(s){
+  return ({pending:"Pendiente",confirmed:"Confirmada",cancelled:"Cancelada",completed:"Completada",no_show:"No asistió"})[s]||s;
+}
+
+async function loadBookings(){
+  const list=$("bookingsList");
+  list.innerHTML='<div class="card"><p class="lead">Cargando...</p></div>';
+  const r=await client.from("bookings").select("*,clients(first_name,last_name),services(name),professionals(first_name,last_name)").eq("business_id",currentBusiness.id).order("booking_date").order("start_time");
+  if(r.error){list.innerHTML=`<div class="card"><p class="status">${esc(r.error.message)}</p></div>`;return}
+  if(!r.data?.length){list.innerHTML='<div class="card"><p class="lead">Aún no hay reservas. Crea la primera.</p></div>';return}
+  list.innerHTML=r.data.map(b=>{
+    const clientName=b.clients?`${b.clients.first_name} ${b.clients.last_name}`:"Cliente";
+    const professional=b.professionals?`${b.professionals.first_name} ${b.professionals.last_name}`:"Profesional";
+    const service=b.services?.name||"Servicio";
+    const date=new Date(b.booking_date+"T00:00:00").toLocaleDateString("es-CL");
+    return `<article class="card module-card">
+      <h3>${esc(clientName)}</h3>
+      <p class="meta">${esc(service)} · ${esc(professional)}</p>
+      <p class="meta">${esc(date)} · ${esc(b.start_time.slice(0,5))} – ${esc(b.end_time.slice(0,5))}</p>
+      <span class="pill">${esc(bookingStatusLabel(b.status))}</span>
+      ${b.notes?`<p class="note">${esc(b.notes)}</p>`:""}
+      <div class="actions-grid">
+        <button class="secondary" data-edit-booking="${b.id}">Editar</button>
+        <button class="secondary" data-delete-booking="${b.id}">Eliminar</button>
+      </div>
+    </article>`;
+  }).join("");
+  list.querySelectorAll("[data-edit-booking]").forEach(b=>b.onclick=async()=>{
+    const x=r.data.find(v=>v.id===b.dataset.editBooking);
+    await openBooking(x);
+  });
+  list.querySelectorAll("[data-delete-booking]").forEach(b=>b.onclick=()=>deleteRow("bookings",b.dataset.deleteBooking,loadBookings));
+}
+
+async function openBooking(x=null){
+  editing.booking=x?.id||null;
+  const ok=await loadBookingReferences();
+  if(!ok)return;
+  toggle("bookingFormWrap");
+  if(x){
+    $("bookingFormTitle").textContent="EDITAR RESERVA";
+    $("bookingClient").value=x.client_id;
+    $("bookingService").value=x.service_id;
+    $("bookingProfessional").value=x.professional_id;
+    $("bookingDate").value=x.booking_date;
+    $("bookingStart").value=x.start_time.slice(0,5);
+    $("bookingEnd").value=x.end_time.slice(0,5);
+    $("bookingStatus").value=x.status;
+    $("bookingNotes").value=x.notes||"";
+  }else{
+    $("bookingForm").reset();
+    $("bookingStart").value="09:00";
+    $("bookingEnd").value="09:30";
+    $("bookingStatus").value="pending";
+    $("bookingFormTitle").textContent="NUEVA RESERVA";
+  }
+}
+
+$("newBookingBtn").onclick=()=>openBooking();
+$("cancelBookingBtn").onclick=()=>{toggle("bookingFormWrap",false);resetForm("booking")};
+
+$("bookingService").addEventListener("change",async()=>{
+  const id=$("bookingService").value;
+  if(!id)return;
+  const r=await client.from("services").select("duration_minutes").eq("id",id).maybeSingle();
+  if(r.data?.duration_minutes){
+    const [h,m]=$("bookingStart").value.split(":").map(Number);
+    const total=h*60+m+Number(r.data.duration_minutes);
+    const eh=Math.floor(total/60)%24, em=total%60;
+    $("bookingEnd").value=`${String(eh).padStart(2,"0")}:${String(em).padStart(2,"0")}`;
+  }
+});
+
+$("bookingForm").onsubmit=async e=>{
+  e.preventDefault();
+  const start=$("bookingStart").value,end=$("bookingEnd").value;
+  if(start>=end){msg("bookingFormStatus","La hora de inicio debe ser anterior a la hora de término.");return}
+  const p={
+    business_id:currentBusiness.id,
+    client_id:$("bookingClient").value,
+    service_id:$("bookingService").value,
+    professional_id:$("bookingProfessional").value,
+    booking_date:$("bookingDate").value,
+    start_time:start,
+    end_time:end,
+    status:$("bookingStatus").value,
+    notes:$("bookingNotes").value.trim()||null
+  };
+  let r=editing.booking
+    ?await client.from("bookings").update(p).eq("id",editing.booking)
+    :await client.from("bookings").insert({...p,created_by:currentUser.id});
+  if(r.error){
+    msg("bookingFormStatus",r.error.message.includes("booking_professional_overlap")
+      ?"El profesional ya tiene una reserva que se cruza con este horario."
+      :r.error.message);
+    return;
+  }
+  toggle("bookingFormWrap",false);
+  resetForm("booking");
+  await loadBookings();
+};
+
+const originalRouteUser=routeUser;
+routeUser=async function(){
+  await originalRouteUser();
+  if(currentBusiness) await loadBookings();
+};
+
 
 if(client)client.auth.onAuthStateChange((event,session)=>{currentUser=session?.user||null;if(session)setTimeout(()=>routeUser(),0);else if(event==="SIGNED_OUT")show(authView)});
 loadUser();
