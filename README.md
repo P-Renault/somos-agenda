@@ -1,10 +1,7 @@
-# SOMOS AGENDA — Identity v0.1 — Auth fix
+# SOMOS AGENDA — Identity v0.1 — Create Business Fix
 
-Archivos incluidos:
-- index.html
-- app.js
-- config.js
+Reemplazar `app.js` y `config.js` en la raíz del repositorio.
 
-Reemplazar estos archivos en la raíz del repositorio `somos-agenda`.
-El `app.js` corregido inicializa después de cargar el DOM, valida Supabase,
-evita silencios cuando falta configuración y agrega manejo de errores a los botones.
+Esta versión agrega diagnóstico explícito de errores del RPC `create_business` y de la consulta de `business_members`, además de inicialización DOM segura y bloqueo del botón mientras se procesa la creación.
+
+No modifica Supabase, SQL ni RLS.
