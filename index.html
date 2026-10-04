@@ -6,6 +6,25 @@
 <meta name="theme-color" content="#0b5cff">
 <title>Somos Agenda</title>
 <link rel="stylesheet" href="styles.css">
+<style>
+/* SOMOS AGENDA · Mobile dashboard overflow fix */
+#dashboardView .hero,
+#dashboardView .hero h1,
+#dashboardView .hero .lead {
+  min-width: 0;
+  max-width: 100%;
+}
+#dashboardView .hero h1 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+#dashboardView #businessSummary {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+</style>
 </head>
 <body>
 <main class="app-shell">
