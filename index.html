@@ -15,7 +15,6 @@
   <p class="eyebrow">SOMOS CORE · IDENTITY V0.1</p>
   <h1>Tu negocio, organizado.</h1>
   <p class="lead">Administra tu negocio y prepara tu agenda para recibir reservas.</p>
-
   <form id="emailForm" class="card">
     <label>Email<input id="email" type="email" required></label>
     <label>Contraseña<input id="password" type="password" minlength="6" required></label>
@@ -25,7 +24,6 @@
     </div>
     <button type="button" id="recoveryBtn" class="link">Recuperar contraseña</button>
   </form>
-
   <div class="divider"><span>o continuar con</span></div>
   <div class="socials">
     <button type="button" id="googleBtn" class="social">Google</button>
@@ -39,28 +37,22 @@
   <p class="eyebrow">ONBOARDING · BUSINESS</p>
   <h1>Comencemos con tu negocio.</h1>
   <p class="lead">Esta información crea el primer negocio y te asigna como propietario.</p>
-
   <form id="businessForm" class="card">
     <label>Nombre del negocio
       <input id="businessName" required maxlength="120" placeholder="Ej. Barbería Central">
     </label>
-
     <label>Identificador público
-      <input id="businessSlug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="80" placeholder="barberia-central">
+      <input id="businessSlug" required pattern="[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*" maxlength="80" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="barberia-central">
     </label>
-
     <label>Correo del negocio
       <input id="businessEmail" type="email">
     </label>
-
     <label>Teléfono
       <input id="businessPhone" type="tel">
     </label>
-
     <button type="submit" id="createBusinessBtn">Crear negocio</button>
     <button type="button" id="logoutOnboarding" class="secondary">Cerrar sesión</button>
   </form>
-
   <p id="onboardingStatus" class="status" aria-live="polite"></p>
 </section>
 
@@ -82,9 +74,8 @@
 </section>
 
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=20261004-03"></script>
-<script src="app.js?v=20261004-03"></script>
+<script src="config.js?v=20261004-04"></script>
+<script src="app.js?v=20261004-04"></script>
 </body>
 </html>
