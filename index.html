@@ -1,403 +1,143 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b5cff">
-<title>Somos Agenda</title>
-<link rel="stylesheet" href="styles.css">
-<style>
-.agenda-section{margin-top:42px}
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.section-head h2{margin:6px 0 18px}
-.section-head button{min-width:210px}
-.module-form{margin:18px 0}
-.module-form .actions{margin-top:8px}
-.module-list{display:grid;gap:18px}
-.module-card h3{margin:0 0 8px}
-.meta{color:#6b7280;margin:7px 0;overflow-wrap:anywhere}
-.note{color:#6b7280;line-height:1.5;margin:10px 0 18px;white-space:pre-wrap;overflow-wrap:anywhere}
-.pill{display:inline-block;padding:7px 14px;border-radius:999px;background:#eef5ff;color:#1761d8;font-weight:700;margin:8px 0 16px}
-.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.module-card .actions-grid button{width:100%}
-.module-divider{height:1px;background:#e7eaf0;margin:40px 0}
-@media(max-width:640px){
- .section-head{display:block}
- .section-head button{width:100%;margin-top:10px}
-}
-
-/* CCF/SOMOS AGENDA · FORM CONTROLS · MOBILE UI v0.2.1 */
-form label{
-  display:block;
-  width:100%;
-  margin:0 0 18px;
-  font-weight:700;
-  color:#182033;
-}
-form input,
-form select,
-form textarea{
-  display:block;
-  width:100%;
-  box-sizing:border-box;
-  margin-top:8px;
-  min-height:58px;
-  padding:0 18px;
-  border:1px solid #d8dde7;
-  border-radius:20px;
-  background:#fff;
-  color:#182033;
-  font:inherit;
-  font-size:17px;
-  line-height:1.35;
-  outline:none;
-  box-shadow:none;
-  appearance:none;
-  -webkit-appearance:none;
-}
-form textarea{
-  min-height:126px;
-  padding:16px 18px;
-  resize:none;
-  line-height:1.5;
-}
-form select{
-  padding-right:48px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:right 17px center;
-  background-size:20px;
-}
-form input:focus,
-form select:focus,
-form textarea:focus{
-  border-color:#1761d8;
-  box-shadow:0 0 0 3px rgba(23,97,216,.12);
-}
-.module-form{
-  padding:28px 24px;
-}
-.module-form .actions{
-  margin-top:6px;
-}
-@media(max-width:640px){
-  form input,
-  form select,
-  form textarea{
-    font-size:16px;
-  }
-  form textarea{
-    min-height:132px;
-  }
-  .module-form{
-    padding:24px 18px;
-  }
-}
-
-
-/* SOMOS AGENDA · CALENDAR V0.1 */
-.calendar-toolbar{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin:18px 0}
-.calendar-toolbar button{min-width:auto}
-.calendar-title{text-align:center;font-size:20px;font-weight:800;color:#182033}
-.calendar-filters{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:18px}
-.calendar-filters select{width:100%;box-sizing:border-box;min-height:52px;padding:0 46px 0 16px;border:1px solid #d8dde7;border-radius:18px;background:#fff;color:#182033;font:inherit;font-weight:600;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.calendar-weekday{text-align:center;font-size:12px;font-weight:800;color:#6b7280;padding:8px 0;text-transform:uppercase}
-.calendar-day{min-height:62px;border:1px solid #e5e9f0;border-radius:12px;background:#fff;padding:7px;cursor:pointer;text-align:left;overflow:hidden}
-.calendar-day.muted{background:#f7f8fa;color:#9aa1ad}
-.calendar-day.today{border:2px solid #1761d8}
-.calendar-day.selected{box-shadow:0 0 0 3px rgba(23,97,216,.12)}
-.calendar-day-number{font-weight:800;color:#182033;font-size:14px}
-.calendar-day.muted .calendar-day-number{color:#9aa1ad}
-.calendar-event-dot{display:block;margin-top:8px;height:5px;border-radius:99px;background:#1761d8}
-.calendar-event-count{font-size:11px;color:#1761d8;font-weight:800;margin-top:5px}
-.calendar-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
-.calendar-kpi{background:#f7f9fd;border:1px solid #e6eaf1;border-radius:16px;padding:14px;text-align:center}
-.calendar-kpi strong{display:block;font-size:22px;color:#182033}
-.calendar-kpi span{font-size:12px;color:#6b7280}
-.calendar-day-detail{margin-top:18px}
-.calendar-day-detail h3{margin:0 0 12px}
-.calendar-event{padding:14px 0;border-top:1px solid #e8ebf0}
-.calendar-event:first-child{border-top:0}
-.calendar-event-time{font-weight:800;color:#1761d8}
-.calendar-event-title{font-weight:800;color:#182033;margin-top:4px}
-.calendar-event-meta{color:#6b7280;margin-top:3px;overflow-wrap:anywhere}
-@media(max-width:640px){
- .calendar-toolbar{grid-template-columns:48px 1fr 48px}
- .calendar-toolbar button{padding:0;min-height:48px}
- .calendar-title{font-size:18px}
- .calendar-day{min-height:58px;padding:6px}
- .calendar-kpis{grid-template-columns:repeat(3,1fr)}
- .calendar-kpi{padding:10px 6px}
- .calendar-kpi strong{font-size:18px}
- .calendar-kpi span{font-size:10px}
-}
-
-
-/* CALENDARIO · AGENDA OPERATIVA V0.1.1 */
-.calendar-day-detail{
-  margin-top:20px;
-  padding:18px;
-  border:1px solid #e3e7ee;
-  border-radius:20px;
-  background:#f8faff;
-}
-.calendar-day-detail h3{
-  margin:0 0 14px;
-  font-size:18px;
-  color:#182033;
-}
-.calendar-day-empty{
-  color:#6b7280;
-  margin:0;
-}
-.calendar-event{
-  padding:14px 0;
-  border-top:1px solid #e2e7ef;
-}
-.calendar-event:first-of-type{border-top:0}
-.calendar-event-time{
-  font-weight:800;
-  color:#1761d8;
-  font-size:16px;
-}
-.calendar-event-title{
-  font-weight:800;
-  color:#182033;
-  margin-top:5px;
-  font-size:16px;
-}
-.calendar-event-meta{
-  color:#6b7280;
-  margin-top:4px;
-  overflow-wrap:anywhere;
-}
-.calendar-event-status{
-  display:inline-block;
-  margin-top:8px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#edf4ff;
-  color:#1761d8;
-  font-weight:800;
-  font-size:12px;
-}
-@media(max-width:640px){
-  .calendar-day-detail{padding:16px}
-}
-
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agenda Ya — UI Framework v1.0</title>
+  <link rel="stylesheet" href="agenda-ya-shell.css">
 </head>
 <body>
-<main class="app-shell">
+  <div class="ay-app" id="ayApp">
+    <header class="ay-header">
+      <button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button>
+      <a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya">
+        <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+      </a>
 
-<section id="authView" class="view">
-  <div class="brand">SOMOS <span>AGENDA</span></div>
-  <p class="eyebrow">SOMOS CORE · IDENTITY V0.1</p>
-  <h1>Tu negocio, organizado.</h1>
-  <p class="lead">Administra tu negocio y prepara tu agenda para recibir reservas.</p>
-  <form id="emailForm" class="card">
-    <label>Email<input id="email" type="email" required></label>
-    <label>Contraseña<input id="password" type="password" minlength="6" required></label>
-    <div class="actions">
-      <button type="submit">Iniciar sesión</button>
-      <button type="button" id="signupBtn" class="secondary">Crear cuenta</button>
-    </div>
-    <button type="button" id="recoveryBtn" class="link">Recuperar contraseña</button>
-  </form>
-  <div class="divider"><span>o continuar con</span></div>
-  <div class="socials">
-    <button id="googleBtn" class="social">Google</button>
-    <button id="facebookBtn" class="social">Facebook</button>
-  </div>
-  <p id="status" class="status"></p>
-</section>
+      <nav class="ay-header-nav" aria-label="Navegación principal">
+        <button class="ay-nav-item is-active" data-view="dashboard">⌂<span>Dashboard</span></button>
+        <button class="ay-nav-item" data-view="services">✂<span>Servicios</span></button>
+        <button class="ay-nav-item" data-view="professionals">♙<span>Profesionales</span></button>
+        <button class="ay-nav-item" data-view="schedules">◷<span>Horarios</span></button>
+        <button class="ay-nav-item" data-view="availability">▣<span>Disponibilidad</span></button>
+        <button class="ay-nav-item" data-view="clients">♧<span>Clientes</span></button>
+        <button class="ay-nav-item" data-view="bookings">▤<span>Reservas</span></button>
+        <button class="ay-nav-item" data-view="calendar">▦<span>Calendario</span></button>
+      </nav>
 
-<section id="onboardingView" class="view hidden">
-  <div class="brand">SOMOS <span>AGENDA</span></div>
-  <p class="eyebrow">ONBOARDING · BUSINESS</p>
-  <h1>Comencemos con tu negocio.</h1>
-  <p class="lead">Esta información crea el primer negocio y te asigna como propietario.</p>
-  <form id="businessForm" class="card">
-    <label>Nombre del negocio<input id="businessName" required maxlength="120" placeholder="Ej. Barbería Central"></label>
-    <label>Identificador público<input id="businessSlug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="80" placeholder="barberia-central"></label>
-    <label>Correo del negocio<input id="businessEmail" type="email"></label>
-    <label>Teléfono<input id="businessPhone" type="tel"></label>
-    <button type="submit">Crear negocio</button>
-    <button type="button" id="logoutOnboarding" class="secondary">Cerrar sesión</button>
-  </form>
-  <p id="onboardingStatus" class="status"></p>
-</section>
+      <div class="ay-header-actions">
+        <button class="ay-icon-btn" title="Notificaciones">♢</button>
+        <button class="ay-account" id="ayAccountBtn">
+          <span class="ay-avatar">PR</span>
+          <span class="ay-account-text"><strong>Mi negocio</strong><small>Cuenta</small></span>
+          <span>⌄</span>
+        </button>
+      </div>
+    </header>
 
-<section id="dashboardView" class="view hidden">
-  <div class="topbar">
-    <div class="brand">SOMOS <span>AGENDA</span></div>
-    <button id="logoutBtn" class="secondary small">Salir</button>
-  </div>
-
-  <div class="hero card">
-    <p class="eyebrow">DASHBOARD · AGENDA</p>
-    <h1 id="welcomeTitle">Bienvenido</h1>
-    <p id="businessSummary" class="lead"></p>
-  </div>
-
-  <div class="grid">
-    <article class="card"><span class="metric-label">Estado</span><strong>Activo</strong><p>Identidad validada.</p></article>
-    <article class="card"><span class="metric-label">Rol</span><strong id="roleValue">—</strong><p>Permisos del negocio.</p></article>
-    <article class="card"><span class="metric-label">Módulo actual</span><strong>Agenda</strong><p>Gestión operativa.</p></article>
-  </div>
-
-  <div class="module-divider"></div>
-
-  <section class="agenda-section" id="servicesSection">
-    <div class="section-head"><div><p class="eyebrow">AGENDA · SERVICIOS V0.1</p><h2>Servicios</h2></div><button id="newServiceBtn">+ Nuevo servicio</button></div>
-    <div id="serviceFormWrap" class="card hidden module-form">
-      <p class="eyebrow" id="serviceFormTitle">NUEVO SERVICIO</p>
-      <form id="serviceForm">
-        <label>Nombre<input id="serviceName" required maxlength="150"></label>
-        <label>Descripción<textarea id="serviceDescription" rows="4" maxlength="2000"></textarea></label>
-        <label>Duración (minutos)<input id="serviceDuration" type="number" min="5" max="1440" value="30" required></label>
-        <label>Precio<input id="servicePrice" type="number" min="0" step="1" value="0" required></label>
-        <label>Estado<select id="serviceActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></label>
-        <div class="actions"><button type="submit">Guardar servicio</button><button type="button" id="cancelServiceBtn" class="secondary">Cancelar</button></div>
-      </form><p id="serviceStatus" class="status"></p>
-    </div>
-    <div id="servicesList" class="module-list"></div>
-  </section>
-
-  <section class="agenda-section" id="professionalsSection">
-    <div class="section-head"><div><p class="eyebrow">AGENDA · PROFESIONALES V0.1</p><h2>Profesionales</h2></div><button id="newProfessionalBtn">+ Nuevo profesional</button></div>
-    <div id="professionalFormWrap" class="card hidden module-form">
-      <p class="eyebrow" id="professionalFormTitle">NUEVO PROFESIONAL</p>
-      <form id="professionalForm">
-        <label>Nombre<input id="professionalFirstName" required maxlength="100"></label>
-        <label>Apellido<input id="professionalLastName" required maxlength="100"></label>
-        <label>Correo<input id="professionalEmail" type="email" maxlength="200"></label>
-        <label>Teléfono<input id="professionalPhone" type="tel" maxlength="50"></label>
-        <label>Descripción<textarea id="professionalBio" rows="4" maxlength="1000"></textarea></label>
-        <label>Estado<select id="professionalActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></label>
-        <div class="actions"><button type="submit">Guardar profesional</button><button type="button" id="cancelProfessionalBtn" class="secondary">Cancelar</button></div>
-      </form><p id="professionalStatus" class="status"></p>
-    </div>
-    <div id="professionalsList" class="module-list"></div>
-  </section>
-
-  <section class="agenda-section" id="schedulesSection">
-    <div class="section-head"><div><p class="eyebrow">AGENDA · HORARIOS V0.1</p><h2>Horarios</h2></div><button id="newScheduleBtn">+ Nuevo horario</button></div>
-    <div id="scheduleFormWrap" class="card hidden module-form">
-      <p class="eyebrow" id="scheduleFormTitle">NUEVO HORARIO</p>
-      <form id="scheduleForm">
-        <label>Profesional<select id="scheduleProfessional" required></select></label>
-        <label>Día<select id="scheduleDay" required>
-          <option value="1">Lunes</option><option value="2">Martes</option><option value="3">Miércoles</option><option value="4">Jueves</option><option value="5">Viernes</option><option value="6">Sábado</option><option value="7">Domingo</option>
-        </select></label>
-        <label>Hora de inicio<input id="scheduleStart" type="time" value="09:00" required></label>
-        <label>Hora de término<input id="scheduleEnd" type="time" value="18:00" required></label>
-        <label>Estado<select id="scheduleActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></label>
-        <div class="actions"><button type="submit">Guardar horario</button><button type="button" id="cancelScheduleBtn" class="secondary">Cancelar</button></div>
-      </form><p id="scheduleStatus" class="status"></p>
-    </div>
-    <div id="schedulesList" class="module-list"></div>
-  </section>
-
-  <section class="agenda-section" id="availabilitySection">
-    <div class="section-head"><div><p class="eyebrow">AGENDA · DISPONIBILIDAD V0.1</p><h2>Disponibilidad</h2></div><button id="newAvailabilityBtn">+ Nueva disponibilidad</button></div>
-    <div id="availabilityFormWrap" class="card hidden module-form">
-      <p class="eyebrow" id="availabilityFormTitle">NUEVA DISPONIBILIDAD</p>
-      <form id="availabilityForm">
-        <label>Profesional<select id="availabilityProfessional" required></select></label>
-        <label>Fecha<input id="availabilityDate" type="date" required></label>
-        <label>Hora de inicio<input id="availabilityStart" type="time" value="09:00" required></label>
-        <label>Hora de término<input id="availabilityEnd" type="time" value="18:00" required></label>
-        <label>Tipo<select id="availabilityStatus"><option value="available">Disponible</option><option value="blocked">Bloqueado</option></select></label>
-        <label>Activo<select id="availabilityActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></label>
-        <label>Nota<textarea id="availabilityNote" rows="3" maxlength="500"></textarea></label>
-        <div class="actions"><button type="submit">Guardar disponibilidad</button><button type="button" id="cancelAvailabilityBtn" class="secondary">Cancelar</button></div>
-      </form><p id="availabilityFormStatus" class="status"></p>
-    </div>
-    <div id="availabilityList" class="module-list"></div>
-  </section>
-
-  <section class="agenda-section" id="clientsSection">
-    <div class="section-head"><div><p class="eyebrow">AGENDA · CLIENTES V0.1</p><h2>Clientes</h2></div><button id="newClientBtn">+ Nuevo cliente</button></div>
-    <div id="clientFormWrap" class="card hidden module-form">
-      <p class="eyebrow" id="clientFormTitle">NUEVO CLIENTE</p>
-      <form id="clientForm">
-        <label>Nombre<input id="clientFirstName" required maxlength="100"></label>
-        <label>Apellido<input id="clientLastName" required maxlength="100"></label>
-        <label>Correo<input id="clientEmail" type="email" maxlength="200"></label>
-        <label>Teléfono<input id="clientPhone" type="tel" maxlength="50"></label>
-        <label>Notas<textarea id="clientNotes" rows="4" maxlength="1000"></textarea></label>
-        <label>Estado<select id="clientActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></label>
-        <div class="actions"><button type="submit">Guardar cliente</button><button type="button" id="cancelClientBtn" class="secondary">Cancelar</button></div>
-      </form><p id="clientFormStatus" class="status"></p>
-    </div>
-    <div id="clientsList" class="module-list"></div>
-  </section>
-  <section class="agenda-section" id="bookingsSection">
-    <div class="section-head">
-      <div><p class="eyebrow">AGENDA · RESERVAS V0.1</p><h2>Reservas</h2></div>
-      <button id="newBookingBtn">+ Nueva reserva</button>
-    </div>
-
-    <div id="bookingFormWrap" class="card hidden module-form">
-      <p class="eyebrow" id="bookingFormTitle">NUEVA RESERVA</p>
-      <form id="bookingForm">
-        <label>Cliente<select id="bookingClient" required></select></label>
-        <label>Servicio<select id="bookingService" required></select></label>
-        <label>Profesional<select id="bookingProfessional" required></select></label>
-        <label>Fecha<input id="bookingDate" type="date" required></label>
-        <label>Hora de inicio<input id="bookingStart" type="time" value="09:00" required></label>
-        <label>Hora de término<input id="bookingEnd" type="time" value="09:30" required></label>
-        <label>Estado<select id="bookingStatus">
-          <option value="pending">Pendiente</option>
-          <option value="confirmed">Confirmada</option>
-          <option value="cancelled">Cancelada</option>
-          <option value="completed">Completada</option>
-          <option value="no_show">No asistió</option>
-        </select></label>
-        <label>Notas<textarea id="bookingNotes" rows="3" maxlength="1000"></textarea></label>
-        <div class="actions">
-          <button type="submit">Guardar reserva</button>
-          <button type="button" id="cancelBookingBtn" class="secondary">Cancelar</button>
+    <div class="ay-layout">
+      <aside class="ay-sidebar" id="aySidebar">
+        <div class="ay-sidebar-group">
+          <div class="ay-sidebar-label">GESTIÓN</div>
+          <button class="ay-side-item is-active" data-view="dashboard">⌂ <span>Dashboard</span></button>
+          <button class="ay-side-item" data-view="services">✂ <span>Servicios</span></button>
+          <button class="ay-side-item" data-view="professionals">♙ <span>Profesionales</span></button>
+          <button class="ay-side-item" data-view="schedules">◷ <span>Horarios</span></button>
+          <button class="ay-side-item" data-view="availability">▣ <span>Disponibilidad</span></button>
+          <button class="ay-side-item" data-view="clients">♧ <span>Clientes</span></button>
+          <button class="ay-side-item" data-view="bookings">▤ <span>Reservas</span></button>
+          <button class="ay-side-item" data-view="calendar">▦ <span>Calendario</span></button>
         </div>
-      </form>
-      <p id="bookingFormStatus" class="status"></p>
+
+        <div class="ay-sidebar-group ay-sidebar-bottom">
+          <button class="ay-side-item" data-view="public-profile">⌂ <span>Perfil público</span></button>
+          <button class="ay-side-item" data-view="settings">⚙ <span>Configuración</span></button>
+          <div class="ay-brand-card">
+            <strong>SOMOS SOFTWARE</strong>
+            <small>software-temuco</small>
+          </div>
+        </div>
+      </aside>
+
+      <main class="ay-main" id="ayMain">
+        <div class="ay-page" id="view-dashboard">
+          <section class="ay-hero">
+            <div>
+              <span class="ay-eyebrow">AGENDA YA · CENTRO DE GESTIÓN</span>
+              <h1>Hola, Patricio</h1>
+              <p>Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
+              <div class="ay-actions">
+                <button class="ay-btn ay-btn-primary" data-view="bookings">＋ Nueva reserva</button>
+                <button class="ay-btn ay-btn-light" data-view="calendar">▦ Ver calendario</button>
+              </div>
+            </div>
+            <div class="ay-hero-visual">AGENDA<br><span>Tu negocio, organizado.</span></div>
+          </section>
+
+          <section class="ay-kpi-grid">
+            <article class="ay-kpi"><span>▦</span><div><small>Reservas hoy</small><strong>5</strong><em>↗ +25%</em></div></article>
+            <article class="ay-kpi"><span>♧</span><div><small>Clientes</small><strong>32</strong><em>↗ +10%</em></div></article>
+            <article class="ay-kpi"><span>✂</span><div><small>Servicios</small><strong>12</strong><em>Activos</em></div></article>
+            <article class="ay-kpi"><span>♙</span><div><small>Profesionales</small><strong>4</strong><em>Activos</em></div></article>
+          </section>
+
+          <section class="ay-grid-2">
+            <article class="ay-card">
+              <div class="ay-card-head"><h2>Próximas reservas</h2><button class="ay-link" data-view="bookings">Ver todas →</button></div>
+              <div class="ay-list">
+                <div class="ay-list-row"><b>09:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Juan Pérez · con Matías</small></div><mark>Confirmada</mark></div>
+                <div class="ay-list-row"><b>11:00</b><span class="ay-dot"></span><div><strong>Barba express</strong><small>Carlos Rojas · con Matías</small></div><mark>Confirmada</mark></div>
+                <div class="ay-list-row is-pending"><b>14:00</b><span class="ay-dot"></span><div><strong>Corte + Barba</strong><small>Pedro Díaz · con Alex</small></div><mark>Pendiente</mark></div>
+                <div class="ay-list-row"><b>16:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Ana Torres · con Valentina</small></div><mark>Confirmada</mark></div>
+              </div>
+            </article>
+            <article class="ay-card">
+              <div class="ay-card-head"><h2>Calendario de hoy</h2><span class="ay-muted">Sáb 4 oct 2026</span></div>
+              <div class="ay-timeline">
+                <div><b>09:30</b><span>Corte de cabello</span></div>
+                <div><b>11:00</b><span>Barba express</span></div>
+                <div class="pending"><b>14:00</b><span>Corte + Barba</span></div>
+                <div><b>16:30</b><span>Corte de cabello</span></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="ay-quick-grid">
+            <button class="ay-quick" data-view="services"><span>✂</span><b>Gestiona tus servicios</b><small>Ir a Servicios →</small></button>
+            <button class="ay-quick" data-view="professionals"><span>♧</span><b>Administra profesionales</b><small>Ir a Profesionales →</small></button>
+            <button class="ay-quick" data-view="schedules"><span>◷</span><b>Configura horarios</b><small>Ir a Horarios →</small></button>
+            <button class="ay-quick" data-view="availability"><span>▣</span><b>Revisa disponibilidad</b><small>Ir a Disponibilidad →</small></button>
+          </section>
+        </div>
+
+        <div class="ay-page" id="view-generic" hidden>
+          <div class="ay-page-head">
+            <div><span class="ay-eyebrow" id="ayViewEyebrow">MÓDULO</span><h1 id="ayViewTitle">Vista</h1><p id="ayViewDescription">Espacio de trabajo del módulo.</p></div>
+            <div class="ay-actions"><button class="ay-btn ay-btn-primary">＋ Nueva acción</button></div>
+          </div>
+          <section class="ay-placeholder">
+            <div class="ay-placeholder-icon">▦</div>
+            <h2 id="ayPlaceholderTitle">Motor lógico pendiente de integración</h2>
+            <p>Esta vista ya tiene la estructura visual y los puntos de integración preparados. En la siguiente iteración se conecta con el motor funcional del módulo sin rehacer la interfaz.</p>
+            <div class="ay-placeholder-grid">
+              <div><strong>UI</strong><span>Lista · filtros · acciones</span></div>
+              <div><strong>Datos</strong><span>Supabase / estado</span></div>
+              <div><strong>Reglas</strong><span>Validaciones · permisos</span></div>
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
 
-    <div id="bookingsList" class="module-list"></div>
-  </section>
+    <nav class="ay-mobile-rail" aria-label="Navegación móvil">
+      <button data-view="dashboard">⌂<small>Inicio</small></button>
+      <button data-view="services">✂<small>Servicios</small></button>
+      <button data-view="bookings">▤<small>Reservas</small></button>
+      <button data-view="calendar">▦<small>Calendario</small></button>
+      <button data-view="settings">•••<small>Más</small></button>
+    </nav>
+  </div>
 
-  <section class="agenda-section" id="calendarSection">
-    <div class="section-head">
-      <div><p class="eyebrow">AGENDA · CALENDARIO V0.1</p><h2>Calendario</h2></div>
-    </div>
-    <div class="card module-form">
-      <div class="calendar-toolbar">
-        <button type="button" class="secondary" id="calendarPrev">‹</button>
-        <div class="calendar-title" id="calendarMonthTitle">—</div>
-        <button type="button" class="secondary" id="calendarNext">›</button>
-      </div>
-      <div class="calendar-filters">
-        <select id="calendarProfessionalFilter">
-          <option value="all">Todos los profesionales</option>
-        </select>
-      </div>
-      <button type="button" class="secondary" id="calendarToday">Hoy</button>
-      <div class="calendar-kpis">
-        <div class="calendar-kpi"><strong id="calendarMonthCount">0</strong><span>Reservas mes</span></div>
-        <div class="calendar-kpi"><strong id="calendarConfirmedCount">0</strong><span>Confirmadas</span></div>
-        <div class="calendar-kpi"><strong id="calendarPendingCount">0</strong><span>Pendientes</span></div>
-      </div>
-      <div class="calendar-grid" id="calendarGrid"></div>
-      <div class="calendar-day-detail" id="calendarDayDetail"></div>
-    </div>
-  </section>
-
-</section>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="app.js"></script>
+  <script src="agenda-ya-shell.js"></script>
 </body>
 </html>
