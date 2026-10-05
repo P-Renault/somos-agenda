@@ -9,48 +9,50 @@
 </head>
 <body>
 
-  <section class="ay-identity" id="ayIdentity" aria-label="Acceso a Agenda Ya">
-    <div class="ay-identity-panel">
-      <div class="ay-identity-logo">
-        <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+  <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
+    <div class="ay-auth-wrap">
+      <div class="ay-auth-brand">
+        <img src="agenda-ya-logo-header.jpg" alt="Agenda Ya">
       </div>
-
-      <div class="ay-identity-card">
-        <span class="ay-eyebrow">AGENDA YA · ACCESO</span>
-        <h1 id="identityTitle">Bienvenido a Agenda Ya</h1>
-        <p id="identityLead">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
-
-        <form id="identityForm" novalidate>
-          <label>Email
-            <input id="identityEmail" type="email" autocomplete="email" required>
-          </label>
-          <label>Contraseña
-            <input id="identityPassword" type="password" minlength="6" autocomplete="current-password" required>
-          </label>
-          <label id="identityConfirmWrap" hidden>Confirmar contraseña
-            <input id="identityConfirm" type="password" minlength="6" autocomplete="new-password">
-          </label>
-          <button id="identitySubmit" class="identity-primary" type="submit">Iniciar sesión</button>
-        </form>
-
-        <button id="identityRecovery" class="identity-link" type="button">Recuperar contraseña</button>
-
-        <div class="identity-divider"><span>o continuar con</span></div>
-
-        <div class="identity-socials">
-          <button id="identityGoogle" class="identity-social" type="button">
-            <span class="identity-provider google">G</span> Continuar con Google
-          </button>
-          <button id="identityFacebook" class="identity-social" type="button">
-            <span class="identity-provider facebook">f</span> Continuar con Facebook
-          </button>
+      <div class="ay-auth-card">
+        <div id="ayAuthFormPanel" class="ay-auth-state is-visible">
+          <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
+          <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a Agenda Ya</h1>
+          <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
+          <form class="ay-auth-form" id="ayAuthForm" novalidate>
+            <label class="ay-auth-label">Email
+              <input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" required>
+            </label>
+            <label class="ay-auth-label">Contraseña
+              <input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" required>
+            </label>
+            <label class="ay-auth-label" id="ayPasswordConfirmWrap" hidden>Confirmar contraseña
+              <input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6">
+            </label>
+            <button class="ay-auth-primary" id="ayAuthSubmit" type="submit">Iniciar sesión</button>
+          </form>
+          <p class="ay-auth-status" id="ayAuthStatus" aria-live="polite"></p>
+          <button class="ay-auth-link" id="ayRecoveryBtn" type="button">Recuperar contraseña</button>
+          <div class="ay-auth-divider"><span>o continuar con</span></div>
+          <div class="ay-auth-socials">
+            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button"><span>G</span> Continuar con Google</button>
+            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button"><span>f</span> Continuar con Facebook</button>
+          </div>
+          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
+          <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
         </div>
 
-        <button id="identityMode" class="identity-mode" type="button">
-          ¿No tienes una cuenta? <strong>Crear cuenta</strong>
-        </button>
-
-        <p id="identityStatus" class="identity-status" aria-live="polite"></p>
+        <div id="ayAuthPostLogin" class="ay-auth-state">
+          <p class="ay-auth-eyebrow">IDENTITY · VALIDADO</p>
+          <h1 class="ay-auth-title">Correo confirmado</h1>
+          <p class="ay-auth-subtitle">Tu identidad fue verificada y la sesión de Agenda Ya está activa.</p>
+          <div class="ay-auth-account">
+            <strong id="ayAuthAccountName">Cuenta Agenda Ya</strong>
+            <span id="ayAuthAccountEmail"></span>
+          </div>
+          <p class="ay-auth-status is-success" id="ayAuthPostStatus">Identity está listo. El siguiente motor será Perfil.</p>
+          <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button">Continuar</button>
+        </div>
       </div>
     </div>
   </section>

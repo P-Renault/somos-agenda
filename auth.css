@@ -1,95 +1,79 @@
+/* Agenda Ya · Identity v0.1.2 · Mobile single-view refinement */
+.ay-auth{min-height:100vh;min-height:100svh;background:linear-gradient(180deg,#f4f8ff 0%,#eef4fd 100%);display:flex;align-items:center;justify-content:center;padding:18px;color:#10204a;box-sizing:border-box}
+.ay-auth-wrap{width:min(100%,460px)}
+.ay-auth-brand{display:flex;justify-content:center;margin-bottom:12px;background:#fff;border:1px solid #e2eaf5;border-radius:16px;padding:8px 14px;box-shadow:0 8px 24px rgba(21,54,110,.06)}
+.ay-auth-brand img{display:block;width:190px;height:50px;object-fit:contain;mix-blend-mode:normal}
+.ay-auth-card{background:#fff;border:1px solid #e2eaf5;border-radius:18px;padding:20px 20px 17px;box-shadow:0 18px 55px rgba(21,54,110,.10)}
+.ay-auth-eyebrow{margin:0 0 6px;color:#0969f6;font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.ay-auth-title{margin:0;font-size:27px;line-height:1.06;letter-spacing:-.035em}
+.ay-auth-subtitle{margin:7px 0 14px;color:#64748b;line-height:1.35;font-size:13px}
+.ay-auth-form{display:flex;flex-direction:column;gap:9px}
+.ay-auth-label{font-size:12px;font-weight:800;color:#10204a}
+.ay-auth-input{display:block;box-sizing:border-box;width:100%;margin-top:5px;padding:10px 12px;min-height:42px;border:1px solid #d7e1ef;border-radius:11px;background:#fff;color:#10204a;font:inherit;font-size:14px;outline:none;transition:.16s}
+.ay-auth-input:focus{border-color:#0969f6;box-shadow:0 0 0 3px rgba(9,105,246,.12)}
+.ay-auth-primary,.ay-auth-secondary,.ay-auth-link{width:100%;border-radius:11px;padding:10px 14px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;box-sizing:border-box}
+.ay-auth-primary{border:1px solid #0969f6;background:#0969f6;color:#fff;box-shadow:0 7px 18px rgba(9,105,246,.18);min-height:43px}
+.ay-auth-primary:disabled,.ay-auth-secondary:disabled,.ay-auth-link:disabled{opacity:.6;cursor:wait}
+.ay-auth-secondary{border:1px solid #dbe5f2;background:#fff;color:#10204a;margin-top:6px;min-height:40px}
+.ay-auth-socials{display:flex;flex-direction:column}
+.ay-auth-socials span{display:inline-block;min-width:18px;margin-right:7px;color:#0969f6;font-weight:900}
+.ay-auth-link{border:0;background:transparent;color:#0969f6;padding:6px;font-weight:750}
+.ay-auth-divider{display:flex;align-items:center;gap:10px;margin:10px 0 1px;color:#8795ab;font-size:10px}
+.ay-auth-divider::before,.ay-auth-divider::after{content:"";height:1px;background:#e2e9f3;flex:1}
+.ay-auth-status{min-height:16px;margin:7px 0 0;color:#64748b;font-size:11px;line-height:1.35;overflow-wrap:anywhere}
+.ay-auth-status:empty{min-height:0;margin:0}
+.ay-auth-status.is-error{color:#b42318}.ay-auth-status.is-success{color:#157347}
+.ay-auth-foot{text-align:center;margin:8px 0 0;color:#7b8aa2;font-size:9px}
+.ay-auth-switch{margin-top:9px;text-align:center;color:#64748b;font-size:11px}
+.ay-auth-switch button{border:0;background:none;color:#0969f6;font:inherit;font-weight:800;cursor:pointer;padding:0}
+.ay-auth-state{display:none}.ay-auth-state.is-visible{display:block}
+.ay-auth-account{background:#f7faff;border:1px solid #e1eaf6;border-radius:12px;padding:13px;margin-top:15px}.ay-auth-account strong,.ay-auth-account span{display:block}.ay-auth-account span{color:#64748b;font-size:12px;margin-top:4px;overflow-wrap:anywhere}
 
-/* Agenda Ya Identity v0.1 — integrado al framework visual actual */
-.ay-identity{
-  --identity-blue:var(--ay-blue,#0969f6);
-  --identity-ink:var(--ay-ink,#10204a);
-  --identity-muted:var(--ay-muted,#64748b);
-  min-height:100vh;
-  background:var(--ay-bg,#f4f8ff);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:28px 18px;
-  color:var(--identity-ink);
+@media(max-width:520px){
+ .ay-auth{padding:10px 12px}
+ .ay-auth-wrap{width:min(100%,390px)}
+ .ay-auth-brand{margin-bottom:8px;padding:5px 10px;border-radius:15px}
+ .ay-auth-brand img{width:170px;height:43px}
+ .ay-auth-card{padding:16px 14px 13px;border-radius:17px}
+ .ay-auth-title{font-size:23px}
+ .ay-auth-subtitle{font-size:12px;margin:6px 0 10px}
+ .ay-auth-form{gap:7px}
+ .ay-auth-input{min-height:39px;padding:8px 11px;font-size:13px}
+ .ay-auth-primary{min-height:41px;padding:9px 12px}
+ .ay-auth-secondary{min-height:38px;padding:8px 12px;margin-top:5px}
+ .ay-auth-divider{margin:8px 0 0}
+ .ay-auth-switch{margin-top:7px}
 }
-.ay-identity-panel{width:min(100%,460px)}
-.ay-identity-logo{
-  display:flex;
-  justify-content:center;
-  margin-bottom:18px;
-  background:#fff;
-  border:1px solid var(--ay-border,#e2eaf5);
-  border-radius:16px;
-  padding:6px 14px;
+
+@media(max-width:520px) and (max-height:760px){
+ .ay-auth{padding:6px 10px}
+ .ay-auth-brand{margin-bottom:5px;padding:3px 8px}
+ .ay-auth-brand img{width:145px;height:36px}
+ .ay-auth-card{padding:12px 13px 9px;border-radius:16px}
+ .ay-auth-eyebrow{font-size:9px;margin-bottom:4px}
+ .ay-auth-title{font-size:21px}
+ .ay-auth-subtitle{font-size:11px;line-height:1.25;margin:5px 0 8px}
+ .ay-auth-form{gap:5px}
+ .ay-auth-label{font-size:11px}
+ .ay-auth-input{min-height:35px;margin-top:3px;padding:7px 10px;font-size:12px;border-radius:9px}
+ .ay-auth-primary{min-height:38px;padding:7px 10px;border-radius:9px}
+ .ay-auth-status{font-size:10px;line-height:1.25;margin-top:4px}
+ .ay-auth-link{padding:4px;font-size:12px}
+ .ay-auth-divider{margin:5px 0 0;font-size:9px;gap:7px}
+ .ay-auth-secondary{min-height:34px;margin-top:4px;padding:6px 10px;font-size:12px;border-radius:9px}
+ .ay-auth-switch{margin-top:5px;font-size:10px}
+ .ay-auth-foot{display:none}
 }
-.ay-identity-logo img{
-  display:block;
-  width:205px;
-  height:72px;
-  object-fit:contain;
-  background:#fff;
-}
-.ay-identity-card{
-  background:#fff;
-  border:1px solid var(--ay-border,#e2eaf5);
-  border-radius:18px;
-  padding:28px;
-  box-shadow:var(--ay-shadow,0 18px 55px rgba(21,54,110,.10));
-}
-.ay-identity-card .ay-eyebrow{display:block;margin-bottom:8px}
-.ay-identity-card h1{margin:0;font-size:31px;line-height:1.1;letter-spacing:-.035em}
-.ay-identity-card>p:not(.identity-status){
-  margin:10px 0 23px;color:var(--identity-muted);line-height:1.5;font-size:15px
-}
-#identityForm{display:flex;flex-direction:column;gap:15px}
-#identityForm label{font-size:13px;font-weight:800}
-#identityForm input{
-  display:block;width:100%;margin-top:7px;padding:13px 14px;
-  border:1px solid #d7e1ef;border-radius:11px;background:#fff;
-  color:var(--identity-ink);font:inherit;font-size:16px;outline:none;
-}
-#identityForm input:focus{
-  border-color:var(--identity-blue);
-  box-shadow:0 0 0 3px rgba(9,105,246,.12)
-}
-.identity-primary,.identity-social{
-  width:100%;min-height:50px;border-radius:11px;font:inherit;font-weight:800;cursor:pointer
-}
-.identity-primary{
-  border:1px solid var(--identity-blue);
-  background:var(--identity-blue);color:#fff;
-  box-shadow:0 7px 18px rgba(9,105,246,.16)
-}
-.identity-primary:disabled,.identity-social:disabled{opacity:.6;cursor:wait}
-.identity-link,.identity-mode{
-  width:100%;border:0;background:transparent;cursor:pointer;font:inherit
-}
-.identity-link{padding:13px 0 5px;color:var(--identity-blue);font-weight:750}
-.identity-divider{
-  display:flex;align-items:center;gap:10px;margin:13px 0;
-  color:#8a95a8;font-size:11px
-}
-.identity-divider:before,.identity-divider:after{content:"";height:1px;background:#e1e7f0;flex:1}
-.identity-socials{display:grid;gap:9px}
-.identity-social{
-  border:1px solid #dce4ef;background:#fff;color:var(--identity-ink)
-}
-.identity-provider{
-  display:inline-grid;place-items:center;width:26px;height:26px;margin-right:7px;
-  border-radius:7px;font-weight:900
-}
-.identity-provider.google{color:#4285f4}
-.identity-provider.facebook{color:#1877f2}
-.identity-mode{padding:15px 0 0;color:var(--identity-muted);font-size:13px}
-.identity-mode strong{color:var(--identity-blue)}
-.identity-status{min-height:20px;margin:15px 0 0;color:var(--identity-muted);font-size:12px;line-height:1.4}
-.identity-status.is-error{color:#b42318}
-.identity-status.is-success{color:#147a3e}
-@media(max-width:600px){
-  .ay-identity{padding:18px 14px;align-items:flex-start}
-  .ay-identity-panel{padding-top:18px}
-  .ay-identity-logo{margin-bottom:14px}
-  .ay-identity-logo img{width:185px;height:64px}
-  .ay-identity-card{padding:23px 20px;border-radius:16px}
-  .ay-identity-card h1{font-size:28px}
+
+@media(max-width:520px) and (max-height:650px){
+ .ay-auth{padding:4px 8px}
+ .ay-auth-brand img{width:125px;height:30px}
+ .ay-auth-card{padding:9px 11px 7px}
+ .ay-auth-title{font-size:19px}
+ .ay-auth-subtitle{font-size:10px;margin:3px 0 6px}
+ .ay-auth-input{min-height:32px;padding:5px 9px}
+ .ay-auth-primary{min-height:35px}
+ .ay-auth-status{font-size:9px}
+ .ay-auth-secondary{min-height:31px}
+ .ay-auth-switch{font-size:9px}
 }
