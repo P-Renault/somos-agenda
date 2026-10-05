@@ -32,3 +32,10 @@ Flujo:
 
 ## Integración
 Ejecutar primero `005_identity_profiles_v0_2.sql` en Supabase. Luego reemplazar solamente los archivos incluidos en este paquete dentro de `Backup-1.0`.
+
+
+## v0.2.1 — Fix motor de acceso
+- Se evita ejecutar consultas de base de datos dentro del lock de `onAuthStateChange`.
+- `signInWithPassword()` tiene timeout y siempre libera el botón.
+- La sesión autenticada se enruta directamente a Perfil o Agenda Ya.
+- Se mantiene el framework visual de Backup-1.0.
