@@ -23,3 +23,6 @@ No sustituir otros módulos del proyecto.
 
 ## Mobile full-viewport adjustment
 This revision uses the actual mobile viewport width (100%) and aligns the login from the top of the available viewport, eliminating the large vertical dead space visible on mobile. Short-height media queries reduce spacing rather than shrinking the whole interface. The login remains the Backup-1.0 visual framework.
+
+
+Mobile layout v0.1.2-fullscreen: the Identity surface uses the full available mobile width and viewport height; compact rules reduce spacing on short devices without shrinking the entire interface.
