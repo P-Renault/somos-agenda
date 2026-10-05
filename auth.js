@@ -87,12 +87,13 @@
   async function routeSession(user) {
     const membership = await client.from("business_members").select("business_id,role,active").eq("user_id", user.id).eq("active", true).limit(1);
     if (membership.error) {
-      // Identity itself is valid; a missing/blocked membership query must not invalidate the auth session.
-      showPostLogin(user, "Correo confirmado y sesión activa. Perfil de negocio será el siguiente motor.");
+      // Identity is valid. For this integration build, do not trap an authenticated
+      // user on the confirmation screen when membership/profile is not created yet.
+      showPostLogin(user, "Correo confirmado y sesión activa. Puedes continuar a Agenda Ya.");
       return;
     }
     if (membership.data?.length) { showApp(user); return; }
-    showPostLogin(user);
+    showPostLogin(user, "Correo confirmado y sesión activa. Puedes continuar a Agenda Ya.");
   }
   async function submitAuth(event) {
     event.preventDefault();
@@ -146,7 +147,28 @@
     recovery.addEventListener("click", recoveryFlow);
     google.addEventListener("click", () => oauth("google"));
     facebook.addEventListener("click", () => oauth("facebook"));
-    continueSetup.addEventListener("click", () => setStatus("Identity validado. Perfil de negocio será la siguiente integración.", "success"));
+    continueSetup.addEventListener("click", async () => {
+      if (!client) return setStatus("Supabase no está disponible.", "error");
+      continueSetup.disabled = true;
+      try {
+        const sessionResult = await client.auth.getSession();
+        if (sessionResult.error) throw sessionResult.error;
+        const user = sessionResult.data.session?.user;
+        if (!user) {
+          showAuth();
+          setMode("login");
+          setStatus("La sesión no está disponible. Inicia sesión nuevamente.", "error");
+          return;
+        }
+        // Identity is complete: enter the existing Agenda Ya application shell.
+        // Profile/Business onboarding is the next motor and must not block access here.
+        showApp(user);
+      } catch (err) {
+        setStatus(err?.message || "No fue posible abrir Agenda Ya.", "error");
+      } finally {
+        continueSetup.disabled = false;
+      }
+    });
     // Handle callback errors without losing the useful error message.
     if (handleUrlError()) return;
     client.auth.onAuthStateChange((event, session) => {
