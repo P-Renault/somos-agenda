@@ -15,9 +15,11 @@
     <div class="ay-auth-bg-shape ay-auth-bg-shape-c" aria-hidden="true"></div>
     <div class="ay-auth-wrap">
       <div class="ay-auth-topbar">
-        <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver a Agenda YA" onclick="if(history.length>1){history.back()}else{location.href='landing.html'}">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20.5 6.5 11 16l9.5 9.5M12 16h17"/></svg>
-        </button>
+        <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver a Agenda YA"
+      onclick="if(history.length>1){history.back()}else{location.href='landing.html'}">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20.5 6.5 11 16l9.5 9.5M12 16h17"/></svg>
+      <span>Volver a Agenda YA</span>
+    </button>
         <div class="ay-auth-brand" aria-label="Agenda Ya">
           <img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya">
         </div>
@@ -39,12 +41,16 @@
           <button class="ay-auth-link" id="ayRecoveryBtn" type="button">Recuperar contraseña</button>
           <div class="ay-auth-divider"><span>o continuar con</span></div>
           <div class="ay-auth-socials">
-            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button"><span class="ay-social-icon ay-google-icon" aria-hidden="true">
-      <svg viewBox="0 0 48 48" role="img" aria-label="Google"><path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.23 3.6l6.84-6.84C35.91 2.54 30.47 0 24 0 14.61 0 6.54 5.38 2.56 13.22l7.98 6.2C12.48 13.5 17.72 9.5 24 9.5Z"/><path fill="#4285F4" d="M46.5 24.5c0-1.64-.15-3.22-.44-4.74H24v9h12.62c-.54 2.91-2.19 5.38-4.67 7.04l7.55 5.86C43.9 37.49 46.5 31.5 46.5 24.5Z"/><path fill="#FBBC05" d="M10.54 28.58A14.5 14.5 0 0 1 9.5 24c0-1.59.36-3.12 1.04-4.58l-7.98-6.2A23.93 23.93 0 0 0 0 24c0 3.86.92 7.52 2.56 10.78l7.98-6.2Z"/><path fill="#34A853" d="M24 48c6.47 0 11.91-2.13 15.88-5.79l-7.55-5.86c-2.05 1.38-4.67 2.2-8.33 2.2-6.28 0-11.52-4-13.46-9.42l-7.98 6.2C6.54 42.62 14.61 48 24 48Z"/></svg>
-    </span><span class="ay-social-text">Continuar con Google</span><b>→</b></button>
-            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button"><span class="ay-social-icon ay-facebook-icon" aria-hidden="true">
-      <svg viewBox="0 0 48 48" role="img" aria-label="Facebook"><circle cx="24" cy="24" r="24" fill="#1877F2"/><path fill="#fff" d="M27.7 38V25.9h4.1l.62-4.72H27.7v-3.01c0-1.37.38-2.3 2.36-2.3h2.52v-4.22c-.44-.06-1.94-.19-3.69-.19-3.65 0-6.15 2.23-6.15 6.32v3.4h-4.13v4.72h4.13V38h4.96Z"/></svg>
-    </span><span class="ay-social-text">Continuar con Facebook</span><b>→</b></button>
+            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button">
+      <span class="ay-social-icon ay-google-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.23 3.6l6.84-6.84C35.91 2.54 30.47 0 24 0 14.61 0 6.54 5.38 2.56 13.22l7.98 6.2C12.48 13.5 17.72 9.5 24 9.5Z"/><path fill="#4285F4" d="M46.5 24.5c0-1.64-.15-3.22-.44-4.74H24v9h12.62c-.54 2.91-2.19 5.38-4.67 7.04l7.55 5.86C43.9 37.49 46.5 31.5 46.5 24.5Z"/><path fill="#FBBC05" d="M10.54 28.58A14.5 14.5 0 0 1 9.5 24c0-1.59.36-3.12 1.04-4.58l-7.98-6.2A23.93 23.93 0 0 0 0 24c0 3.86.92 7.52 2.56 10.78l7.98-6.2Z"/><path fill="#34A853" d="M24 48c6.47 0 11.91-2.13 15.88-5.79l-7.55-5.86c-2.05 1.38-4.67 2.2-8.33 2.2-6.28 0-11.52-4-13.46-9.42l-7.98 6.2C6.54 42.62 14.61 48 24 48Z"/></svg>
+      </span><span class="ay-social-text">Continuar con Google</span><b>→</b>
+    </button>
+            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button">
+      <span class="ay-social-icon ay-facebook-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#1877F2"/><path fill="#fff" d="M27.7 38V25.9h4.1l.62-4.72H27.7v-3.01c0-1.37.38-2.3 2.36-2.3h2.52v-4.22c-.44-.06-1.94-.19-3.69-.19-3.65 0-6.15 2.23-6.15 6.32v3.4h-4.13v4.72h4.13V38h4.96Z"/></svg>
+      </span><span class="ay-social-text">Continuar con Facebook</span><b>→</b>
+    </button>
           </div>
           <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
           <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
