@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070c">
+<title>Somos Software · CRM + Inteligencia Comercial B10.5</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+:root{--crm-bg:#05070c;--crm-panel:#08111b;--crm-line:#172432;--crm-cyan:#18c8f4;--crm-muted:#718095}
+body{margin:0;background:radial-gradient(circle at 80% -10%,#102c43 0,#07121f 25%,#05070c 65%);color:#e8f1f8;font-family:Inter,Arial,sans-serif}
+.crm{width:min(1500px,calc(100% - 30px));margin:auto;padding:18px 0 50px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid var(--crm-line);padding-bottom:18px}
+.brand img{width:165px;height:auto}.brand small{display:block;color:var(--crm-muted);font-size:8px;letter-spacing:.15em;margin-top:7px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.btnx{padding:10px 12px;border:1px solid #1b2a38;border-radius:10px;background:#08111d;color:#cdd9e5;font-size:9px;font-weight:bold;text-decoration:none;cursor:pointer}.btnx.primary{background:#0b769a;color:#fff}
+.session{display:flex;align-items:center;gap:8px;margin-top:10px;color:#718095;font-size:8px}.session b{color:#dbeeff}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:18px 0}.kpi{padding:14px;border:1px solid var(--crm-line);border-radius:15px;background:#08111b}.kpi b{display:block;font-size:22px}.kpi span{display:block;color:var(--crm-muted);font-size:7px;font-weight:bold;letter-spacing:.13em;margin-top:5px}
+.toolbar{display:flex;gap:8px;margin:14px 0}.toolbar input,.toolbar select,.modal input,.modal select,.modal textarea{box-sizing:border-box;background:#07111d;color:#e8f1f8;border:1px solid #1b2937;border-radius:9px;padding:10px;font-size:10px}.toolbar input{flex:1}
+.board{display:grid;grid-template-columns:repeat(9,185px);gap:8px;overflow-x:auto;padding-bottom:5px}.col{min-height:340px;border:1px solid var(--crm-line);border-radius:14px;background:#070e17}.chead{padding:11px;border-bottom:1px solid var(--crm-line);display:flex;justify-content:space-between;font-size:8px;position:sticky;top:0;background:#070e17}.chead span{color:var(--crm-muted)}.cards{padding:7px}.card{padding:10px;margin-bottom:7px;border:1px solid var(--crm-line);border-radius:11px;background:#08111a;cursor:pointer}.card:hover{border-color:#1e9abd}.card strong{display:block;font-size:10px}.card small{display:block;color:var(--crm-muted);font-size:8px;margin-top:4px}.pill{display:inline-block;margin-top:7px;padding:4px 6px;border-radius:999px;background:#0a2530;color:#bdeefa;font-size:7px}
+.mobile-pipeline{display:none}
+.table{margin-top:18px;border:1px solid var(--crm-line);border-radius:14px;overflow:auto}.table table{width:100%;border-collapse:collapse;min-width:800px}.table th,.table td{padding:10px;border-bottom:1px solid var(--crm-line);text-align:left;font-size:8px}.table th{color:var(--crm-muted);letter-spacing:.1em}
+.modal{display:none;position:fixed;inset:0;z-index:50;place-items:center;padding:15px}.modal.open{display:grid}.back{position:absolute;inset:0;background:#01050acc;backdrop-filter:blur(10px)}.panel{position:relative;width:min(720px,100%);max-height:90vh;overflow:auto;padding:24px;border:1px solid #1c7187;border-radius:22px;background:#08111b;box-shadow:0 40px 100px #000}.close{position:absolute;right:15px;top:10px;border:0;background:none;color:#8090a4;font-size:25px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{display:grid;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:7px;color:var(--crm-muted);font-weight:bold;letter-spacing:.12em}.meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.meta div{padding:9px;border:1px solid var(--crm-line);border-radius:9px}.meta span{display:block;color:var(--crm-muted);font-size:7px}.meta b{font-size:9px}.modal-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}
+.login{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:18px;background:rgba(1,5,10,.96);backdrop-filter:blur(18px)}.login.open{display:grid}.login-card{width:min(420px,100%);padding:28px;border:1px solid rgba(24,200,244,.25);border-radius:24px;background:#08111b;box-shadow:0 40px 100px #000}.login-card h1{font-size:24px;margin:12px 0 6px}.login-card p{font-size:11px;color:#8190a4}.login-card form{display:grid;gap:10px;margin-top:20px}.login-card label{font-size:8px;color:#718095;letter-spacing:.12em}.login-card input{background:#07111d;color:#fff;border:1px solid #1b2937;border-radius:10px;padding:12px}.login-error{display:none;padding:9px;border-radius:9px;background:#3a1117;color:#ffb8c0;font-size:9px}.login-error.show{display:block}.mode-note{margin-top:14px;font-size:8px;color:#617187}
+@media(max-width:700px){
+ .crm{width:calc(100% - 20px);padding-top:10px}.top{align-items:flex-start;flex-direction:column}.brand img{width:145px}.actions{width:100%}.actions .btnx{flex:1;text-align:center}
+ .kpis{grid-template-columns:repeat(2,1fr);gap:7px}.kpi{padding:11px}.kpi b{font-size:19px}.kpi:last-child{grid-column:1/-1}
+ .toolbar{display:grid;grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1;min-width:0}.toolbar select{min-width:0;width:100%}
+ .board{display:none}.mobile-pipeline{display:grid;gap:8px}.mobile-state{border:1px solid var(--crm-line);border-radius:15px;background:#070e17;overflow:hidden}.mobile-state-head{display:flex;align-items:center;justify-content:space-between;padding:12px}.mobile-state-head b{font-size:9px}.mobile-state-head span{color:var(--crm-muted);font-size:8px}.mobile-cards{padding:0 8px 8px}.mobile-cards .card{margin-bottom:6px}
+ .table{display:none}.session{width:100%;justify-content:space-between}
+ .panel{padding:20px 16px;border-radius:18px}.grid,.meta{grid-template-columns:1fr}.field.full{grid-column:auto}.modal-actions{position:sticky;bottom:0;padding-top:10px;background:#08111b}
+}
+
+.navtabs{display:flex;gap:7px;margin:16px 0 10px;overflow:auto;padding-bottom:2px}.tabx{white-space:nowrap;padding:10px 13px;border:1px solid var(--crm-line);border-radius:11px;background:#07111d;color:#91a2b5;font-size:8px;font-weight:900;letter-spacing:.08em;cursor:pointer}.tabx.active{background:#0b3341;border-color:#1687a5;color:#dff9ff}.view{display:none}.view.active{display:block}.mobile-module-nav{display:none}.mobile-module-toggle{width:100%;border:1px solid var(--crm-line);border-radius:13px;background:#07111d;color:#dff9ff;padding:12px 13px;display:flex;align-items:center;gap:10px;font-size:9px;font-weight:900;letter-spacing:.08em;cursor:pointer}.mobile-module-toggle .hamb{display:grid;gap:3px}.mobile-module-toggle .hamb i{display:block;width:15px;height:2px;border-radius:2px;background:#18c8f4}.mobile-module-toggle .chev{margin-left:auto;color:#8da0b4;font-size:15px;line-height:1}.mobile-module-menu{display:none;margin-top:6px;border:1px solid var(--crm-line);border-radius:13px;background:#08111b;overflow:hidden;box-shadow:0 18px 50px #0008}.mobile-module-menu.open{display:grid}.mobile-module-menu button{border:0;border-bottom:1px solid var(--crm-line);background:transparent;color:#9fb0c1;text-align:left;padding:12px 13px;font-size:8px;font-weight:900;letter-spacing:.08em}.mobile-module-menu button:last-child{border-bottom:0}.mobile-module-menu button.active{background:#0b3341;color:#dff9ff}.intel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.intel-card{border:1px solid var(--crm-line);border-radius:15px;background:linear-gradient(145deg,#08131f,#071019);padding:14px}.intel-card .ey{font-size:7px;color:var(--crm-muted);font-weight:900;letter-spacing:.13em}.intel-card b{display:block;font-size:22px;margin-top:7px}.intel-card small{display:block;color:#8190a4;font-size:8px;margin-top:4px}.intel-layout{display:grid;grid-template-columns:1.35fr .65fr;gap:10px;margin-top:10px}.intel-panel{border:1px solid var(--crm-line);border-radius:15px;background:#07101a;padding:14px}.intel-panel h3{font-size:11px;margin:0 0 10px}.funnel{display:grid;gap:6px}.funnel-row{display:grid;grid-template-columns:125px 1fr 52px;gap:8px;align-items:center;font-size:8px}.funnel-bar{height:8px;border-radius:99px;background:#0d2733;overflow:hidden}.funnel-bar i{display:block;height:100%;background:#18c8f4;border-radius:99px}.alert-list{display:grid;gap:7px}.alert-item{padding:9px;border:1px solid var(--crm-line);border-radius:10px;background:#091520;font-size:8px}.alert-item b{display:block;font-size:9px;margin-bottom:3px}.alert-item span{color:#8c9bae}.intel-table{width:100%;border-collapse:collapse}.intel-table th,.intel-table td{padding:8px;border-bottom:1px solid var(--crm-line);font-size:8px;text-align:left}.intel-table th{color:var(--crm-muted);letter-spacing:.08em}.score{display:inline-flex;min-width:30px;justify-content:center;padding:4px 6px;border-radius:99px;background:#0a2934;color:#c8f5ff;font-weight:900}.social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}.social-card{border:1px solid var(--crm-line);border-radius:15px;background:#07101a;padding:14px}.social-card h3{font-size:10px;margin:0}.social-card b{display:block;font-size:23px;margin-top:8px}.social-card small{color:#8190a4;font-size:8px}.growth{margin-top:6px;font-size:8px;color:#9ed9e7}.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#546276;margin-right:5px}.status-dot.ok{background:#18c8f4}.social-actions{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.muted-note{color:#718095;font-size:8px;line-height:1.5}.tag{display:inline-block;padding:4px 6px;border-radius:999px;background:#10212c;color:#9ccbd7;font-size:7px;font-weight:800}
+@media(max-width:900px){.intel-grid{grid-template-columns:repeat(2,1fr)}.intel-layout{grid-template-columns:1fr}.social-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.navtabs{display:none}.mobile-module-nav{display:block;margin:12px 0 10px}.navtabs{margin-right:-10px}.intel-grid{grid-template-columns:repeat(2,1fr);gap:7px}.intel-card{padding:11px}.intel-card b{font-size:18px}.funnel-row{grid-template-columns:95px 1fr 45px}.intel-panel{padding:11px}.intel-table{min-width:650px}.social-card b{font-size:20px}}
+
+
+.exec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.exec-card{border:1px solid var(--crm-line);border-radius:15px;background:linear-gradient(145deg,#08131f,#071019);padding:14px}.exec-card .ey{font-size:7px;color:var(--crm-muted);font-weight:900;letter-spacing:.13em}.exec-card b{display:block;font-size:22px;margin-top:7px}.exec-card small{display:block;color:#8190a4;font-size:8px;margin-top:4px}.exec-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.rank-list{display:grid;gap:7px}.rank{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid var(--crm-line);border-radius:10px;background:#091520;font-size:8px}.rank .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#0a2934;color:#c8f5ff;font-weight:900}.rank b{font-size:9px}.rank span{color:#8c9bae}.mini-progress{height:6px;background:#0d2733;border-radius:99px;overflow:hidden;margin-top:5px}.mini-progress i{display:block;height:100%;background:#18c8f4}.attr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.attr-card{border:1px solid var(--crm-line);border-radius:15px;background:#07101a;padding:14px}.attr-card .ey{font-size:7px;color:var(--crm-muted);font-weight:900;letter-spacing:.13em}.attr-card b{display:block;font-size:20px;margin-top:7px}.attr-card small{display:block;color:#8190a4;font-size:8px;margin-top:4px}.insight-strip{display:grid;gap:7px;margin-top:10px}.insight{padding:10px;border:1px solid var(--crm-line);border-radius:10px;background:#091520;font-size:8px}.insight b{display:block;font-size:9px;margin-bottom:3px}.insight span{color:#8c9bae}.sync-table{width:100%;border-collapse:collapse}.sync-table th,.sync-table td{padding:8px;border-bottom:1px solid var(--crm-line);font-size:8px;text-align:left}.sync-table th{color:var(--crm-muted);letter-spacing:.08em}.oktag{color:#9ed9e7}.errtag{color:#ffb8c0}
+@media(max-width:900px){.exec-grid{grid-template-columns:repeat(2,1fr)}.exec-layout{grid-template-columns:1fr}.attr-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.exec-grid{grid-template-columns:repeat(2,1fr);gap:7px}.exec-card{padding:11px}.exec-card b{font-size:18px}.attr-grid{grid-template-columns:repeat(2,1fr);gap:7px}.attr-card{padding:11px}.attr-card b{font-size:18px}}
+
+/* ============================================================
+   B10.5.15 · WhatsApp Premium Messaging UI
+   ============================================================ */
+.wa-panel{overflow:hidden}
+.wa-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;padding-bottom:14px;border-bottom:1px solid var(--crm-line)}
+.wa-eyebrow{font-size:7px;color:var(--crm-cyan);font-weight:900;letter-spacing:.15em;margin-bottom:6px}
+.wa-head h3{margin:0 0 5px;font-size:14px}
+.wa-live{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid rgba(24,200,244,.18);border-radius:999px;background:rgba(24,200,244,.06);font-size:7px;color:#9ed9e7;white-space:nowrap}
+.wa-live i{width:6px;height:6px;border-radius:50%;background:#18c8f4;box-shadow:0 0 10px rgba(24,200,244,.7)}
+.wa-layout{display:grid;grid-template-columns:270px 1fr;min-height:510px;border:1px solid var(--crm-line);border-radius:16px;overflow:hidden;background:rgba(3,9,15,.38);margin-top:12px}
+.wa-sidebar{padding:14px;border-right:1px solid var(--crm-line);background:linear-gradient(180deg,rgba(10,23,35,.72),rgba(5,12,19,.72))}
+.wa-section-title{font-size:7px;color:#718095;font-weight:900;letter-spacing:.15em;margin-bottom:14px}
+.wa-label{display:block;color:#718095;font-size:7px;font-weight:900;letter-spacing:.12em;margin-bottom:6px}
+.wa-phone-wrap{display:flex;align-items:center;border:1px solid #1b2937;border-radius:10px;background:#07111d;overflow:hidden}
+.wa-phone-wrap>span{padding-left:11px;color:#718095;font-size:11px}
+.wa-phone-wrap input{width:100%;box-sizing:border-box;border:0;outline:0;background:transparent;color:#eef7fc;padding:11px 10px;font-size:10px}
+.wa-hint{color:#5f7084;font-size:7px;line-height:1.5;margin-top:6px}
+.wa-load{width:100%;margin-top:12px}
+.wa-contact-card{display:flex;align-items:center;gap:9px;margin-top:16px;padding:10px;border:1px solid var(--crm-line);border-radius:12px;background:#07101a}
+.wa-avatar{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#0b7899,#0a2934);color:#dff9ff;font-size:7px;font-weight:900}
+.wa-contact-card strong{display:block;font-size:9px}.wa-contact-card span{display:block;color:#718095;font-size:7px;margin-top:3px}
+.wa-chat{display:flex;flex-direction:column;min-width:0;background:radial-gradient(circle at 80% 0%,rgba(18,76,103,.14),transparent 35%)}
+.wa-chat-head{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--crm-line);background:rgba(7,16,26,.82)}
+.wa-chat-head strong{display:block;font-size:10px}.wa-chat-head span{display:block;color:#718095;font-size:7px;margin-top:3px}
+.wa-conversation{flex:1;min-height:300px;max-height:410px;overflow:auto;padding:14px;background-image:radial-gradient(circle at 10% 20%,rgba(24,200,244,.025),transparent 20%)}
+.wa-bubble-row{display:flex;margin:6px 0}.wa-bubble-row.inbound{justify-content:flex-start}.wa-bubble-row.outbound{justify-content:flex-end}
+.wa-bubble{max-width:min(78%,520px);padding:9px 11px;border:1px solid var(--crm-line);border-radius:14px;background:rgba(255,255,255,.035);box-shadow:0 8px 25px rgba(0,0,0,.12)}
+.wa-bubble.outbound{background:linear-gradient(145deg,rgba(24,200,244,.14),rgba(10,80,101,.14));border-color:rgba(24,200,244,.18);border-bottom-right-radius:5px}.wa-bubble.inbound{border-bottom-left-radius:5px}
+.wa-bubble-author{font-size:6px;font-weight:900;letter-spacing:.12em;color:#7890a5}.wa-bubble-body{font-size:10px;line-height:1.45;margin-top:3px;white-space:pre-wrap;word-break:break-word}.wa-bubble-meta{font-size:7px;color:#617187;margin-top:5px}
+.wa-empty{height:100%;min-height:240px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center;color:#718095}.wa-empty-icon{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(24,200,244,.18);border-radius:14px;color:#18c8f4;font-size:24px;background:rgba(24,200,244,.05)}.wa-empty strong{font-size:10px;color:#b8c6d4}.wa-empty span{font-size:8px}
+.wa-error{padding:14px;border:1px solid rgba(255,100,120,.18);border-radius:12px;background:rgba(100,20,30,.12);color:#ffb8c0;font-size:9px}.wa-error span{color:#b48f96;font-size:8px}
+.wa-composer{padding:11px;border-top:1px solid var(--crm-line);background:rgba(7,16,26,.92)}
+.wa-composer textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:70px;background:#050c14;color:#e8f1f8;border:1px solid #1b2937;border-radius:11px;padding:11px;font-size:10px;outline:none}.wa-composer textarea:focus{border-color:#1b7891;box-shadow:0 0 0 3px rgba(24,200,244,.06)}
+.wa-compose-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;color:#617187;font-size:7px}.wa-send{display:flex;align-items:center;gap:10px}.wa-send b{font-size:13px}
+.wa-notice{margin-top:9px;padding:9px 11px;border:1px solid rgba(24,200,244,.12);border-radius:10px;background:rgba(24,200,244,.035);color:#718095;font-size:7px;line-height:1.5}.wa-notice strong{color:#9ed9e7}
+@media(max-width:700px){.wa-head{flex-direction:column}.wa-live{align-self:flex-start}.wa-layout{grid-template-columns:1fr;min-height:0}.wa-sidebar{border-right:0;border-bottom:1px solid var(--crm-line)}.wa-conversation{max-height:360px;min-height:250px}.wa-bubble{max-width:88%}.wa-compose-foot{align-items:flex-end;flex-direction:column}.wa-send{width:100%;justify-content:center}.wa-panel{padding:12px!important}}
+
+
+/* B10.6.1 · Contactos + Calendario + Reportes */
+.power-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.power-card{border:1px solid var(--crm-line);border-radius:15px;background:#07101a;padding:14px}.power-card span{font-size:7px;color:var(--crm-muted);font-weight:900;letter-spacing:.12em}.power-card b{display:block;font-size:22px;margin-top:7px}.module-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.module-toolbar input,.module-toolbar select,.module-form input,.module-form select,.module-form textarea{border:1px solid var(--crm-line);border-radius:10px;background:#07111d;color:#dff9ff;padding:10px;font:inherit;font-size:9px;box-sizing:border-box}.module-toolbar input{flex:1;min-width:180px}.module-form{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.module-form .full{grid-column:1/-1}.contact-list{display:grid;gap:7px}.contact-row{display:grid;grid-template-columns:1.5fr 1fr 1fr auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--crm-line);border-radius:11px;background:#07111b;font-size:8px}.contact-row small{display:block;color:#718095;margin-top:3px}.calendar-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--crm-line);border-radius:12px;overflow:hidden}.calendar-day{min-height:92px;border-right:1px solid var(--crm-line);border-bottom:1px solid var(--crm-line);padding:7px;background:#07101a}.calendar-day:nth-child(7n){border-right:0}.calendar-day.muted{opacity:.38}.calendar-day.today{box-shadow:inset 0 0 0 1px #18c8f4}.calendar-day-num{font-size:8px;font-weight:900;color:#9fb0c1}.calendar-event{display:block;margin-top:5px;padding:4px 5px;border-radius:6px;background:#0b3341;color:#dff9ff;font-size:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.report-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.report-card{border:1px solid var(--crm-line);border-radius:15px;background:#07101a;padding:14px}.report-card b{font-size:22px;display:block}.report-card small{color:#8190a4;font-size:8px}.wa-contact-tools{display:grid;gap:6px;margin:8px 0}.wa-contact-tools select,.wa-contact-tools input{width:100%;box-sizing:border-box;border:1px solid var(--crm-line);border-radius:9px;background:#07111d;color:#dff9ff;padding:9px;font-size:8px}.module-note{padding:9px;border:1px solid var(--crm-line);border-radius:10px;background:#091520;color:#8190a4;font-size:8px;line-height:1.5}@media(max-width:700px){.power-grid,.report-grid{grid-template-columns:repeat(2,1fr)}.module-form{grid-template-columns:1fr}.module-form .full{grid-column:auto}.contact-row{grid-template-columns:1fr 1fr}.calendar-day{min-height:75px;padding:5px}.calendar-event{font-size:6px}.calendar-grid{font-size:7px}}
+</style>
+</head>
+<body>
+<div class="login open" id="login">
+ <div class="login-card">
+  <div style="color:#18c8f4;font-size:8px;font-weight:900;letter-spacing:.18em">SOMOS SOFTWARE · B10.5</div>
+  <h1>Acceso al CRM</h1>
+  <p>CRM privado de Somos Software. Inicia sesión con tu usuario de Supabase. La sesión queda persistente en este dispositivo.</p>
+  <form id="loginForm">
+   <label>CORREO</label><input type="email" name="email" autocomplete="username" required>
+   <label>CONTRASEÑA</label><input type="password" name="password" autocomplete="current-password" required>
+   <div class="login-error" id="loginError"></div>
+   <button class="btnx primary" type="submit">Iniciar sesión</button>
+  </form>
+  <button class="btnx" id="createAccount" type="button" style="width:100%;margin-top:8px">Crear cuenta</button>
+  <button class="btnx" id="resetPassword" type="button" style="width:100%;margin-top:8px">Recuperar contraseña</button>
+  <div class="mode-note" id="modeNote">Conexión Supabase activa. Crea tu cuenta o inicia sesión.</div>
+ </div>
+</div>
+
+<div class="login" id="signup" style="display:none;z-index:110">
+ <div class="login-card">
+  <div style="color:#18c8f4;font-size:8px;font-weight:900;letter-spacing:.18em">SOMOS SOFTWARE · B10.5</div>
+  <h1>Crear cuenta</h1>
+  <p>Crea tu usuario de acceso al CRM. Supabase enviará un correo de confirmación si las confirmaciones de email están activadas.</p>
+  <form id="signupForm">
+   <label>CORREO</label><input id="signupEmail" type="email" autocomplete="email" required>
+   <label>CONTRASEÑA</label><input id="signupPassword" type="password" autocomplete="new-password" minlength="6" required>
+   <label>CONFIRMAR CONTRASEÑA</label><input id="signupPassword2" type="password" autocomplete="new-password" minlength="6" required>
+   <div class="login-error" id="signupError"></div>
+   <button class="btnx primary" type="submit">Crear cuenta</button>
+  </form>
+  <button class="btnx" id="backToLogin" type="button" style="width:100%;margin-top:8px">Volver a iniciar sesión</button>
+  <div class="mode-note" id="signupNote">Supabase conectado.</div>
+ </div>
+</div>
+
+<main class="crm">
+<header class="top">
+ <div class="brand"><img src="assets/logo-somos-software.png" alt="Somos Software"><small>CRM COMERCIAL + INTELIGENCIA · B10.6.1</small><div class="session" id="session"></div></div>
+ <div class="actions">
+  <button class="btnx" id="export">Exportar CSV</button>
+  <button class="btnx" id="importLocal">Importar locales</button>
+  <button class="btnx primary" id="new">+ Nuevo lead</button>
+  <button class="btnx" id="logout" style="display:none">Salir</button>
+  <a class="btnx" href="index.html">Volver a .net</a>
+ </div>
+</header>
+
+<nav class="navtabs" aria-label="Módulos CRM">
+ <button class="tabx" data-tab="executive">CENTRO EJECUTIVO</button>
+ <button class="tabx active" data-tab="commercial">COMERCIAL</button>
+ <button class="tabx" data-tab="intelligence">INTELIGENCIA</button>
+ <button class="tabx" data-tab="social">REDES &amp; CANALES</button>
+ <button class="tabx" data-tab="contacts">CONTACTOS</button>
+ <button class="tabx" data-tab="calendar">CALENDARIO</button>
+ <button class="tabx" data-tab="reports">REPORTES</button>
+ <button class="tabx" data-tab="attribution">ATRIBUCIÓN</button>
+</nav>
+
+<div class="mobile-module-nav" id="mobileModuleNav">
+ <button class="mobile-module-toggle" id="mobileModuleToggle" type="button" aria-expanded="false" aria-controls="mobileModuleMenu">
+  <span class="hamb"><i></i><i></i><i></i></span><span id="mobileModuleLabel">COMERCIAL</span><span class="chev">⌄</span>
+ </button>
+ <div class="mobile-module-menu" id="mobileModuleMenu">
+  <button type="button" data-mobile-tab="executive">CENTRO EJECUTIVO</button>
+  <button type="button" data-mobile-tab="commercial">COMERCIAL</button>
+  <button type="button" data-mobile-tab="intelligence">INTELIGENCIA</button>
+  <button type="button" data-mobile-tab="social">REDES &amp; CANALES</button>
+  <button type="button" data-mobile-tab="contacts">CONTACTOS</button>
+  <button type="button" data-mobile-tab="calendar">CALENDARIO</button>
+  <button type="button" data-mobile-tab="reports">REPORTES</button>
+  <button type="button" data-mobile-tab="attribution">ATRIBUCIÓN</button>
+ </div>
+</div>
+
+<section class="view" id="view-executive">
+ <div class="exec-grid" id="execKpis"></div>
+ <div class="exec-layout">
+  <section class="intel-panel"><h3>Rendimiento por canal</h3><div class="rank-list" id="channelRanking"></div></section>
+  <section class="intel-panel"><h3>Señales de negocio</h3><div class="insight-strip" id="execInsights"></div></section>
+ </div>
+ <section class="intel-panel" style="margin-top:10px"><h3>Campañas con mayor impacto</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Campaña</th><th>Leads</th><th>Ganados</th><th>Conversión</th><th>Ingresos</th><th>Fuente</th></tr></thead><tbody id="campaignRows"></tbody></table></div></section>
+</section>
+
+<section class="view active" id="view-commercial">
+ <section class="kpis" id="kpis"></section>
+ <div class="toolbar">
+  <input id="q" placeholder="Buscar lead, empresa, contacto...">
+  <select id="status"><option value="">Todos los estados</option></select>
+  <select id="source"><option value="">Todos los orígenes</option></select>
+ </div>
+ <section class="board" id="board"></section>
+ <section class="mobile-pipeline" id="mobilePipeline"></section>
+ <section class="table"><table><thead><tr><th>Lead</th><th>Necesidad</th><th>Origen</th><th>Prioridad</th><th>Próxima acción</th><th>Seguimiento</th><th>Estado</th></tr></thead><tbody id="rows"></tbody></table></section>
+</section>
+
+<section class="view" id="view-intelligence">
+ <div class="intel-grid" id="intelKpis"></div>
+ <div class="intel-layout">
+  <section class="intel-panel"><h3>Embudo comercial</h3><div class="funnel" id="funnel"></div></section>
+  <section class="intel-panel"><h3>Acciones recomendadas</h3><div class="alert-list" id="alerts"></div></section>
+ </div>
+ <section class="intel-panel" style="margin-top:10px"><h3>Leads priorizados por inteligencia</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Lead</th><th>Score</th><th>Prob.</th><th>Valor ponderado</th><th>Riesgo</th><th>Siguiente mejor acción</th></tr></thead><tbody id="intelRows"></tbody></table></div></section>
+</section>
+
+<section class="view" id="view-social">
+ <div class="social-actions">
+  <button class="btnx primary" id="socialSync">Sincronizar Meta</button>
+  <button class="btnx" id="socialPostsSync">Sincronizar Redes</button>
+  <button class="btnx" id="socialRefresh">Actualizar datos guardados</button>
+  <button class="btnx" id="socialSeed">Cargar métrica de prueba</button>
+  <button class="btnx" id="whatsappDiag">Probar WhatsApp</button>
+  <button class="btnx" id="whatsappPanelOpen">Mensajería WhatsApp</button>
+  <button class="btnx" id="whatsappReceptionCheck">Verificar recepción</button>
+  <button class="btnx" id="whatsappReceptionEnable">Activar recepción Meta</button>
+  <span id="socialSyncStatus" class="tag">API pendiente</span>
+ </div>
+ <div class="social-grid" id="socialCards"></div>
+ <section class="intel-panel wa-panel" id="whatsappMessagingPanel" style="margin-top:10px">
+  <div class="wa-head">
+   <div>
+    <div class="wa-eyebrow">WHATSAPP BUSINESS · CENTRO DE MENSAJERÍA</div>
+    <h3>Conversaciones WhatsApp</h3>
+    <p class="muted-note">Mensajería comercial conectada a WhatsApp Cloud API. El historial se conserva en Supabase y los estados de entrega llegan mediante Webhook de Meta.</p>
+   </div>
+   <div class="wa-live"><i></i><span id="waApiLive">API operativa</span></div>
+  </div>
+  <div class="wa-layout">
+   <aside class="wa-sidebar">
+    <div class="wa-section-title">CONTACTO</div>
+    <label class="wa-label" for="waTo">NÚMERO DESTINO</label>
+    <div class="wa-phone-wrap"><span>+</span><input id="waTo" inputmode="tel" autocomplete="tel" placeholder="56912345678"></div>
+    <div class="wa-contact-tools"><select id="waContactSelect"><option value="">Buscar contacto guardado…</option></select><input id="waContactSearch" placeholder="Filtrar contactos por nombre, teléfono o negocio"></div>
+    <div class="wa-hint">Puedes seleccionar un contacto guardado o ingresar directamente el número internacional.</div>
+    <button class="btnx wa-load" id="waRefreshMessages" type="button">↻ Cargar conversación</button>
+    <div class="wa-contact-card">
+      <div class="wa-avatar">WA</div>
+      <div><strong id="waContactLabel">Nuevo contacto</strong><span id="waPanelStatus">Sin conversación seleccionada</span></div>
+    </div>
+   </aside>
+   <section class="wa-chat">
+    <div class="wa-chat-head">
+      <div><strong>Conversación</strong><span id="waConversationMeta">Selecciona un número para comenzar</span></div>
+      <span class="tag">CLOUD API</span>
+    </div>
+    <div class="wa-conversation" id="waConversation">
+      <div class="wa-empty"><div class="wa-empty-icon">◌</div><strong>Sin mensajes todavía</strong><span>Ingresa un número para cargar la conversación.</span></div>
+    </div>
+    <div class="wa-composer">
+      <textarea id="waMessage" rows="3" maxlength="4096" placeholder="Escribe un mensaje para tu cliente…"></textarea>
+      <div class="wa-compose-foot">
+       <span>Hasta 4.096 caracteres · Mensaje de texto</span>
+       <button class="btnx primary wa-send" id="waSendText" type="button"><span>Enviar mensaje</span><b>↗</b></button>
+      </div>
+    </div>
+   </section>
+  </div>
+  <div class="wa-reception-status" id="waReceptionStatus"><span class="status-dot"></span><span>Recepción entrante: verificando configuración…</span></div>
+  <div class="wa-notice"><strong>Importante:</strong> los mensajes libres están sujetos a las reglas de la ventana de atención de WhatsApp. Si Meta exige una plantilla, el panel mostrará el código y detalle exacto del rechazo.</div>
+ </section>
+ <section class="intel-panel" style="margin-top:10px">
+  <h3>Publicaciones registradas</h3>
+  <p class="muted-note">Registro unificado de contenido publicado en Facebook e Instagram. La sincronización integral actualiza métricas, cuentas y publicaciones en una sola operación. Se conserva el ID de Meta, fecha, tipo, texto, enlace y métricas disponibles.</p>
+  <div style="overflow:auto;margin-top:8px"><table class="intel-table"><thead><tr><th>Fecha</th><th>Canal</th><th>Tipo</th><th>Contenido</th><th>Interacciones</th><th>Alcance</th><th>Campaña</th><th>Enlace</th></tr></thead><tbody id="socialPostRows"></tbody></table></div>
+ </section>
+ <section class="intel-panel"><h3>Estado de conexión</h3><div id="socialAccounts"></div><p class="muted-note">La conexión real con Meta/Instagram se ejecutará mediante una Edge Function de Supabase. Los tokens nunca deben estar en GitHub Pages ni en este CRM.</p></section>
+ <section class="intel-panel" style="margin-top:10px"><h3>Histórico de crecimiento</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Fecha</th><th>Canal</th><th>Seguidores</th><th>Nuevos</th><th>Alcance</th><th>Interacción</th><th>Leads</th><th>Ingresos</th></tr></thead><tbody id="socialRows"></tbody></table></div></section>
+</section>
+
+
+<section class="view" id="view-contacts">
+ <div class="power-grid" id="contactKpis"></div>
+ <section class="intel-panel">
+  <div class="module-toolbar"><input id="contactSearch" placeholder="Buscar nombre, teléfono, correo o negocio..."><button class="btnx primary" id="contactNew">+ Agregar contacto</button><button class="btnx" id="contactRefresh">Actualizar</button></div>
+  <div class="module-note">Ficha 360° de prospectos y clientes. El teléfono es el identificador recomendado para WhatsApp; nombre es obligatorio y el resto de datos pueden completarse progresivamente.</div>
+  <div class="contact-list" id="contactList" style="margin-top:9px"></div>
+ </section>
+</section>
+
+<section class="view" id="view-calendar">
+ <section class="intel-panel">
+  <div class="calendar-head"><div><h3 style="margin:0">Calendario de publicaciones</h3><span class="muted-note">Planifica contenido, controla estado y conserva la relación con campañas y publicaciones reales.</span></div><div class="module-toolbar" style="margin:0"><button class="btnx" id="calPrev">←</button><button class="btnx" id="calToday">Hoy</button><button class="btnx" id="calNext">→</button></div></div>
+  <div id="calendarTitle" style="font-size:11px;font-weight:900;margin-bottom:8px"></div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+  <div style="overflow:auto;margin-top:10px"><table class="intel-table"><thead><tr><th>Fecha</th><th>Canal</th><th>Contenido</th><th>Estado</th><th>Campaña</th><th>Acciones</th></tr></thead><tbody id="calendarRows"></tbody></table></div>
+ </section>
+ <section class="intel-panel" style="margin-top:10px">
+  <h3>Nueva publicación planificada</h3>
+  <div class="module-form">
+   <input id="calTitle" placeholder="Título / concepto">
+   <input id="calDate" type="datetime-local">
+   <select id="calPlatform"><option>facebook+instagram</option><option>facebook</option><option>instagram</option></select>
+   <select id="calStatus"><option>Planificada</option><option>Borrador</option><option>Cancelada</option></select>
+   <select id="calType"><option>Post</option><option>Reel</option><option>Story</option><option>Carrusel</option><option>Video</option></select>
+   <input id="calCampaign" placeholder="Campaña">
+   <textarea class="full" id="calCaption" placeholder="Texto / caption"></textarea>
+   <input id="calMedia" placeholder="URL del recurso multimedia (opcional)">
+   <input id="calUtm" placeholder="UTM campaign (opcional)">
+   <textarea class="full" id="calNotes" placeholder="Notas internas"></textarea>
+  </div>
+  <div class="module-toolbar"><button class="btnx primary" id="calSave">Guardar planificación</button><button class="btnx" id="calCancel" type="button" style="display:none">Cancelar edición</button><span id="calStatusMsg" class="tag">Sin cambios</span></div>
+ </section>
+</section>
+
+<section class="view" id="view-reports">
+ <div class="report-grid" id="reportKpis"></div>
+ <div class="intel-layout">
+  <section class="intel-panel"><h3>Rendimiento comercial</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Estado</th><th>Cantidad</th><th>Valor</th></tr></thead><tbody id="reportStateRows"></tbody></table></div></section>
+  <section class="intel-panel"><h3>Base de contactos</h3><div id="reportContactSummary"></div></section>
+ </div>
+ <section class="intel-panel" style="margin-top:10px"><h3>Resumen de publicaciones</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Estado</th><th>Cantidad</th><th>Canal</th></tr></thead><tbody id="reportPostRows"></tbody></table></div></section>
+ <section class="intel-panel" style="margin-top:10px"><h3>Indicadores recomendados para gestión</h3><div class="alert-list" id="reportInsights"></div></section>
+</section>
+
+<div class="modal" id="contactModal">
+ <div class="back" data-contact-close></div><div class="panel"><button class="close" data-contact-close>×</button><div style="color:#18c8f4;font-size:8px;font-weight:bold;letter-spacing:.16em">FICHA DE CONTACTO</div><h2 id="contactModalTitle">Nuevo contacto</h2>
+ <form id="contactForm"><input type="hidden" name="id"><div class="grid">
+  <div class="field"><label>NOMBRE *</label><input name="name" required></div><div class="field"><label>TELÉFONO</label><input name="phone" placeholder="569... "></div>
+  <div class="field"><label>CORREO</label><input name="email" type="email"></div><div class="field"><label>NEGOCIO / EMPRESA</label><input name="business"></div>
+  <div class="field full"><label>DIRECCIÓN</label><input name="address"></div><div class="field"><label>TIPO</label><select name="contact_type"><option>Prospecto</option><option>Cliente</option><option>Proveedor</option><option>Otro</option></select></div><div class="field"><label>ORIGEN</label><input name="source" placeholder="WhatsApp, Instagram, Web..."></div>
+  <div class="field full"><label>ETIQUETAS</label><input name="tags" placeholder="PYME, caliente, web..."></div><div class="field full"><label>NOTAS</label><textarea name="notes"></textarea></div>
+ </div><div class="module-toolbar"><button class="btnx primary" type="submit">Guardar contacto</button><button class="btnx" type="button" data-contact-close>Cancelar</button></div></form></div>
+</div>
+
+<section class="view" id="view-attribution">
+ <div class="attr-grid" id="attrKpis"></div>
+ <section class="intel-panel"><h3>Origen → Lead → Venta</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Origen</th><th>Leads</th><th>Ganados</th><th>Conversión</th><th>Pipeline</th><th>Ingresos ganados</th></tr></thead><tbody id="attrRows"></tbody></table></div></section>
+ <section class="intel-panel" style="margin-top:10px"><h3>Campañas y UTMs detectadas</h3><div style="overflow:auto"><table class="intel-table"><thead><tr><th>Campaña</th><th>Eventos</th><th>Leads</th><th>Ganados</th><th>Valor</th><th>Medio</th></tr></thead><tbody id="utmRows"></tbody></table></div></section>
+</section>
+
+</main>
+
+<div class="modal" id="modal">
+ <div class="back" data-close></div>
+ <div class="panel">
+  <button class="close" data-close>×</button>
+  <div style="color:#18c8f4;font-size:8px;font-weight:bold;letter-spacing:.16em">FICHA COMERCIAL</div>
+  <h2 id="title">Nuevo lead</h2>
+  <form id="form">
+   <input type="hidden" name="id">
+   <div class="grid">
+    <div class="field"><label>NOMBRE</label><input name="name" required></div>
+    <div class="field"><label>EMPRESA / ACTIVIDAD</label><input name="business"></div>
+    <div class="field"><label>CONTACTO</label><input name="contact" required></div>
+    <div class="field"><label>NECESIDAD</label><select name="need"><option>Desarrollo web</option><option>Sistema a medida</option><option>Automatización</option><option>E-commerce / solución digital</option><option>Producto propio</option><option>Diagnóstico digital</option><option>Otro</option></select></div>
+    <div class="field"><label>ESTADO</label><select name="state"></select></div>
+    <div class="field"><label>PRIORIDAD</label><select name="priority"><option>Alta</option><option>Media</option><option>Baja</option></select></div>
+    <div class="field"><label>PRÓXIMA ACCIÓN</label><input name="next_action"></div>
+    <div class="field"><label>FECHA DE SEGUIMIENTO</label><input type="date" name="next_date"></div>
+    <div class="field"><label>VALOR ESTIMADO</label><input type="number" name="value" min="0"></div>
+    <div class="field"><label>RESPONSABLE</label><input name="owner" value="Somos Software"></div>
+    <div class="field full"><label>NOTAS</label><textarea name="notes"></textarea></div>
+   </div>
+   <div class="meta" id="meta"></div>
+   <div class="modal-actions"><button type="button" class="btnx" data-close>Cancelar</button><button type="submit" class="btnx primary">Guardar</button></div>
+  </form>
+ </div>
+</div>
+
+<script src="supabase-config.js?v=B10.6.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module">
+import { CRMStore } from './crm-data.js?v=B10.6.1';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const states=['Nuevo','Contactado','Calificado','Diagnóstico','Agenda','Cotización enviada','Negociación','Ganado','Perdido','Postventa'];
+const cols=states.slice(0,9); let leads=[]; let editing=null; let socialMetrics=[]; let socialAccounts=[]; let commercialEvents=[]; let syncLogs=[]; let socialPosts=[];
+const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=x=>x?new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(+x):'$0';
+const localLeads=()=>{try{return JSON.parse(localStorage.getItem('somos_leads_pending')||'[]')}catch(e){return[]}};
+const saveLocal=()=>localStorage.setItem('somos_leads_pending',JSON.stringify(leads));
+const normalize=x=>({status:'Nuevo',state:x.status||x.state||'Nuevo',priority:'Media',next_action:'Contactar',next_date:'',notes:'',owner:'Somos Software',...x,state:x.status||x.state||'Nuevo'});
+const prob={Nuevo:.05,Contactado:.10,Calificado:.20,'Diagnóstico':.35,Agenda:.45,'Cotización enviada':.55,Negociación:.70,Ganado:1,Perdido:0,Postventa:.95};
+function leadScore(l){let s=30;const reasons=[];if(l.priority==='Alta'){s+=20;reasons.push('prioridad alta')}else if(l.priority==='Baja')s-=8;if(l.value>0){s+=Math.min(15,Math.log10(+l.value+1)*3);reasons.push('valor económico identificado')}if(l.timeline){s+=10;reasons.push('plazo declarado')}if(l.intent){s+=8;reasons.push('intención declarada')}if(l.source){s+=4}if(l.next_date){const d=(new Date(l.next_date)-new Date(new Date().toISOString().slice(0,10)))/86400000;if(d<0){s-=18;reasons.push('seguimiento vencido')}else if(d<=3){s+=7;reasons.push('acción próxima')}}if(['Calificado','Diagnóstico','Agenda','Cotización enviada','Negociación'].includes(l.state))s+=Math.round((prob[l.state]||0)*20);if(l.state==='Ganado')s=100;if(l.state==='Perdido')s=0;s=Math.max(0,Math.min(100,Math.round(s)));const grade=s>=80?'A':s>=60?'B':s>=40?'C':'D';return{s,grade,reasons}};
+function stagnation(l){const t=l.updated_at||l.created_at;if(!t)return 0;return Math.max(0,Math.floor((Date.now()-new Date(t).getTime())/86400000))}
+function bestAction(l,score,days){if(l.state==='Ganado')return'Activar postventa y pedir referidos';if(l.state==='Perdido')return'Revisar causa de pérdida y programar reactivación';if(l.next_date&&l.next_date<=new Date().toISOString().slice(0,10))return'Contactar hoy y registrar resultado';if(l.state==='Cotización enviada')return'Confirmar recepción y resolver objeciones';if(l.state==='Negociación')return'Conducir a cierre con propuesta concreta';if(days>=7)return'Reactivar oportunidad estancada';if(score>=80)return'Atención prioritaria del responsable';if(l.state==='Nuevo')return'Primer contacto';return l.next_action||'Definir próxima acción'}
+function filtered(){const q=$('#q').value.toLowerCase(),st=$('#status').value,so=$('#source').value;return leads.filter(l=>[l.name,l.business,l.contact,l.need,l.notes].join(' ').toLowerCase().includes(q)&&(!st||l.state===st)&&(!so||l.source===so))}
+function card(l){const x=leadScore(l);return `<article class="card" data-id="${esc(l.id)}"><strong>${esc(l.name)}</strong><small>${esc(l.business||l.contact||'')}</small><span class="pill">${esc(l.need||'Sin necesidad')} · Score ${x.s}</span><small>${esc(l.next_action||'Sin próxima acción')}${l.next_date?' · '+l.next_date:''}</small></article>`}
+function render(){const d=filtered(),open=leads.filter(l=>!['Ganado','Perdido'].includes(l.state)).length,won=leads.filter(l=>l.state==='Ganado').length;const today=new Date().toISOString().slice(0,10),due=leads.filter(l=>l.next_date&&l.next_date<=today&&!['Ganado','Perdido'].includes(l.state)).length;const val=leads.filter(l=>l.state!=='Perdido').reduce((a,l)=>a+(+l.value||0),0);$('#kpis').innerHTML=[[leads.length,'TOTAL LEADS'],[open,'ABIERTOS'],[won,'GANADOS'],[due,'SEGUIMIENTOS VENCIDOS'],[money(val),'VALOR PIPELINE']].map(x=>`<div class="kpi"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');const src=[...new Set(leads.map(l=>l.source).filter(Boolean))];$('#source').innerHTML='<option value="">Todos los orígenes</option>'+src.map(x=>`<option>${esc(x)}</option>`).join('');$('#status').innerHTML='<option value="">Todos los estados</option>'+states.map(x=>`<option>${x}</option>`).join('');$('#board').innerHTML=cols.map(st=>{let a=d.filter(l=>l.state===st);return `<section class="col"><div class="chead"><b>${st}</b><span>${a.length}</span></div><div class="cards">${a.map(card).join('')||'<div style="padding:15px;color:#536276;font-size:8px">Sin leads</div>'}</div></section>`}).join('');$('#mobilePipeline').innerHTML=cols.map(st=>{let a=d.filter(l=>l.state===st);return `<section class="mobile-state"><div class="mobile-state-head"><b>${st}</b><span>${a.length}</span></div><div class="mobile-cards">${a.map(card).join('')||'<div style="padding:6px 5px 13px;color:#536276;font-size:8px">Sin leads</div>'}</div></section>`}).join('');$('#rows').innerHTML=d.map(l=>`<tr data-id="${esc(l.id)}"><td><b>${esc(l.name)}</b><br>${esc(l.business||'')}</td><td>${esc(l.need)}</td><td>${esc(l.source||'direct')}</td><td>${esc(l.priority)}</td><td>${esc(l.next_action||'—')}</td><td>${esc(l.next_date||'—')}</td><td>${esc(l.state)}</td></tr>`).join('');$$('[data-id]').forEach(x=>x.onclick=()=>edit(x.dataset.id));renderIntelligence()}
+function renderIntelligence(){const scored=leads.map(l=>{const z=leadScore(l),p=prob[l.state]??.1,v=(+l.value||0)*p,d=stagnation(l);return{l,...z,p,v,d,risk:d>=14?'alto':d>=7?'medio':'normal',action:bestAction(l,z.s,d)}}).sort((a,b)=>b.s-a.s);const open=scored.filter(x=>!['Ganado','Perdido'].includes(x.l.state));const weighted=open.reduce((a,x)=>a+x.v,0);const avg=open.length?Math.round(open.reduce((a,x)=>a+x.s,0)/open.length):0;const conv=leads.length?Math.round(leads.filter(x=>x.state==='Ganado').length/leads.length*100):0;const hot=open.filter(x=>x.s>=80).length;$('#intelKpis').innerHTML=[[money(weighted),'FORECAST PONDERADO',`${open.length} oportunidades abiertas`],[avg,'SCORE PROMEDIO','calidad del pipeline'],[conv+'%','CONVERSIÓN A GANADO','sobre leads históricos'],[hot,'OPORTUNIDADES CALIENTES','score ≥ 80']].map(x=>`<div class="intel-card"><span class="ey">${x[1]}</span><b>${x[0]}</b><small>${x[2]}</small></div>`).join('');const max=Math.max(1,...states.map(s=>leads.filter(l=>l.state===s).length));$('#funnel').innerHTML=states.map(s=>{const n=leads.filter(l=>l.state===s).length;return `<div class="funnel-row"><span>${s}</span><div class="funnel-bar"><i style="width:${Math.round(n/max*100)}%"></i></div><b>${n}</b></div>`}).join('');const alerts=[];const overdue=open.filter(x=>x.l.next_date&&x.l.next_date<=new Date().toISOString().slice(0,10)).length;if(overdue)alerts.push(['Seguimientos vencidos',`${overdue} oportunidad(es) requieren contacto hoy.`]);if(hot)alerts.push(['Prioridad comercial',`${hot} lead(s) tienen score ≥ 80.`]);const stale=open.filter(x=>x.d>=7).length;if(stale)alerts.push(['Pipeline estancado',`${stale} oportunidad(es) llevan 7+ días sin actualización.`]);const quotes=open.filter(x=>x.l.state==='Cotización enviada'&&!x.l.next_date).length;if(quotes)alerts.push(['Cotizaciones sin agenda',`${quotes} cotización(es) no tienen fecha de seguimiento.`]);if(!alerts.length)alerts.push(['Operación estable','No hay alertas críticas con los datos disponibles.']);$('#alerts').innerHTML=alerts.map(a=>`<div class="alert-item"><b>${a[0]}</b><span>${a[1]}</span></div>`).join('');$('#intelRows').innerHTML=scored.slice(0,20).map(x=>`<tr><td><b>${esc(x.l.name)}</b><br><span style="color:#718095">${esc(x.l.business||x.l.need||'')}</span></td><td><span class="score">${x.s}</span></td><td>${Math.round(x.p*100)}%</td><td>${money(x.v)}</td><td><span class="tag">${x.risk}</span></td><td>${esc(x.action)}</td></tr>`).join('')||'<tr><td colspan="6">Sin datos.</td></tr>';const rows=scored.map(x=>({lead_id:x.l.id,score:x.s,grade:x.grade,probability:x.p,estimated_value:x.v,stagnation_days:x.d,risk_level:x.risk,rationale:x.reasons,next_best_action:x.action}));if(rows.length)CRMStore.saveLeadIntelligence(rows)}
+function aggregateSocial(){
+ const out={};
+ for(const p of ['facebook','instagram','whatsapp'])out[p]={platform:p,followers:0,prev:0,engagement:0,reach:0,leads:0,revenue:0,clicks:0};
+ for(const m of socialMetrics){const x=out[m.platform]||out.facebook;x.followers=Math.max(x.followers,Number(m.followers||0));x.engagement+=Number(m.engagement||0);x.reach+=Number(m.reach||0);x.leads+=Number(m.leads||0);x.revenue+=Number(m.revenue||0);x.clicks+=Number(m.website_clicks||0)+Number(m.whatsapp_clicks||0)}
+ for(const p of ['facebook','instagram']){const arr=socialMetrics.filter(x=>x.platform===p).sort((a,b)=>String(a.metric_date).localeCompare(String(b.metric_date)));if(arr.length>1)out[p].prev=Number(arr[Math.max(0,arr.length-8)].followers||0)}
+ return out;
+}
+function leadAttribution(){
+ const map={};
+ for(const l of leads){const source=l.source||'direct';const campaign=l.campaign||'Sin campaña';if(!map[source])map[source]={source,leads:0,won:0,pipeline:0,revenue:0};map[source].leads++;if(l.state==='Ganado'){map[source].won++;map[source].revenue+=Number(l.value||0)}if(!['Perdido','Ganado'].includes(l.state))map[source].pipeline+=Number(l.value||0)}
+ return Object.values(map).sort((a,b)=>b.leads-a.leads);
+}
+function campaignAttribution(){
+ const map={};
+ for(const l of leads){const c=l.campaign||'Sin campaña';if(!map[c])map[c]={campaign:c,leads:0,won:0,value:0,source:l.source||'direct',medium:l.medium||'—'};map[c].leads++;if(l.state==='Ganado'){map[c].won++;map[c].value+=Number(l.value||0)}}
+ return Object.values(map).sort((a,b)=>b.leads-a.leads);
+}
+function eventCampaigns(){
+ const map={};
+ for(const e of commercialEvents){const c=e.campaign||'Sin campaña';if(!map[c])map[c]={campaign:c,events:0,leads:0,won:0,value:0,medium:e.medium||'—'};map[c].events++;if(e.lead_id)map[c].leads++;map[c].value+=Number(e.value||0)}
+ for(const l of leads){if(l.campaign){const x=map[l.campaign]||(map[l.campaign]={campaign:l.campaign,events:0,leads:0,won:0,value:0,medium:l.medium||'—'});if(l.state==='Ganado')x.won++}}
+ return Object.values(map).sort((a,b)=>b.events-b.events||b.leads-a.leads);
+}
+async function renderExecutive(){
+ commercialEvents=await CRMStore.listEvents(90);const social=aggregateSocial();const open=leads.filter(l=>!['Ganado','Perdido'].includes(l.state));const won=leads.filter(l=>l.state==='Ganado');const pipeline=open.reduce((a,l)=>a+Number(l.value||0),0);const revenue=won.reduce((a,l)=>a+Number(l.value||0),0);const conversion=leads.length?Math.round(won.length/leads.length*100):0;const socialLeads=Object.values(social).reduce((a,x)=>a+x.leads,0);
+ $('#execKpis').innerHTML=[[leads.length,'LEADS TOTALES','capturados en CRM'],[money(pipeline),'PIPELINE ABIERTO',`${open.length} oportunidades`],[money(revenue),'INGRESOS GANADOS',`${won.length} ventas`],[conversion+'%','CONVERSIÓN','leads → ganado']].map(x=>`<div class="exec-card"><span class="ey">${x[1]}</span><b>${x[0]}</b><small>${x[2]}</small></div>`).join('');
+ const ranks=Object.entries(social).map(([p,x])=>{const growth=x.followers-(x.prev||x.followers);const score=Math.max(0,Math.min(100,Math.round((x.leads*8)+(x.engagement*0.4)+(x.clicks*0.3)+(x.revenue>0?25:0)+(growth>0?10:0))));return{p,x,growth,score}}).sort((a,b)=>b.score-a.score);
+ $('#channelRanking').innerHTML=ranks.map((r,i)=>`<div class="rank"><span class="n">${i+1}</span><div><b>${r.p.toUpperCase()}</b><span>${r.x.leads} leads · ${money(r.x.revenue)}</span><div class="mini-progress"><i style="width:${r.score}%"></i></div></div><strong>${r.score}/100</strong></div>`).join('');
+ const insights=[];if(ranks[0])insights.push(['Canal líder',`${ranks[0].p.toUpperCase()} presenta el mayor índice operativo con los datos disponibles.`]);if(conversion>=20)insights.push(['Conversión saludable',`El ${conversion}% de los leads históricos terminó en ganado.`]);else insights.push(['Oportunidad de mejora',`La conversión actual es ${conversion}%. Prioriza seguimientos y oportunidades con score alto.`]);if(socialLeads===0)insights.push(['Datos sociales', 'Aún no hay leads atribuidos directamente a métricas sociales. Meta Sync podrá alimentar esta capa cuando finalice la conexión.']);else insights.push(['Atribución activa',`${socialLeads} leads aparecen asociados a métricas sociales almacenadas.`]);$('#execInsights').innerHTML=insights.map(a=>`<div class="insight"><b>${a[0]}</b><span>${a[1]}</span></div>`).join('');
+ const camps=campaignAttribution();$('#campaignRows').innerHTML=camps.map(c=>`<tr><td><b>${esc(c.campaign)}</b></td><td>${c.leads}</td><td>${c.won}</td><td>${c.leads?Math.round(c.won/c.leads*100):0}%</td><td>${money(c.value)}</td><td>${esc(c.source)}</td></tr>`).join('')||'<tr><td colspan="6">Sin campañas atribuidas todavía.</td></tr>';
+}
+async function renderAttribution(){
+ commercialEvents=await CRMStore.listEvents(90);const bySource=leadAttribution();const totalLeads=leads.length;const attributed=leads.filter(l=>l.source||l.campaign||l.medium).length;const attributedWon=leads.filter(l=>(l.source||l.campaign||l.medium)&&l.state==='Ganado').length;const revenue=leads.filter(l=>l.state==='Ganado').reduce((a,l)=>a+Number(l.value||0),0);$('#attrKpis').innerHTML=[[attributed,'LEADS ATRIBUIDOS',`${totalLeads?Math.round(attributed/totalLeads*100):0}% del total`],[attributedWon,'VENTAS ATRIBUIDAS','ganados con origen/campaña'],[money(revenue),'INGRESOS TOTALES','ganados registrados'],[commercialEvents.length,'EVENTOS 90 DÍAS','web y comerciales']].map(x=>`<div class="attr-card"><span class="ey">${x[1]}</span><b>${x[0]}</b><small>${x[2]}</small></div>`).join('');$('#attrRows').innerHTML=bySource.map(x=>`<tr><td><b>${esc(x.source)}</b></td><td>${x.leads}</td><td>${x.won}</td><td>${x.leads?Math.round(x.won/x.leads*100):0}%</td><td>${money(x.pipeline)}</td><td>${money(x.revenue)}</td></tr>`).join('')||'<tr><td colspan="6">Sin datos de atribución.</td></tr>';const ev=eventCampaigns();$('#utmRows').innerHTML=ev.map(x=>`<tr><td><b>${esc(x.campaign)}</b></td><td>${x.events}</td><td>${x.leads}</td><td>${x.won}</td><td>${money(x.value)}</td><td>${esc(x.medium)}</td></tr>`).join('')||'<tr><td colspan="6">Sin campañas o UTM registrados.</td></tr>';
+}
+async function getWhatsAppStatus(){
+ try{
+  const client=window.__SOMOS_SUPABASE_CLIENT__;
+  if(!client)return{ok:false,code:'NO_SUPABASE_CLIENT',error:'Cliente Supabase no disponible.'};
+  const {data,error}=await client.functions.invoke('whatsapp-api',{body:{action:'check_meta'}});
+  if(error)return{ok:false,code:'EDGE_FUNCTION_ERROR',error:error.message||String(error)};
+  return data||{ok:false,code:'EMPTY_RESPONSE',error:'whatsapp-api no devolvió datos.'};
+ }catch(e){return{ok:false,code:'REQUEST_ERROR',error:e?.message||String(e)}}
+}
+async function renderSocial(){
+ socialAccounts=await CRMStore.listSocialAccounts();
+ socialMetrics=await CRMStore.listSocialMetrics(90);
+ syncLogs=await CRMStore.listSocialSyncLogs(20);
+ socialPosts=await CRMStore.listSocialPosts(50);
+ const whatsapp=await getWhatsAppStatus();
+ const platforms=['facebook','instagram','whatsapp'];
+ $('#socialCards').innerHTML=platforms.map(p=>{
+   const a=socialAccounts.find(x=>x.platform===p&&x.active);
+   // Nunca mezclar registros demo con métricas reales.
+   const arr=socialMetrics
+     .filter(x=>x.platform===p && x.account_id!=='demo')
+     .sort((x,y)=>String(x.metric_date).localeCompare(String(y.metric_date)));
+   const last=arr.at(-1);
+   const prev=arr.length>1?arr.at(-2):null;
+   const hasRealMetric=!!last;
+   const followers=Number.isFinite(Number(last?.followers))?Number(last.followers):null;
+   const growth=(last&&prev&&followers!=null&&prev.followers!=null)
+     ? followers-Number(prev.followers||0)
+     : null;
+   const connected=p==='whatsapp'?!!whatsapp?.ok:!!a?.active;
+   const apiOk=p==='whatsapp'?!!whatsapp?.ok:(connected && (a.sync_status==='success' || a.sync_status==='synced' || a.sync_status==='ok'));
+   const sourceLabel=p==='whatsapp'
+     ? (apiOk?'META REAL · API operativa':'SIN CONEXIÓN API')
+     : (hasRealMetric
+       ? (last?.raw ? 'META REAL · dato recibido' : 'META REAL · sin respuesta de métrica')
+       : (connected ? 'META REAL · esperando primera métrica' : 'Sin conexión API'));
+   const status=p==='whatsapp'
+     ? (apiOk?'Conectado · API operativa':'Pendiente de conexión API')
+     : (connected
+       ? `Conectado · ${apiOk?'API operativa':(a.sync_status||'sincronizado')}`
+       : 'Pendiente de conexión API');
+   const value=p==='whatsapp'?'—':(followers==null?'—':followers.toLocaleString('es-CL'));
+   const growthLabel=p==='whatsapp'
+     ? 'Conexión comercial'
+     : (growth==null?'Sin histórico real suficiente':((growth>=0?'+':'')+growth+' últimos registros'));
+   return `<article class="social-card"><h3>${p.toUpperCase()}</h3><b>${value}</b><small>${p==='whatsapp'?'mensajería / conversiones':'seguidores registrados'}</small><div class="growth">${growthLabel}</div><div class="muted-note" style="margin-top:8px"><span class="status-dot ${connected?'ok':''}"></span>${status}</div><div class="muted-note" style="margin-top:5px;font-size:11px;opacity:.8">Origen: ${sourceLabel}</div></article>`;
+ }).join('');
+ $('#socialAccounts').innerHTML=(socialAccounts.length
+   ? socialAccounts.map(a=>`<div class="alert-item" style="margin-bottom:7px"><b>${esc(a.platform.toUpperCase())} · ${esc(a.account_name||a.account_id)}</b><span>${esc(a.sync_status||'pending')} · ${a.last_sync_at?new Date(a.last_sync_at).toLocaleString('es-CL'):'sin sincronización'}</span></div>`).join('')
+   : '') + `<div class="alert-item" style="margin-bottom:7px"><b>WHATSAPP · ${whatsapp?.ok?'API operativa':'pendiente'}</b><span>${whatsapp?.ok?`Conectado · ${esc(whatsapp?.meta?.display_phone_number||whatsapp?.meta?.phone_number_id||'número verificado')}`:`Diagnóstico: ${esc(whatsapp?.error||whatsapp?.code||'sin respuesta')}`}</span></div>`;
+ $('#socialRows').innerHTML=socialMetrics.slice().reverse().map(m=>`<tr><td>${esc(m.metric_date)}</td><td>${esc(m.platform)}</td><td>${m.followers??'—'}</td><td>${m.followers_gained??'—'}</td><td>${m.reach??'—'}</td><td>${m.engagement??'—'}</td><td>${m.leads??'—'}</td><td>${money(m.revenue)}</td></tr>`).join('')||'<tr><td colspan="8">Sin métricas todavía.</td></tr>';
+ const syncRowsEl=$('#syncRows'); if(syncRowsEl){ syncRowsEl.innerHTML=syncLogs.map(x=>`<tr><td>${new Date(x.started_at).toLocaleString('es-CL')}</td><td><span class="tag">${esc(x.status)}</span></td><td>${x.details?.facebook_ok?'OK':'—'}</td><td>${x.details?.instagram_ok?'OK':'—'}</td><td>${esc(x.error_message||x.details?.error||'Sin errores')}</td></tr>`).join('')||'<tr><td colspan="5">Sin sincronizaciones registradas.</td></tr>'; }
+ $('#socialPostRows').innerHTML=socialPosts.map(p=>{
+   const text=(p.message||p.caption||'').replace(/\s+/g,' ').trim();
+   const campaign=p.campaign||p.utm_campaign||'—';
+   const url=p.permalink_url||p.permalink||'';
+   return `<tr><td>${p.published_at?new Date(p.published_at).toLocaleString('es-CL'):'—'}</td><td>${esc(p.platform)}</td><td>${esc(p.media_type||'—')}</td><td style="max-width:260px"><b>${esc(text.slice(0,120)||'Sin texto')}</b></td><td>${p.engagement??'—'}</td><td>${p.reach??'—'}</td><td>${esc(campaign)}</td><td>${url?`<a href="${esc(url)}" target="_blank" rel="noopener" class="tag">Ver</a>`:'—'}</td></tr>`;
+ }).join('')||'<tr><td colspan="8">Sin publicaciones sincronizadas todavía.</td></tr>';
+ const realMetrics=socialMetrics.filter(x=>x.account_id!=='demo');
+ const demoMetrics=socialMetrics.filter(x=>x.account_id==='demo');
+ const connectedCount=socialAccounts.filter(x=>x.active && ['facebook','instagram'].includes(x.platform)).length;
+ $('#socialSyncStatus').textContent=connectedCount
+   ? `Datos reales · ${connectedCount} canales conectados · ${socialPosts.length} publicaciones`
+   : (realMetrics.length?`Datos reales guardados · ${realMetrics.length} métricas · ${socialPosts.length} publicaciones`:(demoMetrics.length?`Solo datos demo · ${demoMetrics.length} métricas`:'API pendiente'));
+}
+
+
+// B10.6.1 · Contactos 360 + Calendario editorial + Reportes
+let crmContacts=[]; let calendarMonth=new Date(); let calendarEditId=null;
+function contactPhone(v){return String(v||'').replace(/[^0-9]/g,'')}
+function openContactModal(c=null){const m=$('#contactModal');const f=$('#contactForm');f.reset();f.elements.id.value=c?.id||'';f.elements.name.value=c?.name||'';f.elements.phone.value=c?.phone||'';f.elements.email.value=c?.email||'';f.elements.address.value=c?.address||'';f.elements.business.value=c?.business||'';f.elements.contact_type.value=c?.contact_type||'Prospecto';f.elements.source.value=c?.source||'';f.elements.tags.value=c?.tags||'';f.elements.notes.value=c?.notes||'';$('#contactModalTitle').textContent=c?'Editar contacto':'Nuevo contacto';m.classList.add('open')}
+function closeContactModal(){$('#contactModal')?.classList.remove('open')}
+async function renderContacts(){crmContacts=await CRMStore.listContacts($('#contactSearch')?.value.trim()||'');const total=crmContacts.length,pros=crmContacts.filter(x=>x.contact_type==='Prospecto').length,cli=crmContacts.filter(x=>x.contact_type==='Cliente').length,withWa=crmContacts.filter(x=>contactPhone(x.phone)).length;$('#contactKpis').innerHTML=[[total,'CONTACTOS','base central'],[pros,'PROSPECTOS','en desarrollo comercial'],[cli,'CLIENTES','relación activa'],[withWa,'CON WHATSAPP','listos para conversar']].map(x=>`<div class="power-card"><span>${x[1]}</span><b>${x[0]}</b><small>${x[2]}</small></div>`).join('');$('#contactList').innerHTML=crmContacts.map(c=>`<div class="contact-row"><div><b>${esc(c.name)}</b><small>${esc(c.business||'Sin negocio')} · ${esc(c.contact_type||'Prospecto')}</small></div><div>${esc(c.phone||'—')}<small>${esc(c.email||'')}</small></div><div>${esc(c.address||'Sin dirección')}</div><div><button class="btnx" data-edit-contact="${esc(c.id)}">Editar</button> ${c.phone?`<button class="btnx primary" data-wa-contact="${esc(c.id)}">WhatsApp</button>`:''}</div></div>`).join('')||'<div class="module-note">No hay contactos guardados todavía.</div>';$$('[data-edit-contact]').forEach(b=>b.onclick=()=>openContactModal(crmContacts.find(c=>c.id===b.dataset.editContact)));$$('[data-wa-contact]').forEach(b=>b.onclick=()=>{const c=crmContacts.find(x=>x.id===b.dataset.waContact);activateTab('social');setTimeout(()=>{if(c){$('#waTo').value=contactPhone(c.phone);$('#waContactLabel').textContent=c.name;waLoadConversation()}},150)})}
+async function renderWaContacts(filter=''){const rows=await CRMStore.listContacts(filter);const s=$('#waContactSelect');if(!s)return;s.innerHTML='<option value="">Buscar contacto guardado…</option>'+rows.filter(c=>contactPhone(c.phone)).map(c=>`<option value="${esc(contactPhone(c.phone))}" data-name="${esc(c.name)}">${esc(c.name)} · +${esc(contactPhone(c.phone))}${c.business?' · '+esc(c.business):''}</option>`).join('')}
+function monthKey(){return `${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth()+1).padStart(2,'0')}`}
+function editPublication(x){if(!x)return;calendarEditId=x.id;$('#calTitle').value=x.title||'';$('#calDate').value=x.scheduled_at?new Date(x.scheduled_at).toISOString().slice(0,16):'';$('#calPlatform').value=x.platform||'facebook+instagram';$('#calStatus').value=x.status||'Planificada';$('#calType').value=x.content_type||'Post';$('#calCaption').value=x.caption||'';$('#calMedia').value=x.media_url||'';$('#calCampaign').value=x.campaign||'';$('#calUtm').value=x.utm_campaign||'';$('#calNotes').value=x.notes||'';$('#calSave').textContent='Actualizar planificación';$('#calCancel').style.display='inline-block';$('#calStatusMsg').textContent='Editando planificación';window.scrollTo({top:document.querySelector('#view-calendar')?.offsetTop||0,behavior:'smooth'})}
+function cancelPublicationEdit(){calendarEditId=null;$('#calTitle').value='';$('#calDate').value='';$('#calCaption').value='';$('#calMedia').value='';$('#calCampaign').value='';$('#calUtm').value='';$('#calNotes').value='';$('#calSave').textContent='Guardar planificación';$('#calCancel').style.display='none';$('#calStatusMsg').textContent='Sin cambios'}
+async function renderCalendar(){const month=monthKey();const rows=await CRMStore.listPublicationCalendar(month);const y=calendarMonth.getFullYear(),m=calendarMonth.getMonth();$('#calendarTitle').textContent=calendarMonth.toLocaleDateString('es-CL',{month:'long',year:'numeric'}).replace(/^./,x=>x.toUpperCase());const first=new Date(y,m,1);const offset=(first.getDay()+6)%7;const days=new Date(y,m+1,0).getDate();const prevDays=new Date(y,m,0).getDate();let cells=[];for(let i=0;i<42;i++){const d=i-offset+1;let day=d,muted=false,dt;if(d<1){day=prevDays+d;muted=true;dt=new Date(y,m-1,day)}else if(d>days){day=d-days;muted=true;dt=new Date(y,m+1,day)}else dt=new Date(y,m,day);const key=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;const items=rows.filter(r=>String(r.scheduled_at||'').slice(0,10)===key);const today=new Date().toISOString().slice(0,10);cells.push(`<div class="calendar-day ${muted?'muted':''} ${key===today?'today':''}"><div class="calendar-day-num">${day}</div>${items.map(x=>`<span class="calendar-event" title="${esc(x.caption||x.title||'')}">${esc((x.platform||'').toUpperCase())} · ${esc(x.title||x.content_type||'Publicación')}</span>`).join('')}</div>`)}$('#calendarGrid').innerHTML=cells.join('');$('#calendarRows').innerHTML=rows.map(x=>`<tr><td>${new Date(x.scheduled_at).toLocaleString('es-CL')}</td><td>${esc(x.platform)}</td><td><b>${esc(x.title||x.content_type||'Publicación')}</b><br><span style="color:#718095">${esc((x.caption||'').slice(0,100))}</span></td><td><span class="tag">${esc(x.status)}</span></td><td>${esc(x.campaign||'—')}</td><td><button class="btnx" data-edit-cal="${esc(x.id)}">Editar</button> <button class="btnx" data-delete-cal="${esc(x.id)}">Eliminar</button></td></tr>`).join('')||'<tr><td colspan="6">No hay publicaciones planificadas para este mes.</td></tr>';$$('[data-edit-cal]').forEach(b=>b.onclick=()=>editPublication(rows.find(x=>x.id===b.dataset.editCal)));$$('[data-delete-cal]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Eliminar esta planificación?'))return;const ok=await CRMStore.deletePublication(b.dataset.deleteCal);if(!ok)alert('No fue posible eliminar la planificación.');else await renderCalendar()});}
+async function renderReports(){const open=leads.filter(x=>!['Ganado','Perdido'].includes(x.state)),won=leads.filter(x=>x.state==='Ganado'),pipeline=open.reduce((a,x)=>a+Number(x.value||0),0),revenue=won.reduce((a,x)=>a+Number(x.value||0),0);const contacts=await CRMStore.listContacts();const posts=await CRMStore.listSocialPosts(100);const planned=await CRMStore.listPublicationCalendar(monthKey());$('#reportKpis').innerHTML=[[leads.length,'LEADS'],[money(pipeline),'PIPELINE ABIERTO'],[money(revenue),'INGRESOS GANADOS'],[contacts.length,'CONTACTOS'],[posts.length,'PUBLICACIONES REALES'],[planned.length,'PLANIFICADAS ESTE MES'],[(leads.length?Math.round(won.length/leads.length*100):0)+'%','CONVERSIÓN'],[contacts.filter(x=>x.phone).length,'CONTACTOS CON TELÉFONO']].map(x=>`<div class="report-card"><b>${x[0]}</b><small>${x[1]}</small></div>`).join('');const counts=states.map(st=>{const a=leads.filter(x=>x.state===st);return`<tr><td>${esc(st)}</td><td>${a.length}</td><td>${money(a.reduce((z,x)=>z+Number(x.value||0),0))}</td></tr>`}).join('');$('#reportStateRows').innerHTML=counts;const types={};contacts.forEach(x=>types[x.contact_type]=(types[x.contact_type]||0)+1);$('#reportContactSummary').innerHTML=Object.entries(types).map(([k,v])=>`<div class="alert-item"><b>${esc(k)}</b><span>${v} contactos</span></div>`).join('')||'<div class="module-note">Sin contactos.</div>';const pc={};posts.forEach(x=>pc[x.platform]=(pc[x.platform]||0)+1);planned.forEach(x=>pc['Planificadas · '+x.platform]=(pc['Planificadas · '+x.platform]||0)+1);$('#reportPostRows').innerHTML=Object.entries(pc).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v}</td><td>—</td></tr>`).join('')||'<tr><td colspan="3">Sin publicaciones.</td></tr>';const ins=[];if(open.length)ins.push(['Pipeline activo',`${open.length} oportunidades abiertas por ${money(pipeline)}.`]);if(contacts.length<leads.length)ins.push(['Base de contactos',`Conviene completar la ficha 360° de los ${leads.length-contacts.length>0?leads.length-contacts.length:0} leads que aún no tienen contacto central.`]);if(planned.length===0)ins.push(['Calendario editorial','No hay publicaciones planificadas para este mes.']);if(revenue>0)ins.push(['Ingresos','El CRM ya puede contrastar ingresos ganados con origen y campaña.']);$('#reportInsights').innerHTML=ins.map(x=>`<div class="alert-item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')}
+
+async function activateTab(tab){
+  const desktopBtn=$$('[data-tab]').find(x=>x.dataset.tab===tab);
+  $$('[data-tab]').forEach(x=>x.classList.toggle('active',x===desktopBtn));
+  $$('[data-mobile-tab]').forEach(x=>x.classList.toggle('active',x.dataset.mobileTab===tab));
+  $$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+tab));
+  const labelMap={executive:'CENTRO EJECUTIVO',commercial:'COMERCIAL',intelligence:'INTELIGENCIA',social:'REDES & CANALES',contacts:'CONTACTOS',calendar:'CALENDARIO',reports:'REPORTES',attribution:'ATRIBUCIÓN'};
+  if($('#mobileModuleLabel'))$('#mobileModuleLabel').textContent=labelMap[tab]||tab.toUpperCase();
+  if(tab==='executive')await renderExecutive();
+  if(tab==='intelligence')renderIntelligence();
+  if(tab==='social')await renderSocial();
+  if(tab==='contacts')await renderContacts();
+  if(tab==='calendar')await renderCalendar();
+  if(tab==='reports')await renderReports();
+  if(tab==='attribution')await renderAttribution();
+}
+$$('[data-tab]').forEach(btn=>btn.onclick=()=>activateTab(btn.dataset.tab));
+$$('[data-mobile-tab]').forEach(btn=>btn.onclick=async()=>{await activateTab(btn.dataset.mobileTab);const menu=$('#mobileModuleMenu');const toggle=$('#mobileModuleToggle');menu?.classList.remove('open');toggle?.setAttribute('aria-expanded','false')});
+if($('#mobileModuleToggle'))$('#mobileModuleToggle').onclick=()=>{const menu=$('#mobileModuleMenu');const toggle=$('#mobileModuleToggle');const open=!menu?.classList.contains('open');menu?.classList.toggle('open',open);toggle?.setAttribute('aria-expanded',String(open))};
+
+activateTab('commercial');
+if($('#socialRefresh')) $('#socialRefresh').onclick=renderSocial;
+if($('#socialPostsSync')) $('#socialPostsSync').onclick=async()=>{const b=$('#socialPostsSync');const s=$('#socialSyncStatus');b.disabled=true;b.textContent='Sincronizando Redes…';s.textContent='Sincronizando métricas + publicaciones…';try{const results=await Promise.all([CRMStore.syncMeta(),CRMStore.syncSocialPosts()]);const metrics=results[0]||{};const posts=results[1]||{};await renderSocial();const metricsOk=!!metrics.ok;const postsOk=!!posts.ok;const fb=posts.facebook??posts.data?.facebook??0;const ig=posts.instagram??posts.data?.instagram??0;const total=posts.total??posts.data?.total??0;const lines=[metricsOk?'Métricas Meta: OK':`Métricas Meta: ERROR — ${metrics.error||'sin detalle'}`,postsOk?`Publicaciones: OK · FB ${fb} · IG ${ig}`:`Publicaciones: ERROR — ${posts.error||'sin detalle'}`];if(metricsOk&&postsOk){s.textContent=`Redes sincronizadas · FB ${fb} · IG ${ig} · ${total} publicaciones`;alert(`Sincronización integral completada.\n\n${lines.join('\n')}\nTotal publicaciones: ${total}`)}else if(metricsOk||postsOk){s.textContent='Sincronización parcial';alert(`Sincronización parcial.\n\n${lines.join('\n')}`)}else{s.textContent='Error de sincronización';alert(`No fue posible completar la sincronización.\n\n${lines.join('\n')}`)}}catch(e){s.textContent='Error de sincronización';alert(e?.message||'Error inesperado durante la sincronización.')}finally{b.disabled=false;b.textContent='Sincronizar Redes'}};
+if($('#socialSync')) $('#socialSync').onclick=async()=>{const b=$('#socialSync');const s=$('#socialSyncStatus');b.disabled=true;b.textContent='Sincronizando…';s.textContent='Consultando métricas reales…';try{const r=await CRMStore.syncMeta();await renderSocial();const fb=r?.facebook||{};const ig=r?.instagram||{};const fbd=fb?.diagnostic||{};const igd=ig?.diagnostic||{};const fbLine=fb?.ok?`Facebook: ${fb.followers ?? '—'} seguidores · ${fbd.status||'SIN DIAGNÓSTICO'}`:`Facebook: ERROR · ${fb?.error||'sin detalle'}`;const igLine=ig?.ok?`Instagram: ${ig.followers ?? '—'} seguidores · ${igd.status||'SIN DIAGNÓSTICO'}`:`Instagram: ERROR · ${ig?.error||'sin detalle'}`;const fbFields=(fbd.fields_received||[]).join(', ')||'ninguno';const igFields=(igd.fields_received||[]).join(', ')||'ninguno';if(r?.ok){s.textContent='Métricas Meta actualizadas';alert(`Diagnóstico de métricas Meta\n\n${fbLine}\nCampos recibidos: ${fbFields}\n\n${igLine}\nCampos recibidos: ${igFields}`)}else{s.textContent=r?.partial?'Sincronización parcial':'Error de sincronización';alert(`Diagnóstico de métricas Meta\n\n${fbLine}\nCampos recibidos: ${fbFields}\n\n${igLine}\nCampos recibidos: ${igFields}`)}}catch(e){s.textContent='Error de sincronización';alert(e?.message||'Error inesperado durante la sincronización.')}finally{b.disabled=false;b.textContent='Sincronizar Meta'}};
+if($('#whatsappDiag')) $('#whatsappDiag').onclick=async()=>{const b=$('#whatsappDiag');b.disabled=true;b.textContent='Probando…';try{const r=await getWhatsAppStatus();if(r?.ok)alert('WhatsApp conectado correctamente.\n\nNúmero: '+(r.meta?.display_phone_number||'—')+'\nNombre: '+(r.meta?.verified_name||r.meta?.name||'—'));else alert('Diagnóstico WhatsApp: ERROR\n\n'+(r?.error||r?.code||'Respuesta desconocida'));await renderSocial()}catch(e){alert('Error de diagnóstico WhatsApp: '+(e?.message||String(e)))}finally{b.disabled=false;b.textContent='Probar WhatsApp'}};
+if($('#socialSeed')) $('#socialSeed').onclick=async()=>{const today=new Date().toISOString().slice(0,10);for(const p of ['facebook','instagram'])await CRMStore.saveSocialMetric({platform:p,account_id:'demo',metric_date:today,followers:p==='facebook'?100:120,followers_gained:0,followers_lost:0,reach:0,impressions:0,engagement:0,profile_visits:0,website_clicks:0,whatsapp_clicks:0,messages:0,leads:0,revenue:0,raw:{demo:true}});await renderSocial()};
+// WhatsApp Messaging Panel B10.6.1 · Supabase client hardening + inbound webhook + mobile navigation
+const WA_PANEL={timer:null};
+function waClient(){return window.__SOMOS_SUPABASE_CLIENT__||null}
+function waCleanPhone(v){return String(v||'').replace(/[^0-9]/g,'')}
+function waEsc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function waInvoke(action,body={}){const client=waClient();if(!client)return{ok:false,error:'Cliente Supabase no disponible.'};try{const {data,error}=await client.functions.invoke('whatsapp-api',{body:{action,...body}});if(error){let detail=error.message||String(error);try{if(error.context){const payload=await error.context.json();detail=payload?.error||payload?.message||payload?.code||detail;return{ok:false,code:payload?.code||'EDGE_FUNCTION_ERROR',error:detail,meta:payload?.meta||null,meta_status:payload?.meta_status||null}}}catch(_){}return{ok:false,code:'EDGE_FUNCTION_ERROR',error:detail}}return data||{ok:false,code:'EMPTY_RESPONSE',error:'whatsapp-api no devolvió datos.'}}catch(e){return{ok:false,code:'REQUEST_ERROR',error:e?.message||String(e)}}}
+function waSetStatus(text){const el=$('#waPanelStatus');if(el)el.textContent=text}
+function waSetReception(text,ok=false){const el=$('#waReceptionStatus');if(el){el.innerHTML=`<span class="status-dot ${ok?'ok':''}"></span><span>${waEsc(text)}</span>`}}
+async function waCheckReception(showAlert=false){
+  const r=await waInvoke('reception_diagnostic');
+  const db=r?.database||{};
+  const dbErrors=Object.entries(db).filter(([,v])=>!v?.ok).map(([k,v])=>`${k}: ${v?.error||v?.code||'error'}`);
+  if(!r?.ok){
+    const metaErr=r?.meta_error?.message||r?.error||r?.code||'error';
+    const reason=dbErrors.length?`Base/tabla: ${dbErrors.join(' · ')}`:`Meta: ${metaErr}${r?.meta_status?` (HTTP ${r.meta_status})`:''}`;
+    waSetReception('Recepción entrante: no disponible · '+reason);
+    if(showAlert)alert('Diagnóstico de recepción WhatsApp\n\n'+reason+'\n\n'+(r?.diagnostic?.fbtrace_id?`fbtrace_id: ${r.diagnostic.fbtrace_id}`:''));
+    return r;
+  }
+  const subscribed=!!r.subscribed;
+  waSetReception(subscribed?'Recepción entrante: ACTIVA · WABA suscrito y base disponible':'Recepción entrante: INACTIVA · WABA no suscrito a la aplicación',subscribed);
+  if(showAlert)alert(subscribed?'Recepción entrante activa. Meta está suscrito al WABA y las tablas de recepción están disponibles.':'La base está disponible, pero el WABA aún no está suscrito a la aplicación. Pulsa “Activar recepción Meta”.');
+  return r;
+}
+async function waEnableReception(){
+  const b=$('#whatsappReceptionEnable');if(b){b.disabled=true;b.textContent='Activando…'}
+  try{const r=await waInvoke('subscribe_waba');if(!r?.ok)throw new Error(r.error||r.code||'Meta rechazó la suscripción.');await waCheckReception(false);alert('Recepción WhatsApp activada correctamente.\n\nEl WABA quedó suscrito a la aplicación.');}
+  catch(e){alert('No fue posible activar la recepción.\n\n'+(e?.message||String(e)))}
+  finally{if(b){b.disabled=false;b.textContent='Activar recepción Meta'}}
+}
+async function waLoadConversation(){
+ const to=waCleanPhone($('#waTo')?.value);const box=$('#waConversation');
+ if(!box)return;
+ if(!to){box.innerHTML='<div class="wa-empty"><div class="wa-empty-icon">◌</div><strong>Selecciona un contacto</strong><span>Ingresa un número en formato internacional.</span></div>';waSetStatus('Sin conversación seleccionada');if($('#waConversationMeta'))$('#waConversationMeta').textContent='Selecciona un número para comenzar';return}
+ waSetStatus('Cargando…');
+ try{
+  const client=waClient();if(!client)throw new Error('Cliente Supabase no disponible.');
+  const {data,error}=await client.from('whatsapp_messages').select('*').eq('phone_number',to).order('message_timestamp',{ascending:true}).limit(200);
+  if(error)throw error;
+  const rows=data||[];
+  const contact=rows.find(x=>x.contact_name)?.contact_name||'Contacto WhatsApp';
+  if($('#waContactLabel'))$('#waContactLabel').textContent=contact;
+  if($('#waConversationMeta'))$('#waConversationMeta').textContent=`+${to} · ${rows.length} mensajes`;
+  box.innerHTML=rows.length?rows.map(m=>{const outbound=m.direction==='outbound';const status=m.status||'';const statusLabel=outbound?` · ${status||'enviado'}`:'';return `<div class="wa-bubble-row ${outbound?'outbound':'inbound'}"><div class="wa-bubble ${outbound?'outbound':'inbound'}"><div class="wa-bubble-author">${outbound?'TÚ':'CLIENTE'}</div><div class="wa-bubble-body">${waEsc(m.body||'[Mensaje no textual]')}</div><div class="wa-bubble-meta">${m.message_timestamp?new Date(m.message_timestamp).toLocaleString('es-CL'):''}${waEsc(statusLabel)}</div></div></div>`}).join(''):'<div class="wa-empty"><div class="wa-empty-icon">◌</div><strong>Sin mensajes registrados</strong><span>Cuando llegue o envíes un mensaje aparecerá aquí.</span></div>';
+  box.scrollTop=box.scrollHeight;waSetStatus(`Conversación · ${rows.length} mensajes`);
+ }catch(e){box.innerHTML=`<div class="wa-error">No fue posible cargar la conversación.<br><span>${waEsc(e?.message||String(e))}</span></div>`;waSetStatus('Error de conversación')}
+}
+async function waSendMessage(){
+ const to=waCleanPhone($('#waTo')?.value);const message=String($('#waMessage')?.value||'').trim();const btn=$('#waSendText');
+ if(!/^\d{8,15}$/.test(to)){alert('Ingresa un número en formato internacional. Ejemplo: 56912345678');return}
+ if(!message){alert('Escribe un mensaje.');return}
+ btn.disabled=true;btn.querySelector('span').textContent='Enviando…';waSetStatus('Enviando a Meta…');
+ try{const r=await waInvoke('send_text',{to,message});if(!r?.ok){const metaErr=r?.meta?.error;const detail=metaErr?.message||r?.error||r?.message||'Meta rechazó el mensaje.';const code=metaErr?.code||r?.code||'SIN_CODIGO';throw new Error(`${detail} [${code}]`)}$('#waMessage').value='';waSetStatus(r.wamid?`Aceptado por Meta · ${r.wamid}`:'Mensaje aceptado por Meta');await waLoadConversation()}
+ catch(e){waSetStatus('Error de envío');alert('WhatsApp no pudo enviar el mensaje.\n\n'+(e?.message||String(e))+'\n\nSi el destinatario no te escribió recientemente, Meta puede exigir una plantilla aprobada.')}
+ finally{btn.disabled=false;btn.querySelector('span').textContent='Enviar mensaje'}
+}
+if($('#whatsappPanelOpen'))$('#whatsappPanelOpen').onclick=()=>{$('#whatsappMessagingPanel')?.scrollIntoView({behavior:'smooth',block:'start'});$('#waTo')?.focus();waCheckReception(false)};
+if($('#whatsappReceptionCheck'))$('#whatsappReceptionCheck').onclick=()=>waCheckReception(true);
+if($('#whatsappReceptionEnable'))$('#whatsappReceptionEnable').onclick=waEnableReception;
+if($('#waTo')){let t;$('#waTo').addEventListener('input',()=>{clearTimeout(t);t=setTimeout(waLoadConversation,350)})}
+if($('#waRefreshMessages'))$('#waRefreshMessages').onclick=waLoadConversation;
+if($('#waSendText'))$('#waSendText').onclick=waSendMessage;
+if($('#waTo'))WA_PANEL.timer=setInterval(()=>{if(document.visibilityState==='visible'&&$('#view-social')?.classList.contains('active'))waLoadConversation()},3000);
+waCheckReception(false);
+
+
+if($('#contactNew'))$('#contactNew').onclick=()=>openContactModal();
+if($('#contactRefresh'))$('#contactRefresh').onclick=renderContacts;
+if($('#contactSearch')){let ct;$('#contactSearch').addEventListener('input',()=>{clearTimeout(ct);ct=setTimeout(renderContacts,250)})}
+$$('[data-contact-close]').forEach(x=>x.onclick=closeContactModal);
+if($('#contactForm'))$('#contactForm').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,d=Object.fromEntries(new FormData(f).entries());d.phone=contactPhone(d.phone)||null;const id=d.id;delete d.id;let saved;if(id)saved=await CRMStore.updateContact?.(id,d);else saved=await CRMStore.saveContact(d);if(!saved){alert('No fue posible guardar el contacto. Revisa que hayas ejecutado contacts-social-calendar-schema.sql en Supabase.');return}closeContactModal();await renderContacts();await renderWaContacts($('#waContactSearch')?.value||'')};
+if($('#waContactSearch')){let wt;$('#waContactSearch').addEventListener('input',()=>{clearTimeout(wt);wt=setTimeout(()=>renderWaContacts($('#waContactSearch').value),250)})}
+if($('#waContactSelect'))$('#waContactSelect').onchange=()=>{const o=$('#waContactSelect').selectedOptions[0];if(!o?.value)return;$('#waTo').value=o.value;$('#waContactLabel').textContent=o.dataset.name||'Contacto WhatsApp';waLoadConversation()};
+if($('#calPrev'))$('#calPrev').onclick=async()=>{calendarMonth.setMonth(calendarMonth.getMonth()-1);await renderCalendar()};if($('#calNext'))$('#calNext').onclick=async()=>{calendarMonth.setMonth(calendarMonth.getMonth()+1);await renderCalendar()};if($('#calToday'))$('#calToday').onclick=async()=>{calendarMonth=new Date();await renderCalendar()};
+if($('#calSave'))$('#calSave').onclick=async()=>{if(!$('#calDate').value){alert('Selecciona fecha y hora.');return}const d={title:$('#calTitle').value.trim()||null,scheduled_at:new Date($('#calDate').value).toISOString(),platform:$('#calPlatform').value,status:$('#calStatus').value,content_type:$('#calType').value,caption:$('#calCaption').value.trim()||null,media_url:$('#calMedia').value.trim()||null,campaign:$('#calCampaign').value.trim()||null,utm_campaign:$('#calUtm').value.trim()||null,notes:$('#calNotes').value.trim()||null};const wasEditing=!!calendarEditId;const saved=wasEditing?await CRMStore.updatePublication(calendarEditId,d):await CRMStore.savePublication(d);if(!saved){alert('No fue posible guardar la planificación. Ejecuta contacts-social-calendar-schema.sql en Supabase.');return}calendarMonth=new Date(d.scheduled_at);cancelPublicationEdit();$('#calStatusMsg').textContent=wasEditing?'Planificación actualizada':'Planificación guardada';await renderCalendar()};
+if($('#calCancel'))$('#calCancel').onclick=cancelPublicationEdit;
+renderWaContacts();
+
+CRMStore.onStateChange=({authenticated,email,mode})=>{$('#logout').style.display=authenticated?'inline-block':'none';$('#session').innerHTML=authenticated?`<span>Sesión:</span> <b>${esc(email||'usuario')}</b>`:`<span>Modo:</span> <b>${mode==='supabase'?'Supabase':'local'}</b>`;if(authenticated){$('#loginError').classList.remove('show');$('#modeNote').textContent='Sesión activa. CRM + inteligencia comercial disponibles.'}else if(mode==='supabase')$('#modeNote').textContent='Supabase conectado. Inicia sesión o crea una cuenta.';else $('#modeNote').textContent='No se pudo conectar con Supabase.'};
+function showAuthError(message){const el=$('#loginError');el.textContent=message;el.classList.add('show')}function clearAuthError(){const el=$('#loginError');el.textContent='';el.classList.remove('show')}
+$('#loginForm').onsubmit=async e=>{e.preventDefault();clearAuthError();const d=Object.fromEntries(new FormData(e.currentTarget).entries());const btn=e.currentTarget.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Validando…';try{const r=await CRMStore.login(d.email.trim(),d.password);if(!r.ok){let msg=r.error||'No fue posible iniciar sesión.';if(/email not confirmed|email_not_confirmed/i.test(msg))msg='El correo todavía no está confirmado. Revisa tu correo y confirma la cuenta antes de iniciar sesión.';if(/invalid login credentials/i.test(msg))msg='Correo o contraseña incorrectos. Si acabas de crear la cuenta, confirma primero el correo.';showAuthError(msg)}else{$('#login').classList.remove('open');await load()}}catch(err){showAuthError(err?.message||'Error inesperado al iniciar sesión.')}finally{btn.disabled=false;btn.textContent='Iniciar sesión'}};
+document.getElementById('createAccount').addEventListener('click',ev=>{ev.preventDefault();const email=$('#loginForm input[name=email]').value.trim();const password=$('#loginForm input[name=password]').value;$('#signupEmail').value=email;$('#signupPassword').value=password;$('#signupPassword2').value='';$('#signupError').classList.remove('show');$('#signupError').textContent='';$('#signupNote').textContent='Supabase conectado. Completa los datos para crear tu cuenta.';const panel=$('#signup');panel.style.setProperty('display','grid','important');panel.classList.add('open')});
+$('#backToLogin').onclick=ev=>{ev.preventDefault();$('#signup').style.setProperty('display','none','important');$('#signup').classList.remove('open');$('#signupError').classList.remove('show')};
+$('#signupForm').onsubmit=async e=>{e.preventDefault();const email=$('#signupEmail').value.trim(),password=$('#signupPassword').value,password2=$('#signupPassword2').value,err=$('#signupError');err.classList.remove('show');err.textContent='';if(!email){err.textContent='Ingresa un correo válido.';err.classList.add('show');return}if(password.length<6){err.textContent='La contraseña debe tener al menos 6 caracteres.';err.classList.add('show');return}if(password!==password2){err.textContent='Las contraseñas no coinciden.';err.classList.add('show');return}const btn=e.currentTarget.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Creando cuenta…';try{const r=await CRMStore.signUp(email,password);if(!r.ok){err.textContent=r.error||'No fue posible crear la cuenta.';err.classList.add('show');return}if(r.confirmed){$('#signup').style.display='none';$('#login').classList.remove('open');await load();alert('Cuenta creada y sesión iniciada correctamente.')}else{$('#signupNote').textContent='Cuenta creada. Revisa tu correo y confirma la cuenta antes de iniciar sesión.';err.textContent='Te enviamos el correo de confirmación. Revisa bandeja de entrada y spam.';err.classList.add('show')}}catch(errx){err.textContent=errx?.message||'Error inesperado al crear la cuenta.';err.classList.add('show')}finally{btn.disabled=false;btn.textContent='Crear cuenta'}};
+$('#resetPassword').onclick=async()=>{clearAuthError();const email=$('#loginForm input[name=email]').value.trim();if(!email){showAuthError('Escribe primero tu correo para recuperar la contraseña.');return}try{const client=window.__SOMOS_SUPABASE_CLIENT__;if(!client){showAuthError('El motor de Supabase todavía no está disponible.');return}const{error}=await client.auth.resetPasswordForEmail(email,{redirectTo:window.location.href.split('#')[0]});if(error)showAuthError(error.message);else showAuthError('Te enviamos un enlace para restablecer la contraseña. Revisa tu correo y spam.')}catch(err){showAuthError(err?.message||'No fue posible solicitar la recuperación.')}};
+async function load(){const remote=await CRMStore.list();leads=(remote?.length?remote:localLeads()).map(normalize);render();if(CRMStore.authenticated){await renderSocial();await renderExecutive();await renderAttribution()}}
+try{await CRMStore.init();if(CRMStore.authenticated){$('#login').classList.remove('open');$('#signup').style.display='none'}else{$('#login').classList.add('open');$('#signup').style.display='none'}if(!CRMStore.requiresLogin)showAuthError('No se pudo conectar con Supabase. Revisa la URL, la publishable key y la conexión a Internet.')}catch(initErr){console.error(initErr);$('#login').classList.add('open');showAuthError('No se pudo inicializar Supabase: '+(initErr?.message||'error desconocido'))}await load();
+</script>
+</body></html>
