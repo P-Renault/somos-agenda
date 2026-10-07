@@ -69,16 +69,21 @@
           <h1>Configuremos tu perfil</h1>
           <p>Tu cuenta ya está activa. Ahora necesitamos saber cómo usarás Agenda Ya.</p>
         </div>
-        <div class="ay-profile-type" role="group" aria-label="Tipo de perfil">
-          <button type="button" class="ay-profile-type-btn is-active" data-profile-type="business">
-            <strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span>
-          </button>
-          <button type="button" class="ay-profile-type-btn" data-profile-type="customer">
-            <strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span>
-          </button>
+        <div id="ayProfileChoiceStep" class="ay-profile-choice-step">
+          <div class="ay-profile-type" role="group" aria-label="Tipo de perfil">
+            <button type="button" class="ay-profile-type-btn is-active" data-profile-type="business" aria-pressed="true">
+              <strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span>
+            </button>
+            <button type="button" class="ay-profile-type-btn" data-profile-type="customer" aria-pressed="false">
+              <strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span>
+            </button>
+          </div>
+          <button class="ay-auth-primary ay-profile-next" id="ayProfileNext" type="button">Siguiente</button>
         </div>
 
-        <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate>
+        <div id="ayProfileFormStep" class="ay-profile-form-step" hidden>
+          <button type="button" class="ay-profile-back" id="ayProfileBack">← Cambiar tipo de perfil</button>
+          <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate>
           <div class="ay-profile-photo-row">
             <div class="ay-profile-avatar" id="ayBusinessAvatarPreview">AY</div>
             <div><strong>Foto / logo</strong><p>Opcional. Puedes subir una imagen o usar una URL.</p></div>
@@ -96,9 +101,9 @@
           <div class="ay-hours-grid" id="ayBusinessHours"></div>
           <p class="ay-profile-status" id="ayBusinessStatus" aria-live="polite"></p>
           <button class="ay-auth-primary" id="ayBusinessSave" type="submit">Guardar y continuar</button>
-        </form>
+          </form>
 
-        <form id="ayCustomerProfileForm" class="ay-profile-form" novalidate hidden>
+          <form id="ayCustomerProfileForm" class="ay-profile-form" novalidate hidden>
           <div class="ay-profile-photo-row">
             <div class="ay-profile-avatar" id="ayCustomerAvatarPreview">U</div>
             <div><strong>Foto de perfil</strong><p>Opcional. Puedes subir una imagen o usar una URL.</p></div>
@@ -113,8 +118,9 @@
           </div>
           <label>Foto de perfil<input id="ayCustomerAvatarFile" type="file" accept="image/*"></label><label>URL de foto (alternativa)<input id="ayCustomerAvatar" type="url" maxlength="500" placeholder="https://..."></label>
           <p class="ay-profile-status" id="ayCustomerStatus" aria-live="polite"></p>
-          <button class="ay-auth-primary" id="ayCustomerSave" type="submit">Guardar y continuar</button>
-        </form>
+            <button class="ay-auth-primary" id="ayCustomerSave" type="submit">Guardar y continuar</button>
+          </form>
+        </div>
       </div>
     </div>
   </section>

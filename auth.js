@@ -1,5 +1,5 @@
 /*
- Agenda Ya — Identity + Profile v0.2.4
+ Agenda Ya — Identity + Profile v0.3.0
  FIX: evita bloqueo del motor de autenticación al iniciar sesión.
  Flujo: Identity -> Profile -> Agenda Ya
 */
@@ -15,6 +15,7 @@
   const businessForm = $("ayBusinessProfileForm"), customerForm = $("ayCustomerProfileForm");
   const businessStatus = $("ayBusinessStatus"), customerStatus = $("ayCustomerStatus");
   let client = null, mode = "login", currentUser = null, profileType = "business";
+  let profileStep = "choice";
   let routingInProgress = false;
   const REDIRECT_URL = "https://p-renault.github.io/somos-agenda/";
   const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
@@ -110,11 +111,29 @@
   }
   function selectProfileType(type) {
     profileType = type;
-    document.querySelectorAll(".ay-profile-type-btn").forEach(btn =>
-      btn.classList.toggle("is-active", btn.dataset.profileType === type)
-    );
+    document.querySelectorAll(".ay-profile-type-btn").forEach(btn => {
+      const active = btn.dataset.profileType === type;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
     businessForm.hidden = type !== "business";
     customerForm.hidden = type !== "customer";
+  }
+  function showProfileChoice() {
+    profileStep = "choice";
+    const choice = $("ayProfileChoiceStep"), formStep = $("ayProfileFormStep");
+    if (choice) { choice.hidden = false; choice.style.display = "block"; }
+    if (formStep) { formStep.hidden = true; formStep.style.display = "none"; }
+    selectProfileType(profileType);
+    try { window.scrollTo(0, 0); } catch (_) {}
+  }
+  function showSelectedProfileForm() {
+    profileStep = "form";
+    const choice = $("ayProfileChoiceStep"), formStep = $("ayProfileFormStep");
+    if (choice) { choice.hidden = true; choice.style.display = "none"; }
+    if (formStep) { formStep.hidden = false; formStep.style.display = "block"; }
+    selectProfileType(profileType);
+    try { window.scrollTo(0, 0); } catch (_) {}
   }
   function initials(name) {
     return String(name || "AY").split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase() || "AY";
@@ -224,28 +243,28 @@
       const profile = await loadProfileState(user);
 
       if (profile?.profile_type === "customer") {
+        profileType = "customer";
         selectProfileType("customer");
         populateCustomer(profile, user);
+        showSelectedProfileForm();
         setProfileStatus(customerStatus, "Perfil cliente cargado. Completa o verifica tus datos.", "success");
         return;
       }
 
       if (profile?.profile_type === "business") {
+        profileType = "business";
         const business = await loadBusinessExisting(user);
-        if (business) {
-          selectProfileType("business");
-          populateBusiness(business, user);
-          setProfileStatus(businessStatus, "Perfil de negocio cargado. Verifica tus datos para continuar.", "success");
-        } else {
-          selectProfileType("business");
-          setProfileStatus(businessStatus, "Cuenta activa. Completa los datos básicos de tu negocio.", "success");
-        }
+        selectProfileType("business");
+        populateBusiness(business, user);
+        showSelectedProfileForm();
+        setProfileStatus(businessStatus, business ? "Perfil de negocio cargado. Verifica tus datos para continuar." : "Completa los datos básicos de tu negocio.", "success");
         return;
       }
 
-      // No profile yet: remain in Profile without waiting for another request.
+      // New account: first show ONLY the two profile choices.
+      profileType = "business";
       selectProfileType("business");
-      setProfileStatus(businessStatus, "Cuenta activa. Completa los datos básicos de tu negocio.", "success");
+      showProfileChoice();
     } catch (err) {
       console.error("routeSession hydration:", err);
       // Never send the user back to Login because a profile read failed.
@@ -295,8 +314,8 @@
         // Deterministic navigation BEFORE any profile/database work.
         showProfile();
         selectProfileType("business");
+        showProfileChoice();
         populateBusiness(null, authenticatedUser);
-        setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
         // Database hydration is strictly secondary.
         setTimeout(() => { void routeSession(authenticatedUser); }, 0);
       } else {
@@ -353,7 +372,8 @@
         avatar_url:avatar||null,updated_at:new Date().toISOString()
       },{onConflict:"id"});
       if(r.error) throw r.error;
-      setProfileStatus(customerStatus,"Perfil cliente guardado. La próxima etapa será el acceso al explorador de Agenda Ya.","success");
+      setProfileStatus(customerStatus,"Perfil cliente guardado. Abriendo Agenda Ya…","success");
+      setTimeout(()=>{ window.location.href = "explorer.html"; }, 500);
     } catch(err) { setProfileStatus(customerStatus,err?.message||"No fue posible guardar el perfil.","error"); }
   }
 
@@ -417,11 +437,13 @@
     continueSetup.addEventListener("click",async()=>{
       try {
         const r=await withTimeout(client.auth.getSession(),10000,"No se pudo recuperar la sesión.");
-        if(r.data.session?.user) await routeSession(r.data.session.user);
+        if(r.data.session?.user) { currentUser=r.data.session.user; showProfile(); showProfileChoice(); }
         else { setMode("login"); setStatus("La sesión no está disponible. Inicia sesión nuevamente.","error"); }
       } catch(err) { setMode("login"); setStatus(err?.message||"No se pudo recuperar la sesión.","error"); }
     });
     document.querySelectorAll(".ay-profile-type-btn").forEach(btn=>btn.addEventListener("click",()=>selectProfileType(btn.dataset.profileType)));
+    $("ayProfileNext").addEventListener("click",()=>showSelectedProfileForm());
+    $("ayProfileBack").addEventListener("click",()=>showProfileChoice());
     businessForm.addEventListener("submit",saveBusiness);
     customerForm.addEventListener("submit",saveCustomer);
     $("ayBusinessLogoFile").addEventListener("change",()=>previewFile($("ayBusinessLogoFile"),$("ayBusinessAvatarPreview")));
@@ -436,8 +458,8 @@
         currentUser = session.user;
         showProfile();
         selectProfileType("business");
+        showProfileChoice();
         populateBusiness(null, session.user);
-        setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
         if (!routingInProgress) setTimeout(()=>routeSession(session.user),0);
       } else if(event==="SIGNED_OUT") {
         setMode("login"); showAuth();
@@ -451,14 +473,14 @@
       currentUser = result.data.session.user;
       showProfile();
       selectProfileType("business");
+      showProfileChoice();
       populateBusiness(null, result.data.session.user);
-      setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
       void routeSession(result.data.session.user);
     }
   }
 
   window.AgendaYaAuth={
-    version:"0.2.5",
+    version:"0.3.0",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };

@@ -15,3 +15,13 @@ Integrar estos archivos sobre Backup-1.0:
 - `agenda-ya-logo-header.jpg`
 
 No reemplazar el proyecto completo por este ZIP: es un paquete de integración.
+
+
+## v0.3.0 — Onboarding de perfil en dos pasos
+1. Login exitoso → Bienvenido a Agenda Ya / Configura tu perfil.
+2. Primera vista: solo Perfil de negocio / Perfil cliente.
+3. Selección → botón Siguiente.
+4. Siguiente abre únicamente el formulario seleccionado.
+5. Guardado negocio → motor principal Agenda Ya.
+6. Guardado cliente → explorer.html / marketplace.
+No requiere una nueva migración SQL para el flujo.

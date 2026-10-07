@@ -137,3 +137,18 @@
 .ay-profile-section-title{font-weight:800;color:#17294e;margin-top:4px}.ay-hours-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.ay-hour-row{display:grid;grid-template-columns:auto 1fr 1fr;align-items:center;gap:6px;padding:9px 10px;border:1px solid #e0e7f0;border-radius:11px}.ay-hour-row label{display:flex;align-items:center;gap:5px;font-size:12px}.ay-hour-row input[type=time]{min-height:38px;padding:7px}.ay-profile-status{min-height:18px;margin:0;color:#58708b;font-size:13px}.ay-profile-status.is-error{color:#b42318}.ay-profile-status.is-success{color:#167447}
 @media(max-width:600px){.ay-profile{padding:10px 10px 24px}.ay-profile-brand{height:72px;border-radius:18px;margin-bottom:10px}.ay-profile-brand img{width:min(220px,62%)}.ay-profile-card{padding:18px;border-radius:20px}.ay-profile-head h1{font-size:28px}.ay-profile-head p:not(.ay-auth-eyebrow){font-size:14px;margin-bottom:15px}.ay-profile-type{gap:8px;margin-bottom:15px}.ay-profile-type-btn{padding:12px}.ay-profile-type-btn span{font-size:11px}.ay-profile-grid{grid-template-columns:1fr}.ay-hours-grid{grid-template-columns:1fr}.ay-hour-row{grid-template-columns:auto 1fr 1fr}.ay-profile-form{gap:10px}.ay-profile-form input{min-height:44px;padding:10px 11px}}
 @media(max-height:720px) and (max-width:600px){.ay-profile{padding-top:6px}.ay-profile-brand{height:58px}.ay-profile-card{padding:14px}.ay-profile-head h1{font-size:25px}.ay-profile-head p:not(.ay-auth-eyebrow){margin-bottom:10px}.ay-profile-type-btn{padding:9px}.ay-profile-form{gap:8px}.ay-profile-form input{min-height:40px}.ay-profile-avatar{width:48px;height:48px;flex-basis:48px}.ay-profile-photo-row{gap:9px}}
+
+
+/* PROFILE ONBOARDING v0.3.0 — two-step choice before form */
+.ay-profile-choice-step{display:block}
+.ay-profile-form-step{display:block}
+.ay-profile-back{border:0;background:transparent;color:#0969f6;font:inherit;font-weight:800;padding:4px 0 10px;cursor:pointer}
+.ay-profile-next{margin-top:2px}
+.ay-profile-type-btn{transition:border-color .16s,background .16s,transform .16s,box-shadow .16s}
+.ay-profile-type-btn:active{transform:scale(.99)}
+.ay-profile-type-btn.is-active{box-shadow:0 6px 18px rgba(18,105,239,.10)}
+@media(max-width:600px){
+  .ay-profile-choice-step{min-height:0}
+  .ay-profile-next{min-height:50px;margin-top:4px}
+  .ay-profile-back{font-size:13px}
+}
