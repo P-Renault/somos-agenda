@@ -1,11 +1,208 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Agenda Ya · Mi perfil</title><link rel="stylesheet" href="public-platform.css"><link rel="stylesheet" href="profile.css"></head>
-<body><main class="profile-shell">
-<header class="profile-header"><a class="market-brand" href="explorer.html" aria-label="Agenda Ya"><img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a><div class="profile-header-actions"><span id="profileHeaderAvatar" class="market-avatar">AY</span><button id="profileHeaderLogout" class="market-logout" type="button">Salir</button></div></header>
-<section class="profile-card">
-  <div class="profile-heading"><div><p class="eyebrow">AGENDA YA · PERFIL</p><h1>Mi perfil</h1><p id="profileIntro">Cargando tu información…</p></div><div id="profileAvatar" class="profile-avatar">AY</div></div>
-  <div id="profileFields"></div>
-  <p id="profileStatus" class="profile-status"></p>
-  <div class="profile-actions"><button id="saveProfile" class="button" type="button">Guardar cambios</button><a class="button secondary" href="explorer.html">Volver al marketplace</a></div>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda YA · Configura tu perfil</title>
+<link rel="stylesheet" href="profile-choice.css">
+</head>
+<body>
+
+<section class="ay-profile" id="ayProfileView" aria-label="Configuración de perfil">
+  <div class="ay-profile-wrap">
+
+    <div class="ay-profile-brand">
+      <img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+    </div>
+
+    <main class="ay-profile-card">
+
+      <header class="ay-profile-head">
+        <div class="ay-eyebrow">AGENDA YA · PERFIL</div>
+        <h1 id="ayProfileTitle">Bienvenido a Agenda Ya</h1>
+        <p id="ayProfileSubtitle">Elige tu perfil para comenzar.</p>
+      </header>
+
+      <!-- CAPA 1: ELECCIÓN -->
+      <section id="ayProfileChoiceStep" class="ay-profile-choice-step">
+        <div class="ay-profile-type" role="group" aria-label="Tipo de perfil">
+
+          <button type="button"
+                  class="ay-profile-type-btn is-active"
+                  data-profile-type="business"
+                  aria-pressed="true">
+            <strong>Perfil de negocio</strong>
+            <span>Gestiona servicios, horarios y recibe reservas.</span>
+          </button>
+
+          <button type="button"
+                  class="ay-profile-type-btn"
+                  data-profile-type="customer"
+                  aria-pressed="false">
+            <strong>Perfil cliente</strong>
+            <span>Encuentra servicios y realiza reservas.</span>
+          </button>
+
+        </div>
+
+        <button class="ay-primary" id="ayProfileNext" type="button">
+          Siguiente <span>→</span>
+        </button>
+
+        <p class="ay-status" id="ayChoiceStatus"></p>
+      </section>
+
+      <!-- CAPA 2: FORMULARIOS -->
+      <section id="ayProfileFormStep" class="ay-profile-form-step" hidden>
+
+        <button type="button" class="ay-back" id="ayProfileBack">
+          ← Cambiar tipo de perfil
+        </button>
+
+        <!-- NEGOCIO · DATOS -->
+        <form id="ayBusinessProfileForm" class="ay-form" novalidate hidden>
+          <div class="ay-form-heading">
+            <span>PERFIL DE NEGOCIO · PASO 1</span>
+            <h2>Configura tu negocio</h2>
+            <p>Completa los datos básicos de tu negocio.</p>
+          </div>
+
+          <label>
+            Nombre del negocio
+            <input id="ayBusinessName" required maxlength="120"
+                   placeholder="Ej. Barbería Agenda Ya">
+          </label>
+
+          <label>
+            Tipo de servicio
+            <input id="ayBusinessType" required maxlength="100"
+                   placeholder="Ej. Barbería, peluquería, salud...">
+          </label>
+
+          <div class="ay-grid">
+            <label>
+              Teléfono
+              <div class="ay-phone">
+                <span>+56 9</span>
+                <input id="ayBusinessPhone" type="tel"
+                       inputmode="numeric" maxlength="8" placeholder="12345678">
+              </div>
+            </label>
+
+            <label>
+              Ciudad
+              <input id="ayBusinessCity" required maxlength="80" placeholder="Temuco">
+            </label>
+
+            <label>
+              Comuna
+              <input id="ayBusinessComuna" required maxlength="80" placeholder="Temuco">
+            </label>
+
+            <label>
+              Dirección
+              <input id="ayBusinessAddress" required maxlength="160" placeholder="Calle y número">
+            </label>
+          </div>
+
+          <label>
+            Imagen del negocio <span class="optional">(opcional)</span>
+            <input id="ayBusinessLogoFile" type="file" accept="image/*">
+          </label>
+
+          <p class="ay-status" id="ayBusinessStatus"></p>
+
+          <button class="ay-primary" id="ayBusinessNext" type="button">
+            Siguiente <span>→</span>
+          </button>
+        </form>
+
+        <!-- NEGOCIO · HORARIOS -->
+        <form id="ayBusinessScheduleForm" class="ay-form" novalidate hidden>
+          <div class="ay-form-heading">
+            <span>PERFIL DE NEGOCIO · PASO 2</span>
+            <h2>Configura tus horarios</h2>
+            <p>Define el horario básico de atención. Después podrás ampliarlo desde Horarios.</p>
+          </div>
+
+          <div class="ay-hours" id="ayBusinessHours"></div>
+
+          <p class="ay-status" id="ayBusinessScheduleStatus"></p>
+
+          <div class="ay-actions">
+            <button class="ay-back" id="ayBusinessScheduleBack" type="button">← Volver</button>
+            <button class="ay-primary" id="ayBusinessSave" type="submit">Guardar y continuar →</button>
+          </div>
+        </form>
+
+        <!-- CLIENTE -->
+        <form id="ayCustomerProfileForm" class="ay-form" novalidate hidden>
+          <div class="ay-form-heading">
+            <span>PERFIL CLIENTE · PASO 1</span>
+            <h2>Configura tu perfil cliente</h2>
+            <p>Completa tus datos para comenzar a reservar.</p>
+          </div>
+
+          <div class="ay-grid">
+            <label>
+              Nombre
+              <input id="ayCustomerName" required maxlength="120" placeholder="Nombre y apellido">
+            </label>
+
+            <label>
+              Teléfono
+              <div class="ay-phone">
+                <span>+56 9</span>
+                <input id="ayCustomerPhone" type="tel"
+                       inputmode="numeric" maxlength="8" placeholder="12345678">
+              </div>
+            </label>
+
+            <label>
+              Edad
+              <input id="ayCustomerAge" type="number" min="13" max="120" placeholder="Edad">
+            </label>
+
+            <label>
+              Ciudad
+              <input id="ayCustomerCity" required maxlength="80" placeholder="Temuco">
+            </label>
+
+            <label>
+              Comuna
+              <input id="ayCustomerComuna" required maxlength="80" placeholder="Comuna">
+            </label>
+
+            <label>
+              Dirección
+              <input id="ayCustomerAddress" required maxlength="160" placeholder="Calle y número">
+            </label>
+          </div>
+
+          <label>
+            Foto de perfil <span class="optional">(opcional)</span>
+            <input id="ayCustomerAvatarFile" type="file" accept="image/*">
+          </label>
+
+          <p class="ay-status" id="ayCustomerStatus"></p>
+
+          <button class="ay-primary" id="ayCustomerSave" type="submit">
+            Continuar al marketplace →
+          </button>
+        </form>
+
+      </section>
+    </main>
+  </div>
 </section>
-</main><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile.js"></script></body></html>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.SOMOS_CONFIG = {
+  SUPABASE_URL: "https://edlsxmuhbsvtjdtmyhks.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE"
+};
+</script>
+<script src="profile.js"></script>
+</body>
+</html>

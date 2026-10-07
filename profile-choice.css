@@ -1,0 +1,321 @@
+/* =========================================================
+   AGENDA YA · profile.html
+   Segunda capa del flujo de acceso.
+   No modifica index.html.
+   ========================================================= */
+
+:root{
+  --blue:#0878ea;
+  --blue2:#0788f3;
+  --navy:#0b2e59;
+  --gray:#707984;
+  --border:#dfe2e6;
+  --soft:#f5faff;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  width:100%;
+  min-height:100%;
+  margin:0;
+  background:#fff;
+}
+
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--navy);
+  overflow-x:hidden;
+}
+
+button,input{font:inherit}
+
+.ay-profile{
+  width:100%;
+  height:100svh;
+  min-height:100svh;
+  overflow:hidden;
+  background:#fff;
+}
+
+.ay-profile-wrap{
+  position:relative;
+  width:100%;
+  max-width:691px;
+  height:100svh;
+  margin:0 auto;
+  padding:0 48px;
+  overflow:hidden;
+}
+
+.ay-profile-brand{
+  position:absolute;
+  top:calc(198 / 1536 * 100svh);
+  left:48px;
+  right:48px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.ay-profile-brand img{
+  width:510px;
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+.ay-profile-card{
+  position:absolute;
+  top:calc(420 / 1536 * 100svh);
+  left:48px;
+  right:48px;
+}
+
+.ay-profile-head{text-align:center}
+
+.ay-eyebrow{
+  display:none;
+}
+
+.ay-profile-head h1{
+  margin:0;
+  font-size:clamp(26px,5vw,34px);
+  line-height:1.12;
+  font-weight:800;
+  letter-spacing:-.7px;
+}
+
+.ay-profile-head p{
+  margin:12px auto 0;
+  color:#737b86;
+  font-size:clamp(17px,3.62vw,25px);
+  line-height:1.35;
+}
+
+.ay-profile-choice-step{
+  margin-top:34px;
+}
+
+.ay-profile-type{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.ay-profile-type-btn{
+  min-height:145px;
+  padding:24px;
+  border:2px solid var(--border);
+  border-radius:20px;
+  background:#fff;
+  color:var(--navy);
+  text-align:left;
+  cursor:pointer;
+}
+
+.ay-profile-type-btn.is-active{
+  border-color:#2f86ed;
+  background:linear-gradient(180deg,#f8fbff,#eef7ff);
+  box-shadow:0 7px 20px rgba(8,120,234,.08);
+}
+
+.ay-profile-type-btn strong{
+  display:block;
+  font-size:clamp(17px,3.35vw,23px);
+  line-height:1.18;
+  font-weight:800;
+}
+
+.ay-profile-type-btn span{
+  display:block;
+  margin-top:9px;
+  color:#737b86;
+  font-size:clamp(14px,2.8vw,19px);
+  line-height:1.32;
+}
+
+.ay-primary{
+  width:100%;
+  height:86px;
+  margin-top:28px;
+  border:0;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--blue),var(--blue2));
+  color:#fff;
+  font-size:clamp(18px,3.62vw,25px);
+  font-weight:800;
+  cursor:pointer;
+}
+
+.ay-primary span{margin-left:12px;font-weight:400}
+
+.ay-status{
+  min-height:20px;
+  margin:12px 0 0;
+  color:#6f7883;
+  text-align:center;
+  font-size:14px;
+}
+
+.ay-profile-form-step{
+  margin-top:28px;
+}
+
+.ay-back{
+  border:0;
+  padding:0;
+  background:transparent;
+  color:var(--blue);
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.ay-form{
+  margin-top:18px;
+  display:grid;
+  gap:14px;
+}
+
+.ay-form-heading span{
+  color:var(--blue);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.7px;
+}
+
+.ay-form-heading h2{
+  margin:5px 0 0;
+  font-size:28px;
+  line-height:1.1;
+}
+
+.ay-form-heading p{
+  margin:7px 0 0;
+  color:var(--gray);
+}
+
+.ay-form label{
+  display:grid;
+  gap:7px;
+  color:var(--navy);
+  font-size:14px;
+  font-weight:750;
+}
+
+.ay-form input{
+  width:100%;
+  min-height:48px;
+  padding:0 14px;
+  border:2px solid var(--border);
+  border-radius:14px;
+  outline:none;
+  background:#fff;
+  color:#505966;
+}
+
+.ay-form input:focus{border-color:#8ebcf0}
+
+.ay-form input[type=file]{
+  padding:9px 12px;
+  color:#68717c;
+  font-size:13px;
+}
+
+.optional{
+  color:#8b939c;
+  font-weight:400;
+}
+
+.ay-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.ay-phone{
+  display:grid;
+  grid-template-columns:auto 1fr;
+}
+
+.ay-phone span{
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  border:2px solid var(--border);
+  border-right:0;
+  border-radius:14px 0 0 14px;
+  color:#68717c;
+  background:#fafbfc;
+  font-size:13px;
+}
+
+.ay-phone input{border-radius:0 14px 14px 0}
+
+.ay-hours{
+  display:grid;
+  gap:7px;
+}
+
+.ay-hour-row{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:7px;
+  align-items:center;
+}
+
+.ay-hour-row label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.ay-hour-row input[type=time]{
+  min-height:42px;
+}
+
+.ay-actions{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:12px;
+  align-items:center;
+}
+
+.ay-actions .ay-primary{
+  margin-top:0;
+}
+
+[hidden]{display:none!important}
+
+@media(max-width:700px){
+  .ay-profile-wrap{max-width:none;padding-left:38px;padding-right:38px}
+  .ay-profile-brand{left:38px;right:38px}
+  .ay-profile-card{left:38px;right:38px}
+}
+
+@media(max-height:850px){
+  .ay-profile-brand{top:125px}
+  .ay-profile-card{top:330px}
+  .ay-profile-choice-step{margin-top:22px}
+  .ay-profile-type-btn{min-height:120px;padding:18px}
+  .ay-primary{height:62px;min-height:62px}
+}
+
+@media(max-height:700px){
+  .ay-profile-brand{top:72px}
+  .ay-profile-brand img{width:390px}
+  .ay-profile-card{top:225px}
+  .ay-profile-head h1{font-size:25px}
+  .ay-profile-head p{margin-top:7px;font-size:17px}
+  .ay-profile-choice-step{margin-top:16px}
+  .ay-profile-type{gap:10px}
+  .ay-profile-type-btn{min-height:94px;padding:14px}
+  .ay-profile-type-btn strong{font-size:16px}
+  .ay-profile-type-btn span{font-size:13px}
+  .ay-primary{height:54px;border-radius:16px;font-size:19px}
+}
+
+@media(max-width:480px){
+  .ay-grid{grid-template-columns:1fr}
+}
