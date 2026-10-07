@@ -28,6 +28,7 @@
   }
 
   function showChoice(){
+    document.querySelector(".profile-page")?.classList.remove("form-mode");
     $("choiceStep").hidden = false;
     $("formStep").hidden = true;
     $("profileTitle").textContent = "Bienvenido a Agenda Ya";
@@ -36,6 +37,7 @@
   }
 
   function showForm(){
+    document.querySelector(".profile-page")?.classList.add("form-mode");
     $("choiceStep").hidden = true;
     $("formStep").hidden = false;
 

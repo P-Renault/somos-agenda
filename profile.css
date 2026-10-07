@@ -1,5 +1,7 @@
-/* Agenda YA · Onboarding profile.html
-   Segunda capa del flujo. No contiene el marketplace. */
+/* Agenda YA · PROFILE · MOBILE FULL-VIEW
+   Proporción alineada con Login.
+   Objetivo: una vista de onboarding completa, sin scroll vertical,
+   usando el viewport real del dispositivo. */
 
 :root{
   --blue:#0878ea;
@@ -10,75 +12,100 @@
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;min-height:100%;background:#fff}
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--navy)}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  min-height:100%;
+  background:#fff;
+}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--navy);
+  overflow:hidden;
+  -webkit-text-size-adjust:100%;
+}
 button,input{font:inherit}
 
 .profile-page{
   width:100%;
-  min-height:100svh;
+  height:100dvh;
+  min-height:0;
   background:#fff;
-  overflow-x:hidden;
+  overflow:hidden;
 }
 
 .profile-canvas{
-  width:min(100%,691px);
-  min-height:100svh;
-  margin:auto;
-  padding:0 48px 36px;
+  width:100%;
+  height:100%;
+  min-height:0;
+  margin:0 auto;
+  padding:0 40px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
 }
 
 .profile-top{
-  padding-top:calc(110 / 1536 * 100svh);
+  flex:0 0 auto;
+  padding-top:clamp(22px,5.8dvh,58px);
 }
 
 .profile-back{
+  display:inline-flex;
+  align-items:center;
   color:var(--blue);
   text-decoration:none;
-  font-size:clamp(16px,3.2vw,22px);
-  font-weight:700;
+  font-size:clamp(15px,2.1vw,19px);
+  line-height:1.2;
+  font-weight:750;
 }
 
 .profile-logo{
   display:block;
   width:min(510px,100%);
   height:auto;
-  margin:68px auto 0;
+  max-height:23dvh;
+  object-fit:contain;
+  margin:clamp(24px,5dvh,52px) auto 0;
 }
 
 .profile-content{
-  margin-top:58px;
+  flex:1 1 auto;
+  min-height:0;
+  margin-top:clamp(20px,4.5dvh,48px);
+  overflow:hidden;
 }
 
+/* Initial profile-type selection */
 .profile-heading{text-align:center}
-.profile-heading>span{
-  display:none;
-}
+.profile-heading>span{display:none}
 .profile-heading h1{
   margin:0;
-  font-size:clamp(28px,5vw,36px);
-  line-height:1.12;
-  letter-spacing:-.8px;
+  font-size:clamp(27px,4.5vw,36px);
+  line-height:1.1;
+  letter-spacing:-.7px;
 }
 .profile-heading p{
-  margin:12px 0 0;
+  margin:9px 0 0;
   color:var(--muted);
-  font-size:clamp(17px,3.5vw,24px);
-  line-height:1.35;
+  font-size:clamp(17px,2.7vw,22px);
+  line-height:1.25;
 }
 
-.choice-step{margin-top:34px}
+.choice-step{
+  margin-top:clamp(20px,3.5dvh,30px);
+}
 .profile-types{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:14px;
+  gap:12px;
 }
-
 .profile-type{
-  min-height:150px;
-  padding:24px;
+  min-height:120px;
+  padding:20px;
   border:2px solid var(--border);
-  border-radius:20px;
+  border-radius:18px;
   background:#fff;
   text-align:left;
   color:var(--navy);
@@ -87,150 +114,211 @@ button,input{font:inherit}
 .profile-type.active{
   border-color:#2f86ed;
   background:#f2f8ff;
-  box-shadow:0 8px 22px rgba(8,120,234,.08);
+  box-shadow:0 7px 18px rgba(8,120,234,.08);
 }
 .profile-type strong{
   display:block;
-  font-size:clamp(17px,3.5vw,24px);
-  line-height:1.2;
+  font-size:clamp(18px,2.8vw,22px);
+  line-height:1.15;
 }
 .profile-type span{
   display:block;
-  margin-top:10px;
+  margin-top:8px;
   color:var(--muted);
-  font-size:clamp(14px,2.8vw,18px);
-  line-height:1.35;
+  font-size:clamp(14px,2.2vw,17px);
+  line-height:1.3;
 }
 
 .primary-btn{
   width:100%;
-  min-height:72px;
-  margin-top:26px;
+  min-height:60px;
+  margin-top:18px;
   border:0;
-  border-radius:18px;
+  border-radius:16px;
   background:linear-gradient(90deg,var(--blue),var(--blue2));
   color:#fff;
   font-weight:800;
-  font-size:clamp(18px,3.6vw,25px);
+  font-size:clamp(18px,2.8vw,22px);
   cursor:pointer;
 }
-.primary-btn b{margin-left:12px;font-weight:500}
+.primary-btn b{margin-left:10px;font-weight:500}
 
 .profile-status{
-  min-height:20px;
-  margin:10px 0 0;
+  min-height:18px;
+  margin:7px 0 0;
   color:#6d7681;
   text-align:center;
-  font-size:14px;
+  font-size:12px;
 }
 .profile-status[data-kind="error"]{color:#b42318}
 .profile-status[data-kind="success"]{color:#16834b}
 
+/* Form mode: the generic heading disappears.
+   This is controlled by profile.js adding .form-mode to the page. */
+.profile-page.form-mode .profile-heading{
+  display:none;
+}
+.profile-page.form-mode .profile-content{
+  margin-top:clamp(14px,2.8dvh,28px);
+}
+
+.form-step{
+  margin-top:0;
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+}
+
 .simple-back{
+  display:inline-flex;
+  align-items:center;
   padding:0;
   border:0;
   background:transparent;
   color:var(--blue);
-  font-weight:700;
+  font-size:clamp(15px,2.1vw,19px);
+  line-height:1.2;
+  font-weight:750;
   cursor:pointer;
 }
 
-.form-step{margin-top:26px}
 .onboarding-form{
   display:grid;
-  gap:14px;
-  margin-top:18px;
+  gap:clamp(7px,1.3dvh,13px);
+  margin-top:clamp(12px,2.2dvh,20px);
 }
+
 .form-intro span{
   color:var(--blue);
-  font-size:12px;
+  font-size:clamp(13px,1.9vw,16px);
   font-weight:800;
-  letter-spacing:.7px;
+  letter-spacing:.6px;
 }
-.form-intro h2{margin:5px 0 0;font-size:28px}
-.form-intro p{margin:7px 0 0;color:var(--muted)}
+.form-intro h2{
+  margin:4px 0 0;
+  font-size:clamp(27px,4.5vw,34px);
+  line-height:1.08;
+  letter-spacing:-.6px;
+}
+.form-intro p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:clamp(16px,2.6vw,20px);
+  line-height:1.2;
+}
 
 .onboarding-form label{
   display:grid;
-  gap:7px;
-  font-size:14px;
+  gap:5px;
+  font-size:clamp(15px,2.1vw,18px);
+  line-height:1.1;
   font-weight:750;
 }
-.onboarding-form label small{font-weight:400;color:#8b939c}
+.onboarding-form label small{
+  font-weight:400;
+  color:#8b939c;
+}
 .onboarding-form input{
   width:100%;
-  min-height:50px;
-  padding:0 14px;
+  min-height:clamp(50px,6.5dvh,62px);
+  padding:0 17px;
   border:2px solid var(--border);
-  border-radius:14px;
+  border-radius:16px;
   outline:none;
   background:#fff;
   color:#4e5763;
+  font-size:clamp(15px,2.2vw,18px);
+}
+.onboarding-form input::placeholder{
+  color:#9aa1a8;
+  opacity:1;
 }
 .onboarding-form input:focus{border-color:#8ebcf0}
-.onboarding-form input[type=file]{padding:10px;font-size:13px}
+.onboarding-form input[type=file]{
+  min-height:48px;
+  padding:10px 13px;
+  font-size:13px;
+}
 
 .two-col{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:clamp(7px,1.2dvh,11px);
 }
-.phone-field{display:grid;grid-template-columns:auto 1fr}
+.phone-field{
+  display:grid;
+  grid-template-columns:82px 1fr;
+}
 .phone-field span{
   display:flex;
   align-items:center;
   padding:0 10px;
   border:2px solid var(--border);
   border-right:0;
-  border-radius:14px 0 0 14px;
+  border-radius:16px 0 0 16px;
   background:#fafbfc;
   color:#68717c;
-  font-size:13px;
+  font-size:14px;
 }
-.phone-field input{border-radius:0 14px 14px 0}
+.phone-field input{border-radius:0 16px 16px 0}
+
+.action-row{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:10px;
+  align-items:center;
+}
+.action-row .primary-btn{margin-top:0}
 
 .ay-hour-row{
   display:grid;
   grid-template-columns:1.2fr 1fr 1fr;
   gap:7px;
   align-items:center;
-  margin-bottom:7px;
+  margin-bottom:5px;
 }
-.ay-hour-row label{display:flex;align-items:center;gap:6px}
-.ay-hour-row input[type=time]{min-height:44px}
-
-.action-row{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:14px;
+.ay-hour-row label{
+  display:flex;
   align-items:center;
+  gap:5px;
 }
-.action-row .primary-btn{margin-top:0}
+.ay-hour-row input[type=time]{min-height:45px}
 
 [hidden]{display:none!important}
 
+/* Mobile: match Login horizontal proportions. */
 @media(max-width:700px){
-  .profile-canvas{padding-left:38px;padding-right:38px}
+  .profile-canvas{padding-left:40px;padding-right:40px}
+  .profile-types{grid-template-columns:1fr 1fr}
+  .profile-type{min-height:112px;padding:17px}
 }
 
-@media(max-height:850px){
-  .profile-top{padding-top:34px}
-  .profile-logo{margin-top:42px}
-  .profile-content{margin-top:36px}
-  .profile-type{min-height:128px;padding:18px}
-  .primary-btn{min-height:62px}
-}
-
-@media(max-width:700px) and (max-height:760px){
-  .profile-logo{width:390px;margin-top:30px}
-  .profile-content{margin-top:25px}
-  .profile-types{gap:10px}
-  .profile-type{min-height:105px;padding:14px}
-  .profile-type strong{font-size:16px}
-  .profile-type span{font-size:13px}
-  .primary-btn{min-height:54px;border-radius:15px}
-}
-
-@media(max-width:480px){
+/* Narrow phones: preserve 100% width and compact vertically. */
+@media(max-width:420px){
+  .profile-canvas{padding-left:24px;padding-right:24px}
+  .profile-top{padding-top:24px}
+  .profile-logo{margin-top:26px;max-height:20dvh}
+  .profile-content{margin-top:22px}
+  .profile-page.form-mode .profile-content{margin-top:12px}
+  .profile-types{grid-template-columns:1fr}
+  .profile-type{min-height:90px}
   .two-col{grid-template-columns:1fr}
+  .onboarding-form{gap:7px;margin-top:12px}
+  .form-intro h2{font-size:28px}
+  .form-intro p{font-size:17px}
+  .onboarding-form input{min-height:48px}
+  .primary-btn{min-height:54px}
+}
+
+/* Very short displays: compact without enabling page scroll. */
+@media(max-height:850px){
+  .profile-top{padding-top:18px}
+  .profile-logo{margin-top:22px;max-height:18dvh}
+  .profile-content{margin-top:16px}
+  .profile-page.form-mode .profile-content{margin-top:9px}
+  .form-intro h2{font-size:26px}
+  .form-intro p{font-size:16px}
+  .onboarding-form{gap:6px;margin-top:10px}
+  .onboarding-form input{min-height:45px}
+  .primary-btn{min-height:50px}
 }
