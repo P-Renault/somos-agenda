@@ -8,18 +8,19 @@ async function sessionRole(){
   const session=await client.auth.getSession();
   const user=session.data.session?.user;
   const account=$('marketAccount');
-  if(!user){account.innerHTML='<a href="index.html">Iniciar sesión</a>';return;}
+  if(!user){
+    account.innerHTML='<a class="market-login" href="index.html">Iniciar sesión</a>';
+    return;
+  }
   const p=await client.from('profiles').select('profile_type,full_name,avatar_url').eq('id',user.id).maybeSingle();
   const role=p.data?.profile_type;
-  if(role==='customer'){
-    const label=esc(p.data?.full_name||'Mi perfil');
-    account.innerHTML=`<a class="market-profile-link" href="profile.html">${label}</a>`;
-  }else if(role==='business'){
-    account.innerHTML='<a class="market-profile-link" href="index.html">Mi negocio</a>';
-  }else{
-    account.innerHTML='<a href="index.html">Completar perfil</a>';
-  }
+  const display=esc(p.data?.full_name||user.user_metadata?.full_name||user.email||'Mi perfil');
+  const initials=String(p.data?.full_name||user.user_metadata?.full_name||user.email||'AY').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'AY';
+  const avatar=p.data?.avatar_url ? `<span class="market-avatar has-image" style="background-image:url('${encodeURI(p.data.avatar_url)}')" aria-hidden="true"></span>` : `<span class="market-avatar" aria-hidden="true">${initials}</span>`;
+  account.innerHTML=`<a class="market-profile-link" href="profile.html" aria-label="Abrir perfil">${avatar}<span class="market-profile-name">${display}</span></a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
+  $('marketLogout')?.addEventListener('click',async()=>{ await client.auth.signOut(); window.location.href='index.html'; });
 }
+
 async function categories(){
  const r=await client.from('business_categories').select('slug,name').eq('active',true).order('name');
  if(r.data)$('category').innerHTML='<option value="">Todas las categorías</option>'+r.data.map(c=>`<option value="${esc(c.slug)}">${esc(c.name)}</option>`).join('');

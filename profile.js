@@ -22,8 +22,7 @@ function render(p){
  const name=role==='business'?(business?.name||p.full_name||user.email):(p.full_name||user.email);
  $('profileIntro').textContent=role==='business'?'Administra la información de tu negocio y tu cuenta.':'Administra tu información para reservar de forma más rápida.';
  $('profileAvatar').textContent=initials(name,user.email);const image=role==='business'?(business?.logo_url||p.avatar_url):p.avatar_url;if(image){$('profileAvatar').style.backgroundImage=`url(${encodeURI(image)})`;$('profileAvatar').classList.add('has-image')}
- $('profileBack').href=role==='business'?'index.html':'explorer.html';
- if(role==='business'){
+  if(role==='business'){
   $('profileFields').innerHTML=`<div class="profile-fields"><label>Nombre del negocio<input id="name" value="${esc(business?.name||'')}" maxlength="120"></label><label>Tipo de servicio<input id="type" value="${esc(business?.business_type||'')}" maxlength="100"></label><div class="profile-grid"><label>Teléfono<input id="phone" inputmode="numeric" maxlength="8" value="${phone(business?.phone||p.phone)}"></label><label>Ciudad<input id="city" value="${esc(business?.city||p.city||'')}" maxlength="80"></label><label>Comuna<input id="comuna" value="${esc(business?.comuna||p.comuna||'')}" maxlength="80"></label><label>Dirección<input id="address" value="${esc(business?.address||p.address||'')}" maxlength="160"></label></div></div><p class="profile-note">Tu plan, límites y suscripción se gestionarán posteriormente desde Configuración. Esta versión no fija precios ni restricciones comerciales.</p>`;
  }else{
   $('profileFields').innerHTML=`<div class="profile-fields"><label>Nombre<input id="name" value="${esc(p.full_name||user.user_metadata?.full_name||'')}" maxlength="120"></label><div class="profile-grid"><label>Teléfono<input id="phone" inputmode="numeric" maxlength="8" value="${phone(p.phone)}"></label><label>Edad<input id="age" type="number" min="13" max="120" value="${p.age||''}"></label><label>Ciudad<input id="city" value="${esc(p.city||'')}" maxlength="80"></label><label>Comuna<input id="comuna" value="${esc(p.comuna||'')}" maxlength="80"></label><label>Dirección<input id="address" value="${esc(p.address||'')}" maxlength="160"></label></div></div><p class="profile-note">Como cliente, tu navegación principal es el marketplace. No se muestra “Mi negocio” porque esta cuenta está configurada como cliente.</p>`;
@@ -48,5 +47,5 @@ $('saveProfile').onclick=async()=>{
   $('profileStatus').textContent='Perfil actualizado correctamente.';await load();
  }catch(e){$('profileStatus').textContent=e.message||'No fue posible guardar el perfil.'}
 };
-$('logoutProfile').onclick=async()=>{await client.auth.signOut();location.href='index.html'};
+$('profileHeaderLogout').onclick=async()=>{await client.auth.signOut();location.href='index.html'};
 load().catch(e=>{ $('profileStatus').textContent=e.message||'No fue posible cargar el perfil.'; });

@@ -53,7 +53,7 @@
     role=ctx.role||role;
     const p=ctx.profile||{}, b=ctx.business||{};
     const display=role==='business'?(b.name||p.full_name||ctx.user.email):(p.full_name||ctx.user.email);
-    const avatarUrl=role==='business'?(b.logo_url||p.avatar_url):(p.avatar_url);
+    const avatarUrl=role==='business'?(p.avatar_url||b.logo_url):(p.avatar_url);
     const avatar=$('ayProfileAvatar');
     if(avatar){ avatar.textContent=initials(display,ctx.user.email); if(avatarUrl){avatar.style.backgroundImage=`url(${encodeURI(avatarUrl)})`;avatar.classList.add('has-image');}else{avatar.style.backgroundImage='';avatar.classList.remove('has-image');} }
     $('ayProfileName').textContent=display||'Mi perfil';
@@ -141,6 +141,7 @@
     $('ayLogoutBtn')?.addEventListener('click',signOut);
     $('ayMoreLogout')?.addEventListener('click',signOut);
     $('ayMoreProfile')?.addEventListener('click',openProfile);
+    $('ayMoreExplore')?.addEventListener('click',()=>{closeAll();window.location.href='explorer.html';});
     $('ayMorePublicProfile')?.addEventListener('click',()=>{closeAll();window.AgendaYaUI?.activate('public-profile');});
     $('ayMoreSettings')?.addEventListener('click',()=>{closeAll();window.AgendaYaUI?.activate('settings');});
     document.querySelectorAll('[data-phone-eight]').forEach(i=>i.addEventListener('input',()=>i.value=i.value.replace(/\D/g,'').slice(0,8)));

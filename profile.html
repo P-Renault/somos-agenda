@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Agenda Ya · Mi perfil</title><link rel="stylesheet" href="public-platform.css"><link rel="stylesheet" href="profile.css"></head>
 <body><main class="profile-shell">
-<header class="profile-header"><a class="market-brand" href="explorer.html">AGENDA <span>YA</span></a><a id="profileBack" href="explorer.html">Volver</a></header>
+<header class="profile-header"><a class="market-brand" href="explorer.html" aria-label="Agenda Ya"><img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a><div class="profile-header-actions"><span id="profileHeaderAvatar" class="market-avatar">AY</span><button id="profileHeaderLogout" class="market-logout" type="button">Salir</button></div></header>
 <section class="profile-card">
   <div class="profile-heading"><div><p class="eyebrow">AGENDA YA · PERFIL</p><h1>Mi perfil</h1><p id="profileIntro">Cargando tu información…</p></div><div id="profileAvatar" class="profile-avatar">AY</div></div>
   <div id="profileFields"></div>
   <p id="profileStatus" class="profile-status"></p>
-  <div class="profile-actions"><button id="saveProfile" class="button" type="button">Guardar cambios</button><button id="logoutProfile" class="button secondary" type="button">Cerrar sesión</button></div>
+  <div class="profile-actions"><button id="saveProfile" class="button" type="button">Guardar cambios</button><a class="button secondary" href="explorer.html">Volver al marketplace</a></div>
 </section>
 </main><script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="profile.js"></script></body></html>

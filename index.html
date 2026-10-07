@@ -88,7 +88,7 @@
           <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate>
             <div class="ay-profile-photo-row">
               <div class="ay-profile-avatar" id="ayBusinessAvatarPreview">AY</div>
-              <div><strong>Foto / logo</strong><p>Opcional. Puedes subir una imagen.</p></div>
+              <div><strong>Imagen del negocio</strong><p>Opcional. Puedes subir una imagen.</p></div>
             </div>
             <label>Nombre del negocio<input id="ayBusinessName" required maxlength="120" placeholder="Ej. Barbería Agenda Ya"></label>
             <label>Tipo de servicio<input id="ayBusinessType" required maxlength="100" placeholder="Ej. Barbería, peluquería, salud..."></label>
@@ -98,7 +98,7 @@
               <label>Comuna<input id="ayBusinessComuna" required maxlength="80" placeholder="Temuco"></label>
               <label>Dirección<input id="ayBusinessAddress" required maxlength="160" placeholder="Calle y número"></label>
             </div>
-            <label>Foto / logo<input id="ayBusinessLogoFile" type="file" accept="image/*"></label>
+            <label>Imagen del negocio<input id="ayBusinessLogoFile" type="file" accept="image/*"></label>
             <p class="ay-profile-status" id="ayBusinessStatus" aria-live="polite"></p>
             <button class="ay-auth-primary" id="ayBusinessNext" type="button">Siguiente</button>
           </form>
@@ -307,6 +307,7 @@
     <section class="ay-more-sheet" id="ayMoreSheet" hidden aria-label="Más opciones">
       <div class="ay-more-head"><strong>Más</strong><button class="ay-panel-close" id="ayMoreClose" type="button">×</button></div>
       <button id="ayMoreProfile" type="button">◉ <span>Mi perfil</span></button>
+      <button id="ayMoreExplore" type="button">⌕ <span>Explorar Agenda Ya</span></button>
       <button id="ayMorePublicProfile" type="button" data-business-only>⌂ <span>Perfil público</span></button>
       <button id="ayMoreSettings" type="button">⚙ <span>Configuración</span></button>
       <button class="ay-more-logout" id="ayMoreLogout" type="button">↪ <span>Cerrar sesión</span></button>
