@@ -266,16 +266,57 @@
   }
 
   async function renderPublicProfile(){
-    const body=shell("Perfil público","PUBLICACIÓN","Vista previa pública de tu propio negocio. No abre el Marketplace.");
-    body.innerHTML=`<div id="ayPublicPreview" class="ay-public-preview">${empty("Cargando perfil público","Estamos preparando la misma información que verá un cliente.")}</div>`;
-    const r=await client.rpc("get_public_business_profile",{p_slug:business.slug});
-    if(r.error){$("ayPublicPreview").innerHTML=`<div class="ay-module-empty"><strong>Perfil público aún no disponible</strong><span>${esc(r.error.message)}. Puedes configurarlo desde “Editar perfil público”.</span></div>`;return;}
-    const x=r.data;const p=x.profile||{};const cat=x.category?.name||"Servicio";const loc=[p.address,p.comuna,p.city].filter(Boolean).join(" · ");
-    $("ayPublicPreview").innerHTML=`<section class="ay-public-hero"><span class="ay-eyebrow">${esc(cat)}</span><h2>${esc(x.business?.name||business.name)}</h2><p>${esc(p.description||"Información del negocio.")}</p>${loc?`<p>${esc(loc)}</p>`:""}</section>
-      <div class="ay-module-grid"><section class="ay-public-section"><h3>Servicios</h3><div class="ay-public-items">${(x.services||[]).length?(x.services||[]).map(s=>`<div class="ay-public-item"><strong>${esc(s.name)}</strong><span>${s.duration_minutes} min · ${money(s.price)}</span>${s.description?`<p>${esc(s.description)}</p>`:""}</div>`).join(""):"<p class='ay-module-status'>No hay servicios publicados.</p>"}</div></section>
-      <section class="ay-public-section"><h3>Profesionales</h3><div class="ay-public-items">${(x.professionals||[]).length?(x.professionals||[]).map(p=>`<div class="ay-public-item"><strong>${esc(`${p.first_name} ${p.last_name}`)}</strong>${p.bio?`<p>${esc(p.bio)}</p>`:""}</div>`).join(""):"<p class='ay-module-status'>No hay profesionales publicados.</p>"}</div></section></div>
-      <section class="ay-public-section"><h3>Horarios</h3><div class="ay-public-items">${(x.schedules||[]).length?(x.schedules||[]).map(s=>`<div class="ay-public-item"><strong>${esc(days[s.day_of_week]||s.day_of_week)}</strong><span>${esc(String(s.start_time).slice(0,5))}–${esc(String(s.end_time).slice(0,5))}</span></div>`).join(""):"<p class='ay-module-status'>Consulta disponibilidad al reservar.</p>"}</div></section>
-      <section class="ay-module-card ay-public-cta"><div><strong>Vista pública del negocio</strong><p class="ay-module-meta">Esta es la representación pública de tu negocio. El Marketplace permanece fuera de este módulo.</p></div><a class="ay-btn ay-btn-primary" href="public-profile.html?slug=${encodeURIComponent(business.slug)}" target="_blank" rel="noopener">Abrir perfil público</a></section>`;
+    const body=shell("Perfil público","PUBLICACIÓN","Construye y abre la vista pública de tu negocio en el Marketplace.");
+    const slug=business?.slug;
+    const url=slug?`public-profile.html?slug=${encodeURIComponent(slug)}`:"#";
+    body.innerHTML=`<div id="ayPublicPreview" class="ay-public-preview">
+      <section class="ay-public-hero">
+        <span class="ay-eyebrow">AGENDA YA · MARKETPLACE</span>
+        <h2>${esc(business?.name||"Tu negocio")}</h2>
+        <p>${esc(business?.description||"Tu negocio tendrá aquí su presentación pública para clientes.")}</p>
+        <p class="ay-module-meta">Al abrir el perfil, Agenda Ya prepara automáticamente una publicación pública básica usando los datos de tu negocio y mantiene tus servicios, profesionales y horarios conectados al sistema.</p>
+      </section>
+      <section class="ay-module-card ay-public-cta">
+        <div><strong>Perfil público del negocio</strong><p class="ay-module-meta">Esta es la vista que verá un cliente desde el Marketplace. Desde aquí podrá conocer tus servicios y comenzar una reserva.</p></div>
+        <button id="ayOpenPublicProfile" class="ay-btn ay-btn-primary" type="button" ${slug?"":"disabled"}>Abrir perfil público</button>
+      </section>
+      <section class="ay-module-card">
+        <div class="ay-module-grid">
+          <div><strong>Servicios</strong><p class="ay-module-meta">Se mostrarán automáticamente los servicios activos.</p></div>
+          <div><strong>Profesionales</strong><p class="ay-module-meta">Se mostrarán automáticamente los profesionales activos.</p></div>
+          <div><strong>Horarios</strong><p class="ay-module-meta">Se utilizarán los horarios configurados en Agenda Ya.</p></div>
+        </div>
+      </section>
+    </div>`;
+
+    const btn=$("ayOpenPublicProfile");
+    if(!btn) return;
+    btn.addEventListener("click",async()=>{
+      if(!slug||!business?.id){status("No se pudo determinar el negocio actual.","error");return;}
+      btn.disabled=true;
+      btn.textContent="Preparando perfil…";
+      try{
+        const r=await client.rpc("upsert_public_profile",{
+          p_business_id:business.id,
+          p_display_name:business.name||null,
+          p_description:business.description||null,
+          p_category_id:null,
+          p_address:business.address||null,
+          p_comuna:business.comuna||null,
+          p_city:business.city||null,
+          p_phone:business.phone||null,
+          p_whatsapp:null,
+          p_public_enabled:true
+        });
+        if(r.error) throw r.error;
+        window.open(url,"_blank","noopener,noreferrer");
+      }catch(e){
+        console.error(e);
+        status(`No fue posible preparar el perfil público: ${e.message||e}`,"error");
+        btn.disabled=false;
+        btn.textContent="Abrir perfil público";
+      }
+    });
   }
 
   async function submitDynamic(e){
