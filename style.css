@@ -1,243 +1,511 @@
 /* =========================================================
-   AGENDA YA — LOGIN FINAL
-   Reference canvas: 691 × 1536 px
-   This stylesheet is deliberately single-source: no conflicting
-   legacy overrides. Functional IDs/classes remain unchanged.
+   AGENDA YA — LOGIN
+   RECONSTRUCCIÓN LIMPIA · REFERENCIA 691 × 1536
+   Una sola fuente visual para el login.
+   IDs funcionales de Agenda YA permanecen intactos.
    ========================================================= */
 
 :root{
   --blue:#0878ea;
   --navy:#0b2e59;
-  --gray:#737b86;
+  --text:#5f6670;
+  --muted:#737b86;
   --border:#dfe2e6;
+  --white:#fff;
+  --s:calc(100vw / 691);
 }
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;min-height:100%;background:#fff}
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--navy);overflow-x:hidden}
+
+*,
+*::before,
+*::after{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  background:#fff;
+}
+
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--navy);
+  overflow-x:hidden;
+}
+
 button,input{font:inherit}
 
-/* The composition preserves the exact reference aspect ratio. */
+/* Login canvas.
+   At 691px wide the geometry is 1:1 with the supplied reference.
+   At other widths every dimension scales from the same reference ratio. */
 .ay-auth{
   position:relative!important;
   width:100%!important;
-  height:100dvh!important;
-  min-height:100dvh!important;
+  min-height:calc(1536 * var(--s))!important;
+  height:calc(1536 * var(--s))!important;
   background:#fff!important;
-  overflow:hidden!important;
+  overflow:visible!important;
   display:block!important;
 }
-.ay-auth-bg-shape,.ay-auth-bg-shape-a,.ay-auth-bg-shape-b,.ay-auth-bg-shape-c{display:none!important}
+
+.ay-auth-bg-shape,
+.ay-auth-bg-shape-a,
+.ay-auth-bg-shape-b,
+.ay-auth-bg-shape-c{
+  display:none!important;
+}
 
 .ay-auth-wrap{
   position:relative!important;
-  width:min(100vw, calc(100dvh * 691 / 1536))!important;
-  height:100dvh!important;
+  width:100%!important;
+  height:100%!important;
   min-height:0!important;
-  margin:0 auto!important;
-  padding:0 calc(48 / 691 * 100%)!important;
+  margin:0!important;
+  padding:0!important;
   background:#fff!important;
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 
-/* Back */
+/* ---------- Volver ---------- */
 .ay-auth-topbar{
   position:absolute!important;
-  left:0!important;right:0!important;top:0!important;
-  height:calc(150 / 1536 * 100%)!important;
-  padding:calc(110 / 1536 * 100%) 0 0!important;
+  inset:0 0 auto 0!important;
+  width:100%!important;
+  height:calc(150 * var(--s))!important;
+  padding:calc(110 * var(--s)) 0 0!important;
   margin:0!important;
   background:transparent!important;
   z-index:10!important;
 }
+
 .ay-auth-back{
   appearance:none!important;
-  border:0!important;background:transparent!important;
+  border:0!important;
+  background:transparent!important;
   color:var(--blue)!important;
-  padding:0!important;margin-left:calc(38 / 691 * 100%)!important;
-  display:inline-flex!important;align-items:center!important;gap:min(10px,1.6286dvh)!important;
-  width:auto!important;height:auto!important;
-  border-radius:0!important;box-shadow:none!important;
-  font-size:min(3.618vw,1.6286dvh)!important;
-  line-height:1!important;font-weight:700!important;
-  letter-spacing:-.5px!important;white-space:nowrap!important;
-  cursor:pointer!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0 0 0 calc(38 * var(--s))!important;
+  padding:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:calc(10 * var(--s))!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  font-size:calc(22 * var(--s))!important;
+  line-height:1!important;
+  font-weight:700!important;
+  letter-spacing:-.5px!important;
+  white-space:nowrap!important;
 }
-.ay-auth-back svg{width:min(29px,1.8893dvh)!important;height:min(29px,1.8893dvh)!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:2.4!important}
+
+.ay-auth-back svg{
+  width:calc(29 * var(--s))!important;
+  height:calc(29 * var(--s))!important;
+  display:block!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2.4!important;
+}
+
 .ay-auth-back span{display:block!important}
 
-/* Logo */
+/* ---------- Logo ---------- */
 .ay-auth-brand{
   position:absolute!important;
-  top:calc(198 / 1536 * 100%)!important;
-  left:calc(48 / 691 * 100%)!important;
-  right:calc(48 / 691 * 100%)!important;
-  width:auto!important;height:auto!important;
-  margin:0!important;padding:0!important;
-  display:flex!important;justify-content:center!important;align-items:center!important;
+  top:calc(198 * var(--s))!important;
+  left:calc(48 * var(--s))!important;
+  right:calc(48 * var(--s))!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
   background:transparent!important;
   z-index:5!important;
 }
+
 .ay-auth-brand img{
-  display:block!important;width:min(510px,33.2031dvh)!important;max-width:100%!important;height:auto!important;
-  margin:0 auto!important;object-fit:contain!important;border:0!important;
+  display:block!important;
+  width:calc(510 * var(--s))!important;
+  max-width:100%!important;
+  height:auto!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  border:0!important;
 }
 
-/* Intro */
+/* ---------- Intro ---------- */
 .ay-auth-intro{
   position:absolute!important;
-  top:calc(419 / 1536 * 100%)!important;
-  left:calc(48 / 691 * 100%)!important;
-  right:calc(48 / 691 * 100%)!important;
-  width:auto!important;margin:0!important;padding:0!important;
-  text-align:center!important;z-index:5!important;
-}
-.ay-auth-eyebrow,.ay-auth-title{display:none!important}
-.ay-auth-subtitle{
-  display:block!important;margin:0 auto!important;padding:0!important;
-  max-width:600px!important;color:#737b86!important;
-  font-size:min(3.618vw,1.6286dvh)!important;
-  line-height:1.38!important;font-weight:400!important;
-  letter-spacing:-.45px!important;text-align:center!important;
-}
-.ay-auth-title-break{display:none!important}
-
-/* Form card */
-.ay-auth-card{
-  position:absolute!important;
-  top:calc(557 / 1536 * 100%)!important;
-  left:calc(48 / 691 * 100%)!important;
-  right:calc(48 / 691 * 100%)!important;
-  width:auto!important;margin:0!important;padding:0!important;
-  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
+  top:calc(419 * var(--s))!important;
+  left:calc(48 * var(--s))!important;
+  right:calc(48 * var(--s))!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:center!important;
   z-index:5!important;
 }
-.ay-auth-form{display:block!important;width:100%!important;margin:0!important;padding:0!important}
+
+.ay-auth-eyebrow,
+.ay-auth-title{
+  display:none!important;
+}
+
+.ay-auth-subtitle{
+  display:block!important;
+  margin:0 auto!important;
+  padding:0!important;
+  max-width:none!important;
+  color:var(--muted)!important;
+  font-size:calc(22 * var(--s))!important;
+  line-height:1.38!important;
+  font-weight:400!important;
+  letter-spacing:-.45px!important;
+  text-align:center!important;
+}
+
+.ay-auth-title-break{display:none!important}
+
+/* ---------- Form ---------- */
+.ay-auth-card{
+  position:absolute!important;
+  top:calc(557 * var(--s))!important;
+  left:calc(48 * var(--s))!important;
+  right:calc(48 * var(--s))!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  z-index:5!important;
+}
+
+.ay-auth-form{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+}
+
 .ay-auth-field{
-  position:relative!important;display:block!important;width:100%!important;
-  margin:0 0 calc(29 / 1536 * 100%)!important;padding:0!important;
-  background:transparent!important;border:0!important;box-shadow:none!important;
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  margin:0 0 calc(29 * var(--s))!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
 }
-.ay-auth-field-copy{position:relative!important;display:block!important;width:100%!important;padding:0!important}
+
+.ay-auth-field-copy{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  padding:0!important;
+}
+
 .ay-auth-label{
-  display:block!important;margin:0 0 9px!important;
-  color:var(--navy)!important;font-size:min(3.473vw,1.5625dvh)!important;
-  line-height:1.15!important;font-weight:750!important;letter-spacing:-.45px!important;
+  display:block!important;
+  margin:0 0 calc(9 * var(--s))!important;
+  color:var(--navy)!important;
+  font-size:calc(21 * var(--s))!important;
+  line-height:1.15!important;
+  font-weight:750!important;
+  letter-spacing:-.45px!important;
 }
+
 .ay-auth-field-icon{
-  position:absolute!important;z-index:4!important;
-  left:22px!important;bottom:min(23px,1.4974dvh)!important;
-  width:min(34px,2.2135dvh)!important;height:min(34px,2.2135dvh)!important;
-  display:grid!important;place-items:center!important;
-  color:#737c87!important;background:transparent!important;
+  position:absolute!important;
+  z-index:4!important;
+  left:calc(22 * var(--s))!important;
+  bottom:calc(23 * var(--s))!important;
+  width:calc(34 * var(--s))!important;
+  height:calc(34 * var(--s))!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#737c87!important;
+  background:transparent!important;
   pointer-events:none!important;
 }
-.ay-auth-field-icon svg{width:min(31px,2.0182dvh)!important;height:min(31px,2.0182dvh)!important;fill:none!important;stroke:currentColor!important;stroke-width:1.9!important}
+
+.ay-auth-field-icon svg{
+  width:calc(31 * var(--s))!important;
+  height:calc(31 * var(--s))!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.9!important;
+}
+
 .ay-auth-input{
-  display:block!important;width:100%!important;height:min(84px,5.4688dvh)!important;min-height:0!important;
-  margin:0!important;padding:0 min(65px,4.2318dvh) 0 min(86px,5.599dvh)!important;
-  border:2px solid var(--border)!important;border-radius:min(20px,1.3021dvh)!important;outline:none!important;
-  background:#fff!important;color:#555e69!important;
-  font-size:min(3.473vw,1.5625dvh)!important;font-weight:400!important;
-  letter-spacing:-.3px!important;box-shadow:none!important;-webkit-appearance:none!important;
+  display:block!important;
+  width:100%!important;
+  height:calc(84 * var(--s))!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0 calc(65 * var(--s)) 0 calc(86 * var(--s))!important;
+  border:2px solid var(--border)!important;
+  border-radius:calc(20 * var(--s))!important;
+  outline:none!important;
+  background:#fff!important;
+  color:#555e69!important;
+  font-size:calc(22 * var(--s))!important;
+  font-weight:400!important;
+  letter-spacing:-.3px!important;
+  box-shadow:none!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
 }
-.ay-auth-input::placeholder{color:#5f6670!important;opacity:1!important}
-.ay-auth-input:focus{border-color:#b5bbc2!important;box-shadow:0 0 0 2px rgba(8,120,234,.04)!important}
+
+.ay-auth-input::placeholder{
+  color:#5f6670!important;
+  opacity:1!important;
+}
+
+.ay-auth-input:focus{
+  border-color:#cbd0d5!important;
+  box-shadow:none!important;
+}
+
 .ay-auth-password-copy{position:relative!important}
+
 .ay-auth-eye{
-  position:absolute!important;z-index:5!important;
-  right:min(19px,1.237dvh)!important;bottom:min(20px,1.3021dvh)!important;
-  width:min(42px,2.7344dvh)!important;height:min(42px,2.7344dvh)!important;padding:min(5px,.3255dvh)!important;
-  border:0!important;background:transparent!important;color:#737c87!important;
-  box-shadow:none!important;border-radius:0!important;
-  display:grid!important;place-items:center!important;
+  position:absolute!important;
+  z-index:5!important;
+  right:calc(19 * var(--s))!important;
+  bottom:calc(20 * var(--s))!important;
+  width:calc(42 * var(--s))!important;
+  height:calc(42 * var(--s))!important;
+  padding:calc(5 * var(--s))!important;
+  border:0!important;
+  background:transparent!important;
+  color:#737c87!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  display:grid!important;
+  place-items:center!important;
 }
-.ay-auth-eye svg{width:32px!important;height:32px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important}
-.ay-auth-eye .ay-eye-open{display:block!important}.ay-auth-eye .ay-eye-closed{display:none!important}
-.ay-auth-confirm-field{margin-top:-5px!important;margin-bottom:28px!important}
-.ay-auth-confirm-field .ay-auth-input{padding-left:22px!important}
 
-/* Primary button */
+.ay-auth-eye svg{
+  width:calc(32 * var(--s))!important;
+  height:calc(32 * var(--s))!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+}
+
+.ay-auth-eye .ay-eye-open{display:block!important}
+.ay-auth-eye .ay-eye-closed{display:none!important}
+
+.ay-auth-confirm-field{
+  margin-top:calc(-5 * var(--s))!important;
+  margin-bottom:calc(28 * var(--s))!important;
+}
+
+.ay-auth-confirm-field .ay-auth-input{
+  padding-left:calc(22 * var(--s))!important;
+}
+
+/* ---------- Primary ---------- */
 .ay-auth-primary{
-  width:100%!important;height:min(86px,5.599dvh)!important;min-height:0!important;
-  margin:0!important;padding:0 min(24px,1.5625dvh)!important;border:0!important;border-radius:min(20px,1.3021dvh)!important;
-  background:linear-gradient(90deg,#0878ea 0%,#0788f3 100%)!important;color:#fff!important;
-  box-shadow:none!important;display:flex!important;align-items:center!important;justify-content:center!important;
-  gap:min(18px,1.1719dvh)!important;font-size:min(3.618vw,1.6286dvh)!important;line-height:1!important;
-  font-weight:800!important;cursor:pointer!important;
-}
-.ay-auth-primary b{font-size:min(27px,1.7578dvh)!important;font-weight:400!important;line-height:1!important}
-
-/* Recovery */
-.ay-auth-status{min-height:0!important;margin:0!important;padding:0!important}
-#ayAuthStatus:not(:empty){margin-top:14px!important;text-align:center!important}
-.ay-auth-link{
-  display:block!important;margin:min(27px,1.7578dvh) auto 0!important;padding:0!important;
-  border:0!important;background:transparent!important;color:var(--blue)!important;
-  font-size:min(3.473vw,1.5625dvh)!important;line-height:1.25!important;
-  font-weight:750!important;text-align:center!important;box-shadow:none!important;cursor:pointer!important;
-}
-
-/* Divider */
-.ay-auth-divider{
-  width:100%!important;display:flex!important;align-items:center!important;gap:min(25px,1.6276dvh)!important;
-  margin:min(53px,3.4505dvh) 0 min(35px,2.2786dvh)!important;color:#707781!important;
-  font-size:min(3.039vw,1.3672dvh)!important;line-height:1!important;font-weight:400!important;
-}
-.ay-auth-divider::before,.ay-auth-divider::after{content:""!important;flex:1 1 auto!important;height:min(2px,.1302dvh)!important;background:#dfe1e4!important}
-.ay-auth-divider span{white-space:nowrap!important}
-
-/* Social */
-.ay-auth-socials{display:grid!important;gap:21px!important;width:100%!important}
-.ay-auth-secondary{
-  position:relative!important;width:100%!important;height:min(82px,5.3385dvh)!important;min-height:0!important;
-  margin:0!important;padding:0 min(70px,4.5573dvh) 0 min(184px,11.9792dvh)!important;
-  border:2px solid var(--border)!important;border-radius:min(19px,1.237dvh)!important;
-  background:#fff!important;color:var(--navy)!important;box-shadow:none!important;
-  display:flex!important;align-items:center!important;justify-content:flex-start!important;
-  font-size:calc(22 / 691 * 100%)!important;line-height:1.1!important;font-weight:750!important;
+  width:100%!important;
+  height:calc(86 * var(--s))!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0 calc(24 * var(--s))!important;
+  border:0!important;
+  border-radius:calc(20 * var(--s))!important;
+  background:linear-gradient(90deg,#0878ea 0%,#0788f3 100%)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:calc(18 * var(--s))!important;
+  font-size:calc(22 * var(--s))!important;
+  line-height:1!important;
+  font-weight:800!important;
   cursor:pointer!important;
 }
+
+.ay-auth-primary b{
+  font-size:calc(27 * var(--s))!important;
+  font-weight:400!important;
+  line-height:1!important;
+}
+
+/* ---------- Recovery ---------- */
+.ay-auth-status{
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+#ayAuthStatus:not(:empty){
+  margin-top:calc(14 * var(--s))!important;
+  text-align:center!important;
+}
+
+.ay-auth-link{
+  display:block!important;
+  margin:calc(27 * var(--s)) auto 0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--blue)!important;
+  font-size:calc(21 * var(--s))!important;
+  line-height:1.25!important;
+  font-weight:750!important;
+  text-align:center!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+
+/* ---------- Divider ---------- */
+.ay-auth-divider{
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:calc(25 * var(--s))!important;
+  margin:calc(53 * var(--s)) 0 calc(35 * var(--s))!important;
+  color:#707781!important;
+  font-size:calc(18 * var(--s))!important;
+  line-height:1!important;
+  font-weight:400!important;
+}
+
+.ay-auth-divider::before,
+.ay-auth-divider::after{
+  content:""!important;
+  flex:1 1 auto!important;
+  height:2px!important;
+  background:#dfe1e4!important;
+}
+
+.ay-auth-divider span{white-space:nowrap!important}
+
+/* ---------- Social ---------- */
+.ay-auth-socials{
+  display:grid!important;
+  gap:calc(21 * var(--s))!important;
+  width:100%!important;
+}
+
+.ay-auth-secondary{
+  position:relative!important;
+  width:100%!important;
+  height:calc(82 * var(--s))!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0 calc(70 * var(--s)) 0 calc(184 * var(--s))!important;
+  border:2px solid var(--border)!important;
+  border-radius:calc(19 * var(--s))!important;
+  background:#fff!important;
+  color:var(--navy)!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  font-size:calc(22 * var(--s))!important;
+  line-height:1.1!important;
+  font-weight:750!important;
+  cursor:pointer!important;
+}
+
 .ay-auth-secondary>b{
-  position:absolute!important;right:min(42px,2.7344dvh)!important;top:50%!important;transform:translateY(-50%)!important;
-  color:#5d6672!important;font-size:min(27px,1.7578dvh)!important;font-weight:400!important;line-height:1!important;
+  position:absolute!important;
+  right:calc(42 * var(--s))!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  color:#5d6672!important;
+  font-size:calc(27 * var(--s))!important;
+  font-weight:400!important;
+  line-height:1!important;
 }
+
 .ay-social-icon{
-  position:absolute!important;left:min(132px,8.5938dvh)!important;top:50%!important;transform:translate(-50%,-50%)!important;
-  width:min(42px,2.7344dvh)!important;height:min(42px,2.7344dvh)!important;display:grid!important;place-items:center!important;
+  position:absolute!important;
+  left:calc(132 * var(--s))!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:calc(42 * var(--s))!important;
+  height:calc(42 * var(--s))!important;
+  display:grid!important;
+  place-items:center!important;
 }
-.ay-social-icon svg{display:block!important;width:min(42px,2.7344dvh)!important;height:min(42px,2.7344dvh)!important}
-.ay-social-text{display:block!important;white-space:nowrap!important;text-align:left!important}
 
-/* Footer */
+.ay-social-icon svg{
+  display:block!important;
+  width:calc(42 * var(--s))!important;
+  height:calc(42 * var(--s))!important;
+}
+
+.ay-social-text{
+  display:block!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+}
+
+/* ---------- Footer ---------- */
 .ay-auth-switch{
-  margin:min(40px,2.6042dvh) auto 0!important;padding:0!important;text-align:center!important;color:#727a84!important;
-  font-size:min(3.039vw,1.3672dvh)!important;line-height:1.35!important;font-weight:400!important;
-}
-.ay-auth-switch button{
-  display:inline!important;margin-left:6px!important;padding:0!important;border:0!important;
-  background:transparent!important;color:var(--blue)!important;font-weight:800!important;
-  font-size:inherit!important;box-shadow:none!important;cursor:pointer!important;
-}
-.ay-auth-foot{
-  margin:min(28px,1.8229dvh) 0 0!important;padding:0!important;text-align:center!important;color:#89909a!important;
-  font-size:min(2.605vw,1.1719dvh)!important;line-height:1.25!important;font-weight:400!important;
+  margin:calc(40 * var(--s)) auto 0!important;
+  padding:0!important;
+  text-align:center!important;
+  color:#727a84!important;
+  font-size:calc(18 * var(--s))!important;
+  line-height:1.35!important;
+  font-weight:400!important;
 }
 
-/* Auth state visibility is controlled by auth.js. */
+.ay-auth-switch button{
+  display:inline!important;
+  margin-left:calc(6 * var(--s))!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--blue)!important;
+  font-weight:800!important;
+  font-size:inherit!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+}
+
+.ay-auth-foot{
+  margin:calc(28 * var(--s)) 0 0!important;
+  padding:0!important;
+  text-align:center!important;
+  color:#89909a!important;
+  font-size:calc(15 * var(--s))!important;
+  line-height:1.25!important;
+  font-weight:400!important;
+}
+
+/* ---------- State handling ---------- */
 #ayAuthPostLogin{display:none}
 #ayAuthPostLogin.is-visible{display:block}
-.ay-profile[hidden],.ay-app[hidden]{display:none!important}
+#ayAuthFormPanel[hidden]{display:none!important}
+.ay-profile[hidden],
+.ay-app[hidden]{display:none!important}
 #ayPasswordConfirmWrap[hidden]{display:none!important}
 #ayPasswordConfirmWrap:not([hidden]){display:block!important}
 
-/* Small viewport correction: preserve the reference ratio while fitting height. */
-@media(max-width:700px){
-  .ay-auth-wrap{
-    width:min(100vw, calc(100dvh * 691 / 1536))!important;
-    height:100dvh!important;
-    padding-left:calc(48 / 691 * 100%)!important;
-    padding-right:calc(48 / 691 * 100%)!important;
+/* ---------- Do not let desktop app CSS alter the login canvas ---------- */
+.ay-auth input,
+.ay-auth button{
+  box-sizing:border-box;
+}
+
+/* On very narrow devices the reference remains proportional.
+   The page can scroll vertically rather than clipping the design. */
+@media (max-width:480px){
+  .ay-auth{
+    min-height:calc(1536 * 100vw / 691)!important;
+    height:calc(1536 * 100vw / 691)!important;
   }
-  .ay-auth-back{font-size:min(3.618vw,1.6286dvh)!important}
-  .ay-auth-back svg{width:min(29px,1.8893dvh)!important;height:min(29px,1.8893dvh)!important}
 }

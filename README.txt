@@ -1,17 +1,36 @@
-AGENDA YA — LOGIN FINAL
+AGENDA YA — LOGIN RECONSTRUIDO
+================================
 
-Se tomó como fuente directa el login.html, script.js y style.css entregados por el usuario.
+Esta versión elimina la segunda hoja CSS específica del login (auth.css) para
+evitar reglas visuales duplicadas y deja style.css como única fuente de estilo
+del login.
 
-Implementado:
-1. Réplica visual del diseño de la imagen 691×1536.
-2. Íconos de correo y contraseña dentro de los inputs.
-3. Ojo de contraseña.
-4. Google y Facebook con SVG reales.
-5. Recuperación de contraseña.
-6. Crear cuenta.
-7. Supabase Auth con persistencia de sesión, auto-refresh y detección de sesión OAuth.
-8. Google/Facebook mediante Supabase OAuth.
-9. Al existir una sesión persistente, el motor AgendaYaAuth recupera getSession() y enruta al perfil/sistema.
-10. index.html incluido como espejo de login.html porque el callback OAuth del motor funcional apunta al root de /somos-agenda/.
+Se conserva agenda-ya-shell.css porque login.html contiene también la vista de
+perfil y la aplicación posterior al inicio de sesión.
 
-El motor funcional utilizado es Agenda Ya Identity + Profile + Social Auth v0.5.0 de Backup-2.0.
+El diseño se reconstruye sobre la referencia 691 x 1536 px:
+- Todas las coordenadas y tamaños visuales se escalan desde el ancho.
+- No se usa 100dvh para posicionar el diseño, evitando que la barra del navegador
+  cambie la escala vertical.
+- No se usa overflow:hidden en el lienzo del login, evitando recortes.
+- Se mantienen los IDs funcionales de Agenda YA para auth.js:
+  ayAuthForm, ayAuthEmail, ayAuthPassword, ayAuthGoogle, ayAuthFacebook,
+  ayRecoveryBtn, ayAuthSwitch, etc.
+
+PERSISTENCIA / AUTH
+-------------------
+login.html mantiene Supabase JS + SOMOS_CONFIG + los scripts funcionales de
+Backup-2.0:
+agenda-ya-shell.js
+agenda-ya-profile.js
+auth.js
+
+La persistencia real depende de ese motor de Supabase/Auth; esta reconstrucción
+no sustituye ni falsifica la autenticación.
+
+ARCHIVOS
+--------
+login.html
+style.css
+script.js
+README.txt
