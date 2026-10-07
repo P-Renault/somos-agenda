@@ -1,6 +1,7 @@
-/* Agenda Ya — UI Shell / Interaction Layer v1.0
-   No Supabase. No business logic. No data persistence.
-   This file is intentionally a presentation shell for later engine integration. */
+/* Agenda Ya — UI Shell / Interaction Layer v1.1
+   Backup-1.0 cumulative shell.
+   Loads the complete operational module layer without replacing authentication or the shell.
+*/
 (() => {
   const labels = {
     dashboard: ["DASHBOARD", "Dashboard", "Centro de gestión del negocio."],
@@ -11,7 +12,7 @@
     clients: ["RELACIÓN", "Clientes", "Consulta y administra la cartera de clientes."],
     bookings: ["OPERACIÓN", "Reservas", "Gestiona reservas, estados y atención."],
     calendar: ["OPERACIÓN", "Calendario", "Visualiza la agenda y la carga diaria del negocio."],
-    "public-profile": ["PUBLICACIÓN", "Perfil público", "Configura cómo el negocio se presenta a sus clientes."],
+    "public-profile": ["PUBLICACIÓN", "Perfil público", "Visualiza cómo se presenta públicamente tu propio negocio."],
     settings: ["SISTEMA", "Configuración", "Preferencias, cuenta, plan y suscripción."]
   };
 
@@ -19,6 +20,29 @@
   const sidebar = document.getElementById("aySidebar");
   const dashboard = document.getElementById("view-dashboard");
   const generic = document.getElementById("view-generic");
+
+  function loadAsset(type, url) {
+    return new Promise((resolve) => {
+      const selector = type === "css" ? `link[data-agenda-asset="${url}"]` : `script[data-agenda-asset="${url}"]`;
+      if (document.querySelector(selector)) return resolve();
+      if (type === "css") {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = url;
+        link.dataset.agendaAsset = url;
+        link.onload = () => resolve();
+        link.onerror = () => resolve();
+        document.head.appendChild(link);
+      } else {
+        const script = document.createElement("script");
+        script.src = url;
+        script.dataset.agendaAsset = url;
+        script.onload = () => resolve();
+        script.onerror = () => resolve();
+        document.body.appendChild(script);
+      }
+    });
+  }
 
   function activate(view) {
     const meta = labels[view] || labels.dashboard;
@@ -37,8 +61,6 @@
 
     all("[data-view]").forEach(el => el.classList.toggle("is-active", el.dataset.view === view));
     sidebar.classList.remove("is-open");
-
-    // Integration contract: a future application controller can listen here.
     window.dispatchEvent(new CustomEvent("agendaYa:view-change", { detail: { view } }));
   }
 
@@ -58,11 +80,13 @@
   });
 
   window.AgendaYaUI = {
-    version: "1.0.0",
+    version: "1.1.0",
     activate,
     getCurrentView: () => document.querySelector(".ay-nav-item.is-active")?.dataset.view || "dashboard",
     on: (event, handler) => window.addEventListener(`agendaYa:${event}`, handler)
   };
 
+  // The shell remains independent. Operational modules are loaded as a cumulative layer.
+  void loadAsset("css", "agenda-ya-modules.css").then(() => loadAsset("js", "agenda-ya-modules.js"));
   activate("dashboard");
 })();
