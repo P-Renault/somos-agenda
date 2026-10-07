@@ -208,3 +208,75 @@ body{overflow-x:hidden}
  .ay-auth,.ay-profile{padding:0 14px 20px}.ay-auth-wrap,.ay-profile-wrap{width:100%}.ay-auth-back,.ay-profile-top-back{left:14px;top:24px;width:60px;height:60px;border-radius:17px}.ay-auth-brand,.ay-profile-brand{height:150px;padding:14px 0 10px}.ay-auth-brand img,.ay-profile-brand img{width:270px}.ay-auth-card,.ay-profile-card{border-radius:24px;padding:26px 16px 18px}.ay-auth-eyebrow{font-size:12px}.ay-auth-title,.ay-profile-head h1{font-size:34px}.ay-auth-subtitle,.ay-profile-head p:not(.ay-auth-eyebrow){font-size:17px;margin-bottom:22px}.ay-auth-field{grid-template-columns:50px 1fr;gap:11px;padding:12px 14px;border-radius:16px}.ay-field-icon{width:45px;height:45px;border-radius:13px}.ay-auth-field span>b{font-size:14px}.ay-auth-input{font-size:16px!important}.ay-auth-primary{min-height:54px;font-size:17px;border-radius:15px}.ay-auth-secondary{min-height:51px;font-size:15px;border-radius:15px}.ay-auth-link,.ay-auth-switch{font-size:14px}.ay-profile-progress{grid-template-columns:1fr 1fr 1fr auto;gap:6px;padding:0 4px 8px}.ay-profile-progress span{height:7px}.ay-profile-progress b{font-size:10px}.ay-profile-head-icon{width:60px;height:60px;border-radius:18px}.ay-profile-choice-copy{font-size:15px}.ay-profile-type-btn{grid-template-columns:64px 1fr 30px;gap:12px;min-height:122px;padding:14px}.ay-choice-icon{width:60px;height:60px;border-radius:18px}.ay-choice-copy strong{font-size:17px}.ay-choice-copy>span{font-size:13px}.ay-choice-check{display:none!important}.ay-profile-type-btn .ay-arrow{font-size:29px}.ay-profile-info{font-size:13px;padding:14px 16px;gap:12px}.ay-info{width:34px;height:34px;font-size:18px;flex:0 0 34px}.ay-profile-photo-row{padding:14px;gap:12px;border-radius:17px}.ay-profile-avatar{width:88px;height:88px;flex-basis:88px}.ay-profile-photo-row strong{font-size:16px}.ay-profile-photo-row p{font-size:13px}.ay-upload-button{font-size:13px!important;padding:10px 12px!important}.ay-form-card{grid-template-columns:48px 1fr;gap:10px;padding:11px 12px;border-radius:16px}.ay-form-icon{width:43px;height:43px;border-radius:13px}.ay-form-card>span:last-child>b{font-size:14px}.ay-form-card input{font-size:16px!important}.ay-form-grid-two{grid-template-columns:1fr;gap:10px}.ay-file-card{grid-template-columns:48px 1fr;padding:13px;border-radius:16px}.ay-file-card strong{font-size:15px}.ay-file-card p{font-size:12px}.ay-profile-next{min-height:54px}.ay-profile-back{font-size:13px}.ay-profile{overflow:auto}
 }
 @media(max-width:430px){.ay-auth-brand,.ay-profile-brand{height:126px}.ay-auth-brand img,.ay-profile-brand img{width:245px}.ay-auth-card,.ay-profile-card{padding:22px 12px 16px}.ay-auth-title,.ay-profile-head h1{font-size:31px}.ay-profile-type-btn{min-height:112px}.ay-profile-info{margin-bottom:14px}}
+
+/* =========================================================
+   Agenda Ya · REFERENCE B1.1 · RESPONSIVE CALIBRATION
+   The 864×1536 reference is the master proportion. The UI
+   scales continuously instead of switching to a smaller mobile
+   composition at 700px.
+   ========================================================= */
+@media (max-width: 860px){
+  .ay-auth,.ay-profile{padding-left:clamp(12px,3.24vw,28px);padding-right:clamp(12px,3.24vw,28px)}
+  .ay-auth-wrap,.ay-profile-wrap{width:100%;max-width:860px}
+  .ay-auth-back,.ay-profile-top-back{left:0;top:clamp(24px,3.94vw,34px);width:clamp(60px,9.03vw,78px);height:clamp(60px,9.03vw,78px);border-radius:clamp(17px,2.31vw,20px)}
+  .ay-auth-back .ay-back-arrow,.ay-profile-top-back .ay-back-arrow{font-size:clamp(30px,4.28vw,37px)}
+  .ay-auth-brand,.ay-profile-brand{height:clamp(126px,19.44vw,168px);padding:clamp(12px,2.31vw,20px) 0 clamp(10px,1.39vw,12px)}
+  .ay-auth-brand img,.ay-profile-brand img{width:clamp(245px,35.88vw,310px)}
+  .ay-auth-card,.ay-profile-card{border-radius:clamp(24px,3.47vw,30px);padding:clamp(22px,5.09vw,44px) clamp(16px,5.09vw,44px) clamp(18px,3.94vw,34px)}
+  .ay-auth-eyebrow{font-size:clamp(12px,1.85vw,16px);margin-bottom:clamp(7px,1.39vw,12px)}
+  .ay-auth-title,.ay-profile-head h1{font-size:clamp(31px,6.02vw,52px)}
+  .ay-auth-subtitle,.ay-profile-head p:not(.ay-auth-eyebrow){font-size:clamp(17px,2.78vw,24px);margin-bottom:clamp(20px,3.94vw,34px)}
+  .ay-auth-field{grid-template-columns:clamp(50px,7.41vw,64px) 1fr;gap:clamp(11px,1.85vw,16px);padding:clamp(12px,1.85vw,16px) clamp(14px,2.31vw,20px);border-radius:clamp(16px,2.31vw,20px)}
+  .ay-field-icon{width:clamp(45px,6.25vw,54px);height:clamp(45px,6.25vw,54px);border-radius:clamp(13px,1.85vw,16px)}
+  .ay-auth-field span>b{font-size:clamp(14px,1.97vw,17px)}
+  .ay-auth-input{font-size:clamp(16px,2.31vw,20px)!important}
+  .ay-auth-primary{min-height:clamp(54px,7.41vw,64px);font-size:clamp(17px,2.43vw,21px);border-radius:clamp(15px,2.08vw,18px)}
+  .ay-arrow{font-size:clamp(28px,3.70vw,32px)}
+  .ay-auth-link{font-size:clamp(14px,2.08vw,18px)}
+  .ay-auth-divider{font-size:clamp(13px,1.97vw,17px)}
+  .ay-auth-secondary{min-height:clamp(51px,6.94vw,60px);font-size:clamp(15px,2.08vw,18px);border-radius:clamp(15px,1.97vw,17px);padding:0 clamp(14px,2.31vw,20px)}
+  .ay-auth-switch,.ay-auth-switch button{font-size:clamp(14px,1.97vw,17px)}
+
+  .ay-profile-progress{gap:clamp(6px,1.39vw,12px);padding-bottom:clamp(8px,1.16vw,10px)}
+  .ay-profile-progress span{height:clamp(7px,1.39vw,12px)}
+  .ay-profile-progress b{font-size:clamp(10px,1.85vw,16px)}
+  .ay-profile-head-icon{width:clamp(60px,8.80vw,76px);height:clamp(60px,8.80vw,76px);border-radius:clamp(18px,2.78vw,24px);margin-bottom:clamp(14px,2.31vw,20px)}
+  .ay-profile-head-icon .ay-svg{width:clamp(38px,5.56vw,48px);height:clamp(38px,5.56vw,48px)}
+  .ay-profile-choice-copy{font-size:clamp(15px,2.31vw,20px);margin-bottom:clamp(18px,3.01vw,26px)}
+  .ay-profile-type{gap:clamp(8px,1.62vw,14px)}
+  .ay-profile-type-btn{grid-template-columns:clamp(64px,10.65vw,92px) 1fr clamp(30px,4.86vw,42px) clamp(24px,3.47vw,30px);gap:clamp(12px,2.08vw,18px);min-height:clamp(112px,16.78vw,145px);padding:clamp(14px,2.31vw,20px) clamp(14px,2.78vw,24px);border-radius:clamp(20px,2.78vw,24px)}
+  .ay-choice-icon{width:clamp(60px,9.49vw,82px);height:clamp(60px,9.49vw,82px);border-radius:clamp(18px,2.78vw,24px)}
+  .ay-choice-copy strong{font-size:clamp(17px,2.66vw,23px)}
+  .ay-choice-copy>span{font-size:clamp(13px,1.97vw,17px)}
+  .ay-choice-check{width:clamp(34px,4.86vw,42px);height:clamp(34px,4.86vw,42px)}
+  .ay-profile-type-btn .ay-arrow{font-size:clamp(29px,4.17vw,36px)}
+  .ay-profile-info{font-size:clamp(13px,2.08vw,18px);padding:clamp(14px,2.08vw,18px) clamp(16px,2.55vw,22px);gap:clamp(12px,2.08vw,18px);border-radius:clamp(17px,2.31vw,20px)}
+  .ay-info{width:clamp(34px,4.63vw,40px);height:clamp(34px,4.63vw,40px);font-size:clamp(18px,2.55vw,22px)}
+  .ay-profile-photo-row{padding:clamp(14px,2.55vw,22px);gap:clamp(12px,2.55vw,22px);border-radius:clamp(17px,2.55vw,22px)}
+  .ay-profile-avatar{width:clamp(88px,14.58vw,126px);height:clamp(88px,14.58vw,126px);flex-basis:clamp(88px,14.58vw,126px)}
+  .ay-profile-photo-row strong{font-size:clamp(16px,2.55vw,22px)}
+  .ay-profile-photo-row p{font-size:clamp(13px,1.97vw,17px)}
+  .ay-upload-button{font-size:clamp(13px,1.97vw,17px)!important;padding:clamp(10px,1.50vw,13px) clamp(12px,2.08vw,18px)!important}
+  .ay-form-card{grid-template-columns:clamp(48px,7.18vw,62px) 1fr;gap:clamp(10px,1.62vw,14px);padding:clamp(11px,1.62vw,14px) clamp(12px,2.08vw,18px);border-radius:clamp(16px,2.31vw,20px)}
+  .ay-form-icon{width:clamp(43px,6.02vw,52px);height:clamp(43px,6.02vw,52px);border-radius:clamp(13px,1.85vw,16px)}
+  .ay-form-card>span:last-child>b{font-size:clamp(14px,1.97vw,17px)}
+  .ay-form-card input{font-size:clamp(16px,2.20vw,19px)!important}
+  .ay-form-grid-two{gap:clamp(10px,1.62vw,14px)}
+  .ay-file-card{grid-template-columns:clamp(48px,7.18vw,62px) 1fr;gap:clamp(10px,1.62vw,14px);padding:clamp(13px,2.08vw,18px);border-radius:clamp(16px,2.31vw,20px)}
+  .ay-file-card strong{font-size:clamp(15px,2.08vw,18px)}
+  .ay-file-card p{font-size:clamp(12px,1.85vw,17px)}
+}
+@media (min-width: 621px) and (max-width: 700px){
+  .ay-form-grid-two{grid-template-columns:1fr 1fr}
+  .ay-profile-type-btn{grid-template-columns:64px 1fr 30px}
+  .ay-choice-check{display:grid!important}
+}
+@media (max-width: 620px){
+  .ay-form-grid-two{grid-template-columns:1fr}
+  .ay-choice-check{display:none!important}
+}
+
+/* Brand icons: preserve the exact social-brand proportions inside the reference cards. */
+.ay-social-icon{display:grid!important;place-items:center!important;width:30px!important;min-width:30px!important;height:30px!important;margin:0!important}
+.ay-social-icon svg{width:30px;height:30px;display:block}
+.ay-auth-secondary .ay-social-icon{color:inherit!important}

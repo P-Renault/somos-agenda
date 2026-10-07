@@ -68,3 +68,44 @@ body{background:linear-gradient(180deg,#f8faff 0%,#f3f7fc 100%)}
 @media(max-width:900px){.ay-header{height:86px;padding:8px 18px}.ay-brand{width:auto;flex:1;justify-content:center}.ay-brand img{width:205px;height:65px}.ay-header-actions{margin-left:auto}.ay-somos-avatar{width:54px;height:54px}.ay-logout-btn{font-size:14px;padding:11px 12px;border-radius:16px}.ay-layout{min-height:calc(100vh - 86px)}.ay-main{padding:12px 14px 110px}.ay-hero{min-height:390px;border-radius:27px;padding:30px 28px 20px;background-position:center}.ay-hero:after{background:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.87) 34%,rgba(255,255,255,.12) 68%,rgba(255,255,255,0) 100%)}.ay-hero h1{font-size:38px}.ay-hero p{font-size:17px;max-width:340px}.ay-hero-actions{gap:12px}.ay-hero-actions .ay-btn{min-height:64px;font-size:17px}.ay-kpi{min-height:156px;padding:19px 18px;grid-template-columns:58px 1fr 20px;gap:10px;border-radius:22px}.ay-kpi-icon{width:56px;height:56px;border-radius:17px}.ay-kpi-icon .ay-svg{width:37px;height:37px}.ay-kpi small{font-size:14px}.ay-kpi strong{font-size:30px}.ay-kpi em{font-size:15px}.ay-kpi em.is-pill{font-size:14px;padding:5px 15px}.ay-kpi label{font-size:13px}.ay-kpi-arrow{font-size:34px}.ay-card-reservas{padding:20px 18px;border-radius:23px}.ay-card-head h2{font-size:23px}.ay-link{font-size:16px}.ay-list-row{grid-template-columns:68px 6px 1fr auto 14px;padding:15px 3px}.ay-list-row b{font-size:16px}.ay-dot{height:54px}.ay-list-row strong{font-size:16px}.ay-list-row small{font-size:14px}.ay-list-row mark{font-size:12px;padding:7px 11px}.ay-row-arrow{font-size:28px}.ay-mobile-rail{display:grid}}
 @media(max-width:600px){.ay-header{height:82px;padding:7px 12px}.ay-mobile-only{display:grid}.ay-brand img{width:180px;height:58px}.ay-somos-avatar{width:52px;height:52px}.ay-logout-btn{font-size:14px;padding:9px 8px}.ay-logout-icon{font-size:24px}.ay-main{padding:10px 12px 104px}.ay-hero{min-height:400px;padding:28px 18px 18px;background-position:center;border-radius:24px}.ay-hero h1{font-size:34px}.ay-hero p{font-size:16px}.ay-hero-actions{grid-template-columns:1fr 1fr;gap:10px}.ay-hero-actions .ay-btn{min-height:62px;font-size:16px;border-radius:17px;padding:8px}.ay-hero-actions .ay-svg{width:28px;height:28px}.ay-kpi-grid{gap:12px;margin:12px 0}.ay-kpi{min-height:150px;padding:16px 13px;grid-template-columns:51px 1fr 14px;gap:8px;border-radius:21px}.ay-kpi-icon{width:50px;height:50px;border-radius:16px}.ay-kpi-icon .ay-svg{width:33px;height:33px}.ay-kpi small{font-size:12px}.ay-kpi strong{font-size:28px;margin:1px 0 6px}.ay-kpi em{font-size:14px}.ay-kpi em.is-pill{font-size:12px;padding:5px 13px}.ay-kpi label{font-size:11px}.ay-kpi-arrow{font-size:30px}.ay-card-reservas{padding:17px 14px;border-radius:21px}.ay-card-head{padding-bottom:10px}.ay-card-head h2{font-size:22px}.ay-link{font-size:14px}.ay-list-row{grid-template-columns:54px 5px 1fr auto 12px;padding:14px 0}.ay-list-row b{font-size:15px}.ay-dot{height:51px}.ay-list-row strong{font-size:15px}.ay-list-row small{font-size:13px}.ay-list-row mark{font-size:10px;padding:6px 8px}.ay-row-arrow{font-size:25px}.ay-mobile-rail{left:10px;right:10px;bottom:8px;height:76px;border-radius:23px}.ay-mobile-rail small{font-size:11px}}
 .ay-account-reference-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;padding:0!important;margin:-1px!important}
+
+/* =========================================================
+   Agenda Ya · REFERENCE B1.1 · DASHBOARD CALIBRATION
+   Continuous scaling from the 864px reference composition.
+   ========================================================= */
+@media (max-width: 900px){
+  .ay-header{height:clamp(82px,11.11vw,96px);padding:clamp(7px,1.16vw,10px) clamp(12px,3.24vw,28px)}
+  .ay-brand img{width:clamp(180px,25.46vw,220px);height:auto;max-height:72px}
+  .ay-somos-avatar{width:clamp(52px,7.64vw,66px);height:clamp(52px,7.64vw,66px)}
+  .ay-logout-btn{font-size:clamp(14px,1.97vw,17px);padding:clamp(9px,1.62vw,14px) clamp(8px,2.08vw,18px);border-radius:clamp(16px,2.08vw,18px)}
+  .ay-main{padding:clamp(10px,2.08vw,18px) clamp(12px,3.24vw,28px) 110px}
+  .ay-hero{min-height:clamp(390px,45.83vw,396px);border-radius:clamp(24px,3.47vw,30px);padding:clamp(28px,4.17vw,36px) clamp(18px,3.94vw,34px) clamp(18px,2.78vw,24px)}
+  .ay-hero h1{font-size:clamp(34px,5.44vw,47px)}
+  .ay-hero p{font-size:clamp(16px,2.31vw,20px)}
+  .ay-hero-actions{gap:clamp(10px,1.85vw,16px)}
+  .ay-hero-actions .ay-btn{min-height:clamp(62px,8.80vw,76px);font-size:clamp(16px,2.43vw,21px);border-radius:clamp(17px,2.31vw,20px)}
+  .ay-kpi-grid{gap:clamp(12px,2.08vw,18px);margin:clamp(12px,2.31vw,20px) 0}
+  .ay-kpi{min-height:clamp(150px,20.83vw,180px);padding:clamp(16px,2.89vw,25px) clamp(13px,3.24vw,28px);border-radius:clamp(21px,3.01vw,26px);grid-template-columns:clamp(51px,8.80vw,76px) 1fr clamp(14px,3.47vw,30px);gap:clamp(8px,2.08vw,18px)}
+  .ay-kpi-icon{width:clamp(50px,7.87vw,68px);height:clamp(50px,7.87vw,68px);border-radius:clamp(16px,2.31vw,20px)}
+  .ay-kpi-icon .ay-svg{width:clamp(33px,4.98vw,43px);height:clamp(33px,4.98vw,43px)}
+  .ay-kpi small{font-size:clamp(12px,2.08vw,18px)}
+  .ay-kpi strong{font-size:clamp(28px,4.63vw,40px)}
+  .ay-kpi em{font-size:clamp(14px,2.08vw,18px)}
+  .ay-kpi em.is-pill{font-size:clamp(12px,1.85vw,16px);padding:clamp(5px,0.69vw,6px) clamp(13px,2.31vw,20px)}
+  .ay-kpi label{font-size:clamp(11px,1.85vw,16px)}
+  .ay-card-reservas{padding:clamp(17px,2.89vw,25px) clamp(14px,3.24vw,28px);border-radius:clamp(21px,3.13vw,27px)}
+  .ay-card-head h2{font-size:clamp(22px,3.24vw,28px)}
+  .ay-link{font-size:clamp(14px,2.20vw,19px)}
+  .ay-list-row{grid-template-columns:clamp(54px,10.65vw,92px) clamp(5px,.93vw,8px) 1fr auto clamp(12px,2.31vw,20px);padding:clamp(14px,2.08vw,18px) clamp(0px,.93vw,8px)}
+  .ay-list-row b{font-size:clamp(15px,2.08vw,18px)}
+  .ay-dot{height:clamp(51px,6.71vw,58px);width:clamp(5px,.69vw,6px)}
+  .ay-list-row strong{font-size:clamp(15px,2.08vw,18px)}
+  .ay-list-row small{font-size:clamp(13px,1.85vw,16px)}
+  .ay-list-row mark{font-size:clamp(10px,1.62vw,14px);padding:clamp(6px,.93vw,8px) clamp(8px,1.74vw,15px)}
+  .ay-row-arrow{font-size:clamp(25px,3.70vw,32px)}
+  .ay-mobile-rail{left:clamp(10px,1.85vw,16px);right:clamp(10px,1.85vw,16px);bottom:8px;height:clamp(76px,9.49vw,82px);border-radius:clamp(23px,2.89vw,25px);padding:8px}
+  .ay-mobile-rail button{font-size:clamp(24px,3.24vw,28px)}
+  .ay-mobile-rail small{font-size:clamp(11px,1.62vw,14px)}
+}
+.ay-social-icon svg,.ay-rail-icon{display:block}
+.ay-rail-icon{line-height:1;font-size:inherit}
