@@ -129,24 +129,46 @@
   }
 
   async function loadProfileState(user) {
-    const r = await client.from("profiles")
-      .select("profile_type,full_name,phone,address,age,city,comuna,avatar_url")
-      .eq("id", user.id).maybeSingle();
-    if (r.error) {
-      console.warn("Profile lookup:", r.error);
+    try {
+      const r = await withTimeout(
+        client.from("profiles")
+          .select("profile_type,full_name,phone,address,age,city,comuna,avatar_url")
+          .eq("id", user.id).maybeSingle(),
+        8000,
+        "La consulta del perfil está tardando demasiado."
+      );
+      if (r.error) {
+        console.warn("Profile lookup:", r.error);
+        return null;
+      }
+      return r.data?.profile_type ? r.data : null;
+    } catch (err) {
+      console.warn("Profile lookup timeout/error:", err);
       return null;
     }
-    return r.data?.profile_type ? r.data : null;
   }
   async function loadBusinessExisting(user) {
-    const m = await client.from("business_members")
-      .select("business_id,role,active")
-      .eq("user_id", user.id).eq("active", true).limit(1);
-    if (m.error || !m.data?.length) return null;
-    const b = await client.from("businesses")
-      .select("id,name,phone,address,city,comuna,business_type,logo_url")
-      .eq("id", m.data[0].business_id).maybeSingle();
-    return b.data || null;
+    try {
+      const m = await withTimeout(
+        client.from("business_members")
+          .select("business_id,role,active")
+          .eq("user_id", user.id).eq("active", true).limit(1),
+        8000,
+        "La consulta del negocio está tardando demasiado."
+      );
+      if (m.error || !m.data?.length) return null;
+      const b = await withTimeout(
+        client.from("businesses")
+          .select("id,name,phone,address,city,comuna,business_type,logo_url")
+          .eq("id", m.data[0].business_id).maybeSingle(),
+        8000,
+        "La consulta del negocio está tardando demasiado."
+      );
+      return b.data || null;
+    } catch (err) {
+      console.warn("Business lookup timeout/error:", err);
+      return null;
+    }
   }
   function populateCustomer(p, user) {
     $("ayCustomerName").value = p?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || "";
