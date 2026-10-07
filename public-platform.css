@@ -57,3 +57,198 @@ button{cursor:pointer}
 @media(max-width:860px){.market-header{height:76px}.market-brand img{width:155px;height:58px}.market-header-actions{gap:10px}.publish-link{font-size:13px}.account-button{width:38px;height:38px}.market-hero{min-height:205px}.hero-backdrop{background-position:center center}.hero-content{min-height:205px;padding:12px 20px 22px}.hero-content h1{font-size:31px;max-width:none;white-space:nowrap}.hero-content>p{font-size:15px;margin:5px 0 16px;white-space:nowrap}.market-search{grid-template-columns:1.25fr 1fr 1.25fr 88px;gap:8px}.search-field{height:43px;padding:0 11px;gap:7px;border-radius:10px}.search-field input,.search-field select{font-size:10px}.search-svg{font-size:17px}.grid-svg{font-size:17px}.select-chevron{right:8px;font-size:14px}.market-search>button{height:43px;border-radius:10px;font-size:11px}.category-rail{padding:14px 0 12px;gap:7px}.category-chip{height:32px;padding:0 13px;border-radius:17px;gap:7px;font-size:10px}.category-chip span{font-size:14px}.market-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.business-cover{height:92px}.business-card{border-radius:13px}.business-card-body{gap:8px;min-height:79px;padding:0 9px 6px}.business-avatar{width:47px;height:47px;flex-basis:47px;margin-top:-24px;border-width:3px;font-size:11px}.business-main{padding-top:5px}.business-main h2{font-size:11px}.card-rating{gap:3px;margin-top:3px;font-size:9px}.star{font-size:11px}.business-location{gap:3px;font-size:8px;margin-top:2px}.business-location span{font-size:10px}.category-pill{margin-top:4px;padding:3px 6px;border-radius:8px;font-size:7px}.business-meta{min-height:32px;margin:0 9px;font-size:8px}.business-meta>span{gap:3px;padding-right:7px;margin-right:7px}.card-arrow{width:24px;height:24px;font-size:15px}}
 @media(max-width:620px){.marketplace-shell{padding:0 20px 48px}.market-header{height:66px}.market-brand img{width:155px;height:54px}.market-header-actions{gap:9px}.publish-link{font-size:12px}.market-hero{margin-left:-20px;margin-right:-20px;min-height:205px}.hero-content{padding-left:20px;padding-right:20px;min-height:205px}.market-search{grid-template-columns:1.25fr 1fr 1.25fr 88px}.market-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
 @media(max-width:390px){.marketplace-shell{padding-left:16px;padding-right:16px}.market-hero{margin-left:-16px;margin-right:-16px}.hero-content{padding-left:16px;padding-right:16px}}
+
+/* =========================================================
+   B4.5 — MARKETPLACE REFERENCE 3 / 4-COLUMN SYSTEM
+   IMPORTANT:
+   - Four business cards per row at ALL viewport widths.
+   - Search controls stay in ONE horizontal row.
+   - Category rail stays horizontal.
+   - Mobile is a scaled version of the same composition,
+     not a stacked/reflowed mobile layout.
+   ========================================================= */
+
+/* Four columns are invariant across desktop + mobile. */
+.market-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+
+/* Search is always one horizontal row. */
+.market-search{
+  display:grid !important;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1.25fr) minmax(74px,.55fr) !important;
+  width:100%;
+  max-width:none;
+}
+
+/* The hero spans the complete available marketplace width. */
+.market-hero{
+  width:auto;
+}
+
+/* Keep the reference's horizontal category rail. */
+.category-rail{
+  width:100%;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+}
+
+/* Desktop/reference proportions. */
+@media(min-width:1181px){
+  .marketplace-shell{padding-left:44px;padding-right:44px}
+  .market-grid{gap:20px}
+}
+
+/* Tablet/mobile: same composition, only dimensions scale down. */
+@media(max-width:1180px){
+  .marketplace-shell{padding-left:20px;padding-right:20px}
+  .market-hero{margin-left:-20px;margin-right:-20px}
+  .hero-content{padding-left:20px;padding-right:20px}
+  .market-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:10px;
+  }
+  .market-search{
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1.25fr) minmax(74px,.55fr) !important;
+  }
+}
+
+/* 691px reference/mobile width: preserve four cards and one-row search. */
+@media(max-width:860px){
+  .market-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:10px;
+  }
+  .market-search{
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1.25fr) minmax(74px,.55fr) !important;
+    gap:7px;
+  }
+  .search-field{
+    min-width:0;
+    height:43px;
+    padding:0 9px;
+  }
+  .search-field input,
+  .search-field select{
+    min-width:0;
+    font-size:10px;
+    text-overflow:ellipsis;
+  }
+  .market-search>button{
+    min-width:0;
+    height:43px;
+    padding:0 8px;
+    font-size:11px;
+  }
+
+  .business-card{
+    min-width:0;
+    border-radius:12px;
+  }
+  .business-cover{height:92px}
+  .business-card-body{
+    gap:6px;
+    min-height:76px;
+    padding:0 7px 5px;
+  }
+  .business-avatar{
+    width:43px;
+    height:43px;
+    flex-basis:43px;
+    margin-top:-22px;
+    border-width:3px;
+  }
+  .business-main{padding-top:5px;min-width:0}
+  .business-main h2{font-size:10px}
+  .card-rating{font-size:8px;margin-top:2px}
+  .star{font-size:10px}
+  .business-location{font-size:7px;gap:2px}
+  .business-location span{font-size:9px}
+  .category-pill{
+    margin-top:3px;
+    padding:3px 5px;
+    font-size:6.5px;
+    border-radius:7px;
+  }
+  .business-meta{
+    min-height:30px;
+    margin:0 7px;
+    font-size:7px;
+  }
+  .business-meta>span{
+    gap:2px;
+    padding-right:5px;
+    margin-right:5px;
+  }
+  .card-arrow{
+    width:23px;
+    height:23px;
+    font-size:14px;
+  }
+}
+
+/* Small phones: do NOT collapse to 1/2/3 columns. */
+@media(max-width:620px){
+  .marketplace-shell{
+    padding-left:20px;
+    padding-right:20px;
+  }
+  .market-hero{
+    margin-left:-20px;
+    margin-right:-20px;
+  }
+  .hero-content{
+    padding-left:20px;
+    padding-right:20px;
+  }
+  .market-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:8px;
+  }
+  .market-search{
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1.25fr) minmax(72px,.55fr) !important;
+    gap:6px;
+  }
+  .search-field{
+    height:42px;
+    border-radius:9px;
+    padding:0 7px;
+  }
+  .search-svg{font-size:15px}
+  .grid-svg{font-size:15px}
+  .select-chevron{right:6px;font-size:12px}
+  .market-search>button{
+    height:42px;
+    border-radius:9px;
+    font-size:10px;
+    padding:0 5px;
+  }
+  .category-rail{
+    padding:13px 0 11px;
+    gap:6px;
+  }
+  .category-chip{
+    height:31px;
+    padding:0 11px;
+    gap:6px;
+    font-size:9px;
+    flex:0 0 auto;
+  }
+  .category-chip span{font-size:13px}
+}
+
+/* Very small phones: still four columns, matching the requested
+   marketplace rule rather than introducing a different mobile design. */
+@media(max-width:390px){
+  .marketplace-shell{padding-left:16px;padding-right:16px}
+  .market-hero{margin-left:-16px;margin-right:-16px}
+  .hero-content{padding-left:16px;padding-right:16px}
+  .market-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:6px;
+  }
+  .market-search{
+    grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1.25fr) minmax(64px,.55fr) !important;
+    gap:5px;
+  }
+}

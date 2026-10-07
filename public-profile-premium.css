@@ -63,3 +63,33 @@ a,button,input,select{font:inherit}
     line-height:1.48;
   }
 }
+
+/* =========================================================
+   B4.5 — PROFILE: SERVICE DESCRIPTION FULL WIDTH
+   The service description card is one full-width row.
+   ========================================================= */
+.service-grid{
+  grid-template-columns:1fr !important;
+  width:100%;
+}
+.service-card{
+  width:100%;
+  min-width:0;
+}
+@media(max-width:620px){
+  .service-grid{
+    grid-template-columns:1fr !important;
+    width:100%;
+    gap:10px;
+  }
+  .service-card{
+    width:100%;
+    border-radius:14px;
+    padding:16px;
+  }
+  .service-card p{
+    min-height:0;
+    font-size:11px;
+    line-height:1.5;
+  }
+}
