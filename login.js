@@ -124,49 +124,14 @@
   async function routeAuthenticatedUser(user) {
     if (!user) return;
 
-    // Deterministic rule: database state decides the destination.
-    // No hidden profile UI lives inside login.html anymore.
-    setStatus("Acceso confirmado. Verificando tu perfil…", "success");
+    // AUTHORITY OF NAVIGATION:
+    // login.html only authenticates. Profile.html is the single post-auth
+    // router/onboarding layer. This avoids a login -> profile -> login loop
+    // caused by two different pages trying to resolve identity at once.
+    setStatus("Acceso confirmado. Abriendo tu perfil…", "success");
 
-    try {
-      const profile = await getProfile(user);
-
-      if (!profile?.profile_type) {
-        window.location.replace(PROFILE_URL);
-        return;
-      }
-
-      if (profile.profile_type === "customer") {
-        window.location.replace(EXPLORER_URL);
-        return;
-      }
-
-      if (profile.profile_type === "business") {
-        const businessExists = await hasBusiness(user);
-
-        if (businessExists) {
-          window.location.replace(BUSINESS_DASHBOARD_URL);
-        } else {
-          // Incomplete business onboarding: resume profile instead of
-          // incorrectly sending the user to the marketplace.
-          window.location.replace(PROFILE_URL);
-        }
-        return;
-      }
-
-      // Unknown role: send to the explicit onboarding layer.
-      window.location.replace(PROFILE_URL);
-    } catch (err) {
-      console.error("Agenda YA routeAuthenticatedUser:", err);
-
-      // IMPORTANT:
-      // A profile lookup failure must not masquerade as "new user".
-      // We keep the user on login and explain the problem.
-      setStatus(
-        err?.message || "No fue posible verificar el perfil. Intenta nuevamente.",
-        "error"
-      );
-    }
+    const target = new URL("profile.html", window.location.href).href;
+    window.location.replace(target);
   }
 
   async function submitAuth(event) {

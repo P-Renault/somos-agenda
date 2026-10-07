@@ -263,9 +263,63 @@
     }
   }
 
+  async function waitForSession(retries = 8, delayMs = 250){
+    for(let i=0;i<retries;i++){
+      const result = await client.auth.getSession();
+      if(result.error) throw result.error;
+      if(result.data.session?.user) return result.data.session;
+      if(i < retries-1) await new Promise(r=>setTimeout(r,delayMs));
+    }
+    return null;
+  }
+
+  async function resolveExistingProfile(){
+    const existing=await client.from("profiles")
+      .select("id,profile_type,full_name")
+      .eq("id",user.id)
+      .maybeSingle();
+
+    if(existing.error) throw existing.error;
+    return existing.data || null;
+  }
+
+  async function routeExistingProfile(profile){
+    if(!profile?.profile_type) return false;
+
+    if(profile.profile_type === "customer"){
+      window.location.replace(new URL("explorer.html",window.location.href).href);
+      return true;
+    }
+
+    if(profile.profile_type === "business"){
+      const member=await client.from("business_members")
+        .select("business_id,active")
+        .eq("user_id",user.id)
+        .eq("active",true)
+        .limit(1);
+
+      if(member.error) throw member.error;
+
+      if(member.data?.[0]?.business_id){
+        window.location.replace(new URL("dashboard.html",window.location.href).href);
+        return true;
+      }
+
+      // Business profile exists but onboarding is incomplete.
+      return false;
+    }
+
+    return false;
+  }
+
   async function boot(){
     if(!window.supabase?.createClient){
       status($("choiceStatus"),"No se pudo cargar Supabase.","error");
+      return;
+    }
+
+    if(!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY){
+      status($("choiceStatus"),"Configuración de Supabase no disponible.","error");
       return;
     }
 
@@ -281,52 +335,44 @@
       }
     );
 
-    const session=await client.auth.getSession();
-    if(session.error) throw session.error;
+    // Important: after OAuth or the email login, Supabase may need one event
+    // loop to restore the persisted session. We wait instead of redirecting
+    // immediately back to login.html.
+    const session=await waitForSession();
 
-    if(!session.data.session?.user){
-      window.location.replace("login.html");
+    if(!session?.user){
+      window.location.replace(new URL("login.html",window.location.href).href);
       return;
     }
 
-    user=session.data.session.user;
+    user=session.user;
+
+    try{
+      const existing=await resolveExistingProfile();
+      const routed=await routeExistingProfile(existing);
+      if(routed) return;
+    }catch(err){
+      // Do NOT send the user back to login on a profile/RLS/network error.
+      // The authenticated session is still valid; keep onboarding visible
+      // and report the real problem so it can be fixed without a redirect loop.
+      console.error("Agenda YA profile resolver:",err);
+      status($("choiceStatus"),
+        err?.message || "No fue posible verificar tu perfil. Puedes continuar con el onboarding.",
+        "error"
+      );
+    }
+
     initHours();
-
-    // Safety guard: profile.html is onboarding only.
-    const existing=await client.from("profiles")
-      .select("profile_type")
-      .eq("id",user.id)
-      .maybeSingle();
-
-    if(existing.error) throw existing.error;
-
-    if(existing.data?.profile_type==="customer"){
-      window.location.replace("explorer.html");
-      return;
-    }
-
-    if(existing.data?.profile_type==="business"){
-      const member=await client.from("business_members")
-        .select("business_id,active")
-        .eq("user_id",user.id)
-        .eq("active",true)
-        .limit(1);
-
-      if(member.data?.[0]?.business_id){
-        window.location.replace("dashboard.html");
-        return;
-      }
-    }
 
     document.querySelectorAll(".profile-type").forEach(btn=>{
       btn.addEventListener("click",()=>selectType(btn.dataset.type));
     });
 
-    $("profileNext").addEventListener("click",showForm);
-    $("profileBack").addEventListener("click",showChoice);
-    $("businessNext").addEventListener("click",showSchedule);
+    $("profileNext")?.addEventListener("click",showForm);
+    $("profileBack")?.addEventListener("click",showChoice);
+    $("businessNext")?.addEventListener("click",showSchedule);
 
-    $("scheduleBack").addEventListener("click",()=>{
+    $("scheduleBack")?.addEventListener("click",()=>{
       $("scheduleForm").hidden=true;
       $("businessForm").hidden=false;
       $("profileTitle").textContent="Configura tu negocio";
@@ -334,9 +380,9 @@
       window.scrollTo(0,0);
     });
 
-    $("businessForm").addEventListener("submit",e=>e.preventDefault());
-    $("scheduleForm").addEventListener("submit",saveBusiness);
-    $("customerForm").addEventListener("submit",saveCustomer);
+    $("businessForm")?.addEventListener("submit",e=>e.preventDefault());
+    $("scheduleForm")?.addEventListener("submit",saveBusiness);
+    $("customerForm")?.addEventListener("submit",saveCustomer);
 
     ["businessPhone","customerPhone"].forEach(id=>{
       $(id)?.addEventListener("input",e=>e.target.value=phone(e.target.value));
