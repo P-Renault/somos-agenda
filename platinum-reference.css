@@ -1,0 +1,193 @@
+/* Agenda Ya · Platinum Reference Skin B1.3
+   Pixel-reference skin built directly from the supplied 864×1536 master screens.
+   Functional DOM remains active underneath; visual reference is the presentation layer.
+*/
+:root{--ay-ref-w:864;--ay-ref-h:1536}
+html,body{margin:0!important;padding:0!important;background:#f4f8fd!important}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif!important}
+
+/* ---------- AUTH ---------- */
+#ayAuthView{min-height:100svh!important;padding:0!important;background:#f4f8fd url("assets/ref-login.png") center top/100% auto no-repeat!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;overflow:auto!important}
+#ayAuthView .ay-auth-wrap{position:relative;width:min(100vw,864px)!important;max-width:864px!important;min-height:min(177.7778vw,1536px)!important;height:min(177.7778vw,1536px)!important;margin:0!important;padding:0!important;background:transparent!important}
+#ayAuthView .ay-auth-brand,#ayAuthView .ay-auth-intro,#ayAuthView .ay-auth-card{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+#ayAuthView .ay-auth-brand{position:absolute!important;left:0;top:0;width:100%;height:25.46296vw!important;margin:0!important;padding:0!important;opacity:0!important;pointer-events:none!important}
+#ayAuthView .ay-auth-intro{position:absolute!important;left:0;top:30.67130vw;width:100%;height:31.25000vw!important;margin:0!important;padding:0 60px!important;box-sizing:border-box;opacity:0!important;pointer-events:none!important}
+#ayAuthView .ay-auth-card{position:absolute!important;left:3.24074vw;right:3.24074vw;top:61.92130vw;height:103.00926vw!important;padding:0!important;box-sizing:border-box}
+#ayAuthView .ay-auth-form-panel,#ayAuthView .ay-auth-state{position:static!important}
+#ayAuthView .ay-auth-field{position:absolute!important;left:3.93519vw;right:3.93519vw;height:15.39352vw!important;margin:0!important;padding:0!important;display:block!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+#ayAuthView .ay-auth-field:nth-of-type(1){top:4.05093vw}
+#ayAuthView .ay-auth-field:nth-of-type(2){top:21.64352vw}
+#ayAuthView .ay-auth-field .ay-field-icon,#ayAuthView .ay-auth-field b{opacity:0!important;pointer-events:none!important}
+#ayAuthView .ay-auth-field>span:last-child{display:block!important;width:100%;height:100%}
+#ayAuthView .ay-auth-input{position:absolute!important;left:135px;right:60px;top:57px;width:auto!important;height:46px!important;min-height:0!important;margin:0!important;padding:0 4px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#172d58!important;font-size:24px!important;font-weight:500!important;line-height:46px!important;outline:none!important}
+#ayAuthView .ay-auth-input:focus{background:rgba(255,255,255,.94)!important;border-radius:8px!important;box-shadow:none!important}
+#ayAuthView .ay-password-eye{position:absolute!important;right:2.89352vw;top:5.55556vw;width:6.71296vw;height:6.71296vw;border:0!important;background:transparent!important;color:transparent!important;z-index:5;cursor:pointer}
+#ayAuthView .ay-password-eye .ay-svg{display:none!important}
+#ayAuthView #ayAuthSubmit{position:absolute!important;left:34px;right:34px;top:348px;width:auto!important;height:104px!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important;color:transparent!important;box-shadow:none!important;border-radius:22px!important;z-index:5;cursor:pointer}
+#ayAuthView #ayRecoveryBtn{position:absolute!important;left:34px;right:34px;top:466px;width:auto!important;height:60px!important;padding:0!important;border:0!important;background:transparent!important;color:transparent!important;z-index:5;cursor:pointer}
+#ayAuthView .ay-auth-divider{position:absolute!important;left:3.93519vw;right:3.93519vw;top:63.42593vw;height:5.78704vw!important;margin:0!important;color:transparent!important;z-index:1}
+#ayAuthView .ay-auth-divider::before,#ayAuthView .ay-auth-divider::after{background:transparent!important}
+#ayAuthView .ay-auth-socials{position:absolute!important;left:3.93519vw;right:3.93519vw;top:69.44444vw;display:block!important}
+#ayAuthView .ay-auth-secondary{position:relative!important;width:100%!important;height:10.53241vw!important;min-height:0!important;margin:0 0 2.08333vw!important;padding:0!important;border:0!important;background:transparent!important;color:transparent!important;border-radius:18px!important;box-shadow:none!important;cursor:pointer;z-index:5}
+#ayAuthView .ay-auth-secondary .ay-social-icon,#ayAuthView .ay-auth-secondary b,#ayAuthView .ay-auth-secondary .ay-arrow{opacity:0!important}
+#ayAuthView .ay-auth-switch{position:absolute!important;left:3.93519vw;right:3.93519vw;top:93.51852vw;height:6.36574vw!important;margin:0!important;color:transparent!important;font-size:0!important;z-index:5}
+#ayAuthView .ay-auth-switch button{position:absolute!important;right:0;top:0;width:190px;height:55px;color:transparent!important;background:transparent!important;border:0!important;cursor:pointer}
+#ayAuthView .ay-auth-status,#ayAuthView .ay-auth-foot{display:none!important}
+#ayAuthView .ay-auth-back{position:absolute!important;left:5.55556vw;top:6.94444vw;width:11.11111vw;height:11.11111vw;z-index:10;border:0!important;background:transparent!important;color:transparent!important;cursor:pointer}
+
+/* ---------- PROFILE ---------- */
+#ayProfileView{min-height:100svh!important;padding:0!important;background:#f4f8fd url("assets/ref-profile-choice.png") center top/100% auto no-repeat!important;display:block!important;overflow:auto!important}
+#ayProfileView .ay-profile-wrap{position:relative;width:min(100vw,864px)!important;max-width:864px!important;min-height:min(177.7778vw,1536px)!important;height:auto!important;margin:0 auto!important;padding:0!important;background:transparent!important}
+#ayProfileView .ay-profile-brand,#ayProfileView .ay-profile-progress,#ayProfileView .ay-profile-card{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+#ayProfileView .ay-profile-brand{position:absolute!important;left:0;top:0;width:100%;height:25.46296vw!important;margin:0!important;padding:0!important;opacity:0!important}
+#ayProfileView .ay-profile-progress{position:absolute!important;left:10.41667vw;right:10.41667vw;top:21.99074vw;height:5.78704vw!important;padding:0!important;opacity:0!important}
+#ayProfileView .ay-profile-card{position:relative!important;left:0;top:0;width:100%!important;min-height:min(177.7778vw,1536px)!important;padding:0!important;box-sizing:border-box}
+#ayProfileView .ay-profile-head{position:absolute!important;left:11.57407vw;top:31.25000vw;width:76.85185vw;height:50.92593vw!important;opacity:0!important;pointer-events:none!important}
+#ayProfileView .ay-profile-choice-step{position:absolute!important;left:7.17593vw;right:7.17593vw;top:87.38426vw;height:77.54630vw!important;padding:0!important}
+#ayProfileView .ay-profile-choice-copy,#ayProfileView .ay-profile-info{opacity:0!important;pointer-events:none!important}
+#ayProfileView .ay-profile-type{display:block!important;margin:0!important;padding:0!important}
+#ayProfileView .ay-profile-type-btn{position:absolute!important;left:0;right:0;width:100%!important;height:174px!important;padding:0!important;margin:0!important;border:0!important;border-radius:28px!important;background:transparent!important;color:transparent!important;box-shadow:none!important;cursor:pointer;z-index:5}
+#ayProfileView .ay-profile-type-btn:nth-child(1){top:0}
+#ayProfileView .ay-profile-type-btn:nth-child(2){top:22.22222vw}
+#ayProfileView .ay-profile-type-btn>*{opacity:0!important}
+#ayProfileView .ay-profile-next{position:absolute!important;left:0;right:0;top:535px;width:100%!important;height:88px!important;min-height:0!important;border:0!important;background:transparent!important;color:transparent!important;box-shadow:none!important;border-radius:22px!important;z-index:5;cursor:pointer}
+#ayProfileView .ay-profile-form-step{position:absolute!important;left:0;right:0;top:0;min-height:min(177.7778vw,1536px)!important;padding:0!important}
+#ayProfileView .ay-profile-back{position:absolute!important;left:6.71296vw;top:42.24537vw;width:34.72222vw;height:6.25000vw;border:0!important;background:transparent!important;color:transparent!important;z-index:10;cursor:pointer}
+#ayProfileView .ay-profile-form{position:absolute!important;left:0;right:0;top:0;height:177.7778vw!important;display:block!important}
+#ayProfileView #ayBusinessProfileForm,#ayProfileView #ayCustomerProfileForm{position:relative!important;display:block!important}
+#ayProfileView .ay-profile-photo-row{position:absolute!important;left:6.25000vw;right:6.25000vw;top:43.40278vw;height:20.60185vw!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;opacity:0!important}
+#ayProfileView .ay-form-card,#ayProfileView .ay-file-card{position:absolute!important;left:6.25000vw;right:6.25000vw;height:9.49074vw!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;opacity:0!important}
+#ayProfileView .ay-profile-form label{opacity:0!important}
+#ayProfileView input{position:absolute!important;z-index:20!important;box-sizing:border-box!important;background:transparent!important;border:0!important;outline:0!important;color:#66758e!important;font-size:20px!important;font-weight:500!important;padding:0 10px!important}
+#ayProfileView input:focus{background:rgba(255,255,255,.94)!important;border-radius:10px!important}
+#ayProfileView #ayBusinessName{left:15.04630vw!important;right:6.25000vw!important;top:69.79167vw!important;height:6.48148vw!important}
+#ayProfileView #ayBusinessType{left:15.04630vw!important;right:6.25000vw!important;top:82.63889vw!important;height:6.48148vw!important}
+#ayProfileView #ayBusinessPhone{left:25.46296vw!important;right:6.25000vw!important;top:95.48611vw!important;height:6.48148vw!important}
+#ayProfileView #ayBusinessCity{left:15.04630vw!important;width:28.93519vw!important;top:108.10185vw!important;height:6.48148vw!important}
+#ayProfileView #ayBusinessComuna{left:56.25000vw!important;right:6.25000vw!important;top:108.10185vw!important;height:6.48148vw!important}
+#ayProfileView #ayBusinessAddress{left:15.04630vw!important;right:6.25000vw!important;top:120.71759vw!important;height:6.48148vw!important}
+#ayProfileView #ayCustomerName{left:19.67593vw!important;right:7.40741vw!important;top:78.70370vw!important;height:6.71296vw!important}
+#ayProfileView #ayCustomerPhone{left:36.11111vw!important;right:7.40741vw!important;top:92.82407vw!important;height:6.71296vw!important}
+#ayProfileView #ayCustomerAge{left:19.67593vw!important;right:7.40741vw!important;top:106.71296vw!important;height:6.71296vw!important}
+#ayProfileView #ayCustomerCity{left:19.67593vw!important;right:7.40741vw!important;top:120.71759vw!important;height:6.71296vw!important}
+#ayProfileView #ayCustomerComuna{left:19.67593vw!important;right:7.40741vw!important;top:134.72222vw!important;height:6.71296vw!important}
+#ayProfileView #ayCustomerAddress{left:19.67593vw!important;right:7.40741vw!important;top:148.72685vw!important;height:6.71296vw!important}
+#ayProfileView #ayBusinessNext,#ayProfileView #ayCustomerSave{position:absolute!important;left:6.25000vw!important;right:6.25000vw!important;top:160.18519vw!important;width:auto!important;height:9.49074vw!important;border:0!important;background:transparent!important;color:transparent!important;box-shadow:none!important;z-index:30!important;cursor:pointer}
+#ayProfileView #ayBusinessScheduleForm,#ayProfileView #ayBusinessScheduleForm *{display:none!important}
+#ayProfileView .ay-profile-status{display:none!important}
+#ayProfileView .ay-profile-top-back{position:absolute!important;left:5.55556vw;top:6.71296vw;width:11.11111vw;height:11.11111vw;z-index:30;border:0!important;background:transparent!important;color:transparent!important;cursor:pointer}
+
+/* ---------- APP / DASHBOARD ---------- */
+#ayApp{background:#f4f8fd!important;min-height:100svh!important}
+#ayApp .ay-app-shell{position:relative!important}
+#ayApp .ay-main{background:#f4f8fd url("assets/ref-dashboard.png") center top/100% auto no-repeat!important}
+#ayApp #view-dashboard{width:min(100vw,864px)!important;min-height:min(177.7778vw,1536px)!important;margin:0 auto!important;padding:0!important;background:transparent!important;position:relative!important}
+#ayApp #view-dashboard>*{visibility:hidden!important}
+#ayApp .ay-sidebar,#ayApp .ay-header{visibility:hidden!important}
+#ayApp .ay-mobile-rail{visibility:hidden!important}
+/* Interactive hit areas over the exact dashboard reference */
+#ayApp #view-dashboard::after{content:"";position:absolute;inset:0;z-index:5}
+#ayApp .ay-hero-actions{visibility:visible!important;position:absolute!important;left:6.36574vw!important;right:6.36574vw!important;top:53.24074vw!important;height:10.41667vw!important;display:flex!important;gap:18px!important;z-index:10!important}
+#ayApp .ay-hero-actions .ay-btn{flex:1!important;height:90px!important;opacity:0!important;cursor:pointer!important}
+#ayApp .ay-card-head button,.ay-kpi{pointer-events:auto}
+#ayApp .ay-card-reservas{visibility:visible!important;position:absolute!important;left:3.47222vw!important;right:3.47222vw!important;top:112.84722vw!important;height:45.13889vw!important;z-index:10!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#ayApp .ay-card-reservas .ay-card-head{height:75px!important}
+#ayApp .ay-card-reservas .ay-card-head>*{opacity:0!important}
+#ayApp .ay-card-reservas .ay-link{position:absolute!important;right:0;top:0;width:190px;height:70px;opacity:0!important;cursor:pointer!important}
+#ayApp .ay-list{display:block!important;position:absolute!important;left:0;right:0;top:70px}
+#ayApp .ay-list-row{height:90px!important;margin:0 0 8px!important;opacity:0!important;cursor:pointer!important}
+#ayApp .ay-kpi-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:18px!important;position:absolute!important;left:3.47222vw!important;right:3.47222vw!important;top:68.28704vw!important;height:41.66667vw!important;z-index:10!important}
+#ayApp .ay-kpi{opacity:0!important;cursor:pointer!important}
+
+/* Preserve functional generic module pages; only dashboard is reference-skinned. */
+@media(max-width:700px){
+  #ayAuthView .ay-auth-wrap,#ayProfileView .ay-profile-wrap,#ayApp #view-dashboard{width:100vw!important;min-height:177.7778vw!important;height:177.7778vw!important}
+  #ayAuthView .ay-auth-card{top:62.0vw!important;height:103.0vw!important}
+}
+
+/* Reference state switching */
+#ayProfileView[data-ref-state="choice"]{background-image:url("assets/ref-profile-choice.png")!important}
+#ayProfileView[data-ref-state="business"]{background-image:url("assets/ref-business-profile.png")!important}
+#ayProfileView[data-ref-state="customer"]{background-image:url("assets/ref-client-profile.png")!important}
+
+/* Correct dashboard stacking: visual screenshot remains exact while hit areas stay interactive. */
+#ayApp #view-dashboard::after{pointer-events:none!important}
+#ayApp #view-dashboard .ay-hero{visibility:visible!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:100%!important;background:transparent!important;box-shadow:none!important;border:0!important}
+#ayApp #view-dashboard .ay-hero-copy{visibility:hidden!important}
+#ayApp #view-dashboard .ay-hero-actions{visibility:visible!important}
+#ayApp #view-dashboard .ay-kpi-grid{visibility:visible!important}
+#ayApp #view-dashboard .ay-card-reservas{visibility:visible!important}
+#ayApp #view-dashboard .ay-card-reservas .ay-list{visibility:visible!important}
+#ayApp #view-dashboard .ay-card-reservas .ay-link{visibility:visible!important}
+#ayApp #view-dashboard .ay-kpi-grid .ay-kpi{visibility:visible!important}
+#ayApp #view-dashboard .ay-kpi-grid{pointer-events:auto!important}
+#ayApp #view-dashboard .ay-kpi-grid .ay-kpi{pointer-events:auto!important}
+#ayApp #view-dashboard .ay-card-reservas{pointer-events:auto!important}
+
+/* Mobile browser viewport: reference always scales as one 864×1536 composition. */
+@media(max-width:864px){
+  #ayAuthView .ay-auth-wrap,#ayProfileView .ay-profile-wrap,#ayApp #view-dashboard{width:100vw!important;height:177.7777778vw!important;min-height:177.7777778vw!important;max-height:none!important}
+  #ayAuthView .ay-auth-card{top:62.0vw!important;height:103vw!important}
+  #ayProfileView .ay-profile-card{min-height:177.7777778vw!important}
+  #ayProfileView .ay-profile-choice-step{top:87.4vw!important;height:77.6vw!important}
+  #ayProfileView .ay-profile-type-btn:nth-child(1){top:0!important}
+  #ayProfileView .ay-profile-type-btn:nth-child(2){top:22.2vw!important}
+  #ayProfileView .ay-profile-next{top:62.0vw!important;height:10.2vw!important}
+}
+
+/* Final geometry calibration — all coordinates follow the 864×1536 master proportion. */
+#ayAuthView{background-size:min(100vw,864px) auto!important;background-position:top center!important}
+#ayProfileView{background-size:min(100vw,864px) auto!important;background-position:top center!important}
+#ayApp .ay-main{background-size:min(100vw,864px) auto!important;background-position:top center!important}
+
+#ayAuthView .ay-auth-input{left:15.625vw!important;right:6.94444vw!important;top:6.59722vw!important;height:5.32407vw!important;font-size:2.77778vw!important;line-height:5.32407vw!important}
+#ayAuthView #ayAuthSubmit{left:3.93519vw!important;right:3.93519vw!important;top:40.27778vw!important;height:12.03704vw!important}
+#ayAuthView #ayRecoveryBtn{left:3.93519vw!important;right:3.93519vw!important;top:53.93519vw!important;height:6.94444vw!important}
+#ayAuthView .ay-auth-switch button{width:22vw!important;height:6.4vw!important}
+#ayAuthView .ay-auth-secondary{height:10.53241vw!important}
+
+#ayProfileView .ay-profile-choice-step{left:0!important;right:0!important;top:0!important;width:100%!important;height:100%!important}
+#ayProfileView .ay-profile-type-btn{left:7.17593vw!important;right:7.17593vw!important;width:auto!important;height:20.48611vw!important}
+#ayProfileView .ay-profile-type-btn:nth-child(1){top:49.76852vw!important}
+#ayProfileView .ay-profile-type-btn:nth-child(2){top:65.62500vw!important}
+#ayProfileView .ay-profile-next{left:7.17593vw!important;right:7.17593vw!important;top:89.12037vw!important;width:auto!important;height:9.25926vw!important}
+
+#ayProfileView .ay-profile-back{top:23.5vw!important}
+#ayProfileView #ayBusinessName{top:39.58333vw!important}
+#ayProfileView #ayBusinessType{top:46.99074vw!important}
+#ayProfileView #ayBusinessPhone{top:54.39815vw!important}
+#ayProfileView #ayBusinessCity{top:61.80556vw!important}
+#ayProfileView #ayBusinessComuna{top:61.80556vw!important}
+#ayProfileView #ayBusinessAddress{top:69.21296vw!important}
+#ayProfileView #ayBusinessNext{top:91.79630vw!important}
+#ayProfileView #ayCustomerName{top:46.29630vw!important}
+#ayProfileView #ayCustomerPhone{top:55.20833vw!important}
+#ayProfileView #ayCustomerAge{top:64.12037vw!important}
+#ayProfileView #ayCustomerCity{top:73.03241vw!important}
+#ayProfileView #ayCustomerComuna{top:81.94444vw!important}
+#ayProfileView #ayCustomerAddress{top:90.85648vw!important}
+#ayProfileView #ayCustomerSave{top:95.05208vw!important}
+
+#ayApp #view-dashboard{width:min(100vw,864px)!important;height:min(177.7778vw,1536px)!important;min-height:min(177.7778vw,1536px)!important}
+#ayApp .ay-hero-actions{left:6.36574vw!important;right:6.36574vw!important;top:53.24074vw!important;height:10.41667vw!important}
+#ayApp .ay-hero-actions .ay-btn{height:10.41667vw!important}
+#ayApp .ay-kpi-grid{left:3.47222vw!important;right:3.47222vw!important;top:68.28704vw!important;height:41.66667vw!important;gap:2.08333vw!important}
+#ayApp .ay-card-reservas{left:3.47222vw!important;right:3.47222vw!important;top:112.84722vw!important;height:45.13889vw!important}
+/* Form master coordinates are page-relative to the 864×1536 reference. */
+#ayProfileView .ay-profile-back{top:43.50vw!important}
+#ayProfileView #ayBusinessName{top:70.49vw!important}
+#ayProfileView #ayBusinessType{top:83.56vw!important}
+#ayProfileView #ayBusinessPhone{top:96.76vw!important}
+#ayProfileView #ayBusinessCity{top:109.95vw!important}
+#ayProfileView #ayBusinessComuna{top:109.95vw!important}
+#ayProfileView #ayBusinessAddress{top:123.50vw!important}
+#ayProfileView #ayBusinessNext{top:163.20vw!important}
+#ayProfileView #ayCustomerName{top:81.83vw!important}
+#ayProfileView #ayCustomerPhone{top:98.03vw!important}
+#ayProfileView #ayCustomerAge{top:112.04vw!important}
+#ayProfileView #ayCustomerCity{top:126.16vw!important}
+#ayProfileView #ayCustomerComuna{top:140.28vw!important}
+#ayProfileView #ayCustomerAddress{top:154.51vw!important}
+#ayProfileView #ayCustomerSave{top:168.40vw!important}
+#ayProfileView input{font-size:2.31481vw!important}
+@media(min-width:865px){#ayProfileView input{font-size:20px!important}#ayAuthView .ay-auth-input{font-size:24px!important}}
