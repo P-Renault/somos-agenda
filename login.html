@@ -346,6 +346,251 @@ button{touch-action:manipulation}
   .switch,.switch button{font-size:16px}
   .secure{font-size:13px;margin-top:16px}
 }
+
+/* =========================================================
+   AGENDA YA — MOBILE VIEWPORT FIT
+   Objetivo: todo el acceso visible en 100% del viewport móvil,
+   sin scroll vertical. Mantiene estructura y autenticación.
+   ========================================================= */
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.auth-page {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.auth-content {
+  width: min(100%, 690px);
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding:
+    clamp(10px, 2.1dvh, 24px)
+    clamp(18px, 5vw, 48px)
+    clamp(8px, 1.7dvh, 20px);
+}
+
+@media (max-width: 560px) {
+  .auth-content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .back {
+    flex: 0 0 auto;
+    margin-bottom: clamp(10px, 2.6dvh, 28px);
+    font-size: clamp(14px, 2.05dvh, 17px);
+    gap: 7px;
+  }
+
+  .back-icon {
+    width: clamp(20px, 3.0dvh, 25px);
+    height: clamp(20px, 3.0dvh, 25px);
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    margin-bottom: clamp(8px, 1.9dvh, 22px);
+  }
+
+  .brand img {
+    width: min(82vw, 390px);
+    max-height: clamp(78px, 13.5dvh, 130px);
+  }
+
+  .subtitle {
+    flex: 0 0 auto;
+    margin-bottom: clamp(13px, 3.4dvh, 34px);
+    max-width: 500px;
+    font-size: clamp(15px, 2.45dvh, 21px);
+    line-height: 1.28;
+    letter-spacing: -.15px;
+  }
+
+  .auth-form {
+    flex: 0 0 auto;
+  }
+
+  .field {
+    margin-bottom: clamp(9px, 1.9dvh, 19px);
+  }
+
+  .field-label {
+    margin-bottom: clamp(4px, .9dvh, 8px);
+    font-size: clamp(15px, 2.15dvh, 19px);
+  }
+
+  .input {
+    height: clamp(52px, 7.3dvh, 72px);
+    border-radius: clamp(13px, 1.8dvh, 18px);
+    padding-left: clamp(58px, 8.2vw, 70px);
+    padding-right: 56px;
+    font-size: clamp(15px, 2.15dvh, 19px);
+  }
+
+  .field-icon {
+    left: clamp(16px, 3.5vw, 21px);
+    width: clamp(25px, 3.7dvh, 30px);
+    height: clamp(25px, 3.7dvh, 30px);
+  }
+
+  .eye {
+    right: 13px;
+    width: clamp(28px, 4.2dvh, 34px);
+    height: clamp(28px, 4.2dvh, 34px);
+  }
+
+  .primary {
+    height: clamp(52px, 7.3dvh, 72px);
+    border-radius: clamp(13px, 1.8dvh, 18px);
+    font-size: clamp(16px, 2.35dvh, 21px);
+  }
+
+  .recovery {
+    margin: clamp(10px, 2.3dvh, 22px) 0 clamp(13px, 2.8dvh, 28px);
+    font-size: clamp(15px, 2.15dvh, 19px);
+  }
+
+  .divider {
+    gap: clamp(9px, 2vw, 16px);
+    margin-bottom: clamp(11px, 2.2dvh, 22px);
+    font-size: clamp(14px, 2.0dvh, 18px);
+  }
+
+  .social {
+    height: clamp(49px, 6.7dvh, 66px);
+    margin-bottom: clamp(8px, 1.6dvh, 15px);
+    border-radius: clamp(12px, 1.7dvh, 17px);
+    padding: 0 48px;
+    font-size: clamp(14px, 2.0dvh, 18px);
+  }
+
+  .social-icon {
+    left: clamp(17px, 3.8vw, 25px);
+    width: clamp(27px, 3.9dvh, 34px);
+    height: clamp(27px, 3.9dvh, 34px);
+  }
+
+  .social-arrow {
+    right: clamp(15px, 3.3vw, 22px);
+    width: clamp(19px, 2.8dvh, 23px);
+    height: clamp(19px, 2.8dvh, 23px);
+  }
+
+  .social:last-of-type {
+    margin-bottom: clamp(11px, 2.0dvh, 20px);
+  }
+
+  .switch,
+  .switch button {
+    font-size: clamp(14px, 2.0dvh, 18px);
+  }
+
+  .secure {
+    margin-top: clamp(7px, 1.5dvh, 16px);
+    font-size: clamp(12px, 1.65dvh, 15px);
+  }
+}
+
+/* Teléfonos bajos: compactación adicional. */
+@media (max-width: 560px) and (max-height: 780px) {
+  .auth-content {
+    padding-top: 8px;
+    padding-bottom: 7px;
+  }
+
+  .back {
+    margin-bottom: 8px;
+  }
+
+  .brand {
+    margin-bottom: 7px;
+  }
+
+  .brand img {
+    max-height: 72px;
+  }
+
+  .subtitle {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .field {
+    margin-bottom: 7px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .input,
+  .primary {
+    height: 48px;
+  }
+
+  .input {
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .primary {
+    font-size: 15px;
+    border-radius: 12px;
+  }
+
+  .recovery {
+    margin: 8px 0 12px;
+    font-size: 14px;
+  }
+
+  .divider {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .social {
+    height: 44px;
+    margin-bottom: 7px;
+    border-radius: 11px;
+    font-size: 13px;
+  }
+
+  .social:last-of-type {
+    margin-bottom: 9px;
+  }
+
+  .switch,
+  .switch button {
+    font-size: 13px;
+  }
+
+  .secure {
+    margin-top: 6px;
+    font-size: 11px;
+  }
+}
+
+/* En pantallas muy altas, se limita el ancho y conserva el aspecto premium. */
+@media (min-width: 561px) {
+  .auth-content {
+    justify-content: center;
+  }
+}
+
 </style>
 </head>
 <body>
