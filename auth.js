@@ -1,5 +1,5 @@
 /*
- Agenda Ya — Identity + Profile v0.3.0
+ Agenda Ya — Identity + Profile v0.4.0
  FIX: evita bloqueo del motor de autenticación al iniciar sesión.
  Flujo: Identity -> Profile -> Agenda Ya
 */
@@ -12,10 +12,12 @@
   const switchBtn = $("ayAuthSwitch"), switchText = $("ayAuthSwitchText"), status = $("ayAuthStatus"), recovery = $("ayRecoveryBtn");
   const google = $("ayAuthGoogle"), facebook = $("ayAuthFacebook"), formPanel = $("ayAuthFormPanel"), postLogin = $("ayAuthPostLogin");
   const postStatus = $("ayAuthPostStatus"), continueSetup = $("ayAuthContinueSetup"), accountName = $("ayAuthAccountName"), accountEmail = $("ayAuthAccountEmail");
-  const businessForm = $("ayBusinessProfileForm"), customerForm = $("ayCustomerProfileForm");
-  const businessStatus = $("ayBusinessStatus"), customerStatus = $("ayCustomerStatus");
+  const businessForm = $("ayBusinessProfileForm"), businessScheduleForm = $("ayBusinessScheduleForm"), customerForm = $("ayCustomerProfileForm");
+  const businessStatus = $("ayBusinessStatus"), businessScheduleStatus = $("ayBusinessScheduleStatus"), customerStatus = $("ayCustomerStatus");
+  const profileTitle = $("ayProfileTitle"), profileSubtitle = $("ayProfileSubtitle");
   let client = null, mode = "login", currentUser = null, profileType = "business";
   let profileStep = "choice";
+  let businessStep = "details";
   let routingInProgress = false;
   const REDIRECT_URL = "https://p-renault.github.io/somos-agenda/";
   const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
@@ -116,14 +118,17 @@
       btn.classList.toggle("is-active", active);
       btn.setAttribute("aria-pressed", active ? "true" : "false");
     });
-    businessForm.hidden = type !== "business";
-    customerForm.hidden = type !== "customer";
+    if (businessForm && profileStep === "form") businessForm.hidden = type !== "business";
+    if (businessScheduleForm && profileStep === "form") businessScheduleForm.hidden = type !== "business" || businessStep !== "schedule";
+    if (customerForm && profileStep === "form") customerForm.hidden = type !== "customer";
   }
   function showProfileChoice() {
     profileStep = "choice";
     const choice = $("ayProfileChoiceStep"), formStep = $("ayProfileFormStep");
     if (choice) { choice.hidden = false; choice.style.display = "block"; }
     if (formStep) { formStep.hidden = true; formStep.style.display = "none"; }
+    if (profileTitle) profileTitle.textContent = "Bienvenido a Agenda Ya";
+    if (profileSubtitle) profileSubtitle.textContent = "Elige tu perfil para comenzar.";
     selectProfileType(profileType);
     try { window.scrollTo(0, 0); } catch (_) {}
   }
@@ -132,6 +137,12 @@
     const choice = $("ayProfileChoiceStep"), formStep = $("ayProfileFormStep");
     if (choice) { choice.hidden = true; choice.style.display = "none"; }
     if (formStep) { formStep.hidden = false; formStep.style.display = "block"; }
+    if (profileTitle) profileTitle.textContent = profileType === "business" ? "Configura tu negocio" : "Configura tu perfil cliente";
+    if (profileSubtitle) profileSubtitle.textContent = profileType === "business" ? "Completa los datos básicos de tu negocio." : "Completa tus datos para comenzar a reservar.";
+    businessStep = "details";
+    if (businessForm) { businessForm.hidden = profileType !== "business"; businessForm.style.display = profileType === "business" ? "grid" : "none"; }
+    if (businessScheduleForm) { businessScheduleForm.hidden = true; businessScheduleForm.style.display = "none"; }
+    if (customerForm) { customerForm.hidden = profileType !== "customer"; customerForm.style.display = profileType === "customer" ? "grid" : "none"; }
     selectProfileType(profileType);
     try { window.scrollTo(0, 0); } catch (_) {}
   }
@@ -207,7 +218,6 @@
     $("ayCustomerCity").value = p?.city || "";
     $("ayCustomerComuna").value = p?.comuna || "";
     $("ayCustomerAddress").value = p?.address || "";
-    $("ayCustomerAvatar").value = p?.avatar_url || "";
     $("ayCustomerAvatarPreview").textContent = initials(p?.full_name || user?.email);
   }
   function populateBusiness(b, user) {
@@ -217,7 +227,6 @@
     $("ayBusinessCity").value = b?.city || "";
     $("ayBusinessComuna").value = b?.comuna || "";
     $("ayBusinessAddress").value = b?.address || "";
-    $("ayBusinessLogo").value = b?.logo_url || "";
     $("ayBusinessAvatarPreview").textContent = initials(b?.name || user?.email);
   }
 
@@ -360,13 +369,12 @@
     setProfileStatus(customerStatus,"Guardando perfil…");
     const name=$("ayCustomerName").value.trim(), phone=$("ayCustomerPhone").value.trim(),
       ageRaw=$("ayCustomerAge").value, city=$("ayCustomerCity").value.trim(),
-      comuna=$("ayCustomerComuna").value.trim(), address=$("ayCustomerAddress").value.trim(),
-      url=$("ayCustomerAvatar").value.trim();
+      comuna=$("ayCustomerComuna").value.trim(), address=$("ayCustomerAddress").value.trim();
     if(!name||!city||!comuna||!address) return setProfileStatus(customerStatus,"Completa nombre, ciudad, comuna y dirección.","error");
     const age=ageRaw?Number(ageRaw):null;
     if(age!==null&&(age<13||age>120)) return setProfileStatus(customerStatus,"Ingresa una edad válida.","error");
     try {
-      let avatar=url; const file=$("ayCustomerAvatarFile").files?.[0]; if(file) avatar=await uploadMedia(file,"avatar");
+      let avatar=null; const file=$("ayCustomerAvatarFile").files?.[0]; if(file) avatar=await uploadMedia(file,"avatar");
       const r=await client.from("profiles").upsert({
         id:currentUser.id,profile_type:"customer",full_name:name,phone,address,age,city,comuna,
         avatar_url:avatar||null,updated_at:new Date().toISOString()
@@ -377,47 +385,86 @@
     } catch(err) { setProfileStatus(customerStatus,err?.message||"No fue posible guardar el perfil.","error"); }
   }
 
+  function validateBusinessDetails() {
+    const name = $("ayBusinessName").value.trim();
+    const type = $("ayBusinessType").value.trim();
+    const city = $("ayBusinessCity").value.trim();
+    const comuna = $("ayBusinessComuna").value.trim();
+    const address = $("ayBusinessAddress").value.trim();
+    if (!name || !type || !city || !comuna || !address) {
+      setProfileStatus(businessStatus, "Completa nombre, tipo de servicio, ciudad, comuna y dirección.", "error");
+      return false;
+    }
+    return true;
+  }
+
+  function showBusinessScheduleStep() {
+    if (!validateBusinessDetails()) return;
+    businessStep = "schedule";
+    if (businessForm) { businessForm.hidden = true; businessForm.style.display = "none"; }
+    if (businessScheduleForm) { businessScheduleForm.hidden = false; businessScheduleForm.style.display = "grid"; }
+    if (profileTitle) profileTitle.textContent = "Configura tu negocio";
+    if (profileSubtitle) profileSubtitle.textContent = "Paso 2 · Configura los horarios de atención.";
+    if (businessScheduleStatus) setProfileStatus(businessScheduleStatus, "Revisa los horarios antes de guardar.");
+    try { window.scrollTo(0, 0); } catch (_) {}
+  }
+
+  function showBusinessDetailsStep() {
+    businessStep = "details";
+    if (businessForm) { businessForm.hidden = false; businessForm.style.display = "grid"; }
+    if (businessScheduleForm) { businessScheduleForm.hidden = true; businessScheduleForm.style.display = "none"; }
+    if (profileTitle) profileTitle.textContent = "Configura tu negocio";
+    if (profileSubtitle) profileSubtitle.textContent = "Completa los datos básicos de tu negocio.";
+    try { window.scrollTo(0, 0); } catch (_) {}
+  }
+
   async function saveBusiness(event) {
     event.preventDefault();
     if (!currentUser) return;
-    setProfileStatus(businessStatus,"Creando perfil de negocio…");
-    const name=$("ayBusinessName").value.trim(), type=$("ayBusinessType").value.trim(),
-      phone=$("ayBusinessPhone").value.trim(), city=$("ayBusinessCity").value.trim(),
-      comuna=$("ayBusinessComuna").value.trim(), address=$("ayBusinessAddress").value.trim(),
-      logoUrl=$("ayBusinessLogo").value.trim();
-    if(!name||!type||!city||!comuna||!address)
-      return setProfileStatus(businessStatus,"Completa nombre, tipo de servicio, ciudad, comuna y dirección.","error");
+    if (!validateBusinessDetails()) return;
+    setProfileStatus(businessScheduleStatus, "Guardando datos del negocio…");
+    const name = $("ayBusinessName").value.trim(), type = $("ayBusinessType").value.trim(),
+      phone = $("ayBusinessPhone").value.trim(), city = $("ayBusinessCity").value.trim(),
+      comuna = $("ayBusinessComuna").value.trim(), address = $("ayBusinessAddress").value.trim();
     try {
-      let logo=logoUrl; const file=$("ayBusinessLogoFile").files?.[0]; if(file) logo=await uploadMedia(file,"business-logo");
-      const slug=(name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,50)||"negocio");
-      const created=await client.rpc("create_business",{
-        p_name:name,p_slug:`${slug}-${currentUser.id.slice(0,8)}`,p_legal_name:null,
-        p_email:currentUser.email||null,p_phone:phone||null
+      let logo = null;
+      const file = $("ayBusinessLogoFile").files?.[0];
+      if (file) logo = await uploadMedia(file, "business-logo");
+      const slug = (name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "negocio");
+      const created = await client.rpc("create_business", {
+        p_name: name, p_slug: `${slug}-${currentUser.id.slice(0, 8)}`, p_legal_name: null,
+        p_email: currentUser.email || null, p_phone: phone || null
       });
-      if(created.error) throw created.error;
-      const business=created.data; if(!business?.id) throw new Error("Supabase no devolvió el negocio creado.");
-      const upd=await client.from("businesses").update({
-        business_type:type,address,city,comuna,logo_url:logo||null,phone:phone||null,updated_at:new Date().toISOString()
-      }).eq("id",business.id);
-      if(upd.error) throw upd.error;
-      const profileUpdate=await client.from("profiles").upsert({
-        id:currentUser.id,profile_type:"business",full_name:name,phone,address,city,comuna,
-        avatar_url:logo||null,updated_at:new Date().toISOString()
-      },{onConflict:"id"});
-      if(profileUpdate.error) throw profileUpdate.error;
-      const rows=DAYS.map((_,i)=>{
-        const activeEl=document.querySelector(`.ay-hour-active[data-day="${i+1}"]`);
-        const openEl=document.querySelector(`[data-open="${i+1}"]`), closeEl=document.querySelector(`[data-close="${i+1}"]`);
-        const active=!!activeEl?.checked;
-        return {business_id:business.id,day_of_week:i+1,active,
-          open_time:active?(openEl?.value||"09:00"):null,close_time:active?(closeEl?.value||"18:00"):null,
-          created_by:currentUser.id,updated_at:new Date().toISOString()};
+      if (created.error) throw created.error;
+      const business = created.data;
+      if (!business?.id) throw new Error("Supabase no devolvió el negocio creado.");
+      const upd = await client.from("businesses").update({
+        business_type: type, address, city, comuna, logo_url: logo || null, phone: phone || null,
+        updated_at: new Date().toISOString()
+      }).eq("id", business.id);
+      if (upd.error) throw upd.error;
+      const profileUpdate = await client.from("profiles").upsert({
+        id: currentUser.id, profile_type: "business", full_name: name, phone, address, city, comuna,
+        avatar_url: logo || null, updated_at: new Date().toISOString()
+      }, { onConflict: "id" });
+      if (profileUpdate.error) throw profileUpdate.error;
+      const rows = DAYS.map((_, i) => {
+        const activeEl = document.querySelector(`.ay-hour-active[data-day="${i + 1}"]`);
+        const openEl = document.querySelector(`[data-open="${i + 1}"]`), closeEl = document.querySelector(`[data-close="${i + 1}"]`);
+        const active = !!activeEl?.checked;
+        return { business_id: business.id, day_of_week: i + 1, active,
+          open_time: active ? (openEl?.value || "09:00") : null,
+          close_time: active ? (closeEl?.value || "18:00") : null,
+          created_by: currentUser.id, updated_at: new Date().toISOString() };
       });
-      const hours=await client.from("business_hours").upsert(rows,{onConflict:"business_id,day_of_week"});
-      if(hours.error) throw hours.error;
-      setProfileStatus(businessStatus,"Perfil de negocio creado correctamente. Ingresando a Agenda Ya…","success");
-      setTimeout(()=>showApp(currentUser),350);
-    } catch(err) { setProfileStatus(businessStatus,err?.message||"No fue posible crear el perfil de negocio.","error"); }
+      const hours = await client.from("business_hours").upsert(rows, { onConflict: "business_id,day_of_week" });
+      if (hours.error) throw hours.error;
+      setProfileStatus(businessScheduleStatus, "Perfil de negocio creado. Abriendo Agenda Ya…", "success");
+      setTimeout(() => showApp(currentUser), 450);
+    } catch (err) {
+      console.error("saveBusiness:", err);
+      setProfileStatus(businessScheduleStatus, err?.message || "No fue posible guardar el perfil de negocio.", "error");
+    }
   }
 
   async function boot() {
@@ -444,7 +491,9 @@
     document.querySelectorAll(".ay-profile-type-btn").forEach(btn=>btn.addEventListener("click",()=>selectProfileType(btn.dataset.profileType)));
     $("ayProfileNext").addEventListener("click",()=>showSelectedProfileForm());
     $("ayProfileBack").addEventListener("click",()=>showProfileChoice());
-    businessForm.addEventListener("submit",saveBusiness);
+    $("ayBusinessNext").addEventListener("click",showBusinessScheduleStep);
+    $("ayBusinessScheduleBack").addEventListener("click",showBusinessDetailsStep);
+    businessScheduleForm.addEventListener("submit",saveBusiness);
     customerForm.addEventListener("submit",saveCustomer);
     $("ayBusinessLogoFile").addEventListener("change",()=>previewFile($("ayBusinessLogoFile"),$("ayBusinessAvatarPreview")));
     $("ayCustomerAvatarFile").addEventListener("change",()=>previewFile($("ayCustomerAvatarFile"),$("ayCustomerAvatarPreview")));
@@ -480,7 +529,7 @@
   }
 
   window.AgendaYaAuth={
-    version:"0.3.0",
+    version:"0.4.0",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };
