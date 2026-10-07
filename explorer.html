@@ -3,34 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Agenda Ya · Explorar</title>
+  <meta name="description" content="Encuentra negocios y servicios disponibles en Agenda Ya.">
+  <title>Agenda Ya · Encuentra. Elige. Agenda.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="public-platform.css">
 </head>
-<body>
-<main class="shell marketplace-shell">
+<body class="marketplace-page">
+<main class="marketplace-shell">
   <header class="market-header">
     <a class="market-brand" href="explorer.html" aria-label="Agenda Ya">
       <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
     </a>
     <div class="market-header-actions" id="marketAccount">
-      <a class="market-login" href="index.html">Iniciar sesión</a>
+      <a class="publish-link" href="index.html">Publica tu negocio</a>
+      <a class="account-button" href="index.html" aria-label="Acceder a tu cuenta"><span class="account-icon">♙</span></a>
     </div>
   </header>
 
-  <section class="hero">
-    <p class="eyebrow">AGENDA YA · EXPLORAR</p>
-    <h1>Encuentra. Elige. Agenda.</h1>
-    <p>Descubre negocios y servicios disponibles.</p>
-    <form id="searchForm" class="search">
-      <input id="query" placeholder="¿Qué necesitas?" autocomplete="off">
-      <input id="city" placeholder="Comuna o ciudad" autocomplete="address-level2">
-      <select id="category"><option value="">Todas las categorías</option></select>
-      <button type="submit">Buscar</button>
-    </form>
+  <section class="market-hero">
+    <div class="hero-backdrop" aria-hidden="true"></div>
+    <div class="hero-content">
+      <h1>Encuentra. Elige. <span>Agenda.</span></h1>
+      <p>Descubre negocios y servicios disponibles.</p>
+      <form id="searchForm" class="market-search" novalidate>
+        <label class="search-field search-main"><span class="search-svg">⌕</span><input id="query" placeholder="¿Qué necesitas?" autocomplete="off"></label>
+        <label class="search-field"><span class="search-svg">⌖</span><input id="city" placeholder="Comuna o ciudad" autocomplete="address-level2"></label>
+        <label class="search-field"><span class="search-svg grid-svg">⊞</span><select id="category"><option value="">Todas las categorías</option></select><span class="select-chevron">⌄</span></label>
+        <button type="submit">Buscar</button>
+      </form>
+    </div>
   </section>
 
-  <div class="market-results-head"><p id="resultStatus">Buscando...</p></div>
-  <section id="results" class="cards" aria-live="polite"></section>
+  <nav class="category-rail" id="categoryRail" aria-label="Categorías">
+    <button class="category-chip active" data-category=""><span>⊞</span>Todas</button>
+  </nav>
+
+  <section class="market-results-bar">
+    <p id="resultStatus">Buscando negocios...</p>
+    <button id="clearFilters" type="button" hidden>Limpiar filtros</button>
+  </section>
+
+  <section id="results" class="market-grid" aria-live="polite"></section>
 </main>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
