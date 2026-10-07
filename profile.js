@@ -58,9 +58,21 @@
   function initHours(){
     $("hours").innerHTML = DAYS.map((day,i) => `
       <div class="ay-hour-row">
-        <label><input class="hour-active" type="checkbox" data-day="${i+1}" ${i<5?"checked":""}> ${day}</label>
-        <input type="time" data-open="${i+1}" value="09:00">
-        <input type="time" data-close="${i+1}" value="18:00">
+        <div class="ay-day-cell">
+          <span class="ay-day-name">${day}</span>
+          <label class="ay-day-toggle" aria-label="Activar ${day}">
+            <input class="hour-active" type="checkbox" data-day="${i+1}" ${i<5?"checked":""}>
+            <span class="ay-switch" aria-hidden="true"><span></span></span>
+          </label>
+        </div>
+        <label class="ay-time-field">
+          <span class="ay-time-label">Desde</span>
+          <input type="time" data-open="${i+1}" value="09:00" aria-label="Hora de apertura ${day}">
+        </label>
+        <label class="ay-time-field">
+          <span class="ay-time-label">Hasta</span>
+          <input type="time" data-close="${i+1}" value="18:00" aria-label="Hora de cierre ${day}">
+        </label>
       </div>
     `).join("");
   }

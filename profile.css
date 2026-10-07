@@ -601,3 +601,166 @@ button,input{font:inherit}
   font-size:calc(13 * var(--s));
   font-weight:400;
 }
+
+/* =========================================================
+   HORARIOS · DISEÑO PROFESIONAL
+   El checkbox anterior se estaba interpretando como un input de formulario
+   y, por la regla global de .onboarding-form input, aparecía como una
+   caja vacía enorme. Ahora se presenta como un switch compacto.
+   ========================================================= */
+#scheduleForm #hours{
+  display:grid;
+  gap:calc(8 * var(--s));
+  width:100%;
+  margin-top:calc(4 * var(--s));
+}
+
+.ay-hour-row{
+  display:grid;
+  grid-template-columns:1.08fr 1fr 1fr;
+  gap:calc(10 * var(--s));
+  align-items:end;
+  margin:0;
+  padding:calc(7 * var(--s)) 0;
+  border-bottom:1px solid #edf0f3;
+}
+
+.ay-day-cell{
+  min-width:0;
+  min-height:calc(58 * var(--s));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:calc(8 * var(--s));
+}
+
+.ay-day-name{
+  color:var(--navy);
+  font-size:calc(19 * var(--s));
+  line-height:1;
+  font-weight:700;
+  letter-spacing:-.3px;
+}
+
+.ay-day-toggle{
+  display:inline-flex !important;
+  width:auto !important;
+  min-width:0 !important;
+  height:calc(32 * var(--s));
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
+  cursor:pointer;
+}
+
+.ay-day-toggle .hour-active{
+  position:absolute;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+.ay-switch{
+  position:relative;
+  display:block;
+  width:calc(48 * var(--s));
+  height:calc(28 * var(--s));
+  border-radius:999px;
+  background:#dfe3e8;
+  transition:background .18s ease;
+}
+
+.ay-switch span{
+  position:absolute;
+  top:calc(3 * var(--s));
+  left:calc(3 * var(--s));
+  width:calc(22 * var(--s));
+  height:calc(22 * var(--s));
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 1px 4px rgba(15,23,42,.18);
+  transition:transform .18s ease;
+}
+
+.ay-day-toggle .hour-active:checked + .ay-switch{
+  background:var(--blue);
+}
+
+.ay-day-toggle .hour-active:checked + .ay-switch span{
+  transform:translateX(calc(20 * var(--s)));
+}
+
+.ay-time-field{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  grid-template-rows:auto auto !important;
+  gap:calc(5 * var(--s)) !important;
+  min-width:0;
+  margin:0 !important;
+}
+
+.ay-time-label{
+  color:#737b86;
+  font-size:calc(13 * var(--s));
+  line-height:1;
+  font-weight:600;
+}
+
+.ay-time-field input[type=time]{
+  width:100%;
+  height:calc(56 * var(--s));
+  min-height:0;
+  padding:0 calc(14 * var(--s));
+  border:2px solid var(--border);
+  border-radius:calc(18 * var(--s));
+  color:#111827;
+  background:#fff;
+  font-size:calc(18 * var(--s));
+  font-weight:400;
+}
+
+.ay-time-field input[type=time]:focus{
+  border-color:#cbd0d5;
+  outline:none;
+  box-shadow:none;
+}
+
+/* Cabecera compacta para orientar las columnas sin ocupar espacio excesivo. */
+#hours::before{
+  content:"Día                         Desde                 Hasta";
+  display:block;
+  color:#8b939c;
+  font-size:calc(12 * var(--s));
+  font-weight:700;
+  letter-spacing:.3px;
+  white-space:pre;
+  padding:0 calc(2 * var(--s)) calc(2 * var(--s));
+}
+
+@media(max-width:520px){
+  .ay-hour-row{
+    grid-template-columns:1fr 1fr 1fr;
+    gap:calc(7 * var(--s));
+    padding:calc(5 * var(--s)) 0;
+  }
+  .ay-day-name{font-size:calc(17 * var(--s));}
+  .ay-switch{width:calc(42 * var(--s));height:calc(25 * var(--s));}
+  .ay-switch span{width:calc(19 * var(--s));height:calc(19 * var(--s));}
+  .ay-day-toggle .hour-active:checked + .ay-switch span{transform:translateX(calc(17 * var(--s)));}
+  .ay-time-field input[type=time]{height:calc(52 * var(--s));font-size:calc(16 * var(--s));}
+}
+
+@media(max-height:850px){
+  #hours::before{font-size:calc(11 * var(--s));}
+  .ay-hour-row{padding:calc(4 * var(--s)) 0;}
+  .ay-day-cell{min-height:calc(50 * var(--s));}
+  .ay-time-field input[type=time]{height:calc(48 * var(--s));}
+}
