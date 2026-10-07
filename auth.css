@@ -184,3 +184,13 @@
   .ay-profile-type-btn{min-height:92px}
   .ay-profile-choice-step{min-height:calc(100svh - 210px)}
 }
+
+/* Agenda Ya · Premium onboarding layer v0.6.0 */
+.ay-auth,.ay-profile{background:radial-gradient(circle at 12% 8%,rgba(11,99,229,.08),transparent 28%),radial-gradient(circle at 88% 18%,rgba(0,190,220,.08),transparent 24%),linear-gradient(180deg,#fbfdff 0%,#f2f7fd 100%)}
+.ay-auth-brand,.ay-profile-brand{border-color:#e7edf5;box-shadow:0 10px 28px rgba(18,53,98,.055)}
+.ay-auth-card,.ay-profile-card{border-color:#e5ebf3;box-shadow:0 20px 55px rgba(18,53,98,.075)}
+.ay-auth-primary{background:linear-gradient(135deg,#0b63e5,#1675ee);border-color:#0b63e5;box-shadow:0 9px 22px rgba(11,99,229,.16)}
+.ay-profile-type-btn{border-color:#e2e9f2;background:rgba(255,255,255,.88);box-shadow:0 5px 18px rgba(18,53,98,.035)}
+.ay-profile-type-btn.is-active{border-color:#2e83ed;background:linear-gradient(180deg,#f7fbff,#edf6ff);box-shadow:0 9px 24px rgba(11,99,229,.10)}
+.ay-profile-card input,.ay-auth-input{border-color:#dfe7f1;background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.ay-profile-next{background:linear-gradient(135deg,#0b63e5,#1680ef)}

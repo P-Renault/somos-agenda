@@ -1,10 +1,35 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Agenda Ya · Explorar</title><link rel="stylesheet" href="public-platform.css"></head>
-<body><main class="shell">
-<header><strong>AGENDA <span>YA</span></strong><a href="public-profile-admin.html">Mi negocio</a></header>
-<section class="hero"><p class="eyebrow">AGENDA YA · EXPLORAR</p><h1>Encuentra. Elige. Agenda.</h1><p>Descubre negocios y servicios disponibles.</p>
-<form id="searchForm" class="search"><input id="query" placeholder="¿Qué necesitas?"><input id="city" placeholder="Comuna o ciudad"><select id="category"><option value="">Todas las categorías</option></select><button>Buscar</button></form></section>
-<p id="resultStatus"></p><section id="results" class="cards"></section>
-<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="explorer.js"></script>
-</main></body></html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Agenda Ya · Explorar</title>
+  <link rel="stylesheet" href="public-platform.css">
+</head>
+<body>
+<main class="shell marketplace-shell">
+  <header class="market-header">
+    <a class="market-brand" href="explorer.html" aria-label="Agenda Ya">AGENDA <span>YA</span></a>
+    <div class="market-account" id="marketAccount"><a href="index.html">Iniciar sesión</a></div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">AGENDA YA · EXPLORAR</p>
+    <h1>Encuentra. Elige. Agenda.</h1>
+    <p>Descubre negocios y servicios disponibles.</p>
+    <form id="searchForm" class="search">
+      <input id="query" placeholder="¿Qué necesitas?" autocomplete="off">
+      <input id="city" placeholder="Comuna o ciudad" autocomplete="address-level2">
+      <select id="category"><option value="">Todas las categorías</option></select>
+      <button type="submit">Buscar</button>
+    </form>
+  </section>
+
+  <div class="market-results-head"><p id="resultStatus">Buscando...</p></div>
+  <section id="results" class="cards" aria-live="polite"></section>
+</main>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="explorer.js"></script>
+</body>
+</html>

@@ -159,11 +159,12 @@
 
       <div class="ay-header-actions">
         <button class="ay-icon-btn" title="Notificaciones">♢</button>
-        <button class="ay-account" id="ayAccountBtn">
-          <span class="ay-avatar">PR</span>
+        <button class="ay-account" id="ayAccountBtn" aria-label="Abrir perfil">
+          <span class="ay-avatar">AY</span>
           <span class="ay-account-text"><strong>Mi negocio</strong><small>Cuenta</small></span>
-          <span>⌄</span>
+          <span class="ay-account-chevron">⌄</span>
         </button>
+        <button class="ay-logout-btn" id="ayLogoutBtn" type="button">Salir</button>
       </div>
     </header>
 
@@ -266,13 +267,56 @@
       <button data-view="services">✂<small>Servicios</small></button>
       <button data-view="bookings">▤<small>Reservas</small></button>
       <button data-view="calendar">▦<small>Calendario</small></button>
-      <button data-view="settings">•••<small>Más</small></button>
+      <button id="ayMoreBtn" type="button">•••<small>Más</small></button>
     </nav>
+
+    <div class="ay-modal-backdrop" id="ayProfileBackdrop" hidden></div>
+    <section class="ay-profile-panel" id="ayProfilePanel" hidden aria-label="Mi perfil">
+      <div class="ay-profile-panel-head">
+        <div><span class="ay-eyebrow">AGENDA YA · PERFIL</span><h2>Mi perfil</h2></div>
+        <button class="ay-panel-close" id="ayProfileClose" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div class="ay-profile-summary">
+        <div class="ay-profile-panel-avatar" id="ayProfileAvatar">AY</div>
+        <div><strong id="ayProfileName">Mi perfil</strong><span id="ayProfileEmail"></span><em id="ayProfileRole">Perfil</em></div>
+      </div>
+      <div class="ay-profile-fields" id="ayProfileBusinessFields" data-business-only>
+        <label>Nombre del negocio<input id="ayProfileBusinessName" maxlength="120"></label>
+        <label>Tipo de servicio<input id="ayProfileBusinessType" maxlength="100"></label>
+        <div class="ay-profile-grid-2">
+          <label>Teléfono<input id="ayProfileBusinessPhone" data-phone-eight inputmode="numeric" maxlength="8"></label>
+          <label>Ciudad<input id="ayProfileBusinessCity" maxlength="80"></label>
+          <label>Comuna<input id="ayProfileBusinessComuna" maxlength="80"></label>
+          <label>Dirección<input id="ayProfileBusinessAddress" maxlength="160"></label>
+        </div>
+      </div>
+      <div class="ay-profile-fields" id="ayProfileCustomerFields" hidden>
+        <label>Nombre<input id="ayProfileCustomerName" maxlength="120"></label>
+        <div class="ay-profile-grid-2">
+          <label>Teléfono<input id="ayProfileCustomerPhone" data-phone-eight inputmode="numeric" maxlength="8"></label>
+          <label>Edad<input id="ayProfileCustomerAge" type="number" min="13" max="120"></label>
+          <label>Ciudad<input id="ayProfileCustomerCity" maxlength="80"></label>
+          <label>Comuna<input id="ayProfileCustomerComuna" maxlength="80"></label>
+          <label>Dirección<input id="ayProfileCustomerAddress" maxlength="160"></label>
+        </div>
+      </div>
+      <p class="ay-profile-panel-status" id="ayProfileStatus"></p>
+      <button class="ay-btn ay-btn-primary ay-profile-save" id="ayProfileSave" type="button">Guardar cambios</button>
+    </section>
+
+    <section class="ay-more-sheet" id="ayMoreSheet" hidden aria-label="Más opciones">
+      <div class="ay-more-head"><strong>Más</strong><button class="ay-panel-close" id="ayMoreClose" type="button">×</button></div>
+      <button id="ayMoreProfile" type="button">◉ <span>Mi perfil</span></button>
+      <button id="ayMorePublicProfile" type="button" data-business-only>⌂ <span>Perfil público</span></button>
+      <button id="ayMoreSettings" type="button">⚙ <span>Configuración</span></button>
+      <button class="ay-more-logout" id="ayMoreLogout" type="button">↪ <span>Cerrar sesión</span></button>
+    </section>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="agenda-ya-shell.js"></script>
+  <script src="agenda-ya-profile.js"></script>
   <script src="auth.js"></script>
 </body>
 </html>

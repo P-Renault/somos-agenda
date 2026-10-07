@@ -12,7 +12,7 @@
     bookings: ["OPERACIÓN", "Reservas", "Gestiona reservas, estados y atención."],
     calendar: ["OPERACIÓN", "Calendario", "Visualiza la agenda y la carga diaria del negocio."],
     "public-profile": ["PUBLICACIÓN", "Perfil público", "Configura cómo el negocio se presenta a sus clientes."],
-    settings: ["SISTEMA", "Configuración", "Preferencias, cuenta y parámetros generales."]
+    settings: ["SISTEMA", "Configuración", "Preferencias, cuenta, plan y suscripción."]
   };
 
   const all = (sel) => [...document.querySelectorAll(sel)];

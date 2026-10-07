@@ -45,7 +45,7 @@
     if (appView) { appView.hidden = true; appView.style.display = "none"; }
     try { window.scrollTo(0, 0); } catch (_) {}
   }
-  function showApp(user) {
+  function showApp(user, role = "business") {
     if (authView) { authView.hidden = true; authView.style.display = "none"; }
     if (profileView) { profileView.hidden = true; profileView.style.display = "none"; }
     if (appView) { appView.hidden = false; appView.style.display = "block"; }
@@ -59,6 +59,8 @@
     if (avatar) avatar.textContent = name.split(/\s+/).filter(Boolean).slice(0,2).map(x => x[0]).join("").toUpperCase() || "AY";
     const greeting = document.querySelector("#view-dashboard .ay-hero h1");
     if (greeting) greeting.textContent = `Hola, ${name}`;
+    document.body.dataset.profileType = role;
+    window.AgendaYaProfile?.setRole?.(role);
   }
   function showPostLogin(user, message = "Correo confirmado y sesión activa.") {
     showAuth();
@@ -269,20 +271,28 @@
 
       if (profile?.profile_type === "customer") {
         profileType = "customer";
-        selectProfileType("customer");
-        populateCustomer(profile, user);
-        showSelectedProfileForm();
-        setProfileStatus(customerStatus, "Perfil cliente cargado. Completa o verifica tus datos.", "success");
+        document.body.dataset.profileType = "customer";
+        window.AgendaYaProfile?.setRole?.("customer");
+        // Returning customer: the marketplace is the home, not onboarding.
+        window.location.href = "explorer.html";
         return;
       }
 
       if (profile?.profile_type === "business") {
         profileType = "business";
         const business = await loadBusinessExisting(user);
+        if (business?.id) {
+          document.body.dataset.profileType = "business";
+          window.AgendaYaProfile?.setRole?.("business");
+          showApp(user, "business");
+          window.AgendaYaProfile?.refresh?.();
+          return;
+        }
+        // A business profile exists but its business record is incomplete: resume onboarding.
         selectProfileType("business");
         populateBusiness(business, user);
         showSelectedProfileForm();
-        setProfileStatus(businessStatus, business ? "Perfil de negocio cargado. Verifica tus datos para continuar." : "Completa los datos básicos de tu negocio.", "success");
+        setProfileStatus(businessStatus, "Completa los datos básicos de tu negocio.", "success");
         return;
       }
 
@@ -431,7 +441,8 @@
       },{onConflict:"id"});
       if(r.error) throw r.error;
       setProfileStatus(customerStatus,"Perfil cliente guardado. Abriendo Agenda Ya…","success");
-      setTimeout(()=>{ window.location.href = "explorer.html"; }, 500);
+      window.AgendaYaProfile?.setRole?.("customer");
+      setTimeout(()=>{ window.location.href = "explorer.html"; }, 350);
     } catch(err) { setProfileStatus(customerStatus,err?.message||"No fue posible guardar el perfil.","error"); }
   }
 
