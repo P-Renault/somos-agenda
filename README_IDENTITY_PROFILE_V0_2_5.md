@@ -15,3 +15,11 @@
 ## Alcance
 
 Paquete de integración sobre el framework Backup-1.0. No reemplaza el proyecto completo ni modifica Supabase por sí mismo.
+
+
+## v0.4.1 — Correcciones de formulario
+- Eliminada la duplicidad del encabezado interno en los formularios de negocio y cliente.
+- Se conserva el encabezado superior y “Cambiar tipo de perfil”.
+- Teléfono con prefijo fijo +56 9 y campo local de 8 dígitos.
+- Al guardar, se persiste el teléfono como +56 9 XXXXXXXX.
+- El flujo v0.4.0 se mantiene: selección de perfil → formulario → horario para negocio → Agenda Ya; cliente → marketplace.

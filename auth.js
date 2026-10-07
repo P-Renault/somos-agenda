@@ -211,9 +211,21 @@
       return null;
     }
   }
+  function phoneLocalValue(value) {
+    let digits = String(value || "").replace(/\D/g, "");
+    if (digits.startsWith("569") && digits.length >= 11) digits = digits.slice(3);
+    else if (digits.startsWith("56") && digits.length >= 10) digits = digits.slice(2);
+    if (digits.length === 9 && digits.startsWith("9")) digits = digits.slice(1);
+    return digits.slice(0, 8);
+  }
+  function fullChileMobile(value) {
+    const local = phoneLocalValue(value);
+    return local ? `+56 9 ${local}` : "";
+  }
+
   function populateCustomer(p, user) {
     $("ayCustomerName").value = p?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || "";
-    $("ayCustomerPhone").value = p?.phone || user?.user_metadata?.phone || "";
+    $("ayCustomerPhone").value = phoneLocalValue(p?.phone || user?.user_metadata?.phone || "");
     $("ayCustomerAge").value = p?.age || "";
     $("ayCustomerCity").value = p?.city || "";
     $("ayCustomerComuna").value = p?.comuna || "";
@@ -223,7 +235,7 @@
   function populateBusiness(b, user) {
     $("ayBusinessName").value = b?.name || "";
     $("ayBusinessType").value = b?.business_type || "";
-    $("ayBusinessPhone").value = b?.phone || user?.user_metadata?.phone || "";
+    $("ayBusinessPhone").value = phoneLocalValue(b?.phone || user?.user_metadata?.phone || "");
     $("ayBusinessCity").value = b?.city || "";
     $("ayBusinessComuna").value = b?.comuna || "";
     $("ayBusinessAddress").value = b?.address || "";
@@ -367,7 +379,7 @@
     event.preventDefault();
     if (!currentUser) return;
     setProfileStatus(customerStatus,"Guardando perfil…");
-    const name=$("ayCustomerName").value.trim(), phone=$("ayCustomerPhone").value.trim(),
+    const name=$("ayCustomerName").value.trim(), phone=fullChileMobile($("ayCustomerPhone").value),
       ageRaw=$("ayCustomerAge").value, city=$("ayCustomerCity").value.trim(),
       comuna=$("ayCustomerComuna").value.trim(), address=$("ayCustomerAddress").value.trim();
     if(!name||!city||!comuna||!address) return setProfileStatus(customerStatus,"Completa nombre, ciudad, comuna y dirección.","error");
@@ -424,7 +436,7 @@
     if (!validateBusinessDetails()) return;
     setProfileStatus(businessScheduleStatus, "Guardando datos del negocio…");
     const name = $("ayBusinessName").value.trim(), type = $("ayBusinessType").value.trim(),
-      phone = $("ayBusinessPhone").value.trim(), city = $("ayBusinessCity").value.trim(),
+      phone = fullChileMobile($("ayBusinessPhone").value), city = $("ayBusinessCity").value.trim(),
       comuna = $("ayBusinessComuna").value.trim(), address = $("ayBusinessAddress").value.trim();
     try {
       let logo = null;
@@ -497,6 +509,9 @@
     customerForm.addEventListener("submit",saveCustomer);
     $("ayBusinessLogoFile").addEventListener("change",()=>previewFile($("ayBusinessLogoFile"),$("ayBusinessAvatarPreview")));
     $("ayCustomerAvatarFile").addEventListener("change",()=>previewFile($("ayCustomerAvatarFile"),$("ayCustomerAvatarPreview")));
+    [$("ayBusinessPhone"), $("ayCustomerPhone")].forEach(input=>input?.addEventListener("input",()=>{
+      input.value = input.value.replace(/\D/g, "").slice(0, 8);
+    }));
 
     if(handleUrlError()) return;
 
@@ -529,7 +544,7 @@
   }
 
   window.AgendaYaAuth={
-    version:"0.4.0",
+    version:"0.4.1",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };
