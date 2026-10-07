@@ -196,22 +196,47 @@
     if (routingInProgress) return;
     routingInProgress = true;
     currentUser = user;
+
+    // CRITICAL: the authenticated user must see Profile immediately.
+    // Database reads are hydration only and must never block navigation.
+    showProfile();
+    selectProfileType("business");
+    populateBusiness(null, user);
+    setProfileStatus(businessStatus, "Sesión activa. Cargando tus datos de perfil…", "success");
+
     try {
       const profile = await loadProfileState(user);
+
+      if (profile?.profile_type === "customer") {
+        selectProfileType("customer");
+        populateCustomer(profile, user);
+        setProfileStatus(customerStatus, "Perfil cliente cargado. Completa o verifica tus datos.", "success");
+        return;
+      }
+
       if (profile?.profile_type === "business") {
         const business = await loadBusinessExisting(user);
-        if (business) { showApp(user); return; }
-        showProfile(); selectProfileType("business"); populateBusiness(null, user); return;
+        if (business) {
+          selectProfileType("business");
+          populateBusiness(business, user);
+          setProfileStatus(businessStatus, "Perfil de negocio cargado. Verifica tus datos para continuar.", "success");
+        } else {
+          selectProfileType("business");
+          setProfileStatus(businessStatus, "Cuenta activa. Completa los datos básicos de tu negocio.", "success");
+        }
+        return;
       }
-      if (profile?.profile_type === "customer") {
-        showProfile(); selectProfileType("customer"); populateCustomer(profile, user); return;
-      }
-      showProfile(); selectProfileType("business"); populateBusiness(null, user);
+
+      // No profile yet: remain in Profile without waiting for another request.
+      selectProfileType("business");
+      setProfileStatus(businessStatus, "Cuenta activa. Completa los datos básicos de tu negocio.", "success");
     } catch (err) {
-      console.error("routeSession:", err);
+      console.error("routeSession hydration:", err);
+      // Never send the user back to Login because a profile read failed.
       showProfile();
       selectProfileType("business");
       populateBusiness(null, user);
+      setProfileStatus(businessStatus, "Sesión activa. Puedes comenzar a configurar tu perfil.", "success");
     } finally {
       routingInProgress = false;
     }
