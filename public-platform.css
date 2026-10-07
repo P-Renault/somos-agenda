@@ -1,4 +1,3 @@
-
 :root{--blue:#0b70e9;--blue2:#19b7ef;--ink:#10254a;--muted:#6f8097;--bg:#f4f8fd;--line:#e3ebf4;--white:#fff}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -34,10 +33,8 @@ button{cursor:pointer}
 .category-chip.active{background:#0b70e9;color:#fff;border-color:#0b70e9;box-shadow:0 7px 18px rgba(11,112,233,.18)}
 .category-chip.active span{color:#fff}
 .market-results-bar{height:0;overflow:hidden;display:flex;align-items:center;justify-content:space-between}
-.market-results-bar p{font-size:13px;color:#6f8097}
 .market-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
 .business-card{background:#fff;border:1px solid #e0e8f1;border-radius:18px;overflow:hidden;box-shadow:0 9px 24px rgba(25,58,98,.055);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;min-width:0;position:relative}
-.business-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(25,58,98,.11)}
 .business-cover{height:132px;position:relative;overflow:hidden;background:#eaf2fb}
 .business-cover>img{width:100%;height:100%;display:block;object-fit:cover}
 .favorite-button{position:absolute;right:13px;top:11px;width:31px;height:31px;border:0;border-radius:50%;background:rgba(20,25,31,.12);color:#fff;font-size:25px;line-height:30px;text-shadow:0 1px 2px rgba(0,0,0,.25);padding:0}
@@ -56,74 +53,7 @@ button{cursor:pointer}
 .business-meta>span:nth-child(2){border-right:0;margin-right:auto;padding-right:0}
 .card-arrow{width:38px;height:38px;border-radius:50%;background:#eaf4ff;color:#0b70e9;display:grid!important;place-items:center;font-size:24px;font-weight:500;padding:0!important;margin:0!important;border:0!important}
 .loading-card,.empty-card{grid-column:1/-1;background:#fff;border:1px solid var(--line);border-radius:20px;padding:45px;text-align:center;color:var(--muted)}
-.empty-card h2{margin:10px 0 6px;color:var(--ink)}
-.empty-card p{margin:0}
-
-/* =========================================================
-   RESPONSIVE — intentionally preserves the SAME composition
-   as the reference image on mobile and desktop.
-   No stacked mobile form, no mobile redesign.
-   ========================================================= */
-@media(max-width:1180px){
-  .marketplace-shell{padding-left:28px;padding-right:28px}
-  .market-hero{margin-left:-28px;margin-right:-28px}
-  .hero-content{padding-left:28px;padding-right:28px}
-  .hero-content h1{font-size:47px}
-  .market-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .market-search{grid-template-columns:1.15fr 1fr 1.15fr 125px}
-}
-
-@media(max-width:860px){
-  .market-header{height:76px}
-  .market-brand img{width:155px;height:58px}
-  .market-header-actions{gap:10px}
-  .publish-link{font-size:13px}
-  .account-button{width:38px;height:38px}
-  .market-hero{min-height:205px}
-  .hero-backdrop{background-position:center center}
-  .hero-content{min-height:205px;padding:12px 20px 22px}
-  .hero-content h1{font-size:31px;max-width:none;white-space:nowrap}
-  .hero-content>p{font-size:15px;margin:5px 0 16px;white-space:nowrap}
-  .market-search{grid-template-columns:1.25fr 1fr 1.25fr 88px;gap:8px}
-  .search-field{height:43px;padding:0 11px;gap:7px;border-radius:10px}
-  .search-field input,.search-field select{font-size:10px}
-  .search-svg{font-size:17px}.grid-svg{font-size:17px}.select-chevron{right:8px;font-size:14px}
-  .market-search>button{height:43px;border-radius:10px;font-size:11px}
-  .category-rail{padding:14px 0 12px;gap:7px}
-  .category-chip{height:32px;padding:0 13px;border-radius:17px;gap:7px;font-size:10px}
-  .category-chip span{font-size:14px}
-  .market-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-  .business-cover{height:92px}
-  .business-card{border-radius:13px}
-  .business-card-body{gap:8px;min-height:79px;padding:0 9px 6px}
-  .business-avatar{width:47px;height:47px;flex-basis:47px;margin-top:-24px;border-width:3px;font-size:11px}
-  .business-main{padding-top:5px}
-  .business-main h2{font-size:11px}
-  .card-rating{gap:3px;margin-top:3px;font-size:9px}
-  .star{font-size:11px}
-  .business-location{gap:3px;font-size:8px;margin-top:2px}
-  .business-location span{font-size:10px}
-  .category-pill{margin-top:4px;padding:3px 6px;border-radius:8px;font-size:7px}
-  .business-meta{min-height:32px;margin:0 9px;font-size:8px}
-  .business-meta>span{gap:3px;padding-right:7px;margin-right:7px}
-  .card-arrow{width:24px;height:24px;font-size:15px}
-}
-
-@media(max-width:620px){
-  /* The target mobile reference remains a compact desktop-like row. */
-  .marketplace-shell{padding:0 20px 48px}
-  .market-header{height:66px}
-  .market-brand img{width:155px;height:54px}
-  .market-header-actions{gap:9px}
-  .publish-link{font-size:12px}
-  .market-hero{margin-left:-20px;margin-right:-20px;min-height:205px}
-  .hero-content{padding-left:20px;padding-right:20px;min-height:205px}
-  .market-search{grid-template-columns:1.25fr 1fr 1.25fr 88px}
-  .market-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-}
-
-@media(max-width:390px){
-  .marketplace-shell{padding-left:16px;padding-right:16px}
-  .market-hero{margin-left:-16px;margin-right:-16px}
-  .hero-content{padding-left:16px;padding-right:16px}
-}
+@media(max-width:1180px){.marketplace-shell{padding-left:28px;padding-right:28px}.market-hero{margin-left:-28px;margin-right:-28px}.hero-content{padding-left:28px;padding-right:28px}.hero-content h1{font-size:47px}.market-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.market-search{grid-template-columns:1.15fr 1fr 1.15fr 125px}}
+@media(max-width:860px){.market-header{height:76px}.market-brand img{width:155px;height:58px}.market-header-actions{gap:10px}.publish-link{font-size:13px}.account-button{width:38px;height:38px}.market-hero{min-height:205px}.hero-backdrop{background-position:center center}.hero-content{min-height:205px;padding:12px 20px 22px}.hero-content h1{font-size:31px;max-width:none;white-space:nowrap}.hero-content>p{font-size:15px;margin:5px 0 16px;white-space:nowrap}.market-search{grid-template-columns:1.25fr 1fr 1.25fr 88px;gap:8px}.search-field{height:43px;padding:0 11px;gap:7px;border-radius:10px}.search-field input,.search-field select{font-size:10px}.search-svg{font-size:17px}.grid-svg{font-size:17px}.select-chevron{right:8px;font-size:14px}.market-search>button{height:43px;border-radius:10px;font-size:11px}.category-rail{padding:14px 0 12px;gap:7px}.category-chip{height:32px;padding:0 13px;border-radius:17px;gap:7px;font-size:10px}.category-chip span{font-size:14px}.market-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.business-cover{height:92px}.business-card{border-radius:13px}.business-card-body{gap:8px;min-height:79px;padding:0 9px 6px}.business-avatar{width:47px;height:47px;flex-basis:47px;margin-top:-24px;border-width:3px;font-size:11px}.business-main{padding-top:5px}.business-main h2{font-size:11px}.card-rating{gap:3px;margin-top:3px;font-size:9px}.star{font-size:11px}.business-location{gap:3px;font-size:8px;margin-top:2px}.business-location span{font-size:10px}.category-pill{margin-top:4px;padding:3px 6px;border-radius:8px;font-size:7px}.business-meta{min-height:32px;margin:0 9px;font-size:8px}.business-meta>span{gap:3px;padding-right:7px;margin-right:7px}.card-arrow{width:24px;height:24px;font-size:15px}}
+@media(max-width:620px){.marketplace-shell{padding:0 20px 48px}.market-header{height:66px}.market-brand img{width:155px;height:54px}.market-header-actions{gap:9px}.publish-link{font-size:12px}.market-hero{margin-left:-20px;margin-right:-20px;min-height:205px}.hero-content{padding-left:20px;padding-right:20px;min-height:205px}.market-search{grid-template-columns:1.25fr 1fr 1.25fr 88px}.market-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
+@media(max-width:390px){.marketplace-shell{padding-left:16px;padding-right:16px}.market-hero{margin-left:-16px;margin-right:-16px}.hero-content{padding-left:16px;padding-right:16px}}

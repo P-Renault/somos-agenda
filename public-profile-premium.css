@@ -33,3 +33,33 @@ a,button,input,select{font:inherit}
 @media(max-width:860px){.profile-header{height:80px;grid-template-columns:42px 1fr auto}.profile-brand{justify-self:center}.profile-brand img{width:190px;height:66px}.profile-explore{font-size:13px}.profile-hero{min-height:270px}.profile-hero-overlay{min-height:270px;padding:25px;gap:17px}.profile-business-logo-wrap{width:105px;height:105px;flex-basis:105px;border-radius:23px}.profile-business-heading h1{font-size:37px}.profile-hero .profile-primary-button{padding:0 20px}.service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.profile-shell{padding:0 20px 48px}.profile-header{height:66px;grid-template-columns:36px 1fr auto}.profile-brand img{width:155px;height:54px}.profile-back{width:36px;height:36px;font-size:23px}.profile-explore{font-size:11px}.profile-hero{min-height:205px;border-radius:16px}.profile-cover{background-position:center}.profile-hero-overlay{min-height:205px;padding:15px;gap:9px}.profile-business-logo-wrap{width:62px;height:62px;flex-basis:62px;border-radius:15px;border-width:3px}.profile-business-heading{padding-bottom:2px}.profile-category{font-size:8px;letter-spacing:.1em}.profile-business-heading h1{font-size:24px;max-width:210px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.profile-location-row{font-size:9px}.profile-hero .profile-primary-button{min-height:39px;padding:0 14px;border-radius:10px;font-size:10px;margin-left:auto;margin-bottom:1px}.profile-intro{padding:14px 2px 0}.profile-description{font-size:13px}.profile-section{margin-top:25px}.profile-section h2{font-size:25px}.profile-section-eyebrow{font-size:9px}.service-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.service-card{border-radius:13px;padding:13px}.service-icon{width:31px;height:31px;border-radius:9px;font-size:13px}.service-duration{font-size:9px}.service-card h3{font-size:14px;margin:10px 0 5px}.service-card p{font-size:9px;min-height:42px}.service-card-bottom{margin-top:10px;padding-top:9px}.service-card-bottom strong{font-size:12px}.service-book{padding:7px 9px;font-size:9px;border-radius:8px}.profile-panel{border-radius:14px;padding:16px}.profile-panel h2{font-size:23px}.professional-avatar{width:39px;height:39px;flex-basis:39px;border-radius:11px;font-size:11px}.professional-card{gap:9px;padding:10px 0}.professional-card strong{font-size:11px}.professional-card p{font-size:9px}.schedule-row{font-size:10px;padding:9px 0}.profile-final-cta{margin-top:25px;padding:20px;border-radius:16px}.profile-final-cta h2{font-size:23px}.profile-final-cta p{font-size:10px}.profile-primary-button.large{min-height:40px;font-size:10px}.profile-footer{font-size:9px}}
 @media(max-width:390px){.profile-shell{padding-left:16px;padding-right:16px}.profile-hero-overlay{padding:12px}.profile-business-logo-wrap{width:56px;height:56px;flex-basis:56px}.profile-business-heading h1{font-size:21px}.profile-hero .profile-primary-button{padding:0 11px}.service-grid{gap:8px}}
+
+/* B4.4 — DESCRIPTION BAND / REFERENCE PROPORTIONS */
+.profile-intro{
+  width:100%;
+  margin-top:0;
+  padding:22px 28px 23px;
+  background:#fff;
+  border:1px solid #e2eaf3;
+  border-radius:18px;
+  box-shadow:0 8px 22px rgba(25,58,98,.045);
+}
+.profile-description{
+  width:100%;
+  max-width:none;
+  margin:0;
+  font-size:18px;
+  line-height:1.5;
+}
+@media(max-width:620px){
+  .profile-intro{
+    width:100%;
+    padding:15px 16px;
+    border-radius:14px;
+  }
+  .profile-description{
+    width:100%;
+    font-size:13px;
+    line-height:1.48;
+  }
+}
