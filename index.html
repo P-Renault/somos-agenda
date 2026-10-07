@@ -10,34 +10,76 @@
 <body>
 
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
+    <div class="ay-auth-bg-shape ay-auth-bg-shape-a" aria-hidden="true"></div>
+    <div class="ay-auth-bg-shape ay-auth-bg-shape-b" aria-hidden="true"></div>
+    <div class="ay-auth-bg-shape ay-auth-bg-shape-c" aria-hidden="true"></div>
+
     <div class="ay-auth-wrap">
-      <div class="ay-auth-brand">
-        <img src="agenda-ya-logo-header-1.jpg" alt="Agenda Ya">
+      <div class="ay-auth-topbar">
+        <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver" onclick="if(history.length>1){history.back()}else{location.href='/'}">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20.5 6.5 11 16l9.5 9.5M12 16h17"/></svg>
+        </button>
+        <div class="ay-auth-brand" aria-label="Agenda Ya">
+          <img src="agenda-ya-logo-header.jpg" alt="Agenda Ya">
+        </div>
       </div>
+
+      <div class="ay-auth-intro">
+        <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
+        <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a <span>Agenda Ya</span></h1>
+        <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas<br class="ay-auth-title-break"> desde un solo lugar.</p>
+      </div>
+
       <div class="ay-auth-card">
         <div id="ayAuthFormPanel" class="ay-auth-state is-visible">
-          <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
-          <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a Agenda Ya</h1>
-          <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
           <form class="ay-auth-form" id="ayAuthForm" novalidate>
-            <label class="ay-auth-label">Email
-              <input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" required>
+            <label class="ay-auth-field">
+              <span class="ay-auth-field-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="3"/><path d="m5 9 11 9L27 9"/></svg>
+              </span>
+              <span class="ay-auth-field-copy">
+                <span class="ay-auth-label">Email</span>
+                <input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" placeholder="tu@email.com" required>
+              </span>
             </label>
-            <label class="ay-auth-label">Contraseña
-              <input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" required>
+
+            <label class="ay-auth-field">
+              <span class="ay-auth-field-icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32"><rect x="6" y="14" width="20" height="14" rx="3"/><path d="M10 14V10a6 6 0 0 1 12 0v4"/></svg>
+              </span>
+              <span class="ay-auth-field-copy ay-auth-password-copy">
+                <span class="ay-auth-label">Contraseña</span>
+                <input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Ingresa tu contraseña" required>
+                <button class="ay-auth-eye" id="ayAuthPasswordToggle" type="button" aria-label="Mostrar contraseña">
+                  <svg class="ay-eye-open" viewBox="0 0 32 32"><path d="M3 16s4.8-7 13-7 13 7 13 7-4.8 7-13 7S3 16 3 16Z"/><circle cx="16" cy="16" r="3.5"/></svg>
+                  <svg class="ay-eye-closed" viewBox="0 0 32 32"><path d="m5 5 22 22M12.5 12.5a5 5 0 0 0 7 7M8 8.8C4.9 11 3 14 3 16c0 0 4.8 7 13 7 2.2 0 4.2-.5 5.9-1.3M24 20.5C27 18.4 29 16 29 16s-4.8-7-13-7c-1.5 0-2.9.2-4.2.6"/></svg>
+                </button>
+              </span>
             </label>
-            <label class="ay-auth-label" id="ayPasswordConfirmWrap" hidden>Confirmar contraseña
+
+            <label class="ay-auth-label ay-auth-confirm-field" id="ayPasswordConfirmWrap" hidden>
+              <span>Confirmar contraseña</span>
               <input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6">
             </label>
-            <button class="ay-auth-primary" id="ayAuthSubmit" type="submit">Iniciar sesión</button>
+
+            <button class="ay-auth-primary" id="ayAuthSubmit" type="submit"><span>Iniciar sesión</span><b>→</b></button>
           </form>
+
           <p class="ay-auth-status" id="ayAuthStatus" aria-live="polite"></p>
-          <button class="ay-auth-link" id="ayRecoveryBtn" type="button">Recuperar contraseña</button>
+          <button class="ay-auth-link" id="ayRecoveryBtn" type="button">¿Olvidaste tu contraseña?</button>
+
           <div class="ay-auth-divider"><span>o continuar con</span></div>
           <div class="ay-auth-socials">
-            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button"><span>G</span> Continuar con Google</button>
-            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button"><span>f</span> Continuar con Facebook</button>
+            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button">
+              <span class="ay-social-icon ay-google-icon" aria-hidden="true">G</span>
+              <span class="ay-social-text">Continuar con Google</span><b>›</b>
+            </button>
+            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button">
+              <span class="ay-social-icon ay-facebook-icon" aria-hidden="true">f</span>
+              <span class="ay-social-text">Continuar con Facebook</span><b>›</b>
+            </button>
           </div>
+
           <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
           <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
         </div>
@@ -51,12 +93,11 @@
             <span id="ayAuthAccountEmail"></span>
           </div>
           <p class="ay-auth-status is-success" id="ayAuthPostStatus">Identity está listo. El siguiente motor será Perfil.</p>
-          <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button">Continuar</button>
+          <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button"><span>Continuar</span><b>→</b></button>
         </div>
       </div>
     </div>
   </section>
-
 
   <section class="ay-profile" id="ayProfileView" hidden aria-label="Configuración de perfil">
     <div class="ay-profile-wrap">

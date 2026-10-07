@@ -73,7 +73,7 @@
   function setMode(next) {
     mode = next;
     const signup = mode === "signup";
-    title.textContent = signup ? "Crear cuenta en Agenda Ya" : "Bienvenido a Agenda Ya";
+    title.innerHTML = signup ? "Crear cuenta en <span>Agenda Ya</span>" : "Bienvenido a <span>Agenda Ya</span>";
     subtitle.textContent = signup ? "Crea tu acceso para comenzar a configurar tu perfil." : "Gestiona tu negocio y recibe más reservas desde un solo lugar.";
     confirmWrap.hidden = !signup;
     recovery.hidden = signup;
@@ -555,6 +555,13 @@
     form.addEventListener("submit",submitAuth);
     switchBtn.addEventListener("click",()=>setMode(mode==="login"?"signup":"login"));
     recovery.addEventListener("click",recoveryFlow);
+    const passwordToggle = $("ayAuthPasswordToggle");
+    passwordToggle?.addEventListener("click",()=>{
+      const visible = password.type === "text";
+      password.type = visible ? "password" : "text";
+      passwordToggle.classList.toggle("is-visible", !visible);
+      passwordToggle.setAttribute("aria-label", visible ? "Mostrar contraseña" : "Ocultar contraseña");
+    });
     google.addEventListener("click",()=>oauth("google"));
     facebook.addEventListener("click",()=>oauth("facebook"));
     continueSetup.addEventListener("click",async()=>{
