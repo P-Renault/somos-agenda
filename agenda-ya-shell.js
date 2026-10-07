@@ -1,4 +1,4 @@
-/* Agenda Ya — UI Shell / Interaction Layer v1.3
+/* Agenda Ya — UI Shell / Interaction Layer v1.4
    Backup-1.0 cumulative shell.
    Loads the complete operational module layer without replacing authentication or the shell.
 */
@@ -44,9 +44,14 @@
     });
   }
 
-  function activate(view) {
-    const meta = labels[view] || labels.dashboard;
-    const isDash = view === "dashboard";
+  let currentView = "dashboard";
+  let pendingView = null;
+
+  function navigate(view) {
+    const target = labels[view] ? view : "dashboard";
+    currentView = target;
+    const meta = labels[target];
+    const isDash = target === "dashboard";
 
     dashboard.hidden = !isDash;
     generic.hidden = isDash;
@@ -56,18 +61,28 @@
       document.getElementById("ayViewTitle").textContent = meta[1];
       document.getElementById("ayViewDescription").textContent = meta[2];
       document.getElementById("ayPlaceholderTitle").textContent =
-        `Motor lógico de ${meta[1].toLowerCase()} pendiente de integración`;
+        `Cargando ${meta[1].toLowerCase()}…`;
     }
 
-    all("[data-view]").forEach(el => el.classList.toggle("is-active", el.dataset.view === view));
+    all("[data-view]").forEach(el => el.classList.toggle("is-active", el.dataset.view === target));
     sidebar.classList.remove("is-open");
-    window.dispatchEvent(new CustomEvent("agendaYa:view-change", { detail: { view } }));
+
+    // The shell is the single navigation authority. If the operational layer
+    // is already loaded, call it directly; otherwise remember the requested
+    // view and replay it as soon as the module script finishes loading.
+    if (target !== "dashboard" && window.AgendaYaModules?.activate) {
+      void window.AgendaYaModules.activate(target);
+    } else if (target !== "dashboard") {
+      pendingView = target;
+    }
+
+    window.dispatchEvent(new CustomEvent("agendaYa:view-change", { detail: { view: target, handledByShell: true } }));
   }
 
   all("[data-view]").forEach(el => {
     el.addEventListener("click", (ev) => {
       ev.preventDefault();
-      activate(el.dataset.view);
+      navigate(el.dataset.view);
     });
   });
 
@@ -80,13 +95,22 @@
   });
 
   window.AgendaYaUI = {
-    version: "1.3.0",
-    activate,
-    getCurrentView: () => document.querySelector(".ay-nav-item.is-active")?.dataset.view || "dashboard",
+    version: "1.4.0",
+    activate: navigate,
+    getCurrentView: () => currentView,
+    getPendingView: () => pendingView,
     on: (event, handler) => window.addEventListener(`agendaYa:${event}`, handler)
   };
 
   // The shell remains independent. Operational modules are loaded as a cumulative layer.
-  void loadAsset("css", "agenda-ya-modules.css?v=1.2.0").then(() => loadAsset("js", "agenda-ya-modules.js?v=1.2.0"));
-  activate("dashboard");
+  void loadAsset("css", "agenda-ya-modules.css?v=1.3.0")
+    .then(() => loadAsset("js", "agenda-ya-modules.js?v=1.3.0"))
+    .then(() => {
+      if (pendingView && window.AgendaYaModules?.activate) {
+        const target = pendingView;
+        pendingView = null;
+        void window.AgendaYaModules.activate(target);
+      }
+    });
+  navigate("dashboard");
 })();

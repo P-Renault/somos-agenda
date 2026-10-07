@@ -1,10 +1,10 @@
-/* Agenda Ya · Modules Integration v1.2
+/* Agenda Ya · Modules Integration v1.3
    Cumulative controller for Backup-1.0.
    Services · Professionals · Schedules · Availability · Clients · Bookings · Calendar · Public Profile.
    Does not own authentication or the shell. It reads the authenticated business session from Supabase.
 */
 (() => {
-  if (window.AgendaYaModules?.version === "1.2.0") return;
+  if (window.AgendaYaModules?.version === "1.3.0") return;
 
   const cfg = window.SOMOS_CONFIG || {};
   let client = null;
@@ -322,6 +322,22 @@
     currentView=view||"dashboard";
     const seq=++activationSeq;
     if(currentView==="dashboard"||currentView==="settings") return;
+    if(seq!==activationSeq) return;
+    const meta = {
+      services:["Servicios","GESTIÓN","Administra el catálogo de servicios, duración y precios."],
+      professionals:["Profesionales","GESTIÓN","Gestiona las personas que atienden los servicios."],
+      schedules:["Horarios","CONFIGURACIÓN","Define los horarios de atención de cada profesional."],
+      availability:["Disponibilidad","OPERACIÓN","Controla excepciones y espacios disponibles para reservar."],
+      clients:["Clientes","RELACIÓN","Consulta y administra la cartera de clientes."],
+      bookings:["Reservas","OPERACIÓN","Gestiona reservas, estados y atención."],
+      calendar:["Calendario","OPERACIÓN","Visualiza la agenda y la carga diaria del negocio."],
+      "public-profile":["Perfil público","PUBLICACIÓN","Visualiza cómo se presenta públicamente tu propio negocio."]
+    }[currentView];
+    const rootEl=root();
+    if(rootEl && meta){
+      rootEl.hidden=false;
+      rootEl.innerHTML=`<div class="ay-module-workspace"><div class="ay-module-toolbar"><div class="ay-module-title"><span class="ay-eyebrow">${esc(meta[1])}</span><h1>${esc(meta[0])}</h1><p>${esc(meta[2])}</p></div></div><div class="ay-module-loading">Cargando ${esc(meta[0].toLowerCase())}…</div></div>`;
+    }
     if(!(await context())) return;
     if(seq!==activationSeq) return;
     try{
@@ -364,7 +380,27 @@
     }catch(err){status(err.message||String(err),"error");}
   });
   document.addEventListener("submit",e=>{if(e.target.id==="ayDynamicForm")void submitDynamic(e);});
-  window.addEventListener("agendaYa:view-change",e=>void activate(e.detail?.view));
-  window.AgendaYaModules={version:"1.2.0",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
-  void activate(window.AgendaYaUI?.getCurrentView?.() || "dashboard");
+  // Navigation fallback: the shell is the primary router, but this listener
+  // keeps the module operational even if a cached/older shell dispatches only
+  // the view-change event. It also makes every [data-view] control usable.
+  window.addEventListener("agendaYa:view-change", e => {
+    const view = e.detail?.view;
+    if (e.detail?.handledByShell) return;
+    if (view && view !== "dashboard" && view !== "settings") void activate(view);
+  });
+  document.addEventListener("click", e => {
+    const nav = e.target.closest?.("[data-view]");
+    if (!nav) return;
+    const view = nav.dataset.view;
+    if (!view || view === "dashboard" || view === "settings") return;
+    // Let the shell handle visual navigation; this is a safety net for
+    // navigation controls that were inserted dynamically or cached.
+    setTimeout(() => {
+      if (currentView !== view) void activate(view);
+    }, 0);
+  }, true);
+  window.AgendaYaModules={version:"1.3.0",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
+  const initialView = window.AgendaYaUI?.getPendingView?.() || window.AgendaYaUI?.getCurrentView?.() || "dashboard";
+  void activate(initialView);
+
 })();
