@@ -1,0 +1,23 @@
+RESTAURACIÓN DE ACCESO — AGENDA YA
+
+Esta versión RESTAURA la arquitectura correcta del acceso:
+- index.html = sistema Agenda Ya + autenticación funcional de Backup-2.0.
+- landing.html = landing público.
+- El landing dirige al sistema real, no a un login independiente.
+- La autenticación usa Supabase persistente (persistSession + autoRefreshToken + detectSessionInUrl).
+- Email/contraseña.
+- Google.
+- Facebook.
+- Recuperación de contraseña.
+- Crear cuenta.
+- Onboarding Perfil de negocio / Perfil cliente.
+- Mantiene la adaptación móvil del auth.css de Backup-2.0.
+- No usa el login standalone de 15 KB que estaba rompiendo el flujo.
+
+IMPORTANTE:
+Para producción, Google/Facebook y recuperación deben tener configurado en Supabase el dominio de producción como Redirect URL. El frontend conserva el REDIRECT_URL original de Backup-2.0 hacia el origen raíz.
+
+DESPLIEGUE:
+1. Restaurar index.html como entrada del sistema.
+2. Subir landing.html + styles.css + script.js.
+3. Si el landing debe ser la primera pantalla del dominio, configurar el hosting para servir landing.html como página pública y que el botón de acceso lleve a index.html.

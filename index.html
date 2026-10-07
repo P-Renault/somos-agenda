@@ -2,124 +2,99 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Agenda YA — Encuentra. Elige. Agenda.</title>
-  <meta name="description" content="Encuentra negocios, servicios y profesionales cerca de ti. Compara, elige y agenda en Agenda YA.">
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Agenda Ya — Acceso</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/agenda-ya-shell.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/auth.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="/" aria-label="Agenda YA">
-      <span class="brand-mark">Agenda<span>YA</span><i>✦</i></span>
-      <small>Encuentra. Elige. Agenda.</small>
-    </a>
-    <nav class="main-nav" aria-label="Navegación principal">
-      <a href="#inicio">Inicio</a>
-      <a href="#clientes">Para clientes</a>
-      <a href="#negocios">Para negocios</a>
-      <a href="#planes">Planes</a>
-      <a href="#categorias">Categorías</a>
-      <a href="#blog">Blog</a>
-    </nav>
-    <div class="auth-actions">
-      <a class="btn-outline" href="login.html?next=negocio">Publica tu negocio</a>
-      <a class="login-link" href="login.html">Iniciar sesión</a>
-      <a class="profile-btn" href="login.html" aria-label="Iniciar sesión">⌾</a>
+  <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
+    <div class="ay-auth-bg-shape ay-auth-bg-shape-a" aria-hidden="true"></div>
+    <div class="ay-auth-bg-shape ay-auth-bg-shape-b" aria-hidden="true"></div>
+    <div class="ay-auth-bg-shape ay-auth-bg-shape-c" aria-hidden="true"></div>
+    <div class="ay-auth-wrap">
+      <div class="ay-auth-topbar">
+        <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver" onclick="if(history.length>1){history.back()}else{location.href='landing.html'}">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20.5 6.5 11 16l9.5 9.5M12 16h17"/></svg>
+        </button>
+        <div class="ay-auth-brand" aria-label="Agenda Ya">
+          <img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+        </div>
+      </div>
+      <div class="ay-auth-intro">
+        <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
+        <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a <span>Agenda Ya</span></h1>
+        <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas<br class="ay-auth-title-break"> desde un solo lugar.</p>
+      </div>
+      <div class="ay-auth-card">
+        <div id="ayAuthFormPanel" class="ay-auth-state is-visible">
+          <form class="ay-auth-form" id="ayAuthForm" novalidate>
+            <label class="ay-auth-field"><span class="ay-auth-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="3"/><path d="m5 9 11 9L27 9"/></svg></span><span class="ay-auth-field-copy"><span class="ay-auth-label">Email</span><input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" placeholder="tu@email.com" required></span></label>
+            <label class="ay-auth-field"><span class="ay-auth-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="6" y="14" width="20" height="14" rx="3"/><path d="M10 14V10a6 6 0 0 1 12 0v4"/></svg></span><span class="ay-auth-field-copy ay-auth-password-copy"><span class="ay-auth-label">Contraseña</span><input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Ingresa tu contraseña" required><button class="ay-auth-eye" id="ayAuthPasswordToggle" type="button" aria-label="Mostrar contraseña"><svg class="ay-eye-open" viewBox="0 0 32 32"><path d="M3 16s4.8-7 13-7 13 7 13 7-4.8 7-13 7S3 16 3 16Z"/><circle cx="16" cy="16" r="3.5"/></svg><svg class="ay-eye-closed" viewBox="0 0 32 32"><path d="m5 5 22 22M12.5 12.5a5 5 0 0 0 7 7M8 8.8C4.9 11 3 14 3 16c0 0 4.8 7 13 7 2.2 0 4.2-.5 5.9-1.3M24 20.5C27 18.4 29 16 29 16s-4.8-7-13-7c-1.5 0-2.9.2-4.2.6"/></svg></button></span></label>
+            <label class="ay-auth-label ay-auth-confirm-field" id="ayPasswordConfirmWrap" hidden><span>Confirmar contraseña</span><input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6"></label>
+            <button class="ay-auth-primary" id="ayAuthSubmit" type="submit"><span>Iniciar sesión</span><b>→</b></button>
+          </form>
+          <p class="ay-auth-status" id="ayAuthStatus" aria-live="polite"></p>
+          <button class="ay-auth-link" id="ayRecoveryBtn" type="button">¿Olvidaste tu contraseña?</button>
+          <div class="ay-auth-divider"><span>o continuar con</span></div>
+          <div class="ay-auth-socials">
+            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button"><span class="ay-social-icon ay-google-icon" aria-hidden="true">G</span><span class="ay-social-text">Continuar con Google</span><b>›</b></button>
+            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button"><span class="ay-social-icon ay-facebook-icon" aria-hidden="true">f</span><span class="ay-social-text">Continuar con Facebook</span><b>›</b></button>
+          </div>
+          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
+          <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
+        </div>
+        <div id="ayAuthPostLogin" class="ay-auth-state">
+          <p class="ay-auth-eyebrow">IDENTITY · VALIDADO</p><h1 class="ay-auth-title">Correo confirmado</h1>
+          <p class="ay-auth-subtitle">Tu identidad fue verificada y la sesión de Agenda Ya está activa.</p>
+          <div class="ay-auth-account"><strong id="ayAuthAccountName">Cuenta Agenda Ya</strong><span id="ayAuthAccountEmail"></span></div>
+          <p class="ay-auth-status is-success" id="ayAuthPostStatus">Identity está listo. El siguiente motor será Perfil.</p>
+          <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button"><span>Continuar</span><b>→</b></button>
+        </div>
+      </div>
     </div>
-    <button class="menu-btn" aria-label="Abrir menú">☰</button>
-  </header>
+  </section>
 
-  <main id="inicio">
-    <section class="hero">
-      <div class="hero-image"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <h1>Encuentra.<br>Elige. <span>Agenda.</span></h1>
-          <p>Descubre negocios y servicios cerca de ti.</p>
-          <small>Tu tiempo es valioso. Agenda fácil, rápido y seguro.</small>
-        </div>
-        <div class="trust-note"><b>✓</b><span><strong>Reserva confirmada</strong><br>¡Tu cita está agendada!</span></div>
-        <div class="fast-note"><b>▣</b><span><strong>Fácil y rápido</strong><br>En solo unos clics</span></div>
-        <form class="search-box" action="explorer.html">
-          <label><span>⌕</span><input name="q" placeholder="¿Qué servicio necesitas?" aria-label="Qué servicio necesitas"></label>
-          <label><span>⌖</span><input name="location" placeholder="Temuco, Araucanía" aria-label="Comuna o ciudad"></label>
-          <button type="submit">Buscar</button>
-        </form>
-        <div class="category-shortcuts" id="categorias">
-          <a href="explorer.html?category=todas" class="active">▦<small>Todas</small></a>
-          <a href="explorer.html?category=belleza">✂<small>Belleza y<br>Estética</small></a>
-          <a href="explorer.html?category=salud">♧<small>Salud y<br>Bienestar</small></a>
-          <a href="explorer.html?category=deporte">✚<small>Deporte y<br>Fitness</small></a>
-          <a href="explorer.html?category=mascotas">●<small>Mascotas</small></a>
-          <a href="explorer.html?category=automotriz">▣<small>Automotriz</small></a>
-          <a href="explorer.html?category=hogar">⌂<small>Hogar y<br>Servicios</small></a>
-          <a href="explorer.html?category=profesionales">▤<small>Profesionales</small></a>
-          <a href="explorer.html">•••<small>Más</small></a>
+  <section class="ay-profile" id="ayProfileView" hidden aria-label="Configuración de perfil">
+    <div class="ay-profile-wrap"><div class="ay-profile-brand"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya"></div>
+      <div class="ay-profile-card"><div class="ay-profile-head"><p class="ay-auth-eyebrow">AGENDA YA · PERFIL</p><h1 id="ayProfileTitle">Bienvenido a Agenda Ya</h1><p id="ayProfileSubtitle">Elige tu perfil para comenzar.</p></div>
+        <div id="ayProfileChoiceStep" class="ay-profile-choice-step"><div class="ay-profile-type" role="group" aria-label="Tipo de perfil"><button type="button" class="ay-profile-type-btn is-active" data-profile-type="business" aria-pressed="true"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></button><button type="button" class="ay-profile-type-btn" data-profile-type="customer" aria-pressed="false"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></button></div><button class="ay-auth-primary ay-profile-next" id="ayProfileNext" type="button">Siguiente</button></div>
+        <div id="ayProfileFormStep" class="ay-profile-form-step" hidden>
+          <button type="button" class="ay-profile-back" id="ayProfileBack">← Cambiar tipo de perfil</button>
+          <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate><div class="ay-profile-photo-row"><div class="ay-profile-avatar" id="ayBusinessAvatarPreview">AY</div><div><strong>Imagen del negocio</strong><p>Opcional. Puedes subir una imagen.</p></div></div><label>Nombre del negocio<input id="ayBusinessName" required maxlength="120" placeholder="Ej. Barbería Agenda Ya"></label><label>Tipo de servicio<input id="ayBusinessType" required maxlength="100" placeholder="Ej. Barbería, peluquería, salud..."></label><div class="ay-profile-grid"><label>Teléfono<div class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayBusinessPhone" type="tel" inputmode="numeric" maxlength="8" placeholder="12345678"></div></label><label>Ciudad<input id="ayBusinessCity" required maxlength="80" placeholder="Temuco"></label><label>Comuna<input id="ayBusinessComuna" required maxlength="80" placeholder="Temuco"></label><label>Dirección<input id="ayBusinessAddress" required maxlength="160" placeholder="Calle y número"></label></div><label>Imagen del negocio<input id="ayBusinessLogoFile" type="file" accept="image/*"></label><p class="ay-profile-status" id="ayBusinessStatus"></p><button class="ay-auth-primary" id="ayBusinessNext" type="button">Siguiente</button></form>
+          <form id="ayBusinessScheduleForm" class="ay-profile-form" novalidate hidden><div class="ay-profile-form-title"><p class="ay-auth-eyebrow">PERFIL DE NEGOCIO · PASO 2</p><h2>Configura tus horarios</h2><p>Define el horario básico de atención de tu negocio. Después podrás ampliarlo desde Horarios.</p></div><div class="ay-profile-section-title">Horario básico</div><div class="ay-hours-grid" id="ayBusinessHours"></div><p class="ay-profile-status" id="ayBusinessScheduleStatus"></p><div class="ay-profile-actions"><button class="ay-profile-back" id="ayBusinessScheduleBack" type="button">← Volver</button><button class="ay-auth-primary" id="ayBusinessSave" type="submit">Guardar datos y continuar</button></div></form>
+          <form id="ayCustomerProfileForm" class="ay-profile-form" novalidate hidden><div class="ay-profile-photo-row"><div class="ay-profile-avatar" id="ayCustomerAvatarPreview">U</div><div><strong>Foto de perfil</strong><p>Opcional. Puedes subir una imagen.</p></div></div><div class="ay-profile-grid"><label>Nombre<input id="ayCustomerName" required maxlength="120" placeholder="Nombre y apellido"></label><label>Teléfono<div class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayCustomerPhone" type="tel" inputmode="numeric" maxlength="8" placeholder="12345678"></div></label><label>Edad<input id="ayCustomerAge" type="number" min="13" max="120" placeholder="Edad"></label><label>Ciudad<input id="ayCustomerCity" required maxlength="80" placeholder="Temuco"></label><label>Comuna<input id="ayCustomerComuna" required maxlength="80" placeholder="Comuna"></label><label>Dirección<input id="ayCustomerAddress" required maxlength="160" placeholder="Calle y número"></label></div><label>Foto de perfil<input id="ayCustomerAvatarFile" type="file" accept="image/*"></label><p class="ay-profile-status" id="ayCustomerStatus"></p><button class="ay-auth-primary" id="ayCustomerSave" type="submit">Siguiente</button></form>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section" id="clientes">
-      <div class="section-heading">
-        <div><h2>Categorías destacadas</h2><p>Explora los servicios más populares en tu ciudad.</p></div>
-        <a href="explorer.html">Ver todas las categorías →</a>
-      </div>
-      <div class="category-grid">
-        <a href="explorer.html?category=belleza"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=700&q=80"><b>Belleza y Estética</b><small>120+ negocios</small></a>
-        <a href="explorer.html?category=salud"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&q=80"><b>Salud y Bienestar</b><small>90+ negocios</small></a>
-        <a href="explorer.html?category=deporte"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=700&q=80"><b>Deporte y Fitness</b><small>60+ negocios</small></a>
-        <a href="explorer.html?category=mascotas"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=80"><b>Mascotas</b><small>50+ negocios</small></a>
-        <a href="explorer.html?category=automotriz"><img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=700&q=80"><b>Automotriz</b><small>70+ negocios</small></a>
-        <a href="explorer.html?category=hogar"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=700&q=80"><b>Hogar y Servicios</b><small>60+ negocios</small></a>
-      </div>
-    </section>
+  <div class="ay-app" id="ayApp" hidden>
+    <header class="ay-header"><button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button><a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a>
+      <nav class="ay-header-nav" aria-label="Navegación principal"><button class="ay-nav-item is-active" data-view="dashboard">⌂<span>Dashboard</span></button><button class="ay-nav-item" data-view="services">✂<span>Servicios</span></button><button class="ay-nav-item" data-view="professionals">♙<span>Profesionales</span></button><button class="ay-nav-item" data-view="schedules">◷<span>Horarios</span></button><button class="ay-nav-item" data-view="availability">▣<span>Disponibilidad</span></button><button class="ay-nav-item" data-view="clients">♧<span>Clientes</span></button><button class="ay-nav-item" data-view="bookings">▤<span>Reservas</span></button><button class="ay-nav-item" data-view="calendar">▦<span>Calendario</span></button></nav>
+      <div class="ay-header-actions"><button class="ay-icon-btn" title="Notificaciones">♢</button><button class="ay-account" id="ayAccountBtn" aria-label="Abrir perfil"><span class="ay-avatar">AY</span><span class="ay-account-text"><strong>Mi negocio</strong><small>Cuenta</small></span><span class="ay-account-chevron">⌄</span></button><button class="ay-logout-btn" id="ayLogoutBtn" type="button">Salir</button></div>
+    </header>
+    <div class="ay-layout"><aside class="ay-sidebar" id="aySidebar"><div class="ay-sidebar-group"><div class="ay-sidebar-label">GESTIÓN</div><button class="ay-side-item is-active" data-view="dashboard">⌂ <span>Dashboard</span></button><button class="ay-side-item" data-view="services">✂ <span>Servicios</span></button><button class="ay-side-item" data-view="professionals">♙ <span>Profesionales</span></button><button class="ay-side-item" data-view="schedules">◷ <span>Horarios</span></button><button class="ay-side-item" data-view="availability">▣ <span>Disponibilidad</span></button><button class="ay-side-item" data-view="clients">♧ <span>Clientes</span></button><button class="ay-side-item" data-view="bookings">▤ <span>Reservas</span></button><button class="ay-side-item" data-view="calendar">▦ <span>Calendario</span></button></div><div class="ay-sidebar-group ay-sidebar-bottom"><button class="ay-side-item" data-view="public-profile">⌂ <span>Perfil público</span></button><button class="ay-side-item" data-view="settings">⚙ <span>Configuración</span></button><div class="ay-brand-card"><strong>SOMOS SOFTWARE</strong><small>software-temuco</small></div></div></aside>
+      <main class="ay-main" id="ayMain"><div class="ay-page" id="view-dashboard"><section class="ay-hero"><div><span class="ay-eyebrow">AGENDA YA · CENTRO DE GESTIÓN</span><h1>Hola, Patricio</h1><p>Gestiona tu negocio y recibe más reservas desde un solo lugar.</p><div class="ay-actions"><button class="ay-btn ay-btn-primary" data-view="bookings">＋ Nueva reserva</button><button class="ay-btn ay-btn-light" data-view="calendar">▦ Ver calendario</button></div></div><div class="ay-hero-visual">AGENDA<br><span>Tu negocio, organizado.</span></div></section>
+      <section class="ay-kpi-grid"><article class="ay-kpi"><span>▦</span><div><small>Reservas hoy</small><strong>5</strong><em>↗ +25%</em></div></article><article class="ay-kpi"><span>♧</span><div><small>Clientes</small><strong>32</strong><em>↗ +10%</em></div></article><article class="ay-kpi"><span>✂</span><div><small>Servicios</small><strong>12</strong><em>Activos</em></div></article><article class="ay-kpi"><span>♙</span><div><small>Profesionales</small><strong>4</strong><em>Activos</em></div></article></section>
+      <section class="ay-grid-2"><article class="ay-card"><div class="ay-card-head"><h2>Próximas reservas</h2><button class="ay-link" data-view="bookings">Ver todas →</button></div><div class="ay-list"><div class="ay-list-row"><b>09:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Juan Pérez · con Matías</small></div><mark>Confirmada</mark></div><div class="ay-list-row"><b>11:00</b><span class="ay-dot"></span><div><strong>Barba express</strong><small>Carlos Rojas · con Matías</small></div><mark>Confirmada</mark></div><div class="ay-list-row is-pending"><b>14:00</b><span class="ay-dot"></span><div><strong>Corte + Barba</strong><small>Pedro Díaz · con Alex</small></div><mark>Pendiente</mark></div><div class="ay-list-row"><b>16:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Ana Torres · con Valentina</small></div><mark>Confirmada</mark></div></div></article><article class="ay-card"><div class="ay-card-head"><h2>Calendario de hoy</h2><span class="ay-muted">Sáb 4 oct 2026</span></div><div class="ay-timeline"><div><b>09:30</b><span>Corte de cabello</span></div><div><b>11:00</b><span>Barba express</span></div><div class="pending"><b>14:00</b><span>Corte + Barba</span></div><div><b>16:30</b><span>Corte de cabello</span></div></div></article></section>
+      <section class="ay-quick-grid"><button class="ay-quick" data-view="services"><span>✂</span><b>Gestiona tus servicios</b><small>Ir a Servicios →</small></button><button class="ay-quick" data-view="professionals"><span>♧</span><b>Administra profesionales</b><small>Ir a Profesionales →</small></button><button class="ay-quick" data-view="schedules"><span>◷</span><b>Configura horarios</b><small>Ir a Horarios →</small></button><button class="ay-quick" data-view="availability"><span>▣</span><b>Revisa disponibilidad</b><small>Ir a Disponibilidad →</small></button></section></div>
+      <div class="ay-page" id="view-generic" hidden><div class="ay-page-head"><div><span class="ay-eyebrow" id="ayViewEyebrow">MÓDULO</span><h1 id="ayViewTitle">Vista</h1><p id="ayViewDescription">Espacio de trabajo del módulo.</p></div><div class="ay-actions"><button class="ay-btn ay-btn-primary">＋ Nueva acción</button></div></div><section class="ay-placeholder"><div class="ay-placeholder-icon">▦</div><h2 id="ayPlaceholderTitle">Motor lógico pendiente de integración</h2><p>Esta vista ya tiene la estructura visual y los puntos de integración preparados. En la siguiente iteración se conecta con el motor funcional del módulo sin rehacer la interfaz.</p><div class="ay-placeholder-grid"><div><strong>UI</strong><span>Lista · filtros · acciones</span></div><div><strong>Datos</strong><span>Supabase / estado</span></div><div><strong>Reglas</strong><span>Validaciones · permisos</span></div></div></section></div></main></div>
+    <nav class="ay-mobile-rail" aria-label="Navegación móvil"><button data-view="dashboard">⌂<small>Inicio</small></button><button data-view="services">✂<small>Servicios</small></button><button data-view="bookings">▤<small>Reservas</small></button><button data-view="calendar">▦<small>Calendario</small></button><button id="ayMoreBtn" type="button">•••<small>Más</small></button></nav>
+    <div class="ay-modal-backdrop" id="ayProfileBackdrop" hidden></div>
+    <section class="ay-profile-panel" id="ayProfilePanel" hidden aria-label="Mi perfil"><div class="ay-profile-panel-head"><div><span class="ay-eyebrow">AGENDA YA · PERFIL</span><h2>Mi perfil</h2></div><button class="ay-panel-close" id="ayProfileClose" type="button">×</button></div><div class="ay-profile-summary"><div class="ay-profile-panel-avatar" id="ayProfileAvatar">AY</div><div><strong id="ayProfileName">Mi perfil</strong><span id="ayProfileEmail"></span><em id="ayProfileRole">Perfil</em></div></div><div class="ay-profile-fields" id="ayProfileBusinessFields" data-business-only><label>Nombre del negocio<input id="ayProfileBusinessName" maxlength="120"></label><label>Tipo de servicio<input id="ayProfileBusinessType" maxlength="100"></label><div class="ay-profile-grid-2"><label>Teléfono<input id="ayProfileBusinessPhone" data-phone-eight maxlength="8"></label><label>Ciudad<input id="ayProfileBusinessCity" maxlength="80"></label><label>Comuna<input id="ayProfileBusinessComuna" maxlength="80"></label><label>Dirección<input id="ayProfileBusinessAddress" maxlength="160"></label></div></div><div class="ay-profile-fields" id="ayProfileCustomerFields" hidden><label>Nombre<input id="ayProfileCustomerName" maxlength="120"></label><div class="ay-profile-grid-2"><label>Teléfono<input id="ayProfileCustomerPhone" data-phone-eight maxlength="8"></label><label>Edad<input id="ayProfileCustomerAge" type="number"></label><label>Ciudad<input id="ayProfileCustomerCity" maxlength="80"></label><label>Comuna<input id="ayProfileCustomerComuna" maxlength="80"></label><label>Dirección<input id="ayProfileCustomerAddress" maxlength="160"></label></div></div><p class="ay-profile-panel-status" id="ayProfileStatus"></p><button class="ay-btn ay-btn-primary ay-profile-save" id="ayProfileSave" type="button">Guardar cambios</button></section>
+    <section class="ay-more-sheet" id="ayMoreSheet" hidden><div class="ay-more-head"><strong>Más</strong><button class="ay-panel-close" id="ayMoreClose" type="button">×</button></div><button id="ayMoreProfile" type="button">◉ <span>Mi perfil</span></button><button id="ayMoreExplore" type="button">⌕ <span>Explorar Agenda Ya</span></button><button id="ayMorePublicProfile" type="button" data-business-only>⌂ <span>Perfil público</span></button><button id="ayMoreSettings" type="button">⚙ <span>Configuración</span></button><button class="ay-more-logout" id="ayMoreLogout" type="button">↪ <span>Cerrar sesión</span></button></section>
+  </div>
 
-    <section class="section" id="negocios">
-      <div class="section-heading">
-        <div><h2>Negocios destacados</h2><p>Servicios de calidad, cerca de ti.</p></div>
-        <a href="explorer.html">Ver más negocios →</a>
-      </div>
-      <div class="business-grid">
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar">SS</div><div><h3>Somos Software</h3><p>★ 4.9 <span>(24)</span></p><small>⌖ Temuco, Araucanía</small><em>Servicios Profesionales</em></div></div><footer>◷ 90 min <b>Desde $29.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar dark">✂</div><div><h3>The Barber Club</h3><p>★ 4.8 <span>(56)</span></p><small>⌖ Temuco, Araucanía</small><em>Belleza y Estética</em></div></div><footer>◷ 30 min <b>Desde $8.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar yellow">●</div><div><h3>Pet Feliz</h3><p>★ 4.9 <span>(18)</span></p><small>⌖ Temuco, Araucanía</small><em>Mascotas</em></div></div><footer>◷ 60 min <b>Desde $12.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar blue">▰</div><div><h3>Fit Zone</h3><p>★ 4.7 <span>(32)</span></p><small>⌖ Temuco, Araucanía</small><em>Deporte y Fitness</em></div></div><footer>◷ 60 min <b>Desde $19.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar pink">✿</div><div><h3>Aura Estética</h3><p>★ 4.9 <span>(41)</span></p><small>⌖ Temuco, Araucanía</small><em>Belleza y Estética</em></div></div><footer>◷ 60 min <b>Desde $15.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar navy">▣</div><div><h3>AutoTemuco</h3><p>★ 4.6 <span>(27)</span></p><small>⌖ Temuco, Araucanía</small><em>Automotriz</em></div></div><footer>◷ 60 min <b>Desde $24.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar cyan">♥</div><div><h3>Centro Médico Vida</h3><p>★ 4.9 <span>(63)</span></p><small>⌖ Temuco, Araucanía</small><em>Salud y Bienestar</em></div></div><footer>◷ 30 min <b>Desde $14.990</b><span>→</span></footer></article>
-        <article class="business-card"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar sky">⌂</div><div><h3>Hogar Limpio</h3><p>★ 4.8 <span>(20)</span></p><small>⌖ Temuco, Araucanía</small><em>Hogar y Servicios</em></div></div><footer>◷ 60 min <b>Desde $11.990</b><span>→</span></footer></article>
-      </div>
-    </section>
-
-    <section class="split-cards" id="planes">
-      <article class="for-client"><div class="person">◯</div><div><label>♙ Para clientes</label><h2>Todo lo que necesitas,<br>en un solo lugar.</h2><ul><li>Encuentra negocios confiables</li><li>Compara servicios y precios</li><li>Agenda en segundos</li><li>Recibe confirmación inmediata</li></ul><a href="explorer.html">Buscar servicios →</a></div></article>
-      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html?next=negocio">Publica tu negocio →</a></div></article>
-    </section>
-
-    <section class="why">
-      <h2>¿Por qué elegir Agenda YA?</h2><p>Una plataforma para ti, con todo lo que necesitas.</p>
-      <div class="why-grid"><article><b>✓</b><h3>Seguro y confiable</h3><p>Negocios verificados y opiniones reales.</p></article><article><b>◷</b><h3>Ahorra tiempo</h3><p>Agenda en pocos clics, sin llamadas.</p></article><article><b>☆</b><h3>Calidad garantizada</h3><p>Servicios de calidad cerca de ti.</p></article><article><b>⌖</b><h3>En tu ciudad</h3><p>Encuentra negocios locales.</p></article></div>
-    </section>
-
-    <section class="testimonials" id="blog">
-      <div><h2>Lo que dicen<br>nuestros usuarios</h2><p>Miles de personas ya confían en Agenda YA para encontrar y agendar sus servicios.</p><a href="#">Ver más testimonios →</a></div>
-      <article>★★★★★<p>“Muy fácil de usar, encontré mi peluquería favorita y pude agendar al instante. ¡Excelente!”</p><b>Camila R.</b><small>Temuco</small></article>
-      <article>★★★★★<p>“Como profesional, he aumentado mis clientes gracias a Agenda YA. 100% recomendado.”</p><b>Diego M.</b><small>Temuco</small></article>
-      <article>★★★★★<p>“Me encanta la variedad de servicios y la facilidad para agendar. Ahorro mucho tiempo.”</p><b>Valentina S.</b><small>Padre Las Casas</small></article>
-    </section>
-
-    <section class="final-cta">
-      <div><h2>Tu tiempo vale más.</h2><p>Encuentra, elige y agenda hoy.</p><a href="explorer.html">Buscar servicios →</a></div>
-      <div class="final-badges"><span>◉ Miles de servicios</span><span>☆ Negocios verificados</span><span>⌖ En tu ciudad</span></div>
-    </section>
-  </main>
-
-  <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="login.html">Iniciar sesión</a></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-  (async()=>{try{const sb=window.supabase.createClient('https://edlsxmuhbsvtjdtmyhks.supabase.co','sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE');const {data}=await sb.auth.getSession();if(data.session){document.querySelectorAll('.login-link').forEach(x=>{x.textContent='Mi cuenta';x.href='login.html'});const p=document.querySelector('.profile-btn');if(p)p.setAttribute('aria-label','Mi cuenta');}}catch(e){}})();
+  window.SOMOS_CONFIG={
+    SUPABASE_URL:"https://edlsxmuhbsvtjdtmyhks.supabase.co",
+    SUPABASE_ANON_KEY:"sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE"
+  };
   </script>
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/agenda-ya-shell.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/agenda-ya-profile.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/auth.js"></script>
 </body>
 </html>

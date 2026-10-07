@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Agenda YA — Encuentra. Elige. Agenda.</title>
+  <meta name="description" content="Encuentra negocios, servicios y profesionales cerca de ti. Compara, elige y agenda en Agenda YA.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Agenda YA">
+      <span class="brand-mark">Agenda<span>YA</span><i>✦</i></span>
+      <small>Encuentra. Elige. Agenda.</small>
+    </a>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#clientes">Para clientes</a>
+      <a href="#negocios">Para negocios</a>
+      <a href="#planes">Planes</a>
+      <a href="#categorias">Categorías</a>
+      <a href="#blog">Blog</a>
+    </nav>
+    <div class="auth-actions">
+      <a class="btn-outline" href="index.html?next=negocio">Publica tu negocio</a>
+      <a class="login-link" href="index.html">Iniciar sesión</a>
+      <a class="profile-btn" href="index.html" aria-label="Iniciar sesión">⌾</a>
+    </div>
+    <button class="menu-btn" aria-label="Abrir menú">☰</button>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero-image"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <h1>Encuentra.<br>Elige. <span>Agenda.</span></h1>
+          <p>Descubre negocios y servicios cerca de ti.</p>
+          <small>Tu tiempo es valioso. Agenda fácil, rápido y seguro.</small>
+        </div>
+        <div class="trust-note"><b>✓</b><span><strong>Reserva confirmada</strong><br>¡Tu cita está agendada!</span></div>
+        <div class="fast-note"><b>▣</b><span><strong>Fácil y rápido</strong><br>En solo unos clics</span></div>
+        <form class="search-box" action="explorer.html">
+          <label><span>⌕</span><input name="q" placeholder="¿Qué servicio necesitas?" aria-label="Qué servicio necesitas"></label>
+          <label><span>⌖</span><input name="location" placeholder="Temuco, Araucanía" aria-label="Comuna o ciudad"></label>
+          <button type="submit">Buscar</button>
+        </form>
+        <div class="category-shortcuts" id="categorias">
+          <a href="explorer.html?category=todas" class="active">▦<small>Todas</small></a>
+          <a href="explorer.html?category=belleza">✂<small>Belleza y<br>Estética</small></a>
+          <a href="explorer.html?category=salud">♧<small>Salud y<br>Bienestar</small></a>
+          <a href="explorer.html?category=deporte">✚<small>Deporte y<br>Fitness</small></a>
+          <a href="explorer.html?category=mascotas">●<small>Mascotas</small></a>
+          <a href="explorer.html?category=automotriz">▣<small>Automotriz</small></a>
+          <a href="explorer.html?category=hogar">⌂<small>Hogar y<br>Servicios</small></a>
+          <a href="explorer.html?category=profesionales">▤<small>Profesionales</small></a>
+          <a href="explorer.html">•••<small>Más</small></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="clientes">
+      <div class="section-heading">
+        <div><h2>Categorías destacadas</h2><p>Explora los servicios más populares en tu ciudad.</p></div>
+        <a href="explorer.html">Ver todas las categorías →</a>
+      </div>
+      <div class="category-grid">
+        <a href="explorer.html?category=belleza"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=700&q=80"><b>Belleza y Estética</b><small>120+ negocios</small></a>
+        <a href="explorer.html?category=salud"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=700&q=80"><b>Salud y Bienestar</b><small>90+ negocios</small></a>
+        <a href="explorer.html?category=deporte"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=700&q=80"><b>Deporte y Fitness</b><small>60+ negocios</small></a>
+        <a href="explorer.html?category=mascotas"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=80"><b>Mascotas</b><small>50+ negocios</small></a>
+        <a href="explorer.html?category=automotriz"><img src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=700&q=80"><b>Automotriz</b><small>70+ negocios</small></a>
+        <a href="explorer.html?category=hogar"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=700&q=80"><b>Hogar y Servicios</b><small>60+ negocios</small></a>
+      </div>
+    </section>
+
+    <section class="section" id="negocios">
+      <div class="section-heading">
+        <div><h2>Negocios destacados</h2><p>Servicios de calidad, cerca de ti.</p></div>
+        <a href="explorer.html">Ver más negocios →</a>
+      </div>
+      <div class="business-grid">
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar">SS</div><div><h3>Somos Software</h3><p>★ 4.9 <span>(24)</span></p><small>⌖ Temuco, Araucanía</small><em>Servicios Profesionales</em></div></div><footer>◷ 90 min <b>Desde $29.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar dark">✂</div><div><h3>The Barber Club</h3><p>★ 4.8 <span>(56)</span></p><small>⌖ Temuco, Araucanía</small><em>Belleza y Estética</em></div></div><footer>◷ 30 min <b>Desde $8.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar yellow">●</div><div><h3>Pet Feliz</h3><p>★ 4.9 <span>(18)</span></p><small>⌖ Temuco, Araucanía</small><em>Mascotas</em></div></div><footer>◷ 60 min <b>Desde $12.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar blue">▰</div><div><h3>Fit Zone</h3><p>★ 4.7 <span>(32)</span></p><small>⌖ Temuco, Araucanía</small><em>Deporte y Fitness</em></div></div><footer>◷ 60 min <b>Desde $19.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar pink">✿</div><div><h3>Aura Estética</h3><p>★ 4.9 <span>(41)</span></p><small>⌖ Temuco, Araucanía</small><em>Belleza y Estética</em></div></div><footer>◷ 60 min <b>Desde $15.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar navy">▣</div><div><h3>AutoTemuco</h3><p>★ 4.6 <span>(27)</span></p><small>⌖ Temuco, Araucanía</small><em>Automotriz</em></div></div><footer>◷ 60 min <b>Desde $24.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar cyan">♥</div><div><h3>Centro Médico Vida</h3><p>★ 4.9 <span>(63)</span></p><small>⌖ Temuco, Araucanía</small><em>Salud y Bienestar</em></div></div><footer>◷ 30 min <b>Desde $14.990</b><span>→</span></footer></article>
+        <article class="business-card"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=900&q=80"><div class="business-info"><div class="avatar sky">⌂</div><div><h3>Hogar Limpio</h3><p>★ 4.8 <span>(20)</span></p><small>⌖ Temuco, Araucanía</small><em>Hogar y Servicios</em></div></div><footer>◷ 60 min <b>Desde $11.990</b><span>→</span></footer></article>
+      </div>
+    </section>
+
+    <section class="split-cards" id="planes">
+      <article class="for-client"><div class="person">◯</div><div><label>♙ Para clientes</label><h2>Todo lo que necesitas,<br>en un solo lugar.</h2><ul><li>Encuentra negocios confiables</li><li>Compara servicios y precios</li><li>Agenda en segundos</li><li>Recibe confirmación inmediata</li></ul><a href="explorer.html">Buscar servicios →</a></div></article>
+      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="index.html?next=negocio">Publica tu negocio →</a></div></article>
+    </section>
+
+    <section class="why">
+      <h2>¿Por qué elegir Agenda YA?</h2><p>Una plataforma para ti, con todo lo que necesitas.</p>
+      <div class="why-grid"><article><b>✓</b><h3>Seguro y confiable</h3><p>Negocios verificados y opiniones reales.</p></article><article><b>◷</b><h3>Ahorra tiempo</h3><p>Agenda en pocos clics, sin llamadas.</p></article><article><b>☆</b><h3>Calidad garantizada</h3><p>Servicios de calidad cerca de ti.</p></article><article><b>⌖</b><h3>En tu ciudad</h3><p>Encuentra negocios locales.</p></article></div>
+    </section>
+
+    <section class="testimonials" id="blog">
+      <div><h2>Lo que dicen<br>nuestros usuarios</h2><p>Miles de personas ya confían en Agenda YA para encontrar y agendar sus servicios.</p><a href="#">Ver más testimonios →</a></div>
+      <article>★★★★★<p>“Muy fácil de usar, encontré mi peluquería favorita y pude agendar al instante. ¡Excelente!”</p><b>Camila R.</b><small>Temuco</small></article>
+      <article>★★★★★<p>“Como profesional, he aumentado mis clientes gracias a Agenda YA. 100% recomendado.”</p><b>Diego M.</b><small>Temuco</small></article>
+      <article>★★★★★<p>“Me encanta la variedad de servicios y la facilidad para agendar. Ahorro mucho tiempo.”</p><b>Valentina S.</b><small>Padre Las Casas</small></article>
+    </section>
+
+    <section class="final-cta">
+      <div><h2>Tu tiempo vale más.</h2><p>Encuentra, elige y agenda hoy.</p><a href="explorer.html">Buscar servicios →</a></div>
+      <div class="final-badges"><span>◉ Miles de servicios</span><span>☆ Negocios verificados</span><span>⌖ En tu ciudad</span></div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="index.html">Iniciar sesión</a></footer>
+<script src="script.js"></script>
+</body>
+</html>
