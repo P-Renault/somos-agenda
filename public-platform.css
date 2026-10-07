@@ -33,3 +33,60 @@ body{background:linear-gradient(180deg,#fafcff 0%,#f4f7fb 100%);color:var(--mp-i
   .market-avatar{width:38px;height:38px}
   .market-logout{padding:8px 10px;font-size:11px}
 }
+
+/* B0.6.2 · Marketplace mobile keeps desktop composition/order.
+   Mobile changes proportions only; it does not stack or reorder the marketplace. */
+@media(max-width:760px){
+  .marketplace-shell{
+    width:100%;
+    min-width:0;
+    padding:10px 14px 50px;
+    overflow-x:auto;
+  }
+  .market-header{
+    min-width:620px;
+  }
+  .marketplace-shell .hero{
+    min-width:620px;
+    max-width:none;
+    padding:42px 0 24px;
+  }
+  .marketplace-shell .hero h1{
+    font-size:clamp(2.25rem,8vw,3.35rem);
+    max-width:none;
+    white-space:nowrap;
+  }
+  .marketplace-shell .search{
+    grid-template-columns:2.2fr 1.2fr 1.15fr auto;
+    min-width:620px;
+    gap:9px;
+  }
+  .marketplace-shell .search input,
+  .marketplace-shell .search select,
+  .marketplace-shell .search button{
+    min-height:48px;
+  }
+  .market-results-head{
+    min-width:620px;
+  }
+  .marketplace-shell .cards{
+    min-width:620px;
+  }
+  .marketplace-shell .result{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:20px 22px;
+  }
+  .marketplace-shell .result .button{
+    width:auto;
+    margin-top:0;
+    text-align:center;
+  }
+}
+@media(max-width:460px){
+  .marketplace-shell .hero h1{font-size:2.35rem}
+  .market-profile-name{display:none}
+  .marketplace-shell .result{display:flex}
+  .marketplace-shell .result .button{display:inline-block;margin-top:0}
+}
