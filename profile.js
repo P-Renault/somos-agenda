@@ -1,118 +1,104 @@
-/* Agenda YA · profile.html
-   Onboarding standalone.
-   NO modifica index.html.
-*/
+/* =========================================================
+   AGENDA YA · PROFILE ONBOARDING v1.0
+
+   This is NOT "Mi perfil".
+   It is the mandatory onboarding layer for accounts that
+   authenticate successfully but do not yet have a profile_type.
+   ========================================================= */
 (() => {
   const cfg = window.SOMOS_CONFIG || {};
   const $ = id => document.getElementById(id);
-
   let client = null;
-  let currentUser = null;
-  let profileType = "business";
-  let businessStep = "details";
-
+  let user = null;
+  let type = "business";
   const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
 
-  const setStatus = (el,msg,kind="") => {
-    if(!el) return;
-    el.textContent = msg || "";
+  function status(el, text, kind=""){
+    el.textContent = text || "";
     el.dataset.kind = kind;
-  };
+  }
+
+  function selectType(next){
+    type = next;
+    document.querySelectorAll(".profile-type").forEach(btn => {
+      const active = btn.dataset.type === next;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
+  function showChoice(){
+    $("choiceStep").hidden = false;
+    $("formStep").hidden = true;
+    $("profileTitle").textContent = "Bienvenido a Agenda Ya";
+    $("profileSubtitle").textContent = "Elige tu perfil para comenzar.";
+    window.scrollTo(0,0);
+  }
+
+  function showForm(){
+    $("choiceStep").hidden = true;
+    $("formStep").hidden = false;
+
+    $("businessForm").hidden = type !== "business";
+    $("scheduleForm").hidden = true;
+    $("customerForm").hidden = type !== "customer";
+
+    $("profileTitle").textContent =
+      type === "business" ? "Configura tu negocio" : "Configura tu perfil";
+    $("profileSubtitle").textContent =
+      type === "business"
+        ? "Completa los datos básicos de tu negocio."
+        : "Completa tus datos para comenzar a reservar.";
+
+    window.scrollTo(0,0);
+  }
 
   function initHours(){
-    const wrap = $("ayBusinessHours");
-    if(!wrap || wrap.children.length) return;
-
-    wrap.innerHTML = DAYS.map((day,i) => `
+    $("hours").innerHTML = DAYS.map((day,i) => `
       <div class="ay-hour-row">
-        <label>
-          <input type="checkbox" class="ay-hour-active" data-day="${i+1}" ${i<5?"checked":""}>
-          ${day}
-        </label>
+        <label><input class="hour-active" type="checkbox" data-day="${i+1}" ${i<5?"checked":""}> ${day}</label>
         <input type="time" data-open="${i+1}" value="09:00">
         <input type="time" data-close="${i+1}" value="18:00">
       </div>
     `).join("");
   }
 
-  function selectType(type){
-    profileType = type;
-    document.querySelectorAll(".ay-profile-type-btn").forEach(btn => {
-      const active = btn.dataset.profileType === type;
-      btn.classList.toggle("is-active",active);
-      btn.setAttribute("aria-pressed",active?"true":"false");
-    });
+  function phone(v){
+    return String(v||"").replace(/\D/g,"").slice(0,8);
   }
 
-  function showChoice(){
-    $("ayProfileChoiceStep").hidden = false;
-    $("ayProfileFormStep").hidden = true;
-    $("ayProfileTitle").textContent = "Bienvenido a Agenda Ya";
-    $("ayProfileSubtitle").textContent = "Elige tu perfil para comenzar.";
-    window.scrollTo(0,0);
-  }
-
-  function showForm(){
-    $("ayProfileChoiceStep").hidden = true;
-    $("ayProfileFormStep").hidden = false;
-
-    $("ayBusinessProfileForm").hidden = profileType !== "business";
-    $("ayBusinessScheduleForm").hidden = true;
-    $("ayCustomerProfileForm").hidden = profileType !== "customer";
-
-    $("ayProfileTitle").textContent =
-      profileType === "business" ? "Configura tu negocio" : "Configura tu perfil cliente";
-
-    $("ayProfileSubtitle").textContent =
-      profileType === "business"
-        ? "Completa los datos básicos de tu negocio."
-        : "Completa tus datos para comenzar a reservar.";
-
-    businessStep = "details";
-    window.scrollTo(0,0);
-  }
-
-  async function uploadMedia(file,kind){
+  async function upload(file, kind){
     if(!file) return null;
-    if(!file.type.startsWith("image/")) throw new Error("La foto debe ser una imagen.");
+    if(!file.type.startsWith("image/")) throw new Error("La imagen no es válida.");
     if(file.size > 3*1024*1024) throw new Error("La imagen no puede superar 3 MB.");
 
     const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
-    const path=`${currentUser.id}/${kind}-${Date.now()}.${ext}`;
+    const path=`${user.id}/${kind}-${Date.now()}.${ext}`;
 
-    const up=await client.storage.from("profile-media").upload(
-      path,file,{contentType:file.type,upsert:false}
-    );
-
-    if(up.error) throw up.error;
+    const r=await client.storage.from("profile-media").upload(path,file,{
+      contentType:file.type,
+      upsert:false
+    });
+    if(r.error) throw r.error;
 
     return client.storage.from("profile-media").getPublicUrl(path).data.publicUrl;
   }
 
-  async function existingBusiness(){
-    const r=await client
-      .from("businesses")
-      .select("id,name,phone,logo_url")
-      .eq("owner_id",currentUser.id)
-      .maybeSingle();
-
-    if(r.error) throw r.error;
-    return r.data || null;
-  }
-
   function validateBusiness(){
-    const values=[
-      $("ayBusinessName").value.trim(),
-      $("ayBusinessType").value.trim(),
-      $("ayBusinessCity").value.trim(),
-      $("ayBusinessComuna").value.trim(),
-      $("ayBusinessAddress").value.trim()
+    const required=[
+      ["businessName","businessStatus","nombre del negocio"],
+      ["businessType","businessStatus","tipo de servicio"],
+      ["businessCity","businessStatus","ciudad"],
+      ["businessComuna","businessStatus","comuna"],
+      ["businessAddress","businessStatus","dirección"]
     ];
 
-    if(values.some(v=>!v)){
-      setStatus($("ayBusinessStatus"),
-        "Completa nombre, tipo de servicio, ciudad, comuna y dirección.","error");
-      return false;
+    for(const [id,statusId,label] of required){
+      if(!$(`${id}`)?.value.trim()){
+        status($(statusId),`Completa ${label}.`,"error");
+        $(id).focus();
+        return false;
+      }
     }
     return true;
   }
@@ -120,153 +106,145 @@
   function showSchedule(){
     if(!validateBusiness()) return;
 
-    businessStep="schedule";
-    $("ayBusinessProfileForm").hidden=true;
-    $("ayBusinessScheduleForm").hidden=false;
-
-    $("ayProfileTitle").textContent="Configura tu negocio";
-    $("ayProfileSubtitle").textContent="Paso 2 · Configura los horarios de atención.";
-
+    $("businessForm").hidden=true;
+    $("scheduleForm").hidden=false;
+    $("profileTitle").textContent="Configura tu negocio";
+    $("profileSubtitle").textContent="Paso 2 · Configura los horarios de atención.";
     window.scrollTo(0,0);
   }
 
-  async function saveCustomer(event){
-    event.preventDefault();
+  async function saveCustomer(e){
+    e.preventDefault();
 
-    const name=$("ayCustomerName").value.trim();
-    const phone=$("ayCustomerPhone").value.replace(/\D/g,"").slice(0,8);
-    const ageRaw=$("ayCustomerAge").value;
-    const city=$("ayCustomerCity").value.trim();
-    const comuna=$("ayCustomerComuna").value.trim();
-    const address=$("ayCustomerAddress").value.trim();
+    const name=$("customerName").value.trim();
+    const city=$("customerCity").value.trim();
+    const comuna=$("customerComuna").value.trim();
+    const address=$("customerAddress").value.trim();
 
     if(!name||!city||!comuna||!address){
-      setStatus($("ayCustomerStatus"),
-        "Completa nombre, ciudad, comuna y dirección.","error");
+      status($("customerStatus"),"Completa nombre, ciudad, comuna y dirección.","error");
       return;
     }
 
-    const age=ageRaw?Number(ageRaw):null;
+    const age=$("customerAge").value ? Number($("customerAge").value) : null;
     if(age!==null && (age<13||age>120)){
-      setStatus($("ayCustomerStatus"),"Ingresa una edad válida.","error");
+      status($("customerStatus"),"Ingresa una edad válida.","error");
       return;
     }
 
     try{
-      setStatus($("ayCustomerStatus"),"Guardando perfil…");
+      status($("customerStatus"),"Guardando perfil…");
 
-      let avatar=null;
-      const file=$("ayCustomerAvatarFile").files?.[0];
-      if(file) avatar=await uploadMedia(file,"avatar");
-
-      const r=await client.from("profiles").upsert({
-        id:currentUser.id,
+      const avatar=await upload($("customerAvatar").files?.[0],"avatar");
+      const result=await client.from("profiles").upsert({
+        id:user.id,
         profile_type:"customer",
         full_name:name,
-        phone:phone?`+56 9 ${phone}`:null,
-        address,
+        phone:phone($("customerPhone").value) ? `+56 9 ${phone($("customerPhone").value)}` : null,
         age,
         city,
         comuna,
+        address,
         avatar_url:avatar,
         updated_at:new Date().toISOString()
       },{onConflict:"id"});
 
-      if(r.error) throw r.error;
+      if(result.error) throw result.error;
 
-      setStatus($("ayCustomerStatus"),"Perfil guardado. Abriendo marketplace…","success");
-
-      setTimeout(()=>{
-        window.location.href="index.html";
-      },350);
+      status($("customerStatus"),"Perfil creado. Abriendo marketplace…","success");
+      setTimeout(()=>window.location.replace("explorer.html"),350);
 
     }catch(err){
       console.error(err);
-      setStatus($("ayCustomerStatus"),
-        err?.message||"No fue posible guardar el perfil.","error");
+      status($("customerStatus"),err?.message||"No fue posible guardar el perfil.","error");
     }
   }
 
-  async function saveBusiness(event){
-    event.preventDefault();
+  async function saveBusiness(e){
+    e.preventDefault();
     if(!validateBusiness()) return;
 
     try{
-      setStatus($("ayBusinessScheduleStatus"),"Guardando datos del negocio…");
+      status($("scheduleStatus"),"Guardando negocio y horarios…");
 
-      const name=$("ayBusinessName").value.trim();
-      const type=$("ayBusinessType").value.trim();
-      const phone=$("ayBusinessPhone").value.replace(/\D/g,"").slice(0,8);
-      const city=$("ayBusinessCity").value.trim();
-      const comuna=$("ayBusinessComuna").value.trim();
-      const address=$("ayBusinessAddress").value.trim();
+      const name=$("businessName").value.trim();
+      const businessType=$("businessType").value.trim();
+      const p=phone($("businessPhone").value);
+      const city=$("businessCity").value.trim();
+      const comuna=$("businessComuna").value.trim();
+      const address=$("businessAddress").value.trim();
 
-      let logo=null;
-      const file=$("ayBusinessLogoFile").files?.[0];
-      if(file) logo=await uploadMedia(file,"business-logo");
+      const logo=await upload($("businessLogo").files?.[0],"business-logo");
 
-      let business=await existingBusiness();
+      // Idempotency: do not create a second business if onboarding is retried.
+      const member=await client.from("business_members")
+        .select("business_id,active")
+        .eq("user_id",user.id)
+        .eq("active",true)
+        .limit(1);
 
-      if(!business){
+      if(member.error) throw member.error;
+
+      let businessId=member.data?.[0]?.business_id || null;
+
+      if(!businessId){
         const slug=name.toLowerCase()
           .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
           .replace(/[^a-z0-9]+/g,"-")
           .replace(/^-|-$/g,"")
-          .slice(0,50)||"negocio";
+          .slice(0,50) || "negocio";
 
         const created=await client.rpc("create_business",{
           p_name:name,
-          p_slug:`${slug}-${currentUser.id.slice(0,8)}`,
+          p_slug:`${slug}-${user.id.slice(0,8)}`,
           p_legal_name:null,
-          p_email:currentUser.email||null,
-          p_phone:phone?`+56 9 ${phone}`:null
+          p_email:user.email||null,
+          p_phone:p?`+56 9 ${p}`:null
         });
 
         if(created.error) throw created.error;
-        business=created.data;
+
+        businessId=created.data?.id || created.data;
       }
 
-      if(!business?.id) throw new Error("Supabase no devolvió el negocio creado.");
+      if(!businessId) throw new Error("Supabase no devolvió el negocio creado.");
 
-      const upd=await client.from("businesses").update({
+      const update=await client.from("businesses").update({
         name,
-        business_type:type,
-        address,
+        business_type:businessType,
+        phone:p?`+56 9 ${p}`:null,
         city,
         comuna,
-        logo_url:logo||business.logo_url||null,
-        phone:phone?`+56 9 ${phone}`:(business.phone||null),
+        address,
+        logo_url:logo,
         updated_at:new Date().toISOString()
-      }).eq("id",business.id);
+      }).eq("id",businessId);
 
-      if(upd.error) throw upd.error;
+      if(update.error) throw update.error;
 
       const profile=await client.from("profiles").upsert({
-        id:currentUser.id,
+        id:user.id,
         profile_type:"business",
         full_name:name,
-        phone:phone?`+56 9 ${phone}`:null,
-        address,
+        phone:p?`+56 9 ${p}`:null,
         city,
         comuna,
-        avatar_url:logo||null,
+        address,
+        avatar_url:logo,
         updated_at:new Date().toISOString()
       },{onConflict:"id"});
 
       if(profile.error) throw profile.error;
 
       const rows=DAYS.map((_,i)=>{
-        const active=document.querySelector(`.ay-hour-active[data-day="${i+1}"]`)?.checked;
-        const open=document.querySelector(`[data-open="${i+1}"]`)?.value||"09:00";
-        const close=document.querySelector(`[data-close="${i+1}"]`)?.value||"18:00";
-
+        const active=$(`.hour-active[data-day="${i+1}"]`)?.checked;
         return {
-          business_id:business.id,
+          business_id:businessId,
           day_of_week:i+1,
           active:!!active,
-          open_time:active?open:null,
-          close_time:active?close:null,
-          created_by:currentUser.id,
+          open_time:active ? ($(`[data-open="${i+1}"]`)?.value||"09:00") : null,
+          close_time:active ? ($(`[data-close="${i+1}"]`)?.value||"18:00") : null,
+          created_by:user.id,
           updated_at:new Date().toISOString()
         };
       });
@@ -276,32 +254,18 @@
 
       if(hours.error) throw hours.error;
 
-      setStatus($("ayBusinessScheduleStatus"),
-        "Perfil creado correctamente.","success");
-
-      /*
-       * El índice NO se toca.
-       * La URL final del dashboard se puede definir antes de cargar
-       * profile.js mediante:
-       * window.AGENDA_YA_BUSINESS_DASHBOARD_URL = "ruta-real-del-dashboard";
-       *
-       * Si no se define, queda en dashboard.html como fallback explícito.
-       */
-      const dashboardUrl =
-        window.AGENDA_YA_BUSINESS_DASHBOARD_URL || "dashboard.html";
-
-      setTimeout(()=>{window.location.href=dashboardUrl;},350);
+      status($("scheduleStatus"),"Perfil de negocio creado. Abriendo Dashboard…","success");
+      setTimeout(()=>window.location.replace("dashboard.html"),350);
 
     }catch(err){
       console.error(err);
-      setStatus($("ayBusinessScheduleStatus"),
-        err?.message||"No fue posible guardar el perfil de negocio.","error");
+      status($("scheduleStatus"),err?.message||"No fue posible crear el negocio.","error");
     }
   }
 
   async function boot(){
     if(!window.supabase?.createClient){
-      setStatus($("ayChoiceStatus"),"No se pudo cargar Supabase.","error");
+      status($("choiceStatus"),"No se pudo cargar Supabase.","error");
       return;
     }
 
@@ -317,76 +281,73 @@
       }
     );
 
+    const session=await client.auth.getSession();
+    if(session.error) throw session.error;
+
+    if(!session.data.session?.user){
+      window.location.replace("login.html");
+      return;
+    }
+
+    user=session.data.session.user;
     initHours();
 
-    document.querySelectorAll(".ay-profile-type-btn")
-      .forEach(btn=>btn.addEventListener("click",()=>{
-        selectType(btn.dataset.profileType);
-      }));
+    // Safety guard: profile.html is onboarding only.
+    const existing=await client.from("profiles")
+      .select("profile_type")
+      .eq("id",user.id)
+      .maybeSingle();
 
-    $("ayProfileNext").addEventListener("click",showForm);
-    $("ayProfileBack").addEventListener("click",showChoice);
+    if(existing.error) throw existing.error;
 
-    $("ayBusinessNext").addEventListener("click",showSchedule);
+    if(existing.data?.profile_type==="customer"){
+      window.location.replace("explorer.html");
+      return;
+    }
 
-    $("ayBusinessScheduleBack").addEventListener("click",()=>{
-      $("ayBusinessScheduleForm").hidden=true;
-      $("ayBusinessProfileForm").hidden=false;
-      $("ayProfileTitle").textContent="Configura tu negocio";
-      $("ayProfileSubtitle").textContent="Completa los datos básicos de tu negocio.";
-      businessStep="details";
+    if(existing.data?.profile_type==="business"){
+      const member=await client.from("business_members")
+        .select("business_id,active")
+        .eq("user_id",user.id)
+        .eq("active",true)
+        .limit(1);
+
+      if(member.data?.[0]?.business_id){
+        window.location.replace("dashboard.html");
+        return;
+      }
+    }
+
+    document.querySelectorAll(".profile-type").forEach(btn=>{
+      btn.addEventListener("click",()=>selectType(btn.dataset.type));
+    });
+
+    $("profileNext").addEventListener("click",showForm);
+    $("profileBack").addEventListener("click",showChoice);
+    $("businessNext").addEventListener("click",showSchedule);
+
+    $("scheduleBack").addEventListener("click",()=>{
+      $("scheduleForm").hidden=true;
+      $("businessForm").hidden=false;
+      $("profileTitle").textContent="Configura tu negocio";
+      $("profileSubtitle").textContent="Completa los datos básicos de tu negocio.";
       window.scrollTo(0,0);
     });
 
-    $("ayBusinessScheduleForm").addEventListener("submit",saveBusiness);
-    $("ayCustomerProfileForm").addEventListener("submit",saveCustomer);
+    $("businessForm").addEventListener("submit",e=>e.preventDefault());
+    $("scheduleForm").addEventListener("submit",saveBusiness);
+    $("customerForm").addEventListener("submit",saveCustomer);
 
-    ["ayBusinessPhone","ayCustomerPhone"].forEach(id=>{
-      $(id)?.addEventListener("input",e=>{
-        e.target.value=e.target.value.replace(/\D/g,"").slice(0,8);
-      });
+    ["businessPhone","customerPhone"].forEach(id=>{
+      $(id)?.addEventListener("input",e=>e.target.value=phone(e.target.value));
     });
-
-    const {data,error}=await client.auth.getSession();
-
-    if(error) throw error;
-
-    if(!data.session?.user){
-      window.location.href="login.html";
-      return;
-    }
-
-    currentUser=data.session.user;
-
-    // Esta página es exclusivamente para onboarding de usuario nuevo.
-    // Si alguien llega directamente con perfil ya creado, se evita duplicar onboarding.
-    const profile=await client
-      .from("profiles")
-      .select("profile_type")
-      .eq("id",currentUser.id)
-      .maybeSingle();
-
-    if(profile.error) throw profile.error;
-
-    if(profile.data?.profile_type==="customer"){
-      window.location.href="index.html";
-      return;
-    }
-
-    if(profile.data?.profile_type==="business"){
-      const dashboardUrl =
-        window.AGENDA_YA_BUSINESS_DASHBOARD_URL || "dashboard.html";
-      window.location.href=dashboardUrl;
-      return;
-    }
 
     selectType("business");
     showChoice();
   }
 
   boot().catch(err=>{
-    console.error("Agenda YA profile:",err);
-    setStatus($("ayChoiceStatus"),
-      err?.message||"No se pudo iniciar la configuración del perfil.","error");
+    console.error("Agenda YA profile boot:",err);
+    status($("choiceStatus"),err?.message||"No se pudo iniciar la configuración del perfil.","error");
   });
 })();
