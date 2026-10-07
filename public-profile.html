@@ -1,17 +1,89 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Agenda Ya · Negocio</title><link rel="stylesheet" href="public-platform.css"></head>
-<body><main class="shell">
-<header><strong>AGENDA <span>YA</span></strong><a href="explorer.html">Explorar</a></header>
-<div id="status" class="status">Cargando perfil...</div>
-<section id="profile" class="hidden">
-<div class="hero"><p id="category" class="eyebrow"></p><h1 id="name"></h1><p id="description"></p><p id="location"></p></div>
-<div class="grid">
-<section class="card"><h2>Servicios</h2><div id="services"></div></section>
-<section class="card"><h2>Profesionales</h2><div id="professionals"></div></section>
-<section class="card"><h2>Horarios</h2><div id="schedules"></div></section>
-</div>
-<section class="cta card"><h2>¿Quieres reservar?</h2><p>Elige un servicio y continúa con la agenda del negocio.</p><a id="book" class="button" href="#">Agendar ahora</a></section>
-</section>
-<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="public-profile.js"></script>
-</main></body></html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Perfil público de negocio en Agenda Ya">
+<title>Agenda Ya · Perfil del negocio</title>
+<link rel="stylesheet" href="public-platform.css">
+<link rel="stylesheet" href="public-profile-premium.css">
+</head>
+<body class="ay-public-profile-page">
+<main class="profile-shell">
+  <header class="profile-header">
+    <a class="profile-brand" href="explorer.html" aria-label="Volver a Agenda Ya">
+      <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+    </a>
+    <div class="profile-header-actions">
+      <a class="profile-back" href="explorer.html">Explorar negocios</a>
+    </div>
+  </header>
+
+  <div id="status" class="profile-status" role="status">Cargando perfil...</div>
+
+  <section id="profile" class="profile-content" hidden>
+    <section class="profile-hero">
+      <div class="profile-hero-main">
+        <div id="category" class="profile-category"></div>
+        <h1 id="name"></h1>
+        <p id="description" class="profile-description"></p>
+        <div class="profile-location-row" id="locationRow" hidden>
+          <span class="profile-location-icon">⌖</span>
+          <span id="location"></span>
+        </div>
+      </div>
+      <div class="profile-hero-aside">
+        <div class="profile-hero-mark">AY</div>
+        <span>Encuentra. Elige. Agenda.</span>
+      </div>
+    </section>
+
+    <section class="profile-booking-strip">
+      <div>
+        <span class="profile-strip-eyebrow">AGENDA YA</span>
+        <strong>Reserva directamente con este negocio</strong>
+        <p>Elige un servicio, profesional, fecha y horario disponible.</p>
+      </div>
+      <a id="bookTop" class="profile-primary-button" href="#">Agendar ahora</a>
+    </section>
+
+    <section class="profile-section" aria-labelledby="servicesTitle">
+      <div class="profile-section-head">
+        <div><span class="profile-section-eyebrow">SERVICIOS</span><h2 id="servicesTitle">Elige lo que necesitas</h2></div>
+        <span id="serviceCount" class="profile-count"></span>
+      </div>
+      <div id="services" class="service-grid"></div>
+    </section>
+
+    <section class="profile-two-column">
+      <section class="profile-section compact" aria-labelledby="professionalsTitle">
+        <div class="profile-section-head"><div><span class="profile-section-eyebrow">EQUIPO</span><h2 id="professionalsTitle">Profesionales</h2></div></div>
+        <div id="professionals" class="professional-list"></div>
+      </section>
+
+      <section class="profile-section compact" aria-labelledby="schedulesTitle">
+        <div class="profile-section-head"><div><span class="profile-section-eyebrow">ATENCIÓN</span><h2 id="schedulesTitle">Horarios</h2></div></div>
+        <div id="schedules" class="schedule-list"></div>
+      </section>
+    </section>
+
+    <section class="profile-final-cta">
+      <div>
+        <span class="profile-section-eyebrow">¿LISTO?</span>
+        <h2>Agenda tu atención</h2>
+        <p>Consulta disponibilidad y confirma tu reserva en pocos pasos.</p>
+      </div>
+      <a id="book" class="profile-primary-button large" href="#">Agendar ahora</a>
+    </section>
+
+    <footer class="profile-footer">
+      <span>Perfil público en <strong>Agenda Ya</strong></span>
+      <a href="explorer.html">Volver a explorar</a>
+    </footer>
+  </section>
+</main>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="public-profile.js"></script>
+</body>
+</html>
