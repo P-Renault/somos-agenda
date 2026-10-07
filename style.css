@@ -47,8 +47,10 @@ button,input{font:inherit}
   max-height:100svh!important;
   background:#fff!important;
   overflow:hidden!important;
-  display:block!important;
 }
+
+/* Auth state is controlled by auth.js. Do not override its inline display:none/flex. */
+.ay-auth[hidden]{display:none!important;}
 
 .ay-auth-bg-shape,
 .ay-auth-bg-shape-a,
