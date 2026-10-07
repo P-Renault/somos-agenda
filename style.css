@@ -145,3 +145,114 @@ button,input{font:inherit}
 
 #ayPasswordConfirmWrap[hidden]{display:none!important}
 #ayPasswordConfirmWrap:not([hidden]){display:block!important}
+
+
+/* =========================================================
+   LOGIN POLISH — reference match
+   Functional markup/IDs preserved. style.css remains style.css.
+   ========================================================= */
+
+.ay-auth-field-icon{
+  left:22px!important;
+  top:auto!important;
+  bottom:22px!important;
+  width:36px!important;
+  height:36px!important;
+  z-index:4!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.ay-auth-field-icon svg{
+  width:31px!important;
+  height:31px!important;
+  display:block!important;
+}
+
+.ay-auth-input{
+  position:relative!important;
+  z-index:1!important;
+  padding-left:82px!important;
+}
+
+.ay-auth-eye{
+  z-index:5!important;
+  right:18px!important;
+  bottom:18px!important;
+}
+.ay-auth-eye svg{
+  display:block!important;
+}
+
+/* Social buttons: real logo artwork, not text glyphs. */
+.ay-auth-secondary{
+  position:relative!important;
+  padding-left:102px!important;
+  padding-right:70px!important;
+}
+.ay-social-icon{
+  position:absolute!important;
+  left:76px!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:50%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:transparent!important;
+  line-height:0!important;
+}
+.ay-social-icon svg{
+  display:block!important;
+  width:44px!important;
+  height:44px!important;
+}
+.ay-google-icon,
+.ay-facebook-icon{
+  background:transparent!important;
+  color:inherit!important;
+  font-size:0!important;
+}
+
+/* Keep the arrow exactly inside the right edge of the button. */
+.ay-auth-secondary>b{
+  right:38px!important;
+}
+
+/* Mobile proportional positioning. */
+@media (max-width:700px){
+  .ay-auth-input{
+    padding-left:12.45vw!important;
+  }
+  .ay-auth-field-icon{
+    left:3.2vw!important;
+    bottom:clamp(17px,1.5dvh,23px)!important;
+    width:5.4vw!important;
+    height:5.4vw!important;
+  }
+  .ay-auth-field-icon svg{
+    width:5vw!important;
+    height:5vw!important;
+  }
+  .ay-auth-secondary{
+    padding-left:15vw!important;
+    padding-right:10vw!important;
+  }
+  .ay-social-icon{
+    left:15.3vw!important;
+    width:6.1vw!important;
+    height:6.1vw!important;
+  }
+  .ay-social-icon svg{
+    width:6.1vw!important;
+    height:6.1vw!important;
+  }
+}
+
+@media (max-height:1250px) and (max-width:700px){
+  .ay-auth-field-icon{
+    bottom:1.35dvh!important;
+  }
+}
