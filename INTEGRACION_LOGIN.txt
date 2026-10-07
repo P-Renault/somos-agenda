@@ -1,16 +1,20 @@
-AGENDA YA — LANDING + LOGIN FUNCIONAL
+AGENDA YA — LOGIN VISTA PREMIUM MÓVIL
 
-La landing mantiene su diseño y todos sus botones de acceso apuntan a login.html.
+Se reemplazó login.html por una vista basada directamente en la referencia visual entregada:
+- Fondo blanco a pantalla completa.
+- Botón superior «Volver a Agenda YA».
+- Logo Agenda Ya centrado.
+- Texto «Gestiona tu negocio y recibe más reservas desde un solo lugar.»
+- Campos Email y Contraseña con iconografía.
+- Botón azul «Iniciar sesión →».
+- «Recuperar contraseña».
+- Separador «o continuar con».
+- Accesos «Continuar con Google →» y «Continuar con Facebook →».
+- «¿No tienes una cuenta? Crear cuenta».
+- «Acceso seguro con Supabase Auth».
+- Diseño responsive para móvil y escritorio.
+- Se conserva Supabase Auth, email/password, recuperación, registro, Google y Facebook.
+- Se conserva ?next=negocio para los flujos que llegan desde «Publica tu negocio».
 
-login.html fue reemplazado por una pantalla equivalente al login funcional de Agenda Ya:
-- Email + contraseña mediante Supabase Auth.
-- Recuperación de contraseña.
-- Crear cuenta.
-- Continuar con Google mediante Supabase OAuth.
-- Continuar con Facebook mediante Supabase OAuth.
-- Redirección de retorno al landing después de autenticarse.
-- Parámetro ?next=negocio conservado para que el flujo pueda distinguir Publica tu negocio.
-
-Configuración Supabase utilizada: la misma configuración pública presente en el proyecto Agenda Ya.
-
-IMPORTANTE: Google/Facebook también deben estar habilitados en Supabase Authentication > Providers y sus redirect URLs deben incluir el dominio de producción. El HTML no puede habilitar esos proveedores desde el frontend.
+Importante:
+Google y Facebook deben estar habilitados en Supabase Authentication > Providers y las URLs de redirección de producción deben estar autorizadas en Supabase.

@@ -1,0 +1,19 @@
+AGENDA YA — RESTAURACIÓN DEL LOGIN
+
+Se restauró la versión anterior al último ajuste de 100% viewport/sin desplazamiento.
+
+Se conserva:
+- Login Agenda YA.
+- Supabase Auth.
+- Email y contraseña.
+- Recuperación de contraseña.
+- Crear cuenta.
+- Google.
+- Facebook.
+- Parámetro ?next=negocio.
+- Retorno al flujo anterior del landing.
+
+No se aplicó el CSS experimental que fijaba html/body/auth-page a 100dvh con overflow:hidden, porque esa modificación es la última que se había introducido antes de reportarse la ruptura del flujo.
+
+Archivos restaurados desde:
+AgendaYA_Landing_Login_Vista_Premium_Movil_Mas_Pequeno.zip
