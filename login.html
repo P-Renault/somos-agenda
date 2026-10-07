@@ -1,1 +1,53 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Iniciar sesión — Agenda YA</title><style>body{margin:0;font-family:system-ui;background:#f3f8fd;min-height:100vh;display:grid;place-items:center;color:#10254a}.box{width:min(390px,calc(100% - 32px));background:#fff;border:1px solid #e3ebf4;border-radius:22px;padding:32px;box-shadow:0 18px 55px #173d6418}.logo{font-size:30px;font-weight:950;color:#07366d}.logo span{color:#0877eb}h1{font-size:25px;margin:25px 0 6px}p{color:#71839a;font-size:13px}.field{margin:14px 0}.field label{display:block;font-size:11px;font-weight:800;margin-bottom:6px}.field input{width:100%;height:45px;border:1px solid #dfe8f1;border-radius:10px;padding:0 12px;box-sizing:border-box}.submit{width:100%;height:46px;border:0;border-radius:10px;background:#0877eb;color:#fff;font-weight:900;margin-top:8px}.back{display:block;text-align:center;margin-top:16px;color:#0877eb;font-size:12px}</style></head><body><main class="box"><div class="logo">Agenda<span>YA</span></div><h1>Iniciar sesión</h1><p>Accede a tu cuenta para continuar en Agenda YA.</p><form onsubmit="event.preventDefault();alert('Conecta aquí el flujo de autenticación existente de Agenda YA.');"><div class="field"><label>Correo electrónico</label><input type="email" required></div><div class="field"><label>Contraseña</label><input type="password" required></div><button class="submit">Ingresar</button></form><a class="back" href="index.html">← Volver a Agenda YA</a></main></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Agenda YA · Acceso</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#142b50;background:#f4f8fc}body{min-height:100svh}.auth-page{min-height:100svh;display:flex;flex-direction:column;align-items:center;padding:0 24px 40px}.brand{width:100%;max-width:690px;height:112px;background:#fff;border-bottom:1px solid #dfe7ef;display:flex;align-items:center;justify-content:center}.brand img{width:220px;height:76px;object-fit:contain}.auth-wrap{width:100%;max-width:690px;padding:28px 0 20px}.back{display:inline-flex;align-items:center;gap:7px;border:0;background:none;color:#0874df;font-weight:800;font-size:14px;padding:0;margin:0 0 20px;cursor:pointer}.eyebrow{font-size:12px;letter-spacing:1.2px;font-weight:900;color:#0874df;margin-bottom:8px}.title{font-size:38px;line-height:1.05;letter-spacing:-1.5px;margin:0 0 8px;color:#142b50}.title span{color:#0874df}.subtitle{font-size:18px;color:#78899e;margin:0 0 25px}.card{background:#fff;border:1px solid #dce6ef;border-radius:22px;padding:28px;box-shadow:0 16px 45px rgba(25,64,100,.07)}.field{display:block;margin:0 0 17px}.field b{display:block;font-size:14px;margin-bottom:7px}.input-wrap{position:relative}.input{width:100%;height:55px;border:1px solid #d9e2eb;border-radius:14px;padding:0 16px;font-size:16px;color:#152e51;outline:none;background:#fff}.input:focus{border-color:#0874df;box-shadow:0 0 0 3px rgba(8,116,223,.1)}.password-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:none;color:#7890a7;font-size:18px;cursor:pointer}.primary{width:100%;height:55px;border:0;border-radius:14px;background:#0877eb;color:#fff;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 10px 24px rgba(8,119,235,.2)}.primary:disabled{opacity:.65;cursor:wait}.recovery{display:block;width:100%;border:0;background:none;color:#0874df;font-weight:800;font-size:15px;text-align:center;margin:12px 0 22px;cursor:pointer}.divider{display:flex;align-items:center;gap:14px;color:#8a98a8;font-size:14px;margin:0 0 14px}.divider:before,.divider:after{content:"";height:1px;background:#dfe6ed;flex:1}.social{width:100%;height:52px;border:1px solid #d9e2eb;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;gap:13px;color:#172f53;font-size:16px;cursor:pointer;margin-bottom:10px}.social b{font-weight:850}.social svg{width:23px;height:23px}.switch{text-align:center;color:#78899e;font-size:16px;margin:12px 0 0}.switch button{border:0;background:none;color:#0874df;font-weight:900;font-size:16px;cursor:pointer}.status{text-align:center;min-height:20px;font-size:13px;margin:9px 0;color:#287c5d}.status.error{color:#c73b3b}.secure{text-align:center;color:#99a6b5;font-size:12px;margin:16px 0 0}
+@media(max-width:560px){.auth-page{padding:0 16px 28px}.brand{height:104px;margin:0 -16px;width:calc(100% + 32px)}.brand img{width:190px}.auth-wrap{padding-top:24px}.back{margin-bottom:22px}.title{font-size:34px}.subtitle{font-size:16px;line-height:1.4;margin-bottom:20px}.card{padding:22px 18px;border-radius:20px}.input{height:53px}.primary{height:53px}.social{height:51px;font-size:15px}}
+</style>
+</head>
+<body>
+<main class="auth-page">
+  <header class="brand"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya"></header>
+  <section class="auth-wrap">
+    <button class="back" type="button" onclick="goBack()">← Volver a Agenda YA</button>
+    <div class="eyebrow">AGENDA YA · ACCESO</div>
+    <h1 class="title" id="title">Bienvenido a <span>Agenda Ya</span></h1>
+    <p class="subtitle" id="subtitle">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
+    <div class="card">
+      <form id="authForm">
+        <label class="field"><b>Email</b><input class="input" id="email" type="email" autocomplete="email" placeholder="tu@email.com" required></label>
+        <label class="field"><b>Contraseña</b><span class="input-wrap"><input class="input" id="password" type="password" autocomplete="current-password" minlength="6" placeholder="Ingresa tu contraseña" required><button class="password-eye" id="eye" type="button" aria-label="Mostrar contraseña">◉</button></span></label>
+        <button class="primary" id="submit" type="submit">Iniciar sesión →</button>
+      </form>
+      <p class="status" id="status" aria-live="polite"></p>
+      <button class="recovery" id="recovery" type="button">Recuperar contraseña</button>
+      <div class="divider"><span>o continuar con</span></div>
+      <button class="social" id="google" type="button"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.6c3.3 0 6.3 1.1 8.6 3.2l6.4-6.4C35.1 2.7 29.9.5 24 .5 14.8.5 6.9 5.8 3 13.6l7.5 5.8C12.4 13.7 17.6 9.6 24 9.6Z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.6c-.5 2.8-2.1 5.2-4.5 6.8l7.3 5.7c4.3-4 7.1-9.8 7.1-16.5Z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.2.8-4.6L3 13.6C1.4 16.7.5 20.2.5 24s.9 7.3 2.5 10.4l7.5-5.8Z"/><path fill="#34A853" d="M24 47.5c6.4 0 11.8-2.1 15.8-6.5l-7.3-5.7c-2 1.4-4.7 2.3-8.5 2.3-6.4 0-11.6-4.1-13.5-9.8L3 33.6c3.9 7.8 11.8 13.9 21 13.9Z"/></svg><b>Continuar con Google</b> →</button>
+      <button class="social" id="facebook" type="button"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" fill="#1877F2"/><path fill="#fff" d="M27.1 39V26.1h4.3l.6-5h-4.9v-3.2c0-1.5.4-2.5 2.6-2.5h2.7v-4.5c-.5-.1-2.2-.2-4.1-.2-4.1 0-6.9 2.5-6.9 7v3.9h-4.6v5h4.6V39h5.7Z"/></svg><b>Continuar con Facebook</b> →</button>
+      <div class="switch"><span id="switchText">¿No tienes una cuenta?</span> <button id="switch">Crear cuenta</button></div>
+      <div class="secure">Acceso seguro con Supabase Auth</div>
+    </div>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://edlsxmuhbsvtjdtmyhks.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const $=id=>document.getElementById(id); let mode='login';
+function setStatus(t,error=false){$('status').textContent=t||'';$('status').className='status'+(error?' error':'')}
+function setMode(next){mode=next;const signup=mode==='signup';$('title').innerHTML=signup?'Crear cuenta en <span>Agenda Ya</span>':'Bienvenido a <span>Agenda Ya</span>';$('subtitle').textContent=signup?'Crea tu acceso para comenzar a configurar tu perfil.':'Gestiona tu negocio y recibe más reservas desde un solo lugar.';$('submit').textContent=signup?'Crear cuenta →':'Iniciar sesión →';$('switchText').textContent=signup?'¿Ya tienes una cuenta?':'¿No tienes una cuenta?';$('switch').textContent=signup?'Iniciar sesión':'Crear cuenta';$('recovery').hidden=signup;setStatus('')}
+async function emailAuth(e){e.preventDefault();setStatus('');$('submit').disabled=true;try{const email=$('email').value.trim(),password=$('password').value;if(mode==='signup'){const r=await sb.auth.signUp({email,password});if(r.error)throw r.error;setStatus(r.data.session?'Cuenta creada.':'Cuenta creada. Revisa tu correo para confirmar.')}else{const r=await sb.auth.signInWithPassword({email,password});if(r.error)throw r.error;afterLogin(r.data.user)}}catch(err){setStatus(err.message||'No fue posible iniciar sesión.',true)}finally{$('submit').disabled=false}}
+async function oauth(provider){setStatus('Conectando con '+(provider==='google'?'Google':'Facebook')+'...');try{const r=await sb.auth.signInWithOAuth({provider,options:{redirectTo:window.location.origin+window.location.pathname}});if(r.error)throw r.error}catch(err){setStatus(err.message||'No fue posible iniciar sesión.',true)}}
+async function recovery(){const email=$('email').value.trim();if(!email){setStatus('Escribe primero tu correo electrónico.',true);return}const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});setStatus(r.error?r.error.message:'Revisa tu correo para recuperar la contraseña.',!!r.error)}
+function afterLogin(user){const next=new URLSearchParams(location.search).get('next');location.href='./?auth=success'+(next?'&next='+encodeURIComponent(next):'')}
+function goBack(){location.href='./'}
+$('authForm').addEventListener('submit',emailAuth);$('google').onclick=()=>oauth('google');$('facebook').onclick=()=>oauth('facebook');$('recovery').onclick=recovery;$('switch').onclick=()=>setMode(mode==='login'?'signup':'login');$('eye').onclick=()=>{$('password').type=$('password').type==='password'?'text':'password'};
+sb.auth.getSession().then(({data})=>{if(data.session)afterLogin(data.session.user)});
+</script>
+</body>
+</html>

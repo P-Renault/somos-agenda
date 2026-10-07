@@ -116,6 +116,10 @@
   </main>
 
   <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="login.html">Iniciar sesión</a></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (async()=>{try{const sb=window.supabase.createClient('https://edlsxmuhbsvtjdtmyhks.supabase.co','sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE');const {data}=await sb.auth.getSession();if(data.session){document.querySelectorAll('.login-link').forEach(x=>{x.textContent='Mi cuenta';x.href='login.html'});const p=document.querySelector('.profile-btn');if(p)p.setAttribute('aria-label','Mi cuenta');}}catch(e){}})();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
