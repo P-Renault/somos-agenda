@@ -16,17 +16,26 @@
     const logo = $('businessLogo');
     const wrap = $('businessLogoWrap');
     const logoUrl = business?.logo_url || profile?.logo_url || x?.logo_url || '';
-    if (logoUrl) {
-      logo.src = logoUrl;
-      logo.alt = `Logo de ${business?.name || 'negocio'}`;
-      logo.hidden = false;
-      wrap.hidden = false;
-    } else {
-      // No usar iniciales ni texto de reemplazo: el encabezado conserva la composición limpia.
+    if (!logoUrl) {
       logo.removeAttribute('src');
       logo.hidden = true;
       wrap.hidden = true;
+      return;
     }
+    logo.alt = `Logo de ${business?.name || 'negocio'}`;
+    logo.onload = () => {
+      logo.hidden = false;
+      wrap.hidden = false;
+    };
+    logo.onerror = () => {
+      logo.removeAttribute('src');
+      logo.hidden = true;
+      wrap.hidden = true;
+    };
+    logo.src = logoUrl;
+    // Evita mostrar el icono roto mientras la imagen carga.
+    logo.hidden = true;
+    wrap.hidden = true;
   }
 
   function renderServices(items) {
