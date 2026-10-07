@@ -47,7 +47,11 @@
   async function init() {
     if (!client) { $('status').textContent = 'No fue posible conectar con Agenda Ya.'; return; }
     if (!slug) { $('status').textContent = 'Perfil no especificado.'; return; }
-    const r = await client.rpc('get_public_business_profile', { p_slug: slug });
+    const [profileResult, brandResult] = await Promise.all([
+      client.rpc('get_public_business_profile', { p_slug: slug }),
+      client.rpc('get_public_business_brand', { p_slug: slug })
+    ]);
+    const r = profileResult;
     if (r.error) {
       $('status').textContent = r.error.message === 'BUSINESS_NOT_FOUND' ? 'Negocio no encontrado.' : r.error.message === 'PUBLIC_PROFILE_NOT_PUBLISHED' ? 'Este perfil todavía no está publicado.' : 'No fue posible cargar este perfil.';
       return;
@@ -55,11 +59,29 @@
     const x = r.data || {};
     const business = x.business || {};
     const profile = x.profile || {};
-    $('name').textContent = business.name || 'Negocio';
+    const brand = brandResult?.data || {};
+    const businessName = business.name || brand.name || 'Negocio';
+    $('name').textContent = businessName;
     $('category').textContent = x.category?.name || 'Servicio';
     $('description').textContent = profile.description || 'Conoce los servicios y agenda tu atención directamente.';
     const loc = [profile.address, profile.comuna, profile.city].filter(Boolean).join(' · ');
     if (loc) { $('location').textContent = loc; $('locationRow').hidden = false; }
+
+    const logoUrl = profile.logo_url || business.logo_url || brand.logo_url || '';
+    const logoBox = $('businessLogo');
+    const fallback = $('businessLogoFallback');
+    const initials = businessName.split(/\s+/).filter(Boolean).slice(0,2).map(v => v[0]).join('').toUpperCase() || 'AY';
+    fallback.textContent = initials;
+    if (logoUrl) {
+      const img = document.createElement('img');
+      img.src = logoUrl;
+      img.alt = `Logo de ${businessName}`;
+      img.loading = 'eager';
+      img.decoding = 'async';
+      img.addEventListener('error', () => { logoBox.classList.remove('has-logo'); img.remove(); });
+      logoBox.appendChild(img);
+      logoBox.classList.add('has-logo');
+    }
     renderServices(x.services || []);
     renderProfessionals(x.professionals || []);
     renderSchedules(x.schedules || []);
