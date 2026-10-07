@@ -1,5 +1,5 @@
 /*
- Agenda Ya — Identity + Profile v0.2.1
+ Agenda Ya — Identity + Profile v0.2.4
  FIX: evita bloqueo del motor de autenticación al iniciar sesión.
  Flujo: Identity -> Profile -> Agenda Ya
 */
@@ -193,7 +193,12 @@
 
   async function routeSession(user) {
     if (!user) return;
-    if (routingInProgress) return;
+    if (routingInProgress && currentUser?.id === user.id) {
+      // A second auth event may arrive while hydration is running.
+      // Never block navigation because of it.
+      showProfile();
+      return;
+    }
     routingInProgress = true;
     currentUser = user;
 
@@ -273,8 +278,16 @@
       if (mode === "signup" && !result.data.session) {
         setStatus("Cuenta creada. Revisa tu correo y pulsa el enlace de confirmación.","success");
       } else if (result.data.session?.user) {
-        setStatus("Acceso confirmado. Cargando tu perfil…","success");
-        await routeSession(result.data.session.user);
+        const authenticatedUser = result.data.session.user;
+        setStatus("Acceso confirmado. Abriendo tu perfil…","success");
+        // HARD GUARANTEE: UI navigation does not depend on any DB request.
+        currentUser = authenticatedUser;
+        showProfile();
+        selectProfileType("business");
+        populateBusiness(null, authenticatedUser);
+        setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
+        // Hydrate existing profile asynchronously.
+        void routeSession(authenticatedUser);
       } else {
         throw new Error("Supabase no devolvió una sesión activa.");
       }
@@ -409,6 +422,11 @@
     // This prevents the auth lock from being held while routeSession performs DB reads.
     client.auth.onAuthStateChange((event,session)=>{
       if(session?.user) {
+        currentUser = session.user;
+        showProfile();
+        selectProfileType("business");
+        populateBusiness(null, session.user);
+        setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
         setTimeout(()=>routeSession(session.user),0);
       } else if(event==="SIGNED_OUT") {
         setMode("login"); showAuth();
@@ -419,12 +437,17 @@
     if(result.error) return setStatus(result.error.message,"error");
     if(result.data.session?.user) {
       cleanAuthHash();
-      await routeSession(result.data.session.user);
+      currentUser = result.data.session.user;
+      showProfile();
+      selectProfileType("business");
+      populateBusiness(null, result.data.session.user);
+      setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
+      void routeSession(result.data.session.user);
     }
   }
 
   window.AgendaYaAuth={
-    version:"0.2.1",
+    version:"0.2.4",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };
