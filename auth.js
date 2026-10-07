@@ -1,7 +1,8 @@
 /*
- Agenda Ya — Identity + Profile v0.4.2
+ Agenda Ya — Identity + Profile + Social Auth v0.5.0
  FIX: completa el onboarding negocio sin bloqueo de RLS y evita duplicar negocios.
- Flujo: Identity -> Profile -> Business Details -> Hours -> Agenda Ya / Customer -> Marketplace
+ SOCIAL AUTH: Google + Facebook con Supabase Auth, callback/redirect robusto y manejo de errores.
+ Flujo: Identity -> Validation -> Profile -> Business Details -> Hours -> Agenda Ya / Customer -> Marketplace
 */
 (() => {
   const cfg = window.SOMOS_CONFIG || {};
@@ -16,6 +17,7 @@
   const businessStatus = $("ayBusinessStatus"), businessScheduleStatus = $("ayBusinessScheduleStatus"), customerStatus = $("ayCustomerStatus");
   const profileTitle = $("ayProfileTitle"), profileSubtitle = $("ayProfileSubtitle");
   let client = null, mode = "login", currentUser = null, profileType = "business";
+  let socialBusy = false;
   let profileStep = "choice";
   let businessStep = "details";
   let routingInProgress = false;
@@ -370,11 +372,45 @@
     } finally { recovery.disabled = false; }
   }
 
+  function socialLabel(provider) {
+    return provider === "google" ? "Google" : "Facebook";
+  }
+
+  function setSocialBusy(busy) {
+    socialBusy = busy;
+    [google, facebook].forEach(btn => {
+      if (!btn) return;
+      btn.disabled = busy;
+      btn.setAttribute("aria-busy", busy ? "true" : "false");
+    });
+  }
+
   async function oauth(provider) {
     if (!client) return setStatus("Supabase no está disponible.","error");
-    setStatus(`Conectando con ${provider==="google"?"Google":"Facebook"}…`);
-    const result = await client.auth.signInWithOAuth({provider, options:{redirectTo:REDIRECT_URL}});
-    if (result.error) setStatus(result.error.message,"error");
+    if (socialBusy) return;
+    setSocialBusy(true);
+    const label = socialLabel(provider);
+    setStatus(`Conectando con ${label}…`);
+    try {
+      const result = await withTimeout(
+        client.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: REDIRECT_URL,
+            skipBrowserRedirect: false
+          }
+        }),
+        15000,
+        `No fue posible iniciar el acceso con ${label}.`
+      );
+      if (result.error) throw result.error;
+      // signInWithOAuth normally redirects the browser immediately.
+      // Keep the busy state until the provider/browser takes over.
+    } catch (err) {
+      console.error(`oauth ${provider}:`, err);
+      setStatus(err?.message || `No fue posible iniciar el acceso con ${label}.`, "error");
+      setSocialBusy(false);
+    }
   }
 
   async function saveCustomer(event) {
@@ -532,6 +568,8 @@
 
     if(handleUrlError()) return;
 
+    // OAuth callback/session validation is handled by supabase-js plus onAuthStateChange.
+    // This page is the configured post-login destination for Google and Facebook.
     // IMPORTANT: auth state listener does not call Supabase data APIs directly.
     // This prevents the auth lock from being held while routeSession performs DB reads.
     client.auth.onAuthStateChange((event,session)=>{
@@ -561,7 +599,7 @@
   }
 
   window.AgendaYaAuth={
-    version:"0.4.2",
+    version:"0.5.0",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };
