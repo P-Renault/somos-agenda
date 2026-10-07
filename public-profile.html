@@ -14,35 +14,27 @@
     <a class="profile-brand" href="explorer.html" aria-label="Volver a Agenda Ya">
       <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
     </a>
-    <div class="profile-header-actions">
-      <a class="profile-back" href="explorer.html">Explorar negocios</a>
-    </div>
+    <a class="profile-back" href="explorer.html">Explorar negocios</a>
   </header>
 
   <div id="status" class="profile-status" role="status">Cargando perfil...</div>
 
   <section id="profile" class="profile-content" hidden>
-    <section class="profile-hero">
-      <div class="profile-hero-main">
-        <div class="business-identity">
-          <div class="business-logo" id="businessLogo" aria-label="Logo del negocio">
-            <span id="businessLogoFallback"></span>
-          </div>
-          <div class="business-identity-copy">
-            <div id="category" class="profile-category"></div>
-            <h1 id="name"></h1>
-            <div class="business-location-inline" id="locationRow" hidden>
-              <span class="profile-location-icon">⌖</span>
-              <span id="location"></span>
-            </div>
+    <section class="profile-hero" aria-labelledby="name">
+      <div class="profile-business-identity">
+        <div class="profile-business-logo-wrap" id="businessLogoWrap">
+          <img id="businessLogo" class="profile-business-logo" src="" alt="" hidden>
+        </div>
+        <div class="profile-business-heading">
+          <div id="category" class="profile-category">Servicio</div>
+          <h1 id="name"></h1>
+          <div class="profile-location-row" id="locationRow" hidden>
+            <span class="profile-location-icon" aria-hidden="true">⌖</span>
+            <span id="location"></span>
           </div>
         </div>
-        <p id="description" class="profile-description"></p>
       </div>
-      <div class="profile-hero-aside">
-        <div class="profile-hero-mark">AY</div>
-        <span>Encuentra. Elige. Agenda.</span>
-      </div>
+      <p id="description" class="profile-description"></p>
     </section>
 
     <section class="profile-booking-strip">
@@ -67,7 +59,6 @@
         <div class="profile-section-head"><div><span class="profile-section-eyebrow">EQUIPO</span><h2 id="professionalsTitle">Profesionales</h2></div></div>
         <div id="professionals" class="professional-list"></div>
       </section>
-
       <section class="profile-section compact" aria-labelledby="schedulesTitle">
         <div class="profile-section-head"><div><span class="profile-section-eyebrow">ATENCIÓN</span><h2 id="schedulesTitle">Horarios</h2></div></div>
         <div id="schedules" class="schedule-list"></div>

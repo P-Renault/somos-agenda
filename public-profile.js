@@ -12,29 +12,37 @@
     ['book','bookTop'].forEach(id => { const el = $(id); if (el) el.href = href; });
   }
 
+  function renderBusinessLogo(business, profile, x) {
+    const logo = $('businessLogo');
+    const wrap = $('businessLogoWrap');
+    const logoUrl = business?.logo_url || profile?.logo_url || x?.logo_url || '';
+    if (logoUrl) {
+      logo.src = logoUrl;
+      logo.alt = `Logo de ${business?.name || 'negocio'}`;
+      logo.hidden = false;
+      wrap.hidden = false;
+    } else {
+      // No usar iniciales ni texto de reemplazo: el encabezado conserva la composición limpia.
+      logo.removeAttribute('src');
+      logo.hidden = true;
+      wrap.hidden = true;
+    }
+  }
+
   function renderServices(items) {
     $('serviceCount').textContent = items.length ? `${items.length} ${items.length === 1 ? 'servicio' : 'servicios'}` : '';
     $('services').innerHTML = items.length ? items.map(s => `
       <article class="service-card">
-        <div class="service-card-top">
-          <div class="service-icon">✦</div>
-          <span class="service-duration">${esc(s.duration_minutes)} min</span>
-        </div>
+        <div class="service-card-top"><div class="service-icon">✦</div><span class="service-duration">${esc(s.duration_minutes)} min</span></div>
         <h3>${esc(s.name)}</h3>
         ${s.description ? `<p>${esc(s.description)}</p>` : '<p>Servicio disponible para reserva online.</p>'}
-        <div class="service-card-bottom">
-          <strong>${money(s.price)}</strong>
-          <a href="public-booking.html?slug=${encodeURIComponent(slug)}" class="service-book">Agendar</a>
-        </div>
+        <div class="service-card-bottom"><strong>${money(s.price)}</strong><a href="public-booking.html?slug=${encodeURIComponent(slug)}" class="service-book">Agendar</a></div>
       </article>`).join('') : '<div class="profile-empty">Este negocio todavía no tiene servicios publicados.</div>';
   }
 
   function renderProfessionals(items) {
     $('professionals').innerHTML = items.length ? items.map(p => `
-      <article class="professional-card">
-        <div class="professional-avatar">${esc(`${(p.first_name || 'A')[0]}${(p.last_name || '')[0] || ''}`.toUpperCase())}</div>
-        <div><strong>${esc(`${p.first_name} ${p.last_name}`)}</strong><p>${esc(p.bio || 'Profesional disponible para reservas.')}</p></div>
-      </article>`).join('') : '<div class="profile-empty">No hay profesionales publicados.</div>';
+      <article class="professional-card"><div class="professional-avatar">${esc(`${(p.first_name || 'A')[0]}${(p.last_name || '')[0] || ''}`.toUpperCase())}</div><div><strong>${esc(`${p.first_name} ${p.last_name}`)}</strong><p>${esc(p.bio || 'Profesional disponible para reservas.')}</p></div></article>`).join('') : '<div class="profile-empty">No hay profesionales publicados.</div>';
   }
 
   function renderSchedules(items) {
@@ -47,11 +55,7 @@
   async function init() {
     if (!client) { $('status').textContent = 'No fue posible conectar con Agenda Ya.'; return; }
     if (!slug) { $('status').textContent = 'Perfil no especificado.'; return; }
-    const [profileResult, brandResult] = await Promise.all([
-      client.rpc('get_public_business_profile', { p_slug: slug }),
-      client.rpc('get_public_business_brand', { p_slug: slug })
-    ]);
-    const r = profileResult;
+    const r = await client.rpc('get_public_business_profile', { p_slug: slug });
     if (r.error) {
       $('status').textContent = r.error.message === 'BUSINESS_NOT_FOUND' ? 'Negocio no encontrado.' : r.error.message === 'PUBLIC_PROFILE_NOT_PUBLISHED' ? 'Este perfil todavía no está publicado.' : 'No fue posible cargar este perfil.';
       return;
@@ -59,29 +63,12 @@
     const x = r.data || {};
     const business = x.business || {};
     const profile = x.profile || {};
-    const brand = brandResult?.data || {};
-    const businessName = business.name || brand.name || 'Negocio';
-    $('name').textContent = businessName;
+    $('name').textContent = business.name || 'Negocio';
     $('category').textContent = x.category?.name || 'Servicio';
+    renderBusinessLogo(business, profile, x);
     $('description').textContent = profile.description || 'Conoce los servicios y agenda tu atención directamente.';
     const loc = [profile.address, profile.comuna, profile.city].filter(Boolean).join(' · ');
     if (loc) { $('location').textContent = loc; $('locationRow').hidden = false; }
-
-    const logoUrl = profile.logo_url || business.logo_url || brand.logo_url || '';
-    const logoBox = $('businessLogo');
-    const fallback = $('businessLogoFallback');
-    const initials = businessName.split(/\s+/).filter(Boolean).slice(0,2).map(v => v[0]).join('').toUpperCase() || 'AY';
-    fallback.textContent = initials;
-    if (logoUrl) {
-      const img = document.createElement('img');
-      img.src = logoUrl;
-      img.alt = `Logo de ${businessName}`;
-      img.loading = 'eager';
-      img.decoding = 'async';
-      img.addEventListener('error', () => { logoBox.classList.remove('has-logo'); img.remove(); });
-      logoBox.appendChild(img);
-      logoBox.classList.add('has-logo');
-    }
     renderServices(x.services || []);
     renderProfessionals(x.professionals || []);
     renderSchedules(x.schedules || []);
@@ -90,6 +77,5 @@
     $('profile').hidden = false;
     document.title = `${business.name || 'Negocio'} · Agenda Ya`;
   }
-
   init().catch(() => { $('status').textContent = 'No fue posible cargar el perfil público.'; });
 })();
