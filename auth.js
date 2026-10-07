@@ -1,7 +1,7 @@
 /*
- Agenda Ya — Identity + Profile v0.4.0
- FIX: evita bloqueo del motor de autenticación al iniciar sesión.
- Flujo: Identity -> Profile -> Agenda Ya
+ Agenda Ya — Identity + Profile v0.4.2
+ FIX: completa el onboarding negocio sin bloqueo de RLS y evita duplicar negocios.
+ Flujo: Identity -> Profile -> Business Details -> Hours -> Agenda Ya / Customer -> Marketplace
 */
 (() => {
   const cfg = window.SOMOS_CONFIG || {};
@@ -44,7 +44,9 @@
     try { window.scrollTo(0, 0); } catch (_) {}
   }
   function showApp(user) {
-    authView.hidden = true; profileView.hidden = true; appView.hidden = false;
+    if (authView) { authView.hidden = true; authView.style.display = "none"; }
+    if (profileView) { profileView.hidden = true; profileView.style.display = "none"; }
+    if (appView) { appView.hidden = false; appView.style.display = "block"; }
     const name = user?.user_metadata?.full_name || user?.user_metadata?.name || "Mi negocio";
     const emailValue = user?.email || "";
     const nameEl = document.querySelector(".ay-account-text strong");
@@ -442,24 +444,35 @@
       let logo = null;
       const file = $("ayBusinessLogoFile").files?.[0];
       if (file) logo = await uploadMedia(file, "business-logo");
-      const slug = (name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "negocio");
-      const created = await client.rpc("create_business", {
-        p_name: name, p_slug: `${slug}-${currentUser.id.slice(0, 8)}`, p_legal_name: null,
-        p_email: currentUser.email || null, p_phone: phone || null
-      });
-      if (created.error) throw created.error;
-      const business = created.data;
+
+      // Reuse the existing business when the user is retrying onboarding.
+      // This prevents duplicate businesses after a failed schedule save.
+      let existing = await loadBusinessExisting(currentUser);
+      let business = existing;
+
+      if (!business?.id) {
+        const slug = (name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "negocio");
+        const created = await client.rpc("create_business", {
+          p_name: name, p_slug: `${slug}-${currentUser.id.slice(0, 8)}`, p_legal_name: null,
+          p_email: currentUser.email || null, p_phone: phone || null
+        });
+        if (created.error) throw created.error;
+        business = created.data;
+      }
       if (!business?.id) throw new Error("Supabase no devolvió el negocio creado.");
+
       const upd = await client.from("businesses").update({
-        business_type: type, address, city, comuna, logo_url: logo || null, phone: phone || null,
-        updated_at: new Date().toISOString()
+        name, business_type: type, address, city, comuna, logo_url: logo || business.logo_url || null,
+        phone: phone || business.phone || null, updated_at: new Date().toISOString()
       }).eq("id", business.id);
       if (upd.error) throw upd.error;
+
       const profileUpdate = await client.from("profiles").upsert({
         id: currentUser.id, profile_type: "business", full_name: name, phone, address, city, comuna,
         avatar_url: logo || null, updated_at: new Date().toISOString()
       }, { onConflict: "id" });
       if (profileUpdate.error) throw profileUpdate.error;
+
       const rows = DAYS.map((_, i) => {
         const activeEl = document.querySelector(`.ay-hour-active[data-day="${i + 1}"]`);
         const openEl = document.querySelector(`[data-open="${i + 1}"]`), closeEl = document.querySelector(`[data-close="${i + 1}"]`);
@@ -469,10 +482,14 @@
           close_time: active ? (closeEl?.value || "18:00") : null,
           created_by: currentUser.id, updated_at: new Date().toISOString() };
       });
+
+      // business_hours has a unique (business_id, day_of_week) constraint in 005_identity_profiles_v0_2.
+      // The SQL fix shipped with this package aligns its RLS policies with the one-argument core helpers.
       const hours = await client.from("business_hours").upsert(rows, { onConflict: "business_id,day_of_week" });
       if (hours.error) throw hours.error;
+
       setProfileStatus(businessScheduleStatus, "Perfil de negocio creado. Abriendo Agenda Ya…", "success");
-      setTimeout(() => showApp(currentUser), 450);
+      setTimeout(() => showApp(currentUser), 350);
     } catch (err) {
       console.error("saveBusiness:", err);
       setProfileStatus(businessScheduleStatus, err?.message || "No fue posible guardar el perfil de negocio.", "error");
@@ -544,7 +561,7 @@
   }
 
   window.AgendaYaAuth={
-    version:"0.4.1",
+    version:"0.4.2",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };
