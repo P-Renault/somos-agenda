@@ -1,4 +1,4 @@
-/* Agenda Ya — UI Shell / Interaction Layer v1.2
+/* Agenda Ya — UI Shell / Interaction Layer v1.3
    Backup-1.0 cumulative shell.
    Loads the complete operational module layer without replacing authentication or the shell.
 */
@@ -31,14 +31,14 @@
         link.href = url;
         link.dataset.agendaAsset = url;
         link.onload = () => resolve();
-        link.onerror = () => { console.error("Agenda Ya: no se pudo cargar", url); resolve(); };
+        link.onerror = () => resolve();
         document.head.appendChild(link);
       } else {
         const script = document.createElement("script");
         script.src = url;
         script.dataset.agendaAsset = url;
         script.onload = () => resolve();
-        script.onerror = () => { console.error("Agenda Ya: no se pudo cargar", url); resolve(); };
+        script.onerror = () => resolve();
         document.body.appendChild(script);
       }
     });
@@ -80,13 +80,13 @@
   });
 
   window.AgendaYaUI = {
-    version: "1.2.0",
+    version: "1.3.0",
     activate,
     getCurrentView: () => document.querySelector(".ay-nav-item.is-active")?.dataset.view || "dashboard",
     on: (event, handler) => window.addEventListener(`agendaYa:${event}`, handler)
   };
 
   // The shell remains independent. Operational modules are loaded as a cumulative layer.
-  void loadAsset("css", "agenda-ya-modules.css").then(() => loadAsset("js", "agenda-ya-modules.js"));
+  void loadAsset("css", "agenda-ya-modules.css?v=1.2.0").then(() => loadAsset("js", "agenda-ya-modules.js?v=1.2.0"));
   activate("dashboard");
 })();

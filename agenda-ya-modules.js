@@ -1,10 +1,10 @@
-/* Agenda Ya · Modules Integration v1.1
+/* Agenda Ya · Modules Integration v1.2
    Cumulative controller for Backup-1.0.
    Services · Professionals · Schedules · Availability · Clients · Bookings · Calendar · Public Profile.
    Does not own authentication or the shell. It reads the authenticated business session from Supabase.
 */
 (() => {
-  if (window.AgendaYaModules?.version === "1.1.0") return;
+  if (window.AgendaYaModules?.version === "1.2.0") return;
 
   const cfg = window.SOMOS_CONFIG || {};
   let client = null;
@@ -12,6 +12,8 @@
   let business = null;
   let role = null;
   let currentView = "dashboard";
+  let activationSeq = 0;
+  const contextState = { userId: null, businessId: null, role: null, loadedAt: 0 };
   const state = {
     services: [], professionals: [], schedules: [], availability: [], clients: [], bookings: [],
     calendarCursor: new Date(), calendarSelected: null, calendarProfessional: "all",
@@ -26,7 +28,6 @@
 
   function validConfig(){ return !!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && !String(cfg.SUPABASE_URL).includes("REEMPLAZAR")); }
   function root(){ return $("view-generic"); }
-  function moduleBody(){ return $("ayModuleBody"); }
   function status(text, kind=""){ const e=$("ayModuleStatus"); if(e){e.textContent=text||"";e.className=`ay-module-status${kind?` is-${kind}`:""}`;} }
   function btn(text, action, primary=false){ return `<button type="button" class="ay-btn ${primary?"ay-btn-primary":"ay-btn-light"}" data-ay-action="${action}">${text}</button>`; }
   function shell(title, eyebrow, description, actions=""){
@@ -44,53 +45,87 @@
   function selectField(label,id,options,value=""){
     return `<label>${esc(label)}<select id="${id}">${options.map(o=>`<option value="${esc(o.value)}" ${String(o.value)===String(value)?"selected":""}>${esc(o.label)}</option>`).join("")}</select></label>`;
   }
-  function closeForm(){ const f=$("ayModuleFormCard"); if(f)f.remove(); state.editing={}; }
-  function showForm(html){ closeForm(); const body=$("ayModuleBody"); body.insertAdjacentHTML("afterbegin",html); document.getElementById("ayModuleFormCard")?.scrollIntoView({behavior:"smooth",block:"start"}); }
+  function closeForm(resetEditing=true){ const f=$("ayModuleFormCard"); if(f)f.remove(); if(resetEditing) state.editing={}; }
+  function showForm(html){
+    // Remove only the previous DOM form. Do NOT clear state.editing here:
+    // each form builder sets its editing context immediately before calling showForm().
+    closeForm(false);
+    const body=$("ayModuleBody");
+    if(!body) throw new Error("No se pudo preparar el formulario del módulo.");
+    body.insertAdjacentHTML("afterbegin",html);
+    document.getElementById("ayModuleFormCard")?.scrollIntoView({behavior:"smooth",block:"start"});
+  }
 
   async function context(force=false){
     if(!client){
       if(validConfig() && window.supabase) client=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);
       else { status("Configuración de Supabase no disponible.","error"); return false; }
     }
-    if(!force && user?.id && business?.id) return true;
+    if(!force && user?.id && contextState.businessId && business?.id) return true;
+
     const session=await client.auth.getSession();
     if(session.error) throw session.error;
     user=session.data.session?.user||null;
-    if(!user){ business=null; role=null; status("La sesión de Agenda Ya no está disponible. Inicia sesión nuevamente.","error"); return false; }
+    if(!user){
+      business=null; role=null;
+      contextState.userId=null; contextState.businessId=null; contextState.role=null;
+      status("La sesión de Agenda Ya no está disponible. Inicia sesión nuevamente.","error");
+      return false;
+    }
 
-    // No dependemos de un JOIN anidado para identificar el negocio. Primero
-    // resolvemos membership y después consultamos businesses por ID.
+    // Resolve membership first. Do not depend on a nested Supabase relationship:
+    // it can fail because of relationship/RLS configuration even when the membership exists.
     const m=await client.from("business_members")
       .select("business_id,role,active")
       .eq("user_id",user.id)
       .eq("active",true)
+      .order("created_at",{ascending:true})
       .limit(1)
       .maybeSingle();
     if(m.error) throw m.error;
     if(!m.data?.business_id){
       business=null; role=null;
+      contextState.userId=user.id; contextState.businessId=null; contextState.role=null;
       status("Tu cuenta todavía no tiene un negocio asociado. Completa el perfil de negocio.","error");
       return false;
     }
+
+    const businessId=m.data.business_id;
     const b=await client.from("businesses")
       .select("id,name,slug,active,created_by,phone,address,city,comuna,business_type,logo_url")
-      .eq("id",m.data.business_id)
+      .eq("id",businessId)
       .maybeSingle();
     if(b.error) throw b.error;
-    if(!b.data?.id){ business=null; role=null; status("No se pudo cargar el negocio asociado a tu cuenta.","error"); return false; }
-    business=b.data; role=m.data.role;
+    if(!b.data?.id){
+      business=null; role=null;
+      contextState.userId=user.id; contextState.businessId=null; contextState.role=null;
+      status("No se pudo cargar el negocio asociado a tu cuenta.","error");
+      return false;
+    }
+
+    business=b.data;
+    role=m.data.role;
+    contextState.userId=user.id;
+    contextState.businessId=b.data.id;
+    contextState.role=m.data.role;
+    contextState.loadedAt=Date.now();
     return true;
   }
+  function businessId(){ return contextState.businessId || business?.id || null; }
   function ensureAdmin(){ if(!["owner","admin"].includes(role)){status("Se requiere rol propietario o administrador para modificar este módulo.","error");return false;} return true; }
 
   async function load(table, order=[]){
-    let q=client.from(table).select("*").eq("business_id",business.id);
+    const bid=businessId();
+    if(!bid) throw new Error("No se pudo determinar el negocio actual. Vuelve a iniciar sesión y completa el perfil del negocio.");
+    let q=client.from(table).select("*").eq("business_id",bid);
     for(const o of order) q=q.order(o.column,{ascending:o.ascending!==false});
     const r=await q; if(r.error) throw r.error; return r.data||[];
   }
   async function del(table,id,reload){
     if(!ensureAdmin() || !confirm("¿Eliminar este registro?")) return;
-    const r=await client.from(table).delete().eq("id",id); if(r.error){status(r.error.message,"error");return;} await reload();
+    const bid=businessId();
+    if(!bid) { status("No se pudo determinar el negocio actual.","error"); return; }
+    const r=await client.from(table).delete().eq("id",id).eq("business_id",bid); if(r.error){status(r.error.message,"error");return;} await reload();
   }
 
   async function renderServices(){
@@ -174,9 +209,9 @@
 
   async function bookingRefs(){
     const [c,s,p]=await Promise.all([
-      client.from("clients").select("id,first_name,last_name").eq("business_id",business.id).eq("active",true).order("first_name"),
-      client.from("services").select("id,name,duration_minutes,price").eq("business_id",business.id).eq("active",true).order("name"),
-      client.from("professionals").select("id,first_name,last_name").eq("business_id",business.id).eq("active",true).order("first_name")
+      client.from("clients").select("id,first_name,last_name").eq("business_id",businessId()).eq("active",true).order("first_name"),
+      client.from("services").select("id,name,duration_minutes,price").eq("business_id",businessId()).eq("active",true).order("name"),
+      client.from("professionals").select("id,first_name,last_name").eq("business_id",businessId()).eq("active",true).order("first_name")
     ]);
     if(c.error||s.error||p.error) throw (c.error||s.error||p.error);
     return {clients:c.data||[],services:s.data||[],professionals:p.data||[]};
@@ -208,8 +243,8 @@
   function monthLabel(d){return d.toLocaleDateString("es-CL",{month:"long",year:"numeric"});}
   async function renderCalendar(){
     const body=shell("Calendario","OPERACIÓN","Visualiza la agenda y la carga diaria del negocio.");
-    const profs=await client.from("professionals").select("id,first_name,last_name").eq("business_id",business.id).order("first_name");
-    const books=await client.from("bookings").select("id,client_id,service_id,professional_id,booking_date,start_time,end_time,status,notes,clients(first_name,last_name),services(name),professionals(first_name,last_name)").eq("business_id",business.id).order("booking_date").order("start_time");
+    const profs=await client.from("professionals").select("id,first_name,last_name").eq("business_id",businessId()).order("first_name");
+    const books=await client.from("bookings").select("id,client_id,service_id,professional_id,booking_date,start_time,end_time,status,notes,clients(first_name,last_name),services(name),professionals(first_name,last_name)").eq("business_id",businessId()).order("booking_date").order("start_time");
     if(profs.error||books.error){status((profs.error||books.error).message,"error");return;}
     state.professionals=profs.data||[];state.bookings=books.data||[];
     const pOpts=state.professionals.map(p=>`<option value="${p.id}" ${state.calendarProfessional===p.id?"selected":""}>${esc(`${p.first_name} ${p.last_name}`)}</option>`).join("");
@@ -247,28 +282,37 @@
     e.preventDefault();
     const form=e.target;
     form?.setAttribute("aria-busy","true");
-    const t=state.editing.type,id=state.editing.id;const fs=id=>$(id)?.value||"";let table,p,after;
+    const editing=state.editing||{};
+    const t=editing.type, id=editing.id;
+    const fs=id=>$(id)?.value||"";
+    let table,p,after;
     try{
-      if(!(await context(true))) throw new Error("No se pudo identificar el negocio autenticado. Vuelve a iniciar sesión y completa el perfil del negocio.");
+      if(!t) throw new Error("No se pudo determinar el tipo de registro. Cierra el formulario y vuelve a intentarlo.");
+      if(!(await context(true))) throw new Error("No se pudo determinar el negocio actual. Vuelve a iniciar sesión y completa el perfil del negocio.");
       if(!ensureAdmin()) return;
-      if(t==="service"){table="services";p={business_id:business.id,name:fs("fName").trim(),description:fs("fDescription").trim()||null,duration_minutes:Number(fs("fDuration")),price:Number(fs("fPrice")),active:fs("fActive")==="true"};after=renderServices;}
-      else if(t==="professional"){table="professionals";p={business_id:business.id,first_name:fs("fFirst").trim(),last_name:fs("fLast").trim(),email:fs("fEmail").trim()||null,phone:fs("fPhone").trim()||null,bio:fs("fBio").trim()||null,active:fs("fActive")==="true"};after=renderProfessionals;}
-      else if(t==="schedule"){const a=fs("fStart"),b=fs("fEnd");if(a>=b)throw new Error("La hora de inicio debe ser anterior a la hora de término.");table="professional_schedules";p={business_id:business.id,professional_id:fs("fProfessional"),day_of_week:Number(fs("fDay")),start_time:a,end_time:b,active:fs("fActive")==="true"};after=renderSchedules;}
-      else if(t==="availability"){const a=fs("fStart"),b=fs("fEnd");if(a>=b)throw new Error("La hora de inicio debe ser anterior a la hora de término.");table="professional_availability";p={business_id:business.id,professional_id:fs("fProfessional"),availability_date:fs("fDate"),start_time:a,end_time:b,status:fs("fStatus"),active:fs("fActive")==="true",note:fs("fNote").trim()||null};after=renderAvailability;}
-      else if(t==="client"){table="clients";p={business_id:business.id,first_name:fs("fFirst").trim(),last_name:fs("fLast").trim(),email:fs("fEmail").trim()||null,phone:fs("fPhone").trim()||null,notes:fs("fNotes").trim()||null,active:fs("fActive")==="true"};after=renderClients;}
-      else if(t==="booking"){const a=fs("fStart"),b=fs("fEnd");if(a>=b)throw new Error("La hora de inicio debe ser anterior a la hora de término.");table="bookings";p={business_id:business.id,client_id:fs("fClient"),service_id:fs("fService"),professional_id:fs("fProfessional"),booking_date:fs("fDate"),start_time:a,end_time:b,status:fs("fStatus"),notes:fs("fNotes").trim()||null};after=renderBookings;}
-      if(!p || !p.business_id) throw new Error("No se pudo determinar el negocio actual.");
-      if(t !== "service" && t !== "professional" && t !== "schedule" && t !== "availability" && t !== "client" && t !== "booking") throw new Error("Módulo no soportado.");
+      const bid=businessId();
+      if(!bid) throw new Error("No se pudo determinar el negocio actual.");
+
+      if(t==="service"){table="services";p={business_id:bid,name:fs("fName").trim(),description:fs("fDescription").trim()||null,duration_minutes:Number(fs("fDuration")),price:Number(fs("fPrice")),active:fs("fActive")==="true"};after=renderServices;}
+      else if(t==="professional"){table="professionals";p={business_id:bid,first_name:fs("fFirst").trim(),last_name:fs("fLast").trim(),email:fs("fEmail").trim()||null,phone:fs("fPhone").trim()||null,bio:fs("fBio").trim()||null,active:fs("fActive")==="true"};after=renderProfessionals;}
+      else if(t==="schedule"){const a=fs("fStart"),b=fs("fEnd");if(a>=b)throw new Error("La hora de inicio debe ser anterior a la hora de término.");table="professional_schedules";p={business_id:bid,professional_id:fs("fProfessional"),day_of_week:Number(fs("fDay")),start_time:a,end_time:b,active:fs("fActive")==="true"};after=renderSchedules;}
+      else if(t==="availability"){const a=fs("fStart"),b=fs("fEnd");if(a>=b)throw new Error("La hora de inicio debe ser anterior a la hora de término.");table="professional_availability";p={business_id:bid,professional_id:fs("fProfessional"),availability_date:fs("fDate"),start_time:a,end_time:b,status:fs("fStatus"),active:fs("fActive")==="true",note:fs("fNote").trim()||null};after=renderAvailability;}
+      else if(t==="client"){table="clients";p={business_id:bid,first_name:fs("fFirst").trim(),last_name:fs("fLast").trim(),email:fs("fEmail").trim()||null,phone:fs("fPhone").trim()||null,notes:fs("fNotes").trim()||null,active:fs("fActive")==="true"};after=renderClients;}
+      else if(t==="booking"){const a=fs("fStart"),b=fs("fEnd");if(a>=b)throw new Error("La hora de inicio debe ser anterior a la hora de término.");table="bookings";p={business_id:bid,client_id:fs("fClient"),service_id:fs("fService"),professional_id:fs("fProfessional"),booking_date:fs("fDate"),start_time:a,end_time:b,status:fs("fStatus"),notes:fs("fNotes").trim()||null};after=renderBookings;}
+      else throw new Error("Módulo no soportado.");
+
+      if(!p?.business_id) throw new Error("No se pudo determinar el negocio actual.");
       const r=id
-        ? await client.from(table).update(p).eq("id",id).eq("business_id",business.id)
+        ? await client.from(table).update(p).eq("id",id).eq("business_id",bid)
         : await client.from(table).insert({...p,created_by:user.id});
       if(r.error) throw r.error;
       status("Guardado correctamente.","success");
+      state.editing={};
       await after();
     }catch(err){
       const e=$("ayFormStatus");
       if(e) e.textContent=err.message||String(err);
-      else status(err.message,"error");
+      else status(err.message||String(err),"error");
     }finally{
       form?.removeAttribute("aria-busy");
     }
@@ -276,13 +320,10 @@
 
   async function activate(view){
     currentView=view||"dashboard";
+    const seq=++activationSeq;
     if(currentView==="dashboard"||currentView==="settings") return;
-    const body=root();
-    if(!body) return;
     if(!(await context())) return;
-    // Show the selected module immediately, even while Supabase is loading.
-    body.hidden=false;
-    body.innerHTML=`<div class="ay-module-workspace"><div class="ay-module-loading">Cargando ${esc(currentView)}…</div></div>`;
+    if(seq!==activationSeq) return;
     try{
       if(currentView==="services")await renderServices();
       else if(currentView==="professionals")await renderProfessionals();
@@ -292,12 +333,7 @@
       else if(currentView==="bookings")await renderBookings();
       else if(currentView==="calendar")await renderCalendar();
       else if(currentView==="public-profile")await renderPublicProfile();
-    }catch(e){
-      const msg=e?.message||String(e)||"No fue posible cargar el módulo.";
-      const body=moduleBody();
-      if(body) body.innerHTML=`<div class="ay-module-error"><strong>No fue posible cargar este módulo.</strong><div>${esc(msg)}</div></div>`;
-      status(msg,"error");
-    }
+    }catch(e){status(e.message||"No fue posible cargar el módulo.","error");}
   }
 
   document.addEventListener("click",async e=>{
@@ -328,18 +364,7 @@
     }catch(err){status(err.message||String(err),"error");}
   });
   document.addEventListener("submit",e=>{if(e.target.id==="ayDynamicForm")void submitDynamic(e);});
-
-  // Navigation fallback: the shell owns the visual state, while this layer
-  // guarantees that every module view is actually rendered after a tap.
-  document.addEventListener("click",e=>{
-    const nav=e.target.closest("[data-view]");
-    if(!nav) return;
-    const view=nav.dataset.view;
-    if(!view || view==="dashboard" || view==="settings") return;
-    setTimeout(()=>void activate(view),0);
-  },true);
-
   window.addEventListener("agendaYa:view-change",e=>void activate(e.detail?.view));
-  window.AgendaYaModules={version:"1.1.0",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role})};
+  window.AgendaYaModules={version:"1.2.0",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
   void activate(window.AgendaYaUI?.getCurrentView?.() || "dashboard");
 })();

@@ -48,7 +48,3 @@
 @media(max-width:480px){
  .ay-module-title h1{font-size:27px}.ay-module-card{border-radius:18px;padding:16px}.ay-module-actions-row button{flex:1}.ay-calendar-weekday{font-size:9px}.ay-calendar-day{min-height:54px;border-radius:10px}.ay-calendar-day strong{font-size:12px}.ay-calendar-kpi strong{font-size:19px}.ay-calendar-kpi span{font-size:10px}.ay-public-hero h2{font-size:25px}
 }
-
-.ay-module-loading{padding:34px 20px;text-align:center;border:1px solid #e7edf5;border-radius:18px;background:#fff;color:var(--ay-muted)}
-.ay-module-error{padding:16px;border:1px solid #f1c7c3;border-radius:14px;background:#fff7f6;color:#b42318}
-.ay-module-form[aria-busy="true"]{opacity:.7;pointer-events:none}
