@@ -21,7 +21,7 @@
   let mode = "login";
   let busy = false;
 
-  const REDIRECT_URL = new URL("login.html", window.location.href).href;
+  const REDIRECT_URL = new URL("profile.html", window.location.href).href;
   const EXPLORER_URL = "explorer.html";
   const PROFILE_URL = "profile.html";
   const BUSINESS_DASHBOARD_URL = "dashboard.html";
