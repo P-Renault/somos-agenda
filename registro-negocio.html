@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Agenda YA · Configura tu negocio</title>
+<link rel="stylesheet" href="registro-negocio-compacto.css">
+</head>
+<body>
+<main class="page">
+  <header class="brand-card">
+    <div class="logo">Agenda<span>YA</span><i>✦</i></div>
+    <small>Encuentra. Elige. Agenda.</small>
+  </header>
+
+  <section class="form-card">
+    <div class="eyebrow">AGENDA YA · PERFIL</div>
+    <h1>Configura tu negocio</h1>
+    <p class="lead">Completa los datos básicos de tu negocio.</p>
+
+    <a class="change-profile" href="#">← Cambiar tipo de perfil</a>
+
+    <div class="business-image">
+      <div class="avatar">L</div>
+      <div><strong>Imagen del negocio</strong><span>Opcional. Puedes subir una imagen.</span></div>
+    </div>
+
+    <form>
+      <div class="field full">
+        <label>Nombre del negocio</label>
+        <input type="text" placeholder="Ej. Barbería Agenda Ya">
+      </div>
+
+      <div class="field full">
+        <label>Tipo de servicio</label>
+        <input type="text" placeholder="Ej. Barbería, peluquería, salud...">
+      </div>
+
+      <div class="field">
+        <label>Teléfono</label>
+        <div class="phone"><b>+56 9</b><input type="tel" placeholder="12345678"></div>
+      </div>
+
+      <div class="field">
+        <label>Ciudad</label>
+        <input type="text" placeholder="Temuco">
+      </div>
+
+      <div class="field">
+        <label>Comuna</label>
+        <input type="text" placeholder="Temuco">
+      </div>
+
+      <div class="field">
+        <label>Dirección</label>
+        <input type="text" placeholder="Calle y número">
+      </div>
+
+      <div class="field full">
+        <label>Imagen del negocio</label>
+        <label class="file-input">
+          <span>Seleccionar archivo</span>
+          <input type="file" accept="image/*">
+          <em>Sin archivos seleccionados</em>
+        </label>
+      </div>
+
+      <div class="status">Sesión activa. Cargando tus datos de perfil...</div>
+      <button class="next" type="button">Siguiente</button>
+    </form>
+  </section>
+</main>
+<script>
+document.querySelector('input[type=file]')?.addEventListener('change', function(){
+  const text=this.files?.length ? this.files[0].name : 'Sin archivos seleccionados';
+  this.closest('.file-input').querySelector('em').textContent=text;
+});
+</script>
+</body>
+</html>

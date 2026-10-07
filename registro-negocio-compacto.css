@@ -1,0 +1,91 @@
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#142b50}
+body{background:#edf5fc}
+.page{width:100%;min-height:100svh;padding:10px 16px;display:flex;flex-direction:column;gap:10px}
+.brand-card,.form-card{width:100%;background:#fff;border:1px solid #e1eaf3;border-radius:22px;box-shadow:0 7px 25px rgba(23,61,100,.06)}
+.brand-card{height:96px;flex:0 0 96px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.logo{font-size:48px;line-height:.8;font-weight:950;letter-spacing:-4px;color:#073b78}
+.logo span{color:#0878e8}
+.logo i{font-style:normal;color:#11c9e8;font-size:25px;vertical-align:top}
+.brand-card small{font-size:10px;font-weight:800;color:#48637e;margin-top:7px}
+.form-card{padding:20px 28px 22px}
+.eyebrow{font-size:13px;line-height:1;font-weight:950;letter-spacing:1.1px;color:#0874df}
+h1{font-size:35px;line-height:1;margin:9px 0 8px;letter-spacing:-1.5px}
+.lead{font-size:16px;color:#78889d;margin:0 0 13px}
+.change-profile{display:inline-block;color:#0874df;font-size:15px;font-weight:850;margin-bottom:10px}
+.business-image{display:flex;align-items:center;gap:14px;margin-bottom:11px}
+.avatar{width:62px;height:62px;border-radius:50%;background:#edf5ff;color:#0874df;display:grid;place-items:center;font-size:28px;font-weight:850;flex:0 0 62px}
+.business-image strong,.business-image span{display:block}
+.business-image strong{font-size:18px}
+.business-image span{font-size:12px;color:#8492a4;margin-top:2px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+.field{min-width:0}
+.field.full{grid-column:1/-1}
+.field label{display:block;font-size:14px;font-weight:850;margin:0 0 4px}
+.field input:not([type=file]),.phone{height:43px;width:100%;border:1px solid #d9e3ec;border-radius:11px;background:#fff;color:#1d3556;outline:none}
+.field input:not([type=file]){padding:0 12px;font-size:13px}
+.field input::placeholder{color:#8a929b}
+.phone{display:flex;overflow:hidden}
+.phone b{height:100%;display:flex;align-items:center;padding:0 12px;background:#f2f6fb;border-right:1px solid #d9e3ec;font-size:13px}
+.phone input{border:0!important;border-radius:0!important;flex:1;min-width:0}
+.file-input{height:43px;width:100%;border:1px solid #d9e3ec;border-radius:11px;display:flex;align-items:center;padding:0 9px;gap:8px;cursor:pointer;overflow:hidden}
+.file-input span{background:#f4f7fa;border:1px solid #aeb9c5;border-radius:6px;padding:4px 8px;font-size:12px;color:#172b45;white-space:nowrap}
+.file-input input{display:none}
+.file-input em{font-style:normal;font-size:12px;color:#1d3556;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{grid-column:1/-1;color:#287c5d;font-size:12px;line-height:1.2;margin-top:-1px}
+.next{grid-column:1/-1;height:47px;border:0;border-radius:12px;background:#0876eb;color:#fff;font-size:17px;font-weight:900;box-shadow:0 8px 18px rgba(8,118,235,.2)}
+
+@media(min-width:800px){
+  .page{max-width:820px;margin:auto;padding:24px}
+  .brand-card{height:105px;flex-basis:105px}
+  .form-card{padding:28px 38px}
+}
+
+@media(max-width:560px){
+  .page{padding:7px 16px 9px;gap:8px;overflow:hidden}
+  .brand-card{height:76px;flex-basis:76px;border-radius:20px}
+  .logo{font-size:38px}
+  .brand-card small{font-size:8px;margin-top:5px}
+  .form-card{padding:14px 14px 13px;border-radius:20px;min-height:0}
+  .eyebrow{font-size:10px}
+  h1{font-size:27px;margin:6px 0 4px}
+  .lead{font-size:12px;margin-bottom:7px}
+  .change-profile{font-size:12px;margin-bottom:6px}
+  .business-image{gap:10px;margin-bottom:7px}
+  .avatar{width:48px;height:48px;flex-basis:48px;font-size:21px}
+  .business-image strong{font-size:15px}
+  .business-image span{font-size:10px}
+  form{gap:5px 8px}
+  .field label{font-size:11px;margin-bottom:2px}
+  .field input:not([type=file]),.phone,.file-input{height:37px;border-radius:9px}
+  .field input:not([type=file]){font-size:11px;padding:0 10px}
+  .phone b{font-size:11px;padding:0 9px}
+  .file-input{padding:0 7px;gap:6px}
+  .file-input span{font-size:10px;padding:3px 6px}
+  .file-input em{font-size:10px}
+  .status{font-size:10px}
+  .next{height:40px;border-radius:10px;font-size:14px}
+}
+
+@media(max-width:560px) and (max-height:760px){
+  .page{padding-top:4px;padding-bottom:5px;gap:5px}
+  .brand-card{height:61px;flex-basis:61px}
+  .logo{font-size:31px}
+  .brand-card small{font-size:7px;margin-top:3px}
+  .form-card{padding:10px 12px 10px}
+  h1{font-size:24px;margin:4px 0 2px}
+  .lead{font-size:10px;margin-bottom:5px}
+  .change-profile{font-size:11px;margin-bottom:4px}
+  .business-image{margin-bottom:5px}
+  .avatar{width:42px;height:42px;flex-basis:42px;font-size:18px}
+  .business-image strong{font-size:13px}
+  .business-image span{font-size:9px}
+  form{gap:4px 7px}
+  .field label{font-size:10px}
+  .field input:not([type=file]),.phone,.file-input{height:33px}
+  .field input:not([type=file]){font-size:10px}
+  .phone b{font-size:10px}
+  .file-input span,.file-input em{font-size:9px}
+  .status{font-size:9px}
+  .next{height:36px;font-size:13px}
+}
