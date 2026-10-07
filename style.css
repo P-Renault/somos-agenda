@@ -148,111 +148,254 @@ button,input{font:inherit}
 
 
 /* =========================================================
-   LOGIN POLISH — reference match
-   Functional markup/IDs preserved. style.css remains style.css.
+   AGENDA YA — AJUSTE FINAL 1:1 A LA REFERENCIA MÓVIL
+   No cambia IDs ni lógica de autenticación.
    ========================================================= */
 
-.ay-auth-field-icon{
-  left:22px!important;
-  top:auto!important;
-  bottom:22px!important;
-  width:36px!important;
-  height:36px!important;
-  z-index:4!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-}
-.ay-auth-field-icon svg{
-  width:31px!important;
-  height:31px!important;
-  display:block!important;
-}
-
-.ay-auth-input{
-  position:relative!important;
-  z-index:1!important;
-  padding-left:82px!important;
-}
-
-.ay-auth-eye{
-  z-index:5!important;
-  right:18px!important;
-  bottom:18px!important;
-}
-.ay-auth-eye svg{
-  display:block!important;
-}
-
-/* Social buttons: real logo artwork, not text glyphs. */
-.ay-auth-secondary{
-  position:relative!important;
-  padding-left:102px!important;
-  padding-right:70px!important;
-}
-.ay-social-icon{
-  position:absolute!important;
-  left:76px!important;
-  top:50%!important;
-  transform:translate(-50%,-50%)!important;
-  width:44px!important;
-  height:44px!important;
-  border-radius:50%!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  background:transparent!important;
-  line-height:0!important;
-}
-.ay-social-icon svg{
-  display:block!important;
-  width:44px!important;
-  height:44px!important;
-}
-.ay-google-icon,
-.ay-facebook-icon{
-  background:transparent!important;
-  color:inherit!important;
-  font-size:0!important;
-}
-
-/* Keep the arrow exactly inside the right edge of the button. */
-.ay-auth-secondary>b{
-  right:38px!important;
-}
-
-/* Mobile proportional positioning. */
 @media (max-width:700px){
-  .ay-auth-input{
-    padding-left:12.45vw!important;
+  /* El contenido debe usar todo el ancho útil de la referencia. */
+  .ay-auth-topbar,
+  .ay-auth-brand,
+  .ay-auth-intro,
+  .ay-auth-card{
+    max-width:none!important;
   }
+
+  /* La referencia usa 48px laterales en el lienzo 691px. */
+  .ay-auth-wrap{
+    max-width:none!important;
+    padding-left:48px!important;
+    padding-right:48px!important;
+  }
+
+  /* El botón de regreso comienza ligeramente más a la izquierda. */
+  .ay-auth-back{
+    margin-left:-10px!important;
+  }
+
+  /*
+    El screenshot del navegador deja menos alto útil que el lienzo
+    de referencia 691×1536. Esta escala reproduce la geometría
+    proporcional sin comprimir los controles inferiores.
+  */
+  .ay-auth-topbar{
+    padding-top:7.1dvh!important;
+  }
+
+  .ay-auth-brand{
+    position:relative!important;
+    height:120px!important;
+    margin-top:2.0dvh!important;
+    overflow:visible!important;
+  }
+
+  /*
+    El JPG del logo contiene margen blanco interno. Se amplía
+    visualmente sin alterar la posición del resto del layout.
+  */
+  .ay-auth-brand img{
+    width:65vw!important;
+    max-width:none!important;
+    height:auto!important;
+    transform:scale(1.9)!important;
+    transform-origin:center center!important;
+  }
+
+  .ay-auth-intro{
+    margin-top:2.8dvh!important;
+  }
+
+  .ay-auth-subtitle{
+    font-size:3.35vw!important;
+    line-height:1.32!important;
+    max-width:none!important;
+  }
+
+  .ay-auth-card{
+    margin-top:4.4dvh!important;
+    width:100%!important;
+  }
+
+  .ay-auth-form{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  .ay-auth-field{
+    width:100%!important;
+    margin-bottom:1.89dvh!important;
+  }
+
+  .ay-auth-label{
+    font-size:2.75vw!important;
+    line-height:1.15!important;
+    margin-bottom:.7dvh!important;
+  }
+
+  /* Ícono realmente DENTRO del input. */
   .ay-auth-field-icon{
-    left:3.2vw!important;
-    bottom:clamp(17px,1.5dvh,23px)!important;
-    width:5.4vw!important;
-    height:5.4vw!important;
+    top:clamp(43px,4.8dvh,55px)!important;
+    bottom:auto!important;
+    left:22px!important;
+    z-index:5!important;
   }
-  .ay-auth-field-icon svg{
-    width:5vw!important;
-    height:5vw!important;
+
+  .ay-auth-input{
+    width:100%!important;
+    height:5.47dvh!important;
+    min-height:64px!important;
+    padding-left:86px!important;
+    padding-right:65px!important;
+    font-size:3.25vw!important;
+    border-radius:2.9vw!important;
   }
+
+  .ay-auth-eye{
+    top:auto!important;
+    bottom:1.25dvh!important;
+    right:19px!important;
+    z-index:6!important;
+  }
+
+  /* Solo un ojo visible. */
+  .ay-auth-eye .ay-eye-open{
+    display:block!important;
+  }
+  .ay-auth-eye .ay-eye-closed{
+    display:none!important;
+  }
+
+  .ay-auth-primary{
+    height:5.6dvh!important;
+    min-height:66px!important;
+    border-radius:2.9vw!important;
+    font-size:3.35vw!important;
+  }
+
+  .ay-auth-link{
+    margin-top:1.75dvh!important;
+    font-size:3.2vw!important;
+  }
+
+  .ay-auth-divider{
+    margin-top:3.45dvh!important;
+    margin-bottom:2.28dvh!important;
+    font-size:2.8vw!important;
+    gap:3.5vw!important;
+  }
+
+  .ay-auth-socials{
+    gap:1.37dvh!important;
+  }
+
   .ay-auth-secondary{
-    padding-left:15vw!important;
-    padding-right:10vw!important;
+    height:5.34dvh!important;
+    min-height:62px!important;
+    padding-left:184px!important;
+    padding-right:145px!important;
+    border-radius:2.75vw!important;
+    font-size:2.95vw!important;
+    justify-content:flex-start!important;
+    text-align:left!important;
   }
-  .ay-social-icon{
-    left:15.3vw!important;
-    width:6.1vw!important;
-    height:6.1vw!important;
+
+  /* Google: multicolor visual similar to the reference. */
+  .ay-google-icon{
+    left:132px!important;
+    width:42px!important;
+    height:42px!important;
+    background:conic-gradient(
+      from -45deg,
+      #4285f4 0 25%,
+      #34a853 25% 50%,
+      #fbbc05 50% 70%,
+      #ea4335 70% 100%
+    )!important;
+    -webkit-background-clip:text!important;
+    background-clip:text!important;
+    color:transparent!important;
+    font-size:39px!important;
+    line-height:42px!important;
+    border-radius:0!important;
   }
-  .ay-social-icon svg{
-    width:6.1vw!important;
-    height:6.1vw!important;
+
+  .ay-facebook-icon{
+    left:132px!important;
+    width:42px!important;
+    height:42px!important;
+    font-size:37px!important;
+  }
+
+  /* Flecha ubicada en el extremo derecho como la referencia. */
+  .ay-auth-secondary>b{
+    right:112px!important;
+    font-size:3.7vw!important;
+  }
+
+  .ay-auth-switch{
+    margin-top:2.6dvh!important;
+    font-size:2.8vw!important;
+  }
+
+  .ay-auth-foot{
+    margin-top:1.82dvh!important;
+    font-size:2.35vw!important;
   }
 }
 
+/* Para alturas cortas: no aplicar la compresión anterior que
+   provocaba que los elementos se desplazaran y se superpusieran. */
 @media (max-height:1250px) and (max-width:700px){
-  .ay-auth-field-icon{
-    bottom:1.35dvh!important;
+  .ay-auth-wrap{
+    padding-left:48px!important;
+    padding-right:48px!important;
+  }
+
+  .ay-auth-topbar{
+    padding-top:7.1dvh!important;
+  }
+
+  .ay-auth-brand{
+    height:120px!important;
+    margin-top:2.0dvh!important;
+  }
+
+  .ay-auth-brand img{
+    width:65vw!important;
+    max-width:none!important;
+    transform:scale(1.9)!important;
+  }
+
+  .ay-auth-intro{
+    margin-top:2.8dvh!important;
+  }
+
+  .ay-auth-card{
+    margin-top:4.4dvh!important;
+  }
+
+  .ay-auth-field{
+    margin-bottom:1.89dvh!important;
+  }
+
+  .ay-auth-input{
+    height:5.47dvh!important;
+  }
+
+  .ay-auth-primary{
+    height:5.6dvh!important;
+  }
+
+  .ay-auth-divider{
+    margin-top:3.45dvh!important;
+    margin-bottom:2.28dvh!important;
+  }
+
+  .ay-auth-socials{
+    gap:1.37dvh!important;
+  }
+
+  .ay-auth-secondary{
+    height:5.34dvh!important;
   }
 }
