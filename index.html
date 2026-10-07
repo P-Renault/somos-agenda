@@ -10,164 +10,101 @@
 <body>
 
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
-    <div class="ay-auth-wrap">
-      <div class="ay-auth-brand">
-        <img src="agenda-ya-logo-header-1.jpg" alt="Agenda Ya">
+  <div class="ay-auth-wrap">
+    <button class="ay-auth-back" type="button" aria-label="Volver"><span class="ay-back-arrow" aria-hidden="true">←</span></button>
+    <div class="ay-auth-brand"><img src="agenda-ya-logo-header.jpg" alt="Agenda Ya"></div>
+    <div class="ay-auth-card">
+      <div id="ayAuthFormPanel" class="ay-auth-state is-visible">
+        <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
+        <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a <span>Agenda Ya</span></h1>
+        <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
+        <form class="ay-auth-form" id="ayAuthForm" novalidate>
+          <label class="ay-auth-field"><span class="ay-field-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="11" width="36" height="26" rx="4" stroke="currentColor" stroke-width="3"/><path d="m8 14 16 13 16-13" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg></span></span><span><b>Email</b><input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" placeholder="tu@email.com" required></span></label>
+          <label class="ay-auth-field"><span class="ay-field-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="21" width="26" height="20" rx="4" stroke="currentColor" stroke-width="3"/><path d="M16 21v-5a8 8 0 0 1 16 0v5" stroke="currentColor" stroke-width="3"/></svg></span></span><span class="ay-password-wrap"><b>Contraseña</b><input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Ingresa tu contraseña" required><button type="button" class="ay-password-eye" aria-label="Mostrar contraseña"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 24s6-10 18-10 18 10 18 10-6 10-18 10S6 24 6 24Z" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="24" r="4" stroke="currentColor" stroke-width="3"/></svg></span></button></span></label>
+          <label class="ay-auth-label ay-auth-confirm" id="ayPasswordConfirmWrap" hidden>Confirmar contraseña<input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6"></label>
+          <button class="ay-auth-primary" id="ayAuthSubmit" type="submit">Iniciar sesión <span class="ay-arrow" aria-hidden="true">→</span></button>
+        </form>
+        <p class="ay-auth-status" id="ayAuthStatus" aria-live="polite"></p>
+        <button class="ay-auth-link" id="ayRecoveryBtn" type="button">¿Olvidaste tu contraseña?</button>
+        <div class="ay-auth-divider"><span>o continuar con</span></div>
+        <div class="ay-auth-socials">
+          <button class="ay-auth-secondary" id="ayAuthGoogle" type="button"><span class="ay-google">G</span><b>Continuar con Google</b><span class="ay-arrow" aria-hidden="true">→</span></button>
+          <button class="ay-auth-secondary" id="ayAuthFacebook" type="button"><span class="ay-facebook">f</span><b>Continuar con Facebook</b><span class="ay-arrow" aria-hidden="true">→</span></button>
+        </div>
+        <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
+        <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
       </div>
-      <div class="ay-auth-card">
-        <div id="ayAuthFormPanel" class="ay-auth-state is-visible">
-          <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
-          <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a Agenda Ya</h1>
-          <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
-          <form class="ay-auth-form" id="ayAuthForm" novalidate>
-            <label class="ay-auth-label">Email
-              <input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" required>
-            </label>
-            <label class="ay-auth-label">Contraseña
-              <input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" required>
-            </label>
-            <label class="ay-auth-label" id="ayPasswordConfirmWrap" hidden>Confirmar contraseña
-              <input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6">
-            </label>
-            <button class="ay-auth-primary" id="ayAuthSubmit" type="submit">Iniciar sesión</button>
-          </form>
-          <p class="ay-auth-status" id="ayAuthStatus" aria-live="polite"></p>
-          <button class="ay-auth-link" id="ayRecoveryBtn" type="button">Recuperar contraseña</button>
-          <div class="ay-auth-divider"><span>o continuar con</span></div>
-          <div class="ay-auth-socials">
-            <button class="ay-auth-secondary" id="ayAuthGoogle" type="button"><span>G</span> Continuar con Google</button>
-            <button class="ay-auth-secondary" id="ayAuthFacebook" type="button"><span>f</span> Continuar con Facebook</button>
-          </div>
-          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
-          <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
-        </div>
-
-        <div id="ayAuthPostLogin" class="ay-auth-state">
-          <p class="ay-auth-eyebrow">IDENTITY · VALIDADO</p>
-          <h1 class="ay-auth-title">Correo confirmado</h1>
-          <p class="ay-auth-subtitle">Tu identidad fue verificada y la sesión de Agenda Ya está activa.</p>
-          <div class="ay-auth-account">
-            <strong id="ayAuthAccountName">Cuenta Agenda Ya</strong>
-            <span id="ayAuthAccountEmail"></span>
-          </div>
-          <p class="ay-auth-status is-success" id="ayAuthPostStatus">Identity está listo. El siguiente motor será Perfil.</p>
-          <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button">Continuar</button>
-        </div>
+      <div id="ayAuthPostLogin" class="ay-auth-state">
+        <p class="ay-auth-eyebrow">IDENTITY · VALIDADO</p><h1 class="ay-auth-title">Correo confirmado</h1>
+        <p class="ay-auth-subtitle">Tu identidad fue verificada y la sesión de Agenda Ya está activa.</p>
+        <div class="ay-auth-account"><strong id="ayAuthAccountName">Cuenta Agenda Ya</strong><span id="ayAuthAccountEmail"></span></div>
+        <p class="ay-auth-status is-success" id="ayAuthPostStatus">Identity está listo. El siguiente motor será Perfil.</p>
+        <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button">Continuar <span class="ay-arrow" aria-hidden="true">→</span></button>
       </div>
     </div>
-  </section>
-
+  </div>
+</section>
 
   <section class="ay-profile" id="ayProfileView" hidden aria-label="Configuración de perfil">
-    <div class="ay-profile-wrap">
-      <div class="ay-profile-brand">
-        <img src="agenda-ya-logo-header.jpg" alt="Agenda Ya">
+  <div class="ay-profile-wrap">
+    <button class="ay-profile-top-back" type="button" aria-label="Volver"><span class="ay-back-arrow" aria-hidden="true">←</span></button>
+    <div class="ay-profile-brand"><img src="agenda-ya-logo-header.jpg" alt="Agenda Ya"></div>
+    <div class="ay-profile-progress" aria-hidden="true"><span class="is-active"></span><span></span><span></span><b>PASO 1 DE 3</b></div>
+    <div class="ay-profile-card">
+      <div class="ay-profile-head">
+        <div class="ay-profile-head-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="19" cy="17" r="6" stroke="currentColor" stroke-width="3"/><path d="M7 39c1-8 5-12 12-12s11 4 12 12M34 13c4 .6 6 3 7 7M35 28c4 1 6 4 7 9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></div>
+        <p class="ay-auth-eyebrow">AGENDA YA · PERFIL</p>
+        <h1 id="ayProfileTitle">Bienvenido a <span>Agenda Ya</span></h1>
+        <p id="ayProfileSubtitle">Elige tu perfil para comenzar.</p>
       </div>
-      <div class="ay-profile-card">
-        <div class="ay-profile-head">
-          <p class="ay-auth-eyebrow">AGENDA YA · PERFIL</p>
-          <h1 id="ayProfileTitle">Bienvenido a Agenda Ya</h1>
-          <p id="ayProfileSubtitle">Elige tu perfil para comenzar.</p>
+      <div id="ayProfileChoiceStep" class="ay-profile-choice-step">
+        <p class="ay-profile-choice-copy">Selecciona cómo quieres usar Agenda Ya.<br>Podrás cambiar el tipo de perfil en cualquier momento desde tu cuenta.</p>
+        <div class="ay-profile-type" role="group" aria-label="Tipo de perfil">
+          <button type="button" class="ay-profile-type-btn is-active" data-profile-type="business" aria-pressed="true"><span class="ay-choice-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 40V13a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v27" stroke="currentColor" stroke-width="3"/><path d="M8 40h32M18 18h3M27 18h3M18 25h3M27 25h3M18 32h3M27 32h3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span class="ay-choice-copy"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></span><span class="ay-choice-check"><span class="ay-check" aria-hidden="true">✓</span></span><span class="ay-arrow" aria-hidden="true">→</span></button>
+          <button type="button" class="ay-profile-type-btn" data-profile-type="customer" aria-pressed="false"><span class="ay-choice-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="15" r="7" stroke="currentColor" stroke-width="3"/><path d="M10 39c1.5-8 6.5-12 14-12s12.5 4 14 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span class="ay-choice-copy"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></span><span class="ay-arrow" aria-hidden="true">→</span></button>
         </div>
-
-        <div id="ayProfileChoiceStep" class="ay-profile-choice-step">
-          <div class="ay-profile-type" role="group" aria-label="Tipo de perfil">
-            <button type="button" class="ay-profile-type-btn is-active" data-profile-type="business" aria-pressed="true">
-              <strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span>
-            </button>
-            <button type="button" class="ay-profile-type-btn" data-profile-type="customer" aria-pressed="false">
-              <strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span>
-            </button>
-          </div>
-          <button class="ay-auth-primary ay-profile-next" id="ayProfileNext" type="button">Siguiente</button>
-        </div>
-
-        <div id="ayProfileFormStep" class="ay-profile-form-step" hidden>
-          <button type="button" class="ay-profile-back" id="ayProfileBack">← Cambiar tipo de perfil</button>
-
-          <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate>
-            <div class="ay-profile-photo-row">
-              <div class="ay-profile-avatar" id="ayBusinessAvatarPreview">AY</div>
-              <div><strong>Imagen del negocio</strong><p>Opcional. Puedes subir una imagen.</p></div>
-            </div>
-            <label>Nombre del negocio<input id="ayBusinessName" required maxlength="120" placeholder="Ej. Barbería Agenda Ya"></label>
-            <label>Tipo de servicio<input id="ayBusinessType" required maxlength="100" placeholder="Ej. Barbería, peluquería, salud..."></label>
-            <div class="ay-profile-grid">
-              <label>Teléfono<div class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayBusinessPhone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="8" placeholder="12345678" aria-label="Número de teléfono"></div></label>
-              <label>Ciudad<input id="ayBusinessCity" required maxlength="80" placeholder="Temuco"></label>
-              <label>Comuna<input id="ayBusinessComuna" required maxlength="80" placeholder="Temuco"></label>
-              <label>Dirección<input id="ayBusinessAddress" required maxlength="160" placeholder="Calle y número"></label>
-            </div>
-            <label>Imagen del negocio<input id="ayBusinessLogoFile" type="file" accept="image/*"></label>
-            <p class="ay-profile-status" id="ayBusinessStatus" aria-live="polite"></p>
-            <button class="ay-auth-primary" id="ayBusinessNext" type="button">Siguiente</button>
-          </form>
-
-          <form id="ayBusinessScheduleForm" class="ay-profile-form" novalidate hidden>
-            <div class="ay-profile-form-title">
-              <p class="ay-auth-eyebrow">PERFIL DE NEGOCIO · PASO 2</p>
-              <h2>Configura tus horarios</h2>
-              <p>Define el horario básico de atención de tu negocio. Después podrás ampliarlo desde Horarios.</p>
-            </div>
-            <div class="ay-profile-section-title">Horario básico</div>
-            <div class="ay-hours-grid" id="ayBusinessHours"></div>
-            <p class="ay-profile-status" id="ayBusinessScheduleStatus" aria-live="polite"></p>
-            <div class="ay-profile-actions">
-              <button class="ay-profile-back" id="ayBusinessScheduleBack" type="button">← Volver</button>
-              <button class="ay-auth-primary" id="ayBusinessSave" type="submit">Guardar datos y continuar</button>
-            </div>
-          </form>
-
-          <form id="ayCustomerProfileForm" class="ay-profile-form" novalidate hidden>
-            <div class="ay-profile-photo-row">
-              <div class="ay-profile-avatar" id="ayCustomerAvatarPreview">U</div>
-              <div><strong>Foto de perfil</strong><p>Opcional. Puedes subir una imagen.</p></div>
-            </div>
-            <div class="ay-profile-grid">
-              <label>Nombre<input id="ayCustomerName" required maxlength="120" placeholder="Nombre y apellido"></label>
-              <label>Teléfono<div class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayCustomerPhone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="8" placeholder="12345678" aria-label="Número de teléfono"></div></label>
-              <label>Edad<input id="ayCustomerAge" type="number" min="13" max="120" inputmode="numeric" placeholder="Edad"></label>
-              <label>Ciudad<input id="ayCustomerCity" required maxlength="80" placeholder="Temuco"></label>
-              <label>Comuna<input id="ayCustomerComuna" required maxlength="80" placeholder="Comuna"></label>
-              <label>Dirección<input id="ayCustomerAddress" required maxlength="160" placeholder="Calle y número"></label>
-            </div>
-            <label>Foto de perfil<input id="ayCustomerAvatarFile" type="file" accept="image/*"></label>
-            <p class="ay-profile-status" id="ayCustomerStatus" aria-live="polite"></p>
-            <button class="ay-auth-primary" id="ayCustomerSave" type="submit">Siguiente</button>
-          </form>
-        </div>
+        <div class="ay-profile-info"><span class="ay-info" aria-hidden="true">i</span><span>Podrás cambiar el tipo de perfil<br>en cualquier momento desde tu cuenta.</span></div>
+        <button class="ay-auth-primary ay-profile-next" id="ayProfileNext" type="button">Siguiente <span class="ay-arrow" aria-hidden="true">→</span></button>
+      </div>
+      <div id="ayProfileFormStep" class="ay-profile-form-step" hidden>
+        <button type="button" class="ay-profile-back" id="ayProfileBack"><span class="ay-back-arrow" aria-hidden="true">←</span> Cambiar tipo de perfil</button>
+        <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate>
+          <div class="ay-profile-photo-row"><div class="ay-profile-avatar" id="ayBusinessAvatarPreview"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16h7l3-4h10l3 4h7a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V19a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="28" r="7" stroke="currentColor" stroke-width="3"/></svg></span><i>+</i></div><div><strong>Imagen del negocio</strong><p>Opcional. Puedes subir una imagen.</p><label class="ay-upload-button"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 32V9M15 18l9-9 9 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 31v7a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3v-7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span> Seleccionar imagen<input id="ayBusinessLogoFile" type="file" accept="image/*"></label></div></div>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 40V13a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v27" stroke="currentColor" stroke-width="3"/><path d="M8 40h32M18 18h3M27 18h3M18 25h3M27 25h3M18 32h3M27 32h3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span><b>Nombre del negocio</b><input id="ayBusinessName" required maxlength="120" placeholder="Ej. Barbería Agenda Ya"></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="17" cy="16" r="5" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="32" r="5" stroke="currentColor" stroke-width="3"/><path d="m21 19 20 17M21 29 41 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span><b>Tipo de servicio</b><input id="ayBusinessType" required maxlength="100" placeholder="Ej. Barbería, peluquería, salud..."></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 9l5 6-4 4c3 6 6 9 12 12l4-4 6 5c1 1 .8 2.6-.2 3.6l-3 3c-1.6 1.6-4.3 2-6.3.9C19 34.4 13.6 29 9.9 18.5c-.9-2.1-.4-4.6 1.2-6.2l3-3c.9-.9 2.5-1 3.9-.3Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg></span></span><span><b>Teléfono</b><span class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayBusinessPhone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="8" placeholder="12345678" aria-label="Número de teléfono"></span></span></label>
+          <div class="ay-form-grid-two"><label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 42s13-12 13-23A13 13 0 0 0 11 19c0 11 13 23 13 23Z" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="19" r="4" stroke="currentColor" stroke-width="3"/></svg></span></span><span><b>Ciudad</b><input id="ayBusinessCity" required maxlength="80" placeholder="Temuco"></span></label><label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 40V13a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v27" stroke="currentColor" stroke-width="3"/><path d="M8 40h32M18 18h3M27 18h3M18 25h3M27 25h3M18 32h3M27 32h3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span><b>Comuna</b><input id="ayBusinessComuna" required maxlength="80" placeholder="Temuco"></span></label></div>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m7 22 17-14 17 14v18a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V22Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M19 43V29h10v14" stroke="currentColor" stroke-width="3"/></svg></span></span><span><b>Dirección</b><input id="ayBusinessAddress" required maxlength="160" placeholder="Calle y número"></span></label>
+          <div class="ay-file-card"><div class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 32V9M15 18l9-9 9 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 31v7a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3v-7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></div><div><strong>Imagen del negocio</strong><p>También puedes seleccionar un archivo desde tu dispositivo.</p><label class="ay-file-input" for="ayBusinessLogoFile"><span>Seleccionar archivo</span><em>Usar imagen seleccionada</em></label></div></div>
+          <p class="ay-profile-status" id="ayBusinessStatus" aria-live="polite"></p>
+          <button class="ay-auth-primary" id="ayBusinessNext" type="button">Siguiente <span class="ay-arrow" aria-hidden="true">→</span></button>
+        </form>
+        <form id="ayBusinessScheduleForm" class="ay-profile-form" novalidate hidden>
+          <div class="ay-profile-form-title"><p class="ay-auth-eyebrow">PERFIL DE NEGOCIO · PASO 2</p><h2>Configura tus horarios</h2><p>Define el horario básico de atención de tu negocio.</p></div><div class="ay-profile-section-title">Horario básico</div><div class="ay-hours-grid" id="ayBusinessHours"></div><p class="ay-profile-status" id="ayBusinessScheduleStatus" aria-live="polite"></p><div class="ay-profile-actions"><button class="ay-profile-back" id="ayBusinessScheduleBack" type="button">← Volver</button><button class="ay-auth-primary" id="ayBusinessSave" type="submit">Guardar datos y continuar</button></div>
+        </form>
+        <form id="ayCustomerProfileForm" class="ay-profile-form" novalidate hidden>
+          <button type="button" class="ay-profile-back" onclick="document.getElementById('ayProfileBack').click()"><span class="ay-back-arrow" aria-hidden="true">←</span> Cambiar tipo de perfil</button>
+          <div class="ay-profile-photo-row"><div class="ay-profile-avatar" id="ayCustomerAvatarPreview"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="15" r="7" stroke="currentColor" stroke-width="3"/><path d="M10 39c1.5-8 6.5-12 14-12s12.5 4 14 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><i>+</i></div><div><strong>Foto de perfil</strong><p>Opcional. Puedes subir una imagen.</p><label class="ay-upload-button"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 32V9M15 18l9-9 9 9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 31v7a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3v-7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span> Seleccionar imagen<input id="ayCustomerAvatarFile" type="file" accept="image/*"></label></div></div>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="15" r="7" stroke="currentColor" stroke-width="3"/><path d="M10 39c1.5-8 6.5-12 14-12s12.5 4 14 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span><b>Nombre</b><input id="ayCustomerName" required maxlength="120" placeholder="Nombre y apellido"></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 9l5 6-4 4c3 6 6 9 12 12l4-4 6 5c1 1 .8 2.6-.2 3.6l-3 3c-1.6 1.6-4.3 2-6.3.9C19 34.4 13.6 29 9.9 18.5c-.9-2.1-.4-4.6 1.2-6.2l3-3c.9-.9 2.5-1 3.9-.3Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg></span></span><span><b>Teléfono</b><span class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayCustomerPhone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="8" placeholder="12345678" aria-label="Número de teléfono"></span></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="11" width="32" height="29" rx="5" stroke="currentColor" stroke-width="3"/><path d="M14 8v7M34 8v7M8 20h32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M16 27h5M27 27h5M16 34h5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span><b>Edad</b><input id="ayCustomerAge" type="number" min="13" max="120" inputmode="numeric" placeholder="Edad"></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 42s13-12 13-23A13 13 0 0 0 11 19c0 11 13 23 13 23Z" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="19" r="4" stroke="currentColor" stroke-width="3"/></svg></span></span><span><b>Ciudad</b><input id="ayCustomerCity" required maxlength="80" placeholder="Temuco"></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 40V13a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v27" stroke="currentColor" stroke-width="3"/><path d="M8 40h32M18 18h3M27 18h3M18 25h3M27 25h3M18 32h3M27 32h3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><span><b>Comuna</b><input id="ayCustomerComuna" required maxlength="80" placeholder="Comuna"></span></label>
+          <label class="ay-form-card"><span class="ay-form-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m7 22 17-14 17 14v18a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V22Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M19 43V29h10v14" stroke="currentColor" stroke-width="3"/></svg></span></span><span><b>Dirección</b><input id="ayCustomerAddress" required maxlength="160" placeholder="Calle y número"></span></label>
+          <p class="ay-profile-status" id="ayCustomerStatus" aria-live="polite"></p>
+          <button class="ay-auth-primary" id="ayCustomerSave" type="submit">Guardar y continuar <span class="ay-arrow" aria-hidden="true">→</span></button>
+        </form>
       </div>
     </div>
-  </section>
+  </div>
+</section>
   <div class="ay-app" id="ayApp" hidden>
     <header class="ay-header">
-      <button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button>
-      <a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya">
-        <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
-      </a>
-
-      <nav class="ay-header-nav" aria-label="Navegación principal">
-        <button class="ay-nav-item is-active" data-view="dashboard">⌂<span>Dashboard</span></button>
-        <button class="ay-nav-item" data-view="services">✂<span>Servicios</span></button>
-        <button class="ay-nav-item" data-view="professionals">♙<span>Profesionales</span></button>
-        <button class="ay-nav-item" data-view="schedules">◷<span>Horarios</span></button>
-        <button class="ay-nav-item" data-view="availability">▣<span>Disponibilidad</span></button>
-        <button class="ay-nav-item" data-view="clients">♧<span>Clientes</span></button>
-        <button class="ay-nav-item" data-view="bookings">▤<span>Reservas</span></button>
-        <button class="ay-nav-item" data-view="calendar">▦<span>Calendario</span></button>
-      </nav>
-
-      <div class="ay-header-actions">
-        <button class="ay-icon-btn" title="Notificaciones">♢</button>
-        <button class="ay-account" id="ayAccountBtn" aria-label="Abrir perfil">
-          <span class="ay-avatar">AY</span>
-          <span class="ay-account-text"><strong>Mi negocio</strong><small>Cuenta</small></span>
-          <span class="ay-account-chevron">⌄</span>
-        </button>
-        <button class="ay-logout-btn" id="ayLogoutBtn" type="button">Salir</button>
-      </div>
+      <button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú"><span class="ay-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span></button>
+      <a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya"><img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a>
+      <nav class="ay-header-nav" aria-label="Navegación principal"><button class="ay-nav-item is-active" data-view="dashboard">⌂<span>Dashboard</span></button><button class="ay-nav-item" data-view="services">✂<span>Servicios</span></button><button class="ay-nav-item" data-view="professionals">♙<span>Profesionales</span></button><button class="ay-nav-item" data-view="schedules">◷<span>Horarios</span></button><button class="ay-nav-item" data-view="availability">▣<span>Disponibilidad</span></button><button class="ay-nav-item" data-view="clients">♧<span>Clientes</span></button><button class="ay-nav-item" data-view="bookings">▤<span>Reservas</span></button><button class="ay-nav-item" data-view="calendar">▦<span>Calendario</span></button></nav>
+      <div class="ay-header-actions"><button class="ay-somos-avatar" title="SOMOS SOFTWARE"><img src="assets/somos-software-avatar.png" alt="SOMOS SOFTWARE"></button><button class="ay-account ay-account-reference-hidden" id="ayAccountBtn" aria-label="Abrir perfil"><span class="ay-avatar">AY</span><span class="ay-account-text"><strong>Mi negocio</strong><small>Cuenta</small></span><span class="ay-account-chevron">⌄</span></button><button class="ay-logout-btn" id="ayLogoutBtn" type="button">Salir <span class="ay-logout-icon" aria-hidden="true">↪</span></button></div>
     </header>
-
     <div class="ay-layout">
       <aside class="ay-sidebar" id="aySidebar">
         <div class="ay-sidebar-group">
@@ -194,56 +131,24 @@
 
       <main class="ay-main" id="ayMain">
         <div class="ay-page" id="view-dashboard">
-          <section class="ay-hero">
-            <div>
-              <span class="ay-eyebrow">AGENDA YA · CENTRO DE GESTIÓN</span>
-              <h1>Hola, Patricio</h1>
-              <p>Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
-              <div class="ay-actions">
-                <button class="ay-btn ay-btn-primary" data-view="bookings">＋ Nueva reserva</button>
-                <button class="ay-btn ay-btn-light" data-view="calendar">▦ Ver calendario</button>
-              </div>
-            </div>
-            <div class="ay-hero-visual">AGENDA<br><span>Tu negocio, organizado.</span></div>
-          </section>
+  <section class="ay-hero">
+    <div class="ay-hero-copy"><span class="ay-eyebrow">AGENDA YA · CENTRO DE GESTIÓN</span><h1>Hola, <span>Mi negocio</span></h1><p>Gestiona tu negocio y recibe más reservas desde un solo lugar.</p></div>
+    <div class="ay-hero-actions"><button class="ay-btn ay-btn-primary" data-view="bookings">＋ <span>Nueva reserva</span></button><button class="ay-btn ay-btn-light" data-view="calendar"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="11" width="32" height="29" rx="5" stroke="currentColor" stroke-width="3"/><path d="M14 8v7M34 8v7M8 20h32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M16 27h5M27 27h5M16 34h5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span> <span>Ver calendario</span></button></div>
+  </section>
+  <section class="ay-kpi-grid">
+    <article class="ay-kpi"><span class="ay-kpi-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="11" width="32" height="29" rx="5" stroke="currentColor" stroke-width="3"/><path d="M14 8v7M34 8v7M8 20h32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M16 27h5M27 27h5M16 34h5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><div><small>Reservas hoy</small><strong>5</strong><em>↗ +25%</em><label>vs. semana anterior</label></div><span class="ay-kpi-arrow">›</span></article>
+    <article class="ay-kpi"><span class="ay-kpi-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="19" cy="17" r="6" stroke="currentColor" stroke-width="3"/><path d="M7 39c1-8 5-12 12-12s11 4 12 12M34 13c4 .6 6 3 7 7M35 28c4 1 6 4 7 9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><div><small>Clientes</small><strong>32</strong><em>↗ +10%</em><label>vs. mes anterior</label></div><span class="ay-kpi-arrow">›</span></article>
+    <article class="ay-kpi"><span class="ay-kpi-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="17" cy="16" r="5" stroke="currentColor" stroke-width="3"/><circle cx="17" cy="32" r="5" stroke="currentColor" stroke-width="3"/><path d="m21 19 20 17M21 29 41 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><div><small>Servicios</small><strong>12</strong><em class="is-pill">Activos</em></div><span class="ay-kpi-arrow">›</span></article>
+    <article class="ay-kpi"><span class="ay-kpi-icon"><span class="ay-svg" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="15" r="7" stroke="currentColor" stroke-width="3"/><path d="M10 39c1.5-8 6.5-12 14-12s12.5 4 14 12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></span><div><small>Profesionales</small><strong>4</strong><em class="is-pill">Activos</em></div><span class="ay-kpi-arrow">›</span></article>
+  </section>
+  <section class="ay-card ay-card-reservas"><div class="ay-card-head"><h2>Próximas reservas</h2><button class="ay-link" data-view="bookings">Ver todas →</button></div><div class="ay-list">
+    <div class="ay-list-row"><b>09:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Juan Pérez · con Matías</small></div><mark>Confirmada</mark><span class="ay-row-arrow">›</span></div>
+    <div class="ay-list-row is-pending"><b>11:00</b><span class="ay-dot"></span><div><strong>Arreglo de barba</strong><small>Carlos Ramírez · con Matías</small></div><mark>Pendiente</mark><span class="ay-row-arrow">›</span></div>
+    <div class="ay-list-row"><b>14:30</b><span class="ay-dot"></span><div><strong>Limpieza facial</strong><small>Ana Torres · con Camila</small></div><mark>Confirmada</mark><span class="ay-row-arrow">›</span></div>
+  </div></section>
+</div>
 
-          <section class="ay-kpi-grid">
-            <article class="ay-kpi"><span>▦</span><div><small>Reservas hoy</small><strong>5</strong><em>↗ +25%</em></div></article>
-            <article class="ay-kpi"><span>♧</span><div><small>Clientes</small><strong>32</strong><em>↗ +10%</em></div></article>
-            <article class="ay-kpi"><span>✂</span><div><small>Servicios</small><strong>12</strong><em>Activos</em></div></article>
-            <article class="ay-kpi"><span>♙</span><div><small>Profesionales</small><strong>4</strong><em>Activos</em></div></article>
-          </section>
-
-          <section class="ay-grid-2">
-            <article class="ay-card">
-              <div class="ay-card-head"><h2>Próximas reservas</h2><button class="ay-link" data-view="bookings">Ver todas →</button></div>
-              <div class="ay-list">
-                <div class="ay-list-row"><b>09:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Juan Pérez · con Matías</small></div><mark>Confirmada</mark></div>
-                <div class="ay-list-row"><b>11:00</b><span class="ay-dot"></span><div><strong>Barba express</strong><small>Carlos Rojas · con Matías</small></div><mark>Confirmada</mark></div>
-                <div class="ay-list-row is-pending"><b>14:00</b><span class="ay-dot"></span><div><strong>Corte + Barba</strong><small>Pedro Díaz · con Alex</small></div><mark>Pendiente</mark></div>
-                <div class="ay-list-row"><b>16:30</b><span class="ay-dot"></span><div><strong>Corte de cabello</strong><small>Ana Torres · con Valentina</small></div><mark>Confirmada</mark></div>
-              </div>
-            </article>
-            <article class="ay-card">
-              <div class="ay-card-head"><h2>Calendario de hoy</h2><span class="ay-muted">Sáb 4 oct 2026</span></div>
-              <div class="ay-timeline">
-                <div><b>09:30</b><span>Corte de cabello</span></div>
-                <div><b>11:00</b><span>Barba express</span></div>
-                <div class="pending"><b>14:00</b><span>Corte + Barba</span></div>
-                <div><b>16:30</b><span>Corte de cabello</span></div>
-              </div>
-            </article>
-          </section>
-
-          <section class="ay-quick-grid">
-            <button class="ay-quick" data-view="services"><span>✂</span><b>Gestiona tus servicios</b><small>Ir a Servicios →</small></button>
-            <button class="ay-quick" data-view="professionals"><span>♧</span><b>Administra profesionales</b><small>Ir a Profesionales →</small></button>
-            <button class="ay-quick" data-view="schedules"><span>◷</span><b>Configura horarios</b><small>Ir a Horarios →</small></button>
-            <button class="ay-quick" data-view="availability"><span>▣</span><b>Revisa disponibilidad</b><small>Ir a Disponibilidad →</small></button>
-          </section>
-        </div>
-
-        <div class="ay-page" id="view-generic" hidden>
+<div class="ay-page" id="view-generic" hidden>
           <div class="ay-page-head">
             <div><span class="ay-eyebrow" id="ayViewEyebrow">MÓDULO</span><h1 id="ayViewTitle">Vista</h1><p id="ayViewDescription">Espacio de trabajo del módulo.</p></div>
             <div class="ay-actions"><button class="ay-btn ay-btn-primary">＋ Nueva acción</button></div>
