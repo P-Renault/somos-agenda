@@ -27,8 +27,19 @@
     el.textContent = text || "";
     el.className = `ay-profile-status${kind ? ` is-${kind}` : ""}`;
   }
-  function showAuth() { authView.hidden = false; profileView.hidden = true; appView.hidden = true; }
-  function showProfile() { authView.hidden = true; profileView.hidden = false; appView.hidden = true; window.scrollTo?.(0,0); }
+  function showAuth() {
+    if (authView) { authView.hidden = false; authView.style.display = "flex"; }
+    if (profileView) { profileView.hidden = true; profileView.style.display = "none"; }
+    if (appView) { appView.hidden = true; appView.style.display = "none"; }
+  }
+  function showProfile() {
+    // HARD NAVIGATION: do not rely only on the hidden attribute.
+    // Explicit display values make the transition deterministic on mobile browsers.
+    if (authView) { authView.hidden = true; authView.style.display = "none"; }
+    if (profileView) { profileView.hidden = false; profileView.style.display = "block"; }
+    if (appView) { appView.hidden = true; appView.style.display = "none"; }
+    try { window.scrollTo(0, 0); } catch (_) {}
+  }
   function showApp(user) {
     authView.hidden = true; profileView.hidden = true; appView.hidden = false;
     const name = user?.user_metadata?.full_name || user?.user_metadata?.name || "Mi negocio";
@@ -280,14 +291,14 @@
       } else if (result.data.session?.user) {
         const authenticatedUser = result.data.session.user;
         setStatus("Acceso confirmado. Abriendo tu perfil…","success");
-        // HARD GUARANTEE: UI navigation does not depend on any DB request.
         currentUser = authenticatedUser;
+        // Deterministic navigation BEFORE any profile/database work.
         showProfile();
         selectProfileType("business");
         populateBusiness(null, authenticatedUser);
         setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
-        // Hydrate existing profile asynchronously.
-        void routeSession(authenticatedUser);
+        // Database hydration is strictly secondary.
+        setTimeout(() => { void routeSession(authenticatedUser); }, 0);
       } else {
         throw new Error("Supabase no devolvió una sesión activa.");
       }
@@ -427,7 +438,7 @@
         selectProfileType("business");
         populateBusiness(null, session.user);
         setProfileStatus(businessStatus, "Sesión activa. Completa los datos básicos de tu perfil.", "success");
-        setTimeout(()=>routeSession(session.user),0);
+        if (!routingInProgress) setTimeout(()=>routeSession(session.user),0);
       } else if(event==="SIGNED_OUT") {
         setMode("login"); showAuth();
       }
@@ -447,7 +458,7 @@
   }
 
   window.AgendaYaAuth={
-    version:"0.2.4",
+    version:"0.2.5",
     getClient:()=>client,
     setMode,showAuth,showApp,showProfile,routeSession
   };
