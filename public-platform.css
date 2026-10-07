@@ -34,72 +34,121 @@ body{background:linear-gradient(180deg,#fafcff 0%,#f4f7fb 100%);color:var(--mp-i
   .market-logout{padding:8px 10px;font-size:11px}
 }
 
-/* B0.6.3 · Marketplace mobile reference layout
-   Desktop remains unchanged. Mobile uses the approved native composition:
-   logo/header, profile + logout, hero, vertically stacked search controls,
-   result status and result card. */
+/* B0.6.4 · Marketplace mobile = desktop composition compressed to viewport.
+   The mobile reference is intentionally the same desktop arrangement:
+   header, hero, horizontal search row and result card. No stacked mobile layout. */
 @media(max-width:760px){
   .marketplace-shell{
     width:100%;
     min-width:0;
     padding:10px 14px 50px;
-    overflow-x:hidden;
+    overflow:hidden;
   }
   .market-header{
-    min-height:56px;
-    padding:4px 0 10px;
+    min-height:42px;
+    padding:3px 0 9px;
+  }
+  .market-brand,
+  .profile-header .market-brand{
+    min-width:0;
+    height:34px;
+  }
+  .market-brand img,
+  .profile-header .market-brand img{
+    width:108px;
+    height:34px;
+  }
+  .market-avatar{
+    width:28px;
+    height:28px;
+    font-size:9px;
+  }
+  .market-logout{
+    padding:6px 8px;
+    border-radius:9px;
+    font-size:9px;
   }
   .marketplace-shell .hero{
+    width:100%;
     min-width:0;
-    max-width:none;
-    padding:42px 0 18px;
+    padding:30px 0 16px;
   }
   .marketplace-shell .hero h1{
-    font-size:clamp(2.25rem,10vw,3.5rem);
-    line-height:1.02;
+    font-size:clamp(1.35rem,5.9vw,2.15rem);
+    line-height:1;
+    letter-spacing:-.045em;
+    white-space:nowrap;
     max-width:none;
-    white-space:normal;
+  }
+  .marketplace-shell .hero>p:not(.eyebrow){
+    font-size:9px;
+    margin-top:7px;
+  }
+  .marketplace-shell .eyebrow{
+    font-size:7px;
+    margin-bottom:6px;
   }
   .marketplace-shell .search{
-    grid-template-columns:1fr;
+    display:grid;
+    grid-template-columns:2.2fr 1.2fr 1.15fr auto;
+    gap:7px;
+    width:100%;
     min-width:0;
-    gap:8px;
-    margin-top:24px;
+    margin-top:15px;
   }
   .marketplace-shell .search input,
   .marketplace-shell .search select,
   .marketplace-shell .search button{
+    min-width:0;
     width:100%;
-    min-height:48px;
+    min-height:34px;
+    height:34px;
+    padding:0 9px;
+    border-radius:9px;
+    font-size:8px;
+  }
+  .marketplace-shell .search button{
+    padding:0 10px;
   }
   .market-results-head{
     min-width:0;
+    min-height:20px;
+  }
+  .market-results-head p{
+    font-size:7px;
   }
   .marketplace-shell .cards{
     min-width:0;
+    gap:9px;
   }
   .marketplace-shell .result{
-    display:block;
-    padding:18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 14px;
+    border-radius:14px;
+  }
+  .marketplace-shell .result h2{
+    font-size:12px;
+    margin-bottom:5px;
+  }
+  .marketplace-shell .result p{
+    font-size:8px;
+    margin:0;
   }
   .marketplace-shell .result .button{
-    display:block;
-    width:100%;
-    margin-top:12px;
+    display:inline-block;
+    width:auto;
+    min-width:58px;
+    margin-top:0;
+    padding:7px 9px;
+    border-radius:8px;
+    font-size:8px;
     text-align:center;
   }
   .market-profile-name{
     display:none;
   }
 }
-@media(max-width:460px){
-  .marketplace-shell .hero h1{
-    font-size:2.35rem;
-  }
-  .marketplace-shell .result{
-    display:block;
-  }
-  .marketplace-shell .result .button{
-    display:block;
-  }
-}
+
