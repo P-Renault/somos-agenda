@@ -1,4 +1,4 @@
-/* Agenda Ya · B13 Membership Engine v1.0 */
+/* Agenda Ya · B13 Membership Engine v1.1 · Flow Checkout Integration */
 (() => {
   'use strict';
   if (window.AgendaYaMembershipEngine) return;
@@ -8,6 +8,7 @@
   const $ = (s, r=document) => r.querySelector(s);
   const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const money = v => Number(v || 0).toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
+
   function ensureStyles(){
     if(document.getElementById('ayB13B17EngineStyles'))return;
     const st=document.createElement('style');st.id='ayB13B17EngineStyles';st.textContent=`
@@ -37,8 +38,8 @@
     setBadge(root,'Motor activo');
     const hero=$('.ay-settings-engine-badge');if(hero)hero.textContent='Membership Engine · Activo';
     const contract=[...document.querySelectorAll('.ay-settings-contract-grid span')];contract.forEach(x=>{if(x.textContent.trim()==='Membership Engine')x.textContent='Membership Engine · Activo';});
-    const contractTitle=$('.ay-settings-contract h3');if(contractTitle)contractTitle.textContent='Motores B13–B17 activos';
-    const contractText=$('.ay-settings-contract p');if(contractText)contractText.textContent='Membership, entitlements, límites, billing y ciclo de vida están conectados al backend sin rediseñar esta interfaz.';
+    const contractTitle=$('.ay-settings-contract h3');if(contractTitle)contractTitle.textContent='Motores B13–B20 activos';
+    const contractText=$('.ay-settings-contract p');if(contractText)contractText.textContent='Membership, entitlements, límites, billing, ciclo de vida y checkout Flow están conectados al backend.';
   }
   async function load(){
     const c=getClient(); if(!c)return;
@@ -49,6 +50,7 @@
     return row;
   }
   function closeModal(){document.getElementById('ayB13PlanModal')?.remove();}
+
   async function openPlanModal(){
     const c=getClient();if(!c)return;
     closeModal();
@@ -62,24 +64,80 @@
       <p class="ay-b13-plan-status" id="ayB13PlanStatus">El estado de pago siempre se valida en backend.</p>
     </div>`;
     document.body.appendChild(el);
+
     el.addEventListener('click',async e=>{
       if(e.target===el||e.target.closest('.ay-b13-plan-close')){closeModal();return;}
       const b=e.target.closest('[data-plan-code]');if(!b)return;
-      const code=b.dataset.planCode;if(code===current?.plan_code)return;
-      const status=$('#ayB13PlanStatus',el);b.disabled=true;status.textContent='Registrando solicitud…';
-      const r=code==='free'
-        ? await c.rpc('downgrade_business_to_free')
-        : await c.rpc('create_payment_intent',{p_plan_code:code});
-      if(r.error){status.textContent=r.error.message||'No fue posible iniciar la solicitud.';b.disabled=false;return;}
-      status.textContent=code==='free'?'Plan FREE activado por backend.':'Solicitud de pago registrada. El checkout del proveedor se conecta en la siguiente capa de Flow.';
-      await load();
+
+      const code=b.dataset.planCode;
+      if(code===current?.plan_code)return;
+
+      const status=$('#ayB13PlanStatus',el);
+      b.disabled=true;
+
+      if(code==='free'){
+        status.textContent='Procesando plan FREE…';
+        const r=await c.rpc('downgrade_business_to_free');
+        if(r.error){
+          status.textContent=r.error.message||'No fue posible activar el plan FREE.';
+          b.disabled=false;
+          return;
+        }
+        status.textContent='Plan FREE activado por backend.';
+        await load();
+        return;
+      }
+
+      /*
+       * CHECKOUT FLOW
+       * El frontend NO confirma el pago.
+       * Solo solicita al backend la creación del checkout.
+       */
+      status.textContent='Creando checkout seguro…';
+
+      const r=await c.functions.invoke('flow-create-payment',{
+        body:{plan_code:code}
+      });
+
+      if(r.error){
+        let message=r.error.message||'No fue posible crear el checkout.';
+        try{
+          if(r.data?.error)message=r.data.error;
+        }catch(_){}
+        status.textContent=message;
+        b.disabled=false;
+        return;
+      }
+
+      const checkoutUrl=r.data?.checkout_url;
+
+      if(!checkoutUrl){
+        status.textContent='Flow no entregó una URL de checkout.';
+        b.disabled=false;
+        return;
+      }
+
+      status.textContent='Checkout creado. Redirigiendo a Flow…';
+
+      // La autoridad del pago permanece en Flow + webhook.
+      window.location.assign(checkoutUrl);
     });
   }
+
   function bind(){
     window.addEventListener('agendaYa:view-change',e=>{if(e.detail?.view==='settings')setTimeout(()=>void load(),0);});
-    document.addEventListener('click',e=>{const b=e.target.closest?.('[data-ay-action="membership-engine-placeholder"]');if(b){e.preventDefault();void openPlanModal();}});
+    document.addEventListener('click',e=>{
+      const b=e.target.closest?.('[data-ay-action="membership-engine-placeholder"]');
+      if(b){e.preventDefault();void openPlanModal();}
+    });
     if(window.AgendaYaUI?.getCurrentView?.()==='settings')void load();
   }
+
   bind();
-  window.AgendaYaMembershipEngine={version:'1.0.0',load,openPlanModal,getCurrent:()=>loaded};
+  window.AgendaYaMembershipEngine={
+    version:'1.1.0',
+    load,
+    openPlanModal,
+    getCurrent:()=>loaded
+  };
 })();
