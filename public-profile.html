@@ -14,7 +14,7 @@
   <main class="profile-page">
     <header class="profile-header">
       <a class="brand" href="index.html" aria-label="Volver a Agenda Ya">
-        <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+        <img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya">
       </a>
       <a class="back-link" href="explorer.html">← Explorar</a>
     </header>
@@ -82,13 +82,17 @@
         </div>
 
         <aside class="profile-side">
-          <section class="panel contact-panel">
+          <section class="panel location-panel">
             <div class="section-heading compact">
               <span class="section-icon">⌖</span>
               <div><h2>Ubicación</h2></div>
             </div>
             <p id="address" class="side-value"></p>
             <p id="city" class="side-muted"></p>
+            <div id="mapWrap" class="map-wrap" hidden>
+              <iframe id="mapFrame" title="Ubicación del negocio en Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <a id="mapLink" class="map-link" href="#" target="_blank" rel="noopener" hidden>Ver en Google Maps →</a>
           </section>
 
           <section class="panel contact-panel" id="contactPanel" hidden>
@@ -96,8 +100,10 @@
               <span class="section-icon">☎</span>
               <div><h2>Contacto</h2></div>
             </div>
-            <a id="phone" class="contact-link" href="#" hidden></a>
-            <a id="whatsapp" class="contact-link" href="#" target="_blank" rel="noopener" hidden>WhatsApp →</a>
+            <div class="contact-row">
+              <a id="phone" class="contact-link phone-link" href="#" hidden></a>
+              <a id="whatsapp" class="contact-link whatsapp-link" href="#" target="_blank" rel="noopener" hidden>Agenda ahora por WhatsApp →</a>
+            </div>
           </section>
 
           <section class="panel cta-panel">

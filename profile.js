@@ -58,27 +58,24 @@
   function initHours(){
     $("hours").innerHTML = DAYS.map((day,i) => `
       <div class="ay-hour-row">
-        <div class="ay-day-cell">
-          <span class="ay-day-name">${day}</span>
-          <label class="ay-day-toggle" aria-label="Activar ${day}">
-            <input class="hour-active" type="checkbox" data-day="${i+1}" ${i<5?"checked":""}>
-            <span class="ay-switch" aria-hidden="true"><span></span></span>
-          </label>
-        </div>
-        <label class="ay-time-field">
-          <span class="ay-time-label">Desde</span>
-          <input type="time" data-open="${i+1}" value="09:00" aria-label="Hora de apertura ${day}">
-        </label>
-        <label class="ay-time-field">
-          <span class="ay-time-label">Hasta</span>
-          <input type="time" data-close="${i+1}" value="18:00" aria-label="Hora de cierre ${day}">
-        </label>
+        <label><input class="hour-active" type="checkbox" data-day="${i+1}" ${i<5?"checked":""}> ${day}</label>
+        <input type="time" data-open="${i+1}" value="09:00">
+        <input type="time" data-close="${i+1}" value="18:00">
       </div>
     `).join("");
   }
 
   function phone(v){
     return String(v||"").replace(/\D/g,"").slice(0,8);
+  }
+
+  async function loadBusinessCategories(){
+    const select = $("businessCategory");
+    if(!select || !client) return;
+    const r = await client.from("business_categories").select("id,slug,name").eq("active",true).order("name");
+    if(r.error) throw r.error;
+    select.innerHTML = '<option value="">Selecciona una categoría</option>' +
+      (r.data || []).map(c => `<option value="${c.id}" data-slug="${c.slug}" data-name="${String(c.name).replace(/"/g,'&quot;')}">${c.name}</option>`).join("");
   }
 
   async function upload(file, kind){
@@ -100,17 +97,19 @@
 
   function validateBusiness(){
     const required=[
-      ["businessName","businessStatus","nombre del negocio"],
-      ["businessType","businessStatus","tipo de servicio"],
-      ["businessCity","businessStatus","ciudad"],
-      ["businessComuna","businessStatus","comuna"],
-      ["businessAddress","businessStatus","dirección"]
+      ["businessName","nombre del negocio"],
+      ["businessCategory","categoría del negocio"],
+      ["businessType","tipo de servicio"],
+      ["businessDescription","descripción pública"],
+      ["businessCity","ciudad"],
+      ["businessComuna","comuna"],
+      ["businessAddress","dirección"]
     ];
-
-    for(const [id,statusId,label] of required){
-      if(!$(`${id}`)?.value.trim()){
-        status($(statusId),`Completa ${label}.`,"error");
-        $(id).focus();
+    for(const [id,label] of required){
+      const el=$(id);
+      if(!el?.value?.trim()){
+        status($("businessStatus"),`Completa ${label}.`,"error");
+        el?.focus();
         return false;
       }
     }
@@ -183,6 +182,10 @@
 
       const name=$("businessName").value.trim();
       const businessType=$("businessType").value.trim();
+      const description=$("businessDescription").value.trim();
+      const categoryId=$("businessCategory").value;
+      const categoryOption=$("businessCategory").selectedOptions?.[0];
+      const categoryName=categoryOption?.dataset?.name || businessType;
       const p=phone($("businessPhone").value);
       const city=$("businessCity").value.trim();
       const comuna=$("businessComuna").value.trim();
@@ -235,6 +238,20 @@
       }).eq("id",businessId);
 
       if(update.error) throw update.error;
+
+      const publicProfile=await client.rpc("upsert_public_profile",{
+        p_business_id:businessId,
+        p_display_name:name,
+        p_description:description,
+        p_category_id:categoryId || null,
+        p_address:address,
+        p_comuna:comuna,
+        p_city:city,
+        p_phone:p?`+56 9 ${p}`:null,
+        p_whatsapp:p?`+56 9 ${p}`:null,
+        p_public_enabled:true
+      });
+      if(publicProfile.error) throw publicProfile.error;
 
       const profile=await client.from("profiles").upsert({
         id:user.id,
@@ -362,6 +379,8 @@
     user=session.user;
 
     try{
+      await loadBusinessCategories();
+
       const existing=await resolveExistingProfile();
       const routed=await routeExistingProfile(existing);
       if(routed) return;

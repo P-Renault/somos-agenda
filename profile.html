@@ -11,7 +11,7 @@
   <div class="profile-canvas">
 
     <header class="profile-top">
-      <img src="agenda-ya-logo-header.jpg" alt="Agenda Ya" class="profile-logo">
+      <img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya" class="profile-logo">
     </header>
 
     <section class="profile-content">
@@ -26,12 +26,12 @@
       <section id="choiceStep" class="choice-step">
         <div class="profile-types">
           <button class="profile-type active" type="button" data-type="business" aria-pressed="true">
-            <span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v10h16V10"/><path d="M3 10l2-6h14l2 6"/><path d="M3 10c.5 2 2 3 4 3s3.5-1 4-3c.5 2 2 3 4 3s3.5-1 4-3"/><path d="M9 20v-5h6v5"/></svg></span><strong>Perfil de negocio</strong>
+            <strong>Perfil de negocio</strong>
             <span>Gestiona servicios, horarios y recibe reservas.</span>
           </button>
 
           <button class="profile-type" type="button" data-type="customer" aria-pressed="false">
-            <span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c.8-4 3.5-6 8-6s7.2 2 8 6"/></svg></span><strong>Perfil cliente</strong>
+            <strong>Perfil cliente</strong>
             <span>Encuentra servicios y realiza reservas.</span>
           </button>
         </div>
@@ -55,24 +55,41 @@
             <p>Completa los datos básicos de tu negocio.</p>
           </div>
 
-          <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v10h16V10"/><path d="M3 10l2-6h14l2 6"/><path d="M3 10c.5 2 2 3 4 3s3.5-1 4-3c.5 2 2 3 4 3s3.5-1 4-3"/><path d="M9 20v-5h6v5"/></svg></span><span class="field-label"><span>Nombre del negocio</span></span><input id="businessName" maxlength="120" required placeholder="Ej. Barbería Agenda Ya">
+          <label>Nombre del negocio
+            <input id="businessName" maxlength="120" required placeholder="Ej. Barbería Agenda Ya">
           </label>
 
-          <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13l-7 7L4 11V4h7l9 9z"/><circle cx="8" cy="8" r="1.4"/></svg></span><span class="field-label"><span>Tipo de servicio</span></span><input id="businessType" maxlength="100" required placeholder="Ej. Barbería, peluquería, salud...">
+          <label>Categoría del negocio
+            <select id="businessCategory" required>
+              <option value="">Selecciona una categoría</option>
+            </select>
+          </label>
+
+          <label>Tipo de servicio
+            <input id="businessType" maxlength="100" required placeholder="Ej. Barbería, peluquería, salud...">
+          </label>
+
+          <label>Descripción pública del negocio
+            <textarea id="businessDescription" maxlength="1000" rows="4" required placeholder="Describe brevemente tu negocio, qué haces y qué puede encontrar el cliente."></textarea>
           </label>
 
           <div class="two-col">
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3l3 4-2 2c1.2 2.5 2.8 4.8 5 7l2-2 4 3c.7.5.8 1.5.3 2.2l-1.2 1.6c-.6.8-1.6 1.1-2.5.8C9.6 19.9 4.1 14.4 2.4 8.9c-.3-.9 0-1.9.8-2.5L4.8 5.2C5.5 4.7 6.5 4.8 7 3z"/></svg></span><span class="field-label"><span>Teléfono</span></span><div class="phone-field"><span>+56 9</span><input id="businessPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div>
+            <label>Teléfono
+              <div class="phone-field"><span>+56 9</span><input id="businessPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div>
             </label>
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.2"/></svg></span><span class="field-label"><span>Ciudad</span></span><input id="businessCity" maxlength="80" required placeholder="Temuco">
+            <label>Ciudad
+              <input id="businessCity" maxlength="80" required placeholder="Temuco">
             </label>
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.2"/></svg></span><span class="field-label"><span>Comuna</span></span><input id="businessComuna" maxlength="80" required placeholder="Temuco">
+            <label>Comuna
+              <input id="businessComuna" maxlength="80" required placeholder="Temuco">
             </label>
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></span><span class="field-label"><span>Dirección</span></span><input id="businessAddress" maxlength="160" required placeholder="Calle y número">
+            <label>Dirección
+              <input id="businessAddress" maxlength="160" required placeholder="Calle y número">
             </label>
           </div>
 
-          <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="M4 17l5-5 3 3 2-2 6 5"/></svg></span><span class="field-label"><span>Imagen del negocio</span><small>Opcional</small></span><input id="businessLogo" type="file" accept="image/*">
+          <label>Imagen del negocio <small>Opcional</small>
+            <input id="businessLogo" type="file" accept="image/*">
           </label>
 
           <p class="profile-status" id="businessStatus"></p>
@@ -108,24 +125,31 @@
             <p>Completa tus datos para comenzar a reservar.</p>
           </div>
 
-          <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c.8-4 3.5-6 8-6s7.2 2 8 6"/></svg></span><span class="field-label"><span>Nombre</span></span><input id="customerName" maxlength="120" required placeholder="Nombre y apellido">
+          <label>Nombre
+            <input id="customerName" maxlength="120" required placeholder="Nombre y apellido">
           </label>
 
           <div class="two-col">
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3l3 4-2 2c1.2 2.5 2.8 4.8 5 7l2-2 4 3c.7.5.8 1.5.3 2.2l-1.2 1.6c-.6.8-1.6 1.1-2.5.8C9.6 19.9 4.1 14.4 2.4 8.9c-.3-.9 0-1.9.8-2.5L4.8 5.2C5.5 4.7 6.5 4.8 7 3z"/></svg></span><span class="field-label"><span>Teléfono</span></span><div class="phone-field"><span>+56 9</span><input id="customerPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div>
+            <label>Teléfono
+              <div class="phone-field"><span>+56 9</span><input id="customerPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div>
             </label>
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 9h18"/></svg></span><span class="field-label"><span>Edad</span></span><input id="customerAge" type="number" min="13" max="120" placeholder="Edad">
+            <label>Edad
+              <input id="customerAge" type="number" min="13" max="120" placeholder="Edad">
             </label>
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.2"/></svg></span><span class="field-label"><span>Ciudad</span></span><input id="customerCity" maxlength="80" required placeholder="Temuco">
+            <label>Ciudad
+              <input id="customerCity" maxlength="80" required placeholder="Temuco">
             </label>
-            <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.2"/></svg></span><span class="field-label"><span>Comuna</span></span><input id="customerComuna" maxlength="80" required placeholder="Comuna">
+            <label>Comuna
+              <input id="customerComuna" maxlength="80" required placeholder="Comuna">
             </label>
           </div>
 
-          <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></span><span class="field-label"><span>Dirección</span></span><input id="customerAddress" maxlength="160" required placeholder="Calle y número">
+          <label>Dirección
+            <input id="customerAddress" maxlength="160" required placeholder="Calle y número">
           </label>
 
-          <label><span class="field-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="M4 17l5-5 3 3 2-2 6 5"/></svg></span><span class="field-label"><span>Foto de perfil</span><small>Opcional</small></span><input id="customerAvatar" type="file" accept="image/*">
+          <label>Foto de perfil <small>Opcional</small>
+            <input id="customerAvatar" type="file" accept="image/*">
           </label>
 
           <p class="profile-status" id="customerStatus"></p>

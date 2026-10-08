@@ -5,17 +5,47 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const money = v => Number(v || 0).toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
 
+  // B12: la misma lógica de cabeceras que utiliza el Marketplace.
+  // cover_url sigue teniendo prioridad si existe; si no, se resuelve por categoría.
+  const imageByCategory = {
+    barberia:'assets/card_barber.jpg',
+    peluqueria:'assets/card_barber.jpg',
+    estetica:'assets/card_aura.jpg',
+    salud:'assets/card_med.jpg',
+    bienestar:'assets/card_med.jpg',
+    entrenamiento:'assets/card_fit.jpg',
+    educacion:'assets/card_somos.jpg',
+    'servicios-profesionales':'assets/card_somos.jpg',
+    hogar:'assets/card_home.jpg',
+    automotriz:'assets/card_auto.jpg',
+    mascotas:'assets/card_pet.jpg',
+    otros:'assets/card_somos.jpg'
+  };
+
   function initials(name){
     return String(name || 'AY').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase() || 'AY';
   }
-
   function params(){ return new URLSearchParams(window.location.search); }
-
   function showError(message){
     $('stateLoading').hidden = true;
     $('businessProfile').hidden = true;
     $('stateError').hidden = false;
     $('errorMessage').textContent = message || 'El perfil puede no estar publicado o el enlace puede ser incorrecto.';
+  }
+  function categoryImage(data){
+    return data?.profile?.cover_url || imageByCategory[data?.category?.slug] || imageByCategory.otros;
+  }
+  function mapQuery(p){
+    return [p.address,p.comuna,p.city].filter(Boolean).join(', ');
+  }
+  function renderMap(p){
+    const query = mapQuery(p);
+    if(!query) return;
+    const encoded = encodeURIComponent(query);
+    $('mapFrame').src = `https://www.google.com/maps?q=${encoded}&output=embed`;
+    $('mapWrap').hidden = false;
+    $('mapLink').href = `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+    $('mapLink').hidden = false;
   }
 
   function render(data){
@@ -38,27 +68,55 @@
     else logo.textContent = initials(b.name);
 
     const cover = $('cover');
-    if (p.cover_url) { cover.classList.add('has-image'); cover.style.backgroundImage = `url("${encodeURI(p.cover_url)}")`; }
+    const coverUrl = categoryImage(data);
+    if (coverUrl) {
+      cover.classList.add('has-image');
+      cover.style.backgroundImage = `url("${encodeURI(coverUrl)}")`;
+    }
+
+    renderMap(p);
 
     if (p.phone || b.phone || p.whatsapp) {
       $('contactPanel').hidden = false;
       const phone = p.phone || b.phone;
-      if (phone) { $('phone').hidden = false; $('phone').textContent = `☎ ${phone}`; $('phone').href = `tel:${String(phone).replace(/[^+\d]/g,'')}`; }
-      if (p.whatsapp) { $('whatsapp').hidden = false; $('whatsapp').href = `https://wa.me/${String(p.whatsapp).replace(/\D/g,'')}`; }
+      if (phone) {
+        $('phone').hidden = false;
+        $('phone').textContent = `☎ ${phone}`;
+        $('phone').href = `tel:${String(phone).replace(/[^+\d]/g,'')}`;
+      }
+      if (p.whatsapp) {
+        $('whatsapp').hidden = false;
+        $('whatsapp').href = `https://wa.me/${String(p.whatsapp).replace(/\D/g,'')}`;
+      }
     }
 
-    $('serviceSummary').textContent = services.length ? `${services.length} servicio${services.length === 1 ? '' : 's'} publicado${services.length === 1 ? '' : 's'}` : 'Servicios publicados por el negocio';
-    $('services').innerHTML = services.length ? services.map(s => `<article class="service-card"><h3>${esc(s.name || 'Servicio')}</h3>${s.description ? `<p>${esc(s.description)}</p>` : ''}<div class="service-meta"><span>${s.duration_minutes ? `${esc(s.duration_minutes)} min` : 'Duración a consultar'}</span><span class="service-price">${s.price != null ? money(s.price) : 'Consultar'}</span></div></article>`).join('') : '<p class="empty-note">Este negocio aún no tiene servicios publicados.</p>';
+    $('serviceSummary').textContent = services.length
+      ? `${services.length} servicio${services.length === 1 ? '' : 's'} publicado${services.length === 1 ? '' : 's'}`
+      : 'Servicios publicados por el negocio';
+    $('services').innerHTML = services.length
+      ? services.map(s => `<article class="service-card">
+          <div class="service-main">
+            <h3>${esc(s.name || 'Servicio')}</h3>
+            ${s.description ? `<p>${esc(s.description)}</p>` : ''}
+          </div>
+          <div class="service-meta">
+            <span>${s.duration_minutes ? `${esc(s.duration_minutes)} min` : 'Duración a consultar'}</span>
+            <span class="service-price">${s.price != null ? money(s.price) : 'Consultar'}</span>
+          </div>
+        </article>`).join('')
+      : '<p class="empty-note">Este negocio aún no tiene servicios publicados.</p>';
 
     if (professionals.length) {
       $('professionalsPanel').hidden = false;
       $('professionals').innerHTML = professionals.map(pf => {
         const name = [pf.first_name,pf.last_name].filter(Boolean).join(' ') || 'Profesional';
-        return `<article class="professional"><div class="professional-avatar">${esc(initials(name))}</div><div><h3>${esc(name)}</h3>${pf.bio ? `<p>${esc(pf.bio)}</p>` : ''}</div></article>`;
+        return `<article class="professional">
+          <div class="professional-avatar">${esc(initials(name))}</div>
+          <div><h3>${esc(name)}</h3>${pf.bio ? `<p>${esc(pf.bio)}</p>` : ''}</div>
+        </article>`;
       }).join('');
     }
 
-    // B11.2 leaves reservation/availability for B11.3.
     $('reserveButton').addEventListener('click',()=>{
       $('services').scrollIntoView({behavior:'smooth',block:'start'});
     },{once:true});
@@ -82,6 +140,5 @@
     }
     render(r.data);
   }
-
   init();
 })();
