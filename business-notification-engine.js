@@ -20,12 +20,14 @@
     const s=document.createElement('style'); s.id='ayB13BusinessNotifStyles';
     s.textContent=`
       .ay-b13-notif-wrap{position:relative}
-      .ay-b13-notif-btn{position:relative}
+      .ay-b13-notif-btn{position:relative;display:inline-flex;align-items:center;justify-content:center}
+      .ay-notification-trigger svg{width:21px;height:21px;display:block}
+      .ay-b13-notif-close{position:relative;z-index:3;pointer-events:auto;touch-action:manipulation}
       .ay-b13-notif-badge{position:absolute;top:4px;right:4px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#e53935;color:#fff;font:700 10px/17px Arial;text-align:center;box-shadow:0 0 0 2px #fff}
       .ay-b13-notif-panel{position:fixed;z-index:9999;top:78px;right:18px;width:min(390px,calc(100vw - 28px));max-height:min(620px,calc(100vh - 105px));background:#fff;border:1px solid #dfe7f2;border-radius:20px;box-shadow:0 18px 55px rgba(20,43,76,.18);overflow:hidden;display:flex;flex-direction:column}
       .ay-b13-notif-head{padding:17px 18px 13px;border-bottom:1px solid #e8edf4;display:flex;align-items:center;justify-content:space-between;gap:12px}
       .ay-b13-notif-head strong{font-size:18px;color:#152f55}.ay-b13-notif-head small{display:block;color:#7b8798;margin-top:3px;font-size:12px}
-      .ay-b13-notif-close{border:0;background:#f3f6fa;border-radius:10px;width:34px;height:34px;font-size:21px;cursor:pointer;color:#243b5d}
+      .ay-b13-notif-close{border:0;background:#f3f6fa;border-radius:10px;width:34px;height:34px;font-size:21px;cursor:pointer;color:#243b5d;display:inline-flex;align-items:center;justify-content:center;position:relative;z-index:4;pointer-events:auto;touch-action:manipulation}
       .ay-b13-notif-list{overflow:auto;padding:8px}
       .ay-b13-notif-item{padding:13px 12px;border-radius:14px;margin:3px 0;background:#fff;border:1px solid transparent}
       .ay-b13-notif-item.is-unread{background:#f5f9ff;border-color:#dceaff}
@@ -53,13 +55,25 @@
       panel=document.createElement('section'); panel.id='ayB13BusinessNotifPanel'; panel.className='ay-b13-notif-panel'; panel.hidden=true;
       document.body.appendChild(panel);
     }
-    panel.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread ? `${state.unread} sin leer` : 'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map(r=>`<article class="ay-b13-notif-item ${r.read_at?'':'is-unread'}"><strong>${esc(r.service_name||'Reserva')}</strong><p>${esc(textFor(r))}</p><small>${fmtDate(r.booking_date)}${r.start_time?' · '+String(r.start_time).slice(0,5):''}</small></article>`).join(''):`<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>`}</div>`;
-    panel.querySelector('.ay-b13-notif-close').onclick=()=>close();
+    panel.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread ? `${state.unread} sin leer` : 'Todo al día'}</small></div><button class="ay-b13-notif-close" id="ayB13NotifClose" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map(r=>`<article class="ay-b13-notif-item ${r.read_at?'':'is-unread'}"><strong>${esc(r.service_name||'Reserva')}</strong><p>${esc(textFor(r))}</p><small>${fmtDate(r.booking_date)}${r.start_time?' · '+String(r.start_time).slice(0,5):''}</small></article>`).join(''):`<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>`}</div>`;
+    const closeBtn=panel.querySelector('#ayB13NotifClose');
+    if(closeBtn){
+      closeBtn.addEventListener('click', e=>{e.preventDefault();e.stopPropagation();close();}, {once:true});
+    }
     panel.querySelectorAll('.ay-b13-notif-item.is-unread').forEach(x=>x.addEventListener('click',()=>markRead()));
+    const trigger=document.getElementById('ayBusinessNotificationsBtn') || document.querySelector('.ay-header-actions .ay-icon-btn[title="Notificaciones"]');
+    if(trigger) trigger.setAttribute('aria-expanded',state.open?'true':'false');
     const badge=document.querySelector('.ay-b13-notif-badge'); if(badge){badge.textContent=state.unread>99?'99+':String(state.unread); badge.hidden=state.unread<1;}
   }
   function toggle(){ const p=document.getElementById('ayB13BusinessNotifPanel'); if(!p){render();return toggle();} state.open=!state.open; p.hidden=!state.open; if(state.open) markRead(); }
-  function close(){state.open=false;const p=document.getElementById('ayB13BusinessNotifPanel');if(p)p.hidden=true;}
+  function close(){
+    state.open=false;
+    const p=document.getElementById('ayB13BusinessNotifPanel');
+    if(p) p.hidden=true;
+    const trigger=document.getElementById('ayBusinessNotificationsBtn') || document.querySelector('.ay-header-actions .ay-icon-btn[title="Notificaciones"]');
+    if(trigger) trigger.setAttribute('aria-expanded','false');
+  }
+  document.addEventListener('keydown', e=>{if(e.key==='Escape' && state.open) close();});
 
   async function load(){
     if(!state.client) return;
