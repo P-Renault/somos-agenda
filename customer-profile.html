@@ -62,6 +62,12 @@
 
       <section class="cp-view" id="view-reservations" data-view-panel="reservations">
         <div class="cp-page-head"><div><span class="cp-eyebrow">AGENDA YA · CLIENTE</span><h1>Mis reservas</h1><p>Consulta tus próximas horas y tu historial.</p></div><a class="cp-primary-link" href="explorer.html">＋ Agendar otra hora</a></div>
+        <div class="cp-data-kpis" id="cpReservationKpis" aria-label="Resumen de reservas">
+          <article><span>Próximas</span><strong id="cpKpiUpcoming">—</strong></article>
+          <article><span>Pendientes</span><strong id="cpKpiPending">—</strong></article>
+          <article><span>Confirmadas</span><strong id="cpKpiConfirmed">—</strong></article>
+          <article><span>Historial</span><strong id="cpKpiHistory">—</strong></article>
+        </div>
         <div class="cp-tabs" role="tablist"><button class="is-active" data-res-tab="upcoming">Próximas</button><button data-res-tab="history">Historial</button></div>
         <div id="cpUpcomingList" class="cp-reservation-list"><div class="cp-loading">Cargando tus reservas…</div></div>
         <div id="cpHistoryList" class="cp-reservation-list" hidden></div>
@@ -90,6 +96,7 @@
 </div>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="customer-data-engine.js"></script>
 <script src="customer-profile.js"></script>
 </body>
 </html>
