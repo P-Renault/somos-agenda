@@ -62,9 +62,19 @@
     const session = await client.auth.getSession();
     const user = session.data.session?.user;
     if (!user) return;
-    const p = await client.from('profiles').select('full_name,avatar_url').eq('id',user.id).maybeSingle();
-    const display = p.data?.full_name || user.user_metadata?.full_name || user.email || 'Mi perfil';
-    const avatar = p.data?.avatar_url ? `<span class="account-avatar has-image" style="background-image:url('${encodeURI(p.data.avatar_url)}')"></span>` : `<span class="account-avatar">${esc(initials(display))}</span>`;
+    const p = await client.from('profiles').select('full_name,avatar_url,profile_type').eq('id',user.id).maybeSingle();
+    const profile = p.data || {};
+    const display = profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Mi perfil';
+    const avatar = profile.avatar_url ? `<span class="account-avatar has-image" style="background-image:url('${encodeURI(profile.avatar_url)}')"></span>` : `<span class="account-avatar">${esc(initials(display))}</span>`;
+    if(profile.profile_type === 'customer'){
+      account.innerHTML = `<a class="account-button signed" href="profile.html" aria-label="Abrir mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
+      $('marketLogout').addEventListener('click', async ()=>{
+        const btn=$('marketLogout'); btn.disabled=true; btn.textContent='Saliendo…';
+        try{ await client.auth.signOut(); }catch(_){}
+        window.location.href='index.html';
+      });
+      return;
+    }
     account.innerHTML = `<a class="publish-link" href="index.html">Publica tu negocio</a><a class="account-button signed" href="profile.html" aria-label="Abrir mi perfil">${avatar}</a>`;
   }
 
