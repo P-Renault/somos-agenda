@@ -67,7 +67,7 @@
     const display = profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Mi perfil';
     const avatar = profile.avatar_url ? `<span class="account-avatar has-image" style="background-image:url('${encodeURI(profile.avatar_url)}')"></span>` : `<span class="account-avatar">${esc(initials(display))}</span>`;
     if(profile.profile_type === 'customer'){
-      account.innerHTML = `<a class="account-button signed" href="profile.html" aria-label="Abrir mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
+      account.innerHTML = `<a class="account-button signed" href="customer-reservations.html" aria-label="Ver mis reservas">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
       $('marketLogout').addEventListener('click', async ()=>{
         const btn=$('marketLogout'); btn.disabled=true; btn.textContent='Saliendo…';
         try{ await client.auth.signOut(); }catch(_){}
@@ -75,7 +75,7 @@
       });
       return;
     }
-    account.innerHTML = `<a class="publish-link" href="index.html">Publica tu negocio</a><a class="account-button signed" href="profile.html" aria-label="Abrir mi perfil">${avatar}</a>`;
+    account.innerHTML = `<a class="publish-link" href="index.html">Publica tu negocio</a><a class="account-button signed" href="customer-reservations.html" aria-label="Ver mis reservas">${avatar}</a>`;
   }
 
   async function loadCategories(){

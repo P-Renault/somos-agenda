@@ -1,0 +1,37 @@
+*{box-sizing:border-box}
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#173252;background:#f4f8fc}
+body{margin:0;min-height:100vh;background:linear-gradient(180deg,#f8fbff 0,#f2f7fc 100%)}
+a{text-decoration:none;color:inherit}
+.customer-shell{width:min(1120px,100%);margin:0 auto;padding-bottom:44px}
+.customer-header{height:78px;background:#fff;border-bottom:1px solid #e4ebf3;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+.customer-brand img{display:block;width:166px;height:auto;max-height:52px;object-fit:contain}
+.customer-header-actions{display:flex;align-items:center;gap:10px}
+.back-market{font-size:13px;font-weight:800;color:#176fe0;padding:10px 12px}
+.customer-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#eaf4ff;color:#176fe0;border:1px solid #d8e8fa;font-size:13px;font-weight:900;background-size:cover;background-position:center}
+.customer-avatar.has-image{color:transparent}
+.logout-button{height:40px;padding:0 16px;border:1px solid #dce5ef;border-radius:11px;background:#fff;color:#29415f;font-weight:800;font-size:12px;cursor:pointer}
+.customer-hero{padding:42px 28px 28px}
+.eyebrow{font-size:10px;letter-spacing:.14em;font-weight:900;color:#1672df}
+.customer-hero h1{margin:7px 0 7px;font-size:34px;letter-spacing:-.035em;color:#102b50}
+.customer-hero p{margin:0;color:#718197;font-size:14px;line-height:1.5}
+.reservation-section{margin:0 28px 24px;background:#fff;border:1px solid #e0e9f2;border-radius:20px;padding:22px;box-shadow:0 10px 28px rgba(21,57,95,.05)}
+.section-title-row{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:16px}
+.section-title-row h2{margin:0;color:#173252;font-size:19px;letter-spacing:-.02em}
+.section-title-row p{margin:5px 0 0;color:#78889d;font-size:12px;line-height:1.45}
+.primary-cta{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 15px;border-radius:11px;background:#176fe0;color:#fff;font-size:12px;font-weight:900;white-space:nowrap;box-shadow:0 7px 18px rgba(23,111,224,.18)}
+.reservation-list{display:flex;flex-direction:column;gap:10px}
+.loading-card,.empty-card{padding:28px 18px;border:1px dashed #d8e2ed;border-radius:15px;text-align:center;color:#77879b;font-size:13px}
+.reservation-card{border:1px solid #e1e9f2;border-radius:16px;padding:16px;display:grid;grid-template-columns:118px 1fr auto;gap:15px;align-items:center;background:#fff}
+.reservation-date{border-radius:13px;background:#eef6ff;border:1px solid #dcecff;padding:11px;text-align:center;color:#176fe0}
+.reservation-date .day{display:block;font-size:23px;font-weight:900;line-height:1}
+.reservation-date .month{display:block;margin-top:4px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:900}
+.reservation-main h3{margin:0;font-size:15px;color:#183554}
+.reservation-main .business{margin-top:4px;font-size:12px;font-weight:800;color:#47627f}
+.reservation-main .meta{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 12px;color:#738399;font-size:11px}
+.reservation-main .meta span{display:inline-flex;align-items:center;gap:4px}
+.status{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;white-space:nowrap}
+.status.pending{background:#fff5dd;color:#8a6415}.status.confirmed{background:#eaf4ff;color:#176fe0}.status.completed{background:#eaf8ef;color:#237043}.status.cancelled,.status.rejected,.status.no_show{background:#fff0f0;color:#bd3b3b}.status.unknown{background:#eef2f6;color:#607087}
+.history-section .reservation-card{opacity:.96}
+.card-actions{margin-top:10px;display:flex;justify-content:flex-end}.business-link{font-size:11px;font-weight:900;color:#176fe0}
+@media(max-width:720px){.customer-header{height:70px;padding:0 16px}.customer-brand img{width:132px}.back-market{font-size:11px;padding:8px}.customer-avatar{width:38px;height:38px}.logout-button{height:38px;padding:0 12px}.customer-hero{padding:30px 16px 22px}.customer-hero h1{font-size:28px}.reservation-section{margin:0 12px 18px;padding:16px;border-radius:17px}.section-title-row{align-items:flex-start;flex-direction:column}.primary-cta{width:100%}.reservation-card{grid-template-columns:72px 1fr;gap:12px;padding:13px}.reservation-date{padding:10px 7px}.reservation-date .day{font-size:20px}.reservation-status{grid-column:2}.status{justify-self:start}.card-actions{justify-content:flex-start}}
+@media(max-width:390px){.customer-header-actions{gap:5px}.back-market{display:none}.customer-brand img{width:126px}.reservation-main h3{font-size:14px}}

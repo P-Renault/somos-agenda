@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Consulta tus reservas en Agenda Ya.">
+  <title>Agenda Ya · Mis reservas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="customer-reservations.css">
+</head>
+<body class="customer-page">
+  <main class="customer-shell">
+    <header class="customer-header">
+      <a class="customer-brand" href="explorer.html" aria-label="Agenda Ya">
+        <img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya">
+      </a>
+      <div class="customer-header-actions">
+        <a class="back-market" href="explorer.html">Explorar</a>
+        <span id="customerAvatar" class="customer-avatar" aria-label="Mi perfil">AY</span>
+        <button id="customerLogout" class="logout-button" type="button">Salir</button>
+      </div>
+    </header>
+
+    <section class="customer-hero">
+      <span class="eyebrow">AGENDA YA · CLIENTE</span>
+      <h1>Mis reservas</h1>
+      <p id="customerGreeting">Aquí encontrarás tus próximas horas y tu historial.</p>
+    </section>
+
+    <section class="reservation-section">
+      <div class="section-title-row">
+        <div>
+          <h2>Próximas reservas</h2>
+          <p>Las reservas que aún están pendientes o confirmadas.</p>
+        </div>
+        <a class="primary-cta" href="explorer.html">＋ Agendar otra hora</a>
+      </div>
+      <div id="upcomingList" class="reservation-list" aria-live="polite">
+        <div class="loading-card">Cargando tus reservas…</div>
+      </div>
+    </section>
+
+    <section class="reservation-section history-section">
+      <div class="section-title-row">
+        <div>
+          <h2>Historial</h2>
+          <p>Reservas anteriores y reservas que ya no están activas.</p>
+        </div>
+      </div>
+      <div id="historyList" class="reservation-list" aria-live="polite">
+        <div class="loading-card">Cargando historial…</div>
+      </div>
+    </section>
+  </main>
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="customer-reservations.js"></script>
+</body>
+</html>
