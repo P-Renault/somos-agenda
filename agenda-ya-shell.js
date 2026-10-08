@@ -103,8 +103,8 @@
   };
 
   // The shell remains independent. Operational modules are loaded as a cumulative layer.
-  void loadAsset("css", "agenda-ya-modules.css?v=1.3.0")
-    .then(() => loadAsset("js", "agenda-ya-modules.js?v=1.3.0"))
+  void loadAsset("css", "agenda-ya-modules.css?v=1.3.1")
+    .then(() => loadAsset("js", "agenda-ya-modules.js?v=1.3.1"))
     .then(() => {
       if (pendingView && window.AgendaYaModules?.activate) {
         const target = pendingView;

@@ -4,7 +4,7 @@
    Does not own authentication or the shell. It reads the authenticated business session from Supabase.
 */
 (() => {
-  if (window.AgendaYaModules?.version === "1.3.0") return;
+  if (window.AgendaYaModules?.version === "1.3.1") return;
 
   const cfg = window.SOMOS_CONFIG || {};
   let client = null;
@@ -359,10 +359,74 @@
     }
   }
 
+
+  function settingsSection(title, eyebrow, description, body, actions=""){
+    const rootEl=root();
+    rootEl.innerHTML=`<div class="ay-module-workspace ay-settings-workspace">
+      <div class="ay-module-toolbar"><div class="ay-module-title"><span class="ay-eyebrow">${esc(eyebrow)}</span><h1>${esc(title)}</h1><p>${esc(description)}</p></div><div class="ay-module-actions">${actions}</div></div>
+      <p id="ayModuleStatus" class="ay-module-status" aria-live="polite"></p>${body}
+    </div>`;
+    return rootEl;
+  }
+
+  function renderSettings(){
+    const body = `
+      <section class="ay-settings-plan-hero">
+        <div><span class="ay-settings-kicker">MEMBRESÍA · VISTA PREPARADA</span><h2>Mi membresía</h2><p>Administra el plan del negocio, sus límites, el estado de suscripción y la facturación desde un único lugar.</p></div>
+        <span class="ay-settings-engine-badge">Membership Engine · Próxima integración</span>
+      </section>
+      <section class="ay-settings-grid ay-settings-grid-2">
+        <article class="ay-settings-card" id="ayMembershipView">
+          <div class="ay-settings-card-head"><div><span class="ay-settings-label">PLAN ACTUAL</span><h3>Estado de membresía</h3></div><span class="ay-module-badge">Preparado</span></div>
+          <div class="ay-settings-stat-grid">
+            <div><small>Plan</small><strong>—</strong><span>Se cargará desde Membership Engine</span></div>
+            <div><small>Estado</small><strong>—</strong><span>Suscripción no consultada todavía</span></div>
+            <div><small>Renovación</small><strong>—</strong><span>Se calculará según la suscripción</span></div>
+          </div>
+          <div class="ay-settings-actions"><button type="button" class="ay-btn ay-btn-primary" data-ay-action="membership-engine-placeholder">Gestionar membresía</button></div>
+        </article>
+        <article class="ay-settings-card" id="ayEntitlementsView">
+          <div class="ay-settings-card-head"><div><span class="ay-settings-label">PLANES · ENTITLEMENTS</span><h3>Funcionalidades del plan</h3></div><span class="ay-module-badge">Preparado</span></div>
+          <p class="ay-settings-muted">La disponibilidad de funciones se resolverá mediante entitlements del plan. Esta vista no fija precios ni reglas comerciales.</p>
+          <div class="ay-settings-feature-list">
+            <div><span>Servicios</span><b>—</b></div><div><span>Profesionales</span><b>—</b></div><div><span>Clientes</span><b>—</b></div><div><span>Reservas</span><b>—</b></div>
+          </div>
+        </article>
+      </section>
+      <section class="ay-settings-card" id="ayLimitsView">
+        <div class="ay-settings-card-head"><div><span class="ay-settings-label">USO · LÍMITES</span><h3>Restricciones del plan</h3></div><span class="ay-module-badge">Preparado</span></div>
+        <p class="ay-settings-muted">Los límites reales se calcularán por recurso y serán aplicados por el motor de Membership, con validación de backend.</p>
+        <div class="ay-settings-limit-grid">
+          ${[['Profesionales','professionals'],['Servicios','services'],['Clientes','clients'],['Reservas','bookings']].map(([label,key])=>`<div class="ay-settings-limit"><div><strong>${label}</strong><span data-membership-usage="${key}">— / —</span></div><div class="ay-settings-progress"><i data-membership-progress="${key}" style="width:0%"></i></div><small data-membership-limit-status="${key}">Motor de límites pendiente</small></div>`).join('')}
+        </div>
+      </section>
+      <section class="ay-settings-grid ay-settings-grid-2">
+        <article class="ay-settings-card" id="ayBillingView">
+          <div class="ay-settings-card-head"><div><span class="ay-settings-label">BILLING</span><h3>Facturación y suscripción</h3></div><span class="ay-module-badge">Preparado</span></div>
+          <div class="ay-settings-menu-list">
+            <button type="button" data-ay-action="billing-checkout-placeholder"><span><b>💳</b><strong>Gestionar pago</strong><small>Checkout y estado de pago.</small></span><em>→</em></button>
+            <button type="button" data-ay-action="billing-history-placeholder"><span><b>▤</b><strong>Historial de pagos</strong><small>Movimientos de la suscripción.</small></span><em>→</em></button>
+            <button type="button" data-ay-action="billing-cancel-placeholder"><span><b>↻</b><strong>Gestionar renovación</strong><small>Cancelación y reactivación.</small></span><em>→</em></button>
+          </div>
+        </article>
+        <article class="ay-settings-card" id="ayLifecycleView">
+          <div class="ay-settings-card-head"><div><span class="ay-settings-label">CICLO DE VIDA</span><h3>Estado de suscripción</h3></div><span class="ay-module-badge">Preparado</span></div>
+          <div class="ay-settings-lifecycle"><div class="is-current"><b>Trial</b><span>Inicio</span></div><div><b>Activo</b><span>Pago confirmado</span></div><div><b>Pago pendiente</b><span>Grace period</span></div><div><b>Suspendido</b><span>Acceso restringido</span></div><div><b>Cancelado</b><span>Fin de suscripción</span></div></div>
+          <p class="ay-settings-muted">El estado real será determinado por Billing + Membership. La interfaz no lo inferirá desde el navegador.</p>
+        </article>
+      </section>
+      <section class="ay-settings-card ay-settings-contract">
+        <div><span class="ay-settings-label">CONTRATO DE INTEGRACIÓN</span><h3>Preparado para los motores B13.3–B13.7</h3><p>Esta entrega construye únicamente las vistas. Los motores se conectarán en el siguiente despliegue sin rediseñar esta interfaz.</p></div>
+        <div class="ay-settings-contract-grid"><span>Membership Engine</span><span>Entitlements</span><span>Limits</span><span>Billing</span><span>Subscription lifecycle</span></div>
+      </section>`;
+    settingsSection("Configuración", "SISTEMA", "Preferencias, cuenta, membresía, límites y suscripción del negocio.", body);
+  }
+
   async function activate(view){
     currentView=view||"dashboard";
     const seq=++activationSeq;
-    if(currentView==="dashboard"||currentView==="settings") return;
+    if(currentView==="dashboard") return;
+    if(currentView==="settings"){ renderSettings(); return; }
     if(seq!==activationSeq) return;
     const meta = {
       services:["Servicios","GESTIÓN","Administra el catálogo de servicios, duración y precios."],
@@ -372,7 +436,8 @@
       clients:["Clientes","RELACIÓN","Consulta y administra la cartera de clientes."],
       bookings:["Reservas","OPERACIÓN","Gestiona reservas, estados y atención."],
       calendar:["Calendario","OPERACIÓN","Visualiza la agenda y la carga diaria del negocio."],
-      "public-profile":["Perfil público","PUBLICACIÓN","Visualiza cómo se presenta públicamente tu propio negocio."]
+      "public-profile":["Perfil público","PUBLICACIÓN","Visualiza cómo se presenta públicamente tu propio negocio."],
+      settings:["Configuración","SISTEMA","Preferencias, cuenta, membresía, límites y suscripción del negocio."]
     }[currentView];
     const rootEl=root();
     if(rootEl && meta){
@@ -390,6 +455,7 @@
       else if(currentView==="bookings")await renderBookings();
       else if(currentView==="calendar")await renderCalendar();
       else if(currentView==="public-profile")await renderPublicProfile();
+      else if(currentView==="settings")renderSettings();
     }catch(e){status(e.message||"No fue posible cargar el módulo.","error");}
   }
 
@@ -421,26 +487,37 @@
     }catch(err){status(err.message||String(err),"error");}
   });
   document.addEventListener("submit",e=>{if(e.target.id==="ayDynamicForm")void submitDynamic(e);});
+  document.addEventListener("click", e => {
+    const b=e.target.closest?.('[data-ay-action$="-placeholder"]');
+    if(!b) return;
+    const map={
+      "membership-engine-placeholder":"Membership Engine se integrará en el siguiente despliegue.",
+      "billing-checkout-placeholder":"Billing Engine + Flow se integrarán en el siguiente despliegue.",
+      "billing-history-placeholder":"El historial real se conectará al motor de Billing.",
+      "billing-cancel-placeholder":"La gestión de renovación se conectará al ciclo de vida de suscripción."
+    };
+    status(map[b.dataset.ayAction]||"Motor pendiente de integración.","");
+  });
   // Navigation fallback: the shell is the primary router, but this listener
   // keeps the module operational even if a cached/older shell dispatches only
   // the view-change event. It also makes every [data-view] control usable.
   window.addEventListener("agendaYa:view-change", e => {
     const view = e.detail?.view;
     if (e.detail?.handledByShell) return;
-    if (view && view !== "dashboard" && view !== "settings") void activate(view);
+    if (view && view !== "dashboard") void activate(view);
   });
   document.addEventListener("click", e => {
     const nav = e.target.closest?.("[data-view]");
     if (!nav) return;
     const view = nav.dataset.view;
-    if (!view || view === "dashboard" || view === "settings") return;
+    if (!view || view === "dashboard") return;
     // Let the shell handle visual navigation; this is a safety net for
     // navigation controls that were inserted dynamically or cached.
     setTimeout(() => {
       if (currentView !== view) void activate(view);
     }, 0);
   }, true);
-  window.AgendaYaModules={version:"1.3.0",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
+  window.AgendaYaModules={version:"1.3.1",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
   const initialView = window.AgendaYaUI?.getPendingView?.() || window.AgendaYaUI?.getCurrentView?.() || "dashboard";
   void activate(initialView);
 
