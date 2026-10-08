@@ -28,6 +28,26 @@
       gap:10px;
       flex-shrink:0;
     }
+    .auth-actions .btn-outline {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:1px;
+      min-height:44px;
+      padding:6px 16px;
+      border-radius:12px;
+      background:#082c63;
+      border:2px solid #082c63;
+      color:#fff;
+      font-weight:800;
+      line-height:1.02;
+      text-align:center;
+      text-decoration:none;
+      white-space:nowrap;
+      box-shadow:0 6px 18px rgba(8,44,99,.18);
+    }
+
     .auth-actions .btn-explore-header {
       display:inline-flex;
       align-items:center;
@@ -43,6 +63,12 @@
       white-space:nowrap;
       box-shadow:0 6px 18px rgba(14,126,232,.18);
     }
+
+    .auth-actions .btn-explore-header .search-icon {
+      width:18px;
+      height:18px;
+      flex:0 0 18px;
+    }
     .auth-actions .btn-outline {
       white-space:nowrap;
     }
@@ -54,9 +80,17 @@
       .auth-actions .btn-outline,
       .auth-actions .btn-explore-header {
         min-height:40px;
-        padding:0 11px;
+        padding:5px 10px;
         border-radius:11px;
         font-size:12px;
+      }
+
+      .auth-actions .btn-outline {
+        width:104px;
+      }
+
+      .auth-actions .btn-explore-header {
+        flex:1 1 auto;
       }
       .auth-actions .btn-explore-header { gap:5px; }
     }
@@ -87,8 +121,12 @@
       <a href="#blog">Blog</a>
     </nav>
     <div class="auth-actions">
-      <a class="btn-outline" href="login.html">Regístrate / Inicia sesión</a>
-      <a class="btn-explore-header" href="explorer.html">Encuentra y agenda <span aria-hidden="true">→</span></a>
+      <a class="btn-outline" href="login.html"><span>Regístrate</span><span>Inicia sesión</span></a>
+      <a class="btn-explore-header" href="explorer.html"><svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M16 16L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span>Encuentra y agenda</span><span aria-hidden="true">→</span></a>
     </div>
   </header>
 
@@ -157,7 +195,7 @@
 
     <section class="split-cards" id="planes">
       <article class="for-client"><div class="person">◯</div><div><label>♙ Para clientes</label><h2>Todo lo que necesitas,<br>en un solo lugar.</h2><ul><li>Encuentra negocios confiables</li><li>Compara servicios y precios</li><li>Agenda en segundos</li><li>Recibe confirmación inmediata</li></ul><a href="explorer.html">Buscar servicios →</a></div></article>
-      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html">Regístrate / Inicia sesión →</a></div></article>
+      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html"><span>Regístrate</span><span>Inicia sesión</span> →</a></div></article>
     </section>
 
     <section class="why">
