@@ -54,8 +54,13 @@
         });
         if(r.error){status.textContent=r.error.message||'No fue posible guardar la valoración.';btn.disabled=false;return;}
         status.textContent='Valoración guardada correctamente.';
+        try{
+          const fresh=await engine().fetchRatingsAndReputation();
+          engine().context.ratings=fresh.ratings;
+          engine().context.reputation=fresh.reputation;
+          window.AgendaYaCustomerProfile?.refreshReputationUI?.();
+        }catch(err){console.warn('Agenda YA actualización de reputación:',err);}
         setTimeout(()=>modal.remove(),700);
-        document.querySelector(`[data-rating-booking="${CSS.escape(bookingId)}"]`)?.replaceWith(Object.assign(document.createElement('button'),{className:'cp-rating-action',textContent:'Ver valoración',type:'button',disabled:false}));
       });
     }
   }
