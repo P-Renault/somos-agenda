@@ -7,12 +7,76 @@
   <meta name="description" content="Encuentra negocios, servicios y profesionales cerca de ti. Compara, elige y agenda en Agenda YA.">
   <link rel="canonical" href="index.html">
   <link rel="stylesheet" href="styles.css">
+  <style id="agenda-ya-b11-header">
+    .topbar .brand {
+      display:flex;
+      align-items:center;
+      flex:0 0 auto;
+    }
+    .topbar .brand-logo {
+      display:block;
+      width:clamp(150px, 13vw, 205px);
+      height:auto;
+      max-height:58px;
+      object-fit:contain;
+      object-position:center;
+    }
+    .auth-actions {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      flex-shrink:0;
+    }
+    .auth-actions .btn-explore-header {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      min-height:44px;
+      padding:0 18px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#0b7bea,#1598f5);
+      color:#fff;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+      box-shadow:0 6px 18px rgba(14,126,232,.18);
+    }
+    .auth-actions .btn-outline {
+      white-space:nowrap;
+    }
+    @media (max-width:760px) {
+      .topbar { gap:10px; }
+      .topbar .brand-logo { width:148px; max-height:50px; }
+      .main-nav, .menu-btn { display:none !important; }
+      .auth-actions { margin-left:auto; gap:7px; }
+      .auth-actions .btn-outline,
+      .auth-actions .btn-explore-header {
+        min-height:40px;
+        padding:0 11px;
+        border-radius:11px;
+        font-size:12px;
+      }
+      .auth-actions .btn-explore-header { gap:5px; }
+    }
+    @media (max-width:430px) {
+      .topbar .brand-logo { width:136px; }
+      .auth-actions .btn-outline,
+      .auth-actions .btn-explore-header {
+        white-space:normal;
+        line-height:1.05;
+        text-align:center;
+      }
+      .auth-actions .btn-outline { max-width:124px; }
+      .auth-actions .btn-explore-header { max-width:118px; }
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="index.html" aria-label="Agenda YA">
-      <span class="brand-mark">Agenda<span>YA</span><i>✦</i></span>
-      <small>Encuentra. Elige. Agenda.</small>
+      <img class="brand-logo" src="agenda-ya-logo.jpg" alt="Agenda YA — Encuentra. Elige. Agenda.">
     </a>
     <nav class="main-nav" aria-label="Navegación principal">
       <a href="#inicio">Inicio</a>
@@ -23,11 +87,9 @@
       <a href="#blog">Blog</a>
     </nav>
     <div class="auth-actions">
-      <a class="btn-outline" href="login.html">Publica tu negocio</a>
-      <a class="login-link" href="login.html">Iniciar sesión</a>
-      <a class="profile-btn" href="login.html" aria-label="Iniciar sesión">⌾</a>
+      <a class="btn-outline" href="login.html">Regístrate / Inicia sesión</a>
+      <a class="btn-explore-header" href="explorer.html">Encuentra y agenda <span aria-hidden="true">→</span></a>
     </div>
-    <button class="menu-btn" aria-label="Abrir menú">☰</button>
   </header>
 
   <main id="inicio">
@@ -95,7 +157,7 @@
 
     <section class="split-cards" id="planes">
       <article class="for-client"><div class="person">◯</div><div><label>♙ Para clientes</label><h2>Todo lo que necesitas,<br>en un solo lugar.</h2><ul><li>Encuentra negocios confiables</li><li>Compara servicios y precios</li><li>Agenda en segundos</li><li>Recibe confirmación inmediata</li></ul><a href="explorer.html">Buscar servicios →</a></div></article>
-      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html">Publica tu negocio →</a></div></article>
+      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html">Regístrate / Inicia sesión →</a></div></article>
     </section>
 
     <section class="why">
