@@ -197,3 +197,28 @@
     padding:14px;
   }
 }
+
+/* B12.5 · Tus datos: mismas proporciones visuales que Login / Perfil */
+.booking-client-fields{
+  width:100%;
+  max-width:614px;
+  margin-left:auto;
+  margin-right:auto;
+  box-sizing:border-box;
+}
+.booking-client-fields input,
+.booking-client-fields textarea{
+  width:100%;
+  box-sizing:border-box;
+}
+.booking-client-fields label{
+  width:100%;
+  box-sizing:border-box;
+}
+
+@media(max-width:480px){
+  .booking-client-fields{
+    width:100%;
+    max-width:none;
+  }
+}
