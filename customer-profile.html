@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Perfil cliente de Agenda Ya.">
+<title>Agenda Ya · Perfil cliente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="customer-profile.css">
+</head>
+<body class="customer-app">
+<div class="cp-app" id="cpApp" hidden>
+  <header class="cp-header">
+    <button class="cp-icon-btn cp-mobile-only" id="cpMenuBtn" type="button" aria-label="Abrir menú">☰</button>
+    <a class="cp-brand" href="explorer.html" aria-label="Agenda Ya"><img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya"></a>
+    <div class="cp-header-actions">
+      <button class="cp-notification-btn" id="cpNotificationBtn" type="button" aria-label="Notificaciones"><span>♢</span><b id="cpNotificationBadge" hidden>0</b></button>
+      <button class="cp-account" id="cpAccountBtn" type="button" aria-label="Mi perfil"><span class="cp-avatar" id="cpHeaderAvatar">AY</span></button>
+      <button class="cp-logout" id="cpLogout" type="button">Salir</button>
+    </div>
+  </header>
+
+  <div class="cp-layout">
+    <aside class="cp-sidebar" id="cpSidebar" aria-label="Menú de perfil cliente">
+      <div class="cp-sidebar-label">MI AGENDA YA</div>
+      <button class="cp-side-item is-active" data-view="profile"><span>♙</span><strong>Mi perfil</strong></button>
+      <button class="cp-side-item" data-view="reservations"><span>▤</span><strong>Mis reservas</strong></button>
+      <button class="cp-side-item" data-view="ratings"><span>★</span><strong>Mis valoraciones</strong></button>
+      <button class="cp-side-item" data-view="reputation"><span>✦</span><strong>Mi reputación</strong></button>
+      <div class="cp-sidebar-divider"></div>
+      <button class="cp-side-item" data-view="explore"><span>⌕</span><strong>Explorar servicios</strong></button>
+    </aside>
+
+    <main class="cp-main" id="cpMain">
+      <section class="cp-view is-active" id="view-profile" data-view-panel="profile">
+        <div class="cp-page-head"><div><span class="cp-eyebrow">AGENDA YA · PERFIL CLIENTE</span><h1>Mi perfil</h1><p>Administra tus datos personales y la información que utilizas para reservar.</p></div></div>
+        <div class="cp-profile-grid">
+          <article class="cp-card cp-profile-summary-card">
+            <div class="cp-profile-large-avatar" id="cpLargeAvatar">AY</div>
+            <div><h2 id="cpProfileName">Mi perfil</h2><p id="cpProfileEmail">—</p><span class="cp-role-pill">Cliente</span></div>
+            <label class="cp-upload-btn">Cambiar foto<input id="cpAvatarFile" type="file" accept="image/png,image/jpeg,image/webp"></label>
+            <small class="cp-help">La fotografía es opcional.</small>
+          </article>
+          <article class="cp-card cp-form-card">
+            <div class="cp-card-head"><div><h2>Datos personales</h2><p>Estos datos se utilizarán para tus reservas.</p></div></div>
+            <div class="cp-form-grid">
+              <label>Nombre completo<input id="cpName" maxlength="120" autocomplete="name"></label>
+              <label>Correo electrónico<input id="cpEmail" type="email" readonly></label>
+              <label>Teléfono<input id="cpPhone" maxlength="8" inputmode="numeric" autocomplete="tel"></label>
+              <label>Edad<input id="cpAge" type="number" min="13" max="120"></label>
+              <label>Ciudad<input id="cpCity" maxlength="80" autocomplete="address-level2"></label>
+              <label>Comuna<input id="cpComuna" maxlength="80"></label>
+              <label class="cp-full">Dirección<input id="cpAddress" maxlength="160" autocomplete="street-address"></label>
+            </div>
+            <p class="cp-form-status" id="cpProfileStatus"></p>
+            <button class="cp-primary-btn" id="cpSaveProfile" type="button">Guardar cambios</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="cp-view" id="view-reservations" data-view-panel="reservations">
+        <div class="cp-page-head"><div><span class="cp-eyebrow">AGENDA YA · CLIENTE</span><h1>Mis reservas</h1><p>Consulta tus próximas horas y tu historial.</p></div><a class="cp-primary-link" href="explorer.html">＋ Agendar otra hora</a></div>
+        <div class="cp-tabs" role="tablist"><button class="is-active" data-res-tab="upcoming">Próximas</button><button data-res-tab="history">Historial</button></div>
+        <div id="cpUpcomingList" class="cp-reservation-list"><div class="cp-loading">Cargando tus reservas…</div></div>
+        <div id="cpHistoryList" class="cp-reservation-list" hidden></div>
+      </section>
+
+      <section class="cp-view" id="view-ratings" data-view-panel="ratings">
+        <div class="cp-page-head"><div><span class="cp-eyebrow">AGENDA YA · REPUTACIÓN</span><h1>Mis valoraciones</h1><p>Gestiona las valoraciones que realizas a los negocios después de una reserva completada.</p></div></div>
+        <div class="cp-card cp-module-intro"><div class="cp-module-icon">★</div><div><h2>Valoraciones vinculadas a reservas</h2><p>Una valoración solo se habilita cuando la reserva correspondiente está completada. La arquitectura de Agenda Ya establece una valoración máxima por reserva y dirección.</p></div></div>
+        <div id="cpRatingsList" class="cp-rating-list"><div class="cp-loading">Revisando tus reservas completadas…</div></div>
+      </section>
+
+      <section class="cp-view" id="view-reputation" data-view-panel="reputation">
+        <div class="cp-page-head"><div><span class="cp-eyebrow">AGENDA YA · REPUTACIÓN</span><h1>Mi reputación</h1><p>Consulta las valoraciones recibidas como cliente. Esta información se mantiene privada por diseño.</p></div></div>
+        <div class="cp-reputation-grid">
+          <article class="cp-card cp-score-card"><span class="cp-score-label">Puntuación</span><strong id="cpScore">—</strong><span id="cpScoreCount">Sin valoraciones todavía</span></article>
+          <article class="cp-card"><div class="cp-card-head"><div><h2>Valoraciones recibidas</h2><p>Solo provienen de reservas reales y completadas.</p></div></div><div id="cpReceivedReviews" class="cp-review-list"><div class="cp-empty">Aún no tienes valoraciones recibidas.</div></div></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="cp-mobile-rail" aria-label="Accesos rápidos"><button data-view="profile" class="is-active"><span>♙</span><small>Perfil</small></button><button data-view="reservations"><span>▤</span><small>Reservas</small></button><button data-view="ratings"><span>★</span><small>Valoraciones</small></button><button data-view="reputation"><span>✦</span><small>Reputación</small></button><button data-view="explore"><span>⌕</span><small>Explorar</small></button></nav>
+
+  <div class="cp-backdrop" id="cpBackdrop" hidden></div>
+  <section class="cp-notification-panel" id="cpNotificationPanel" hidden aria-label="Notificaciones"><div class="cp-panel-head"><div><span class="cp-eyebrow">AGENDA YA</span><h2>Notificaciones</h2></div><button id="cpNotificationClose" type="button">×</button></div><div id="cpNotifications"><div class="cp-empty">No tienes notificaciones nuevas.</div></div></section>
+</div>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="customer-profile.js"></script>
+</body>
+</html>
