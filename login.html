@@ -106,7 +106,66 @@
   <script src="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/agenda-ya-shell.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/agenda-ya-profile.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/P-Renault/somos-agenda@Backup-2.0/auth.js"></script>
-  <script src="resume-pending-booking.js"></script>
-  <script src="dashboard-live.js"></script>
+  <script>
+  /* B12.7 — integración sobre archivos originales.
+     1) Si auth.js muestra el dashboard embebido, navegar al dashboard.html real.
+     2) Mantener la reserva pendiente durante el onboarding cliente sin crear un archivo adicional.
+  */
+  (() => {
+    const PENDING_KEY = "agendaYaPendingBooking";
+    const PENDING_TTL = 2 * 60 * 60 * 1000;
+    const pending = () => {
+      try {
+        const raw = sessionStorage.getItem(PENDING_KEY) || localStorage.getItem(PENDING_KEY);
+        if (!raw) return null;
+        const d = JSON.parse(raw);
+        if (!d || (d.savedAt && Date.now() - d.savedAt > PENDING_TTL)) {
+          sessionStorage.removeItem(PENDING_KEY); localStorage.removeItem(PENDING_KEY); return null;
+        }
+        return d;
+      } catch (_) { return null; }
+    };
+    const resume = () => {
+      const d = pending();
+      if (!d?.slug) return false;
+      const url = new URL("public-profile.html", window.location.href);
+      url.searchParams.set("slug", d.slug);
+      url.searchParams.set("resume", "1");
+      window.location.replace(url.href);
+      return true;
+    };
+
+    // auth.js currently renders its dashboard shell inside login.html.
+    // The canonical dashboard is dashboard.html, so redirect as soon as that shell becomes active.
+    const goDashboard = () => {
+      const app = document.getElementById("ayApp");
+      if (!app || window.location.pathname.endsWith("/dashboard.html")) return;
+      const visible = !app.hidden && getComputedStyle(app).display !== "none";
+      if (!visible) return;
+      if (pending()) return; // customer onboarding must resume the pending reservation instead.
+      if (window.__AY_B12_7_DASHBOARD_REDIRECT__) return;
+      window.__AY_B12_7_DASHBOARD_REDIRECT__ = true;
+      window.location.replace(new URL("dashboard.html", window.location.href).href);
+    };
+
+    const watch = new MutationObserver(goDashboard);
+    window.addEventListener("DOMContentLoaded", () => {
+      const app = document.getElementById("ayApp");
+      if (app) watch.observe(app, { attributes: true, attributeFilter: ["hidden", "style", "class"] });
+      goDashboard();
+
+      // Resume after customer profile save. auth.js writes the success message and
+      // normally redirects to explorer.html; this bridge preserves the pending booking flow.
+      const customerStatus = document.getElementById("ayCustomerStatus");
+      if (customerStatus) {
+        const resumeIfSaved = () => {
+          if (/perfil cliente guardado/i.test(customerStatus.textContent || "")) resume();
+        };
+        new MutationObserver(resumeIfSaved).observe(customerStatus, { childList: true, characterData: true, subtree: true, attributes: true });
+      }
+      setInterval(() => { goDashboard(); }, 250);
+    });
+  })();
+  </script>
 </body>
 </html>
