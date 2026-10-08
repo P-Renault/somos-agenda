@@ -12,6 +12,31 @@
   let user = null;
   let type = "business";
   const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  const PENDING_BOOKING_KEY = "agendaYaPendingBooking";
+  const PENDING_BOOKING_TTL = 2 * 60 * 60 * 1000;
+
+  function pendingBooking(){
+    try{
+      const raw=sessionStorage.getItem(PENDING_BOOKING_KEY) || localStorage.getItem(PENDING_BOOKING_KEY);
+      if(!raw) return null;
+      const draft=JSON.parse(raw);
+      if(!draft?.savedAt || Date.now()-Number(draft.savedAt) > PENDING_BOOKING_TTL){
+        sessionStorage.removeItem(PENDING_BOOKING_KEY);
+        localStorage.removeItem(PENDING_BOOKING_KEY);
+        return null;
+      }
+      return draft;
+    }catch(_){ return null; }
+  }
+
+  function resumePendingBooking(){
+    const draft=pendingBooking();
+    if(!draft?.slug) return false;
+    const url=new URL("public-profile.html",window.location.href);
+    url.searchParams.set("slug",draft.slug);
+    window.location.replace(url.href);
+    return true;
+  }
 
   function status(el, text, kind=""){
     el.textContent = text || "";
@@ -28,7 +53,6 @@
   }
 
   function showChoice(){
-    document.querySelector(".profile-page")?.classList.remove("form-mode");
     $("choiceStep").hidden = false;
     $("formStep").hidden = true;
     $("profileTitle").textContent = "Bienvenido a Agenda Ya";
@@ -37,7 +61,6 @@
   }
 
   function showForm(){
-    document.querySelector(".profile-page")?.classList.add("form-mode");
     $("choiceStep").hidden = true;
     $("formStep").hidden = false;
 
@@ -69,15 +92,6 @@
     return String(v||"").replace(/\D/g,"").slice(0,8);
   }
 
-  async function loadBusinessCategories(){
-    const select = $("businessCategory");
-    if(!select || !client) return;
-    const r = await client.from("business_categories").select("id,slug,name").eq("active",true).order("name");
-    if(r.error) throw r.error;
-    select.innerHTML = '<option value="">Selecciona una categoría</option>' +
-      (r.data || []).map(c => `<option value="${c.id}" data-slug="${c.slug}" data-name="${String(c.name).replace(/"/g,'&quot;')}">${c.name}</option>`).join("");
-  }
-
   async function upload(file, kind){
     if(!file) return null;
     if(!file.type.startsWith("image/")) throw new Error("La imagen no es válida.");
@@ -97,19 +111,17 @@
 
   function validateBusiness(){
     const required=[
-      ["businessName","nombre del negocio"],
-      ["businessCategory","categoría del negocio"],
-      ["businessType","tipo de servicio"],
-      ["businessDescription","descripción pública"],
-      ["businessCity","ciudad"],
-      ["businessComuna","comuna"],
-      ["businessAddress","dirección"]
+      ["businessName","businessStatus","nombre del negocio"],
+      ["businessType","businessStatus","tipo de servicio"],
+      ["businessCity","businessStatus","ciudad"],
+      ["businessComuna","businessStatus","comuna"],
+      ["businessAddress","businessStatus","dirección"]
     ];
-    for(const [id,label] of required){
-      const el=$(id);
-      if(!el?.value?.trim()){
-        status($("businessStatus"),`Completa ${label}.`,"error");
-        el?.focus();
+
+    for(const [id,statusId,label] of required){
+      if(!$(`${id}`)?.value.trim()){
+        status($(statusId),`Completa ${label}.`,"error");
+        $(id).focus();
         return false;
       }
     }
@@ -164,8 +176,10 @@
 
       if(result.error) throw result.error;
 
-      status($("customerStatus"),"Perfil creado. Abriendo marketplace…","success");
-      setTimeout(()=>window.location.replace("explorer.html"),350);
+      status($("customerStatus"),"Perfil creado. Volviendo a tu reserva…","success");
+      setTimeout(()=>{
+        if(!resumePendingBooking()) window.location.replace("explorer.html");
+      },350);
 
     }catch(err){
       console.error(err);
@@ -182,10 +196,6 @@
 
       const name=$("businessName").value.trim();
       const businessType=$("businessType").value.trim();
-      const description=$("businessDescription").value.trim();
-      const categoryId=$("businessCategory").value;
-      const categoryOption=$("businessCategory").selectedOptions?.[0];
-      const categoryName=categoryOption?.dataset?.name || businessType;
       const p=phone($("businessPhone").value);
       const city=$("businessCity").value.trim();
       const comuna=$("businessComuna").value.trim();
@@ -238,20 +248,6 @@
       }).eq("id",businessId);
 
       if(update.error) throw update.error;
-
-      const publicProfile=await client.rpc("upsert_public_profile",{
-        p_business_id:businessId,
-        p_display_name:name,
-        p_description:description,
-        p_category_id:categoryId || null,
-        p_address:address,
-        p_comuna:comuna,
-        p_city:city,
-        p_phone:p?`+56 9 ${p}`:null,
-        p_whatsapp:p?`+56 9 ${p}`:null,
-        p_public_enabled:true
-      });
-      if(publicProfile.error) throw publicProfile.error;
 
       const profile=await client.from("profiles").upsert({
         id:user.id,
@@ -315,6 +311,7 @@
   }
 
   async function routeExistingProfile(profile){
+    if(resumePendingBooking()) return true;
     if(!profile?.profile_type) return false;
 
     if(profile.profile_type === "customer"){
@@ -379,8 +376,6 @@
     user=session.user;
 
     try{
-      await loadBusinessCategories();
-
       const existing=await resolveExistingProfile();
       const routed=await routeExistingProfile(existing);
       if(routed) return;

@@ -7,6 +7,29 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const money = v => Number(v || 0).toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
   const PENDING_KEY = 'agendaYaPendingBooking';
+  const PENDING_TTL = 2 * 60 * 60 * 1000;
+  function savePendingDraft(draft){
+    const payload = {...draft, savedAt: Date.now()};
+    const raw = JSON.stringify(payload);
+    sessionStorage.setItem(PENDING_KEY, raw);
+    localStorage.setItem(PENDING_KEY, raw);
+  }
+  function readPendingDraft(){
+    try{
+      const raw = sessionStorage.getItem(PENDING_KEY) || localStorage.getItem(PENDING_KEY);
+      if(!raw) return null;
+      const draft = JSON.parse(raw);
+      if(!draft?.savedAt || Date.now()-Number(draft.savedAt) > PENDING_TTL){
+        clearPendingDraft();
+        return null;
+      }
+      return draft;
+    }catch(_){ return null; }
+  }
+  function clearPendingDraft(){
+    sessionStorage.removeItem(PENDING_KEY);
+    localStorage.removeItem(PENDING_KEY);
+  }
   const imageByCategory = {
     barberia:'assets/card_barber.jpg', peluqueria:'assets/card_barber.jpg', estetica:'assets/card_aura.jpg',
     salud:'assets/card_med.jpg', bienestar:'assets/card_med.jpg', entrenamiento:'assets/card_fit.jpg',
@@ -63,7 +86,7 @@
     if(p.phone||b.phone||p.whatsapp){
       $('contactPanel').hidden=false; $('contactLocation').textContent=[p.comuna,p.city].filter(Boolean).join(', ')||'Contacto disponible';
       const phone=p.phone||b.phone; if(phone){ $('phone').hidden=false; $('phone').textContent=phone; $('phone').href=`tel:${normalizePhone(phone)}`; }
-      if(p.whatsapp){ $('whatsapp').hidden=false; $('whatsapp').href=`https://wa.me/${normalizePhone(p.whatsapp)}`; }
+      const whatsappNumber = normalizePhone(p.whatsapp || p.phone || b.phone); if(whatsappNumber){ $('whatsapp').hidden=false; $('whatsapp').href=`https://wa.me/${whatsappNumber}`; }
     }
     $('serviceSummary').textContent=services.length?`${services.length} servicio${services.length===1?'':'s'} publicado${services.length===1?'':'s'}`:'Servicios publicados por el negocio';
     $('services').innerHTML=services.length?services.map(s=>`<article class="service-card"><div class="service-main"><h3>${esc(s.name||'Servicio')}</h3>${s.description?`<p>${esc(s.description)}</p>`:''}</div><div class="service-meta"><span>${s.duration_minutes?`${esc(s.duration_minutes)} min`:'Duración a consultar'}</span><span class="service-price">${s.price!=null?money(s.price):'Consultar'}</span></div></article>`).join(''):'<p class="empty-note">Este negocio aún no tiene servicios publicados.</p>';
@@ -138,9 +161,40 @@
       $('bookingFirstName').value=parts.shift()||'';$('bookingLastName').value=parts.join(' ')||'';$('bookingEmail').value=user.email||'';$('bookingPhone').value=p.phone||user.user_metadata?.phone||'';
     }
   }
-  function openBooking(){
-    $('bookingPanel').hidden=false;bookingContextByDate=new Map();bookingSelectedService=bookingServices()[0]?.id||null;bookingSelectedProfessional=bookingProfessionals()[0]?.id||null;bookingSelectedDate=null;bookingSelectedSlot=null;bookingMonth=parseDateKey(todayLocal());bookingMonth.setDate(1);
-    renderBookingServices();renderBookingProfessionals();hydrateBookingIdentity().then(()=>renderBookingCalendar()).catch(()=>renderBookingCalendar());$('bookingPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  async function openBooking(options={}){
+    const pending = readPendingDraft();
+    const slug = profileData?.business?.slug || params().get('slug') || '';
+    const resume = pending?.slug === slug ? pending : null;
+    $('bookingPanel').hidden=false;
+    bookingContextByDate=new Map();
+    bookingSelectedService=resume?.serviceId || bookingServices()[0]?.id || null;
+    bookingSelectedProfessional=resume?.professionalId || bookingProfessionals()[0]?.id || null;
+    bookingSelectedDate=resume?.date || null;
+    bookingSelectedSlot=resume?.slot || null;
+    bookingMonth=resume?.date ? parseDateKey(resume.date) : parseDateKey(todayLocal());
+    bookingMonth.setDate(1);
+    renderBookingServices();
+    renderBookingProfessionals();
+    try{ await hydrateBookingIdentity(); }catch(_){}
+    if(resume){
+      if(resume.firstName) $('bookingFirstName').value=resume.firstName;
+      if(resume.lastName) $('bookingLastName').value=resume.lastName;
+      if(resume.email) $('bookingEmail').value=resume.email;
+      if(resume.phone) $('bookingPhone').value=resume.phone;
+      if(resume.notes) $('bookingNotes').value=resume.notes;
+    }
+    await renderBookingCalendar();
+    if(resume?.date && bookingSelectedDate){
+      await renderBookingSlots();
+      if(resume.slot?.start){
+        const target=$(`#bookingSlots .booking-slot[data-start=\"${resume.slot.start}\"]`);
+        if(target){
+          bookingSelectedSlot={start:target.dataset.start,end:target.dataset.end};
+          target.classList.add('selected');
+        }
+      }
+    }
+    if(options.scroll !== false) $('bookingPanel').scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeBooking(){ $('bookingPanel').hidden=true; }
   function draftFromForm(){return {slug:profileData?.business?.slug||params().get('slug')||'',date:bookingSelectedDate,serviceId:bookingSelectedService,professionalId:bookingSelectedProfessional,slot:bookingSelectedSlot,firstName:$('bookingFirstName').value.trim(),lastName:$('bookingLastName').value.trim(),email:$('bookingEmail').value.trim(),phone:$('bookingPhone').value.trim(),notes:$('bookingNotes').value.trim(),returnUrl:`public-profile.html?slug=${encodeURIComponent(profileData?.business?.slug||params().get('slug')||'')}`};}
@@ -148,13 +202,13 @@
     if(!bookingSelectedService||!bookingSelectedProfessional||!bookingSelectedDate||!bookingSelectedSlot){$('bookingStatus').textContent='Selecciona servicio, profesional, fecha y horario.';return;}
     const first=$('bookingFirstName').value.trim(),last=$('bookingLastName').value.trim(),email=$('bookingEmail').value.trim(),phone=$('bookingPhone').value.trim();
     if(!first||!last||(!email&&!phone)){ $('bookingStatus').textContent='Completa nombre, apellido y al menos un medio de contacto.';return; }
-    if(!bookingSession){ sessionStorage.setItem(PENDING_KEY,JSON.stringify(draftFromForm()));$('bookingStatus').textContent='Necesitas iniciar sesión para confirmar la reserva. Tu selección quedará guardada.';$('bookingAuthNotice').hidden=false;$('bookingLogin').focus();return; }
+    if(!bookingSession){ savePendingDraft(draftFromForm());$('bookingStatus').textContent='Necesitas iniciar sesión para confirmar la reserva. Tu selección quedará guardada.';$('bookingAuthNotice').hidden=false;$('bookingLogin').focus();return; }
     const service=bookingServices().find(x=>x.id===bookingSelectedService),start=bookingSelectedSlot.start,end=bookingSelectedSlot.end;
     const btn=$('confirmBooking');btn.disabled=true;btn.textContent='Confirmando…';$('bookingStatus').textContent='Verificando disponibilidad…';
     const r=await client.rpc('create_public_booking',{p_slug:profileData.business.slug,p_client_first_name:first,p_client_last_name:last,p_client_email:email||null,p_client_phone:phone||null,p_service_id:service.id,p_professional_id:bookingSelectedProfessional,p_booking_date:bookingSelectedDate,p_start_time:start,p_end_time:end,p_notes:$('bookingNotes').value.trim()||null});
     btn.disabled=false;btn.textContent='Confirmar reserva →';
     if(r.error){const map={AUTH_REQUIRED:'Tu sesión expiró. Inicia sesión nuevamente.',BOOKING_OVERLAP:'Ese horario acaba de ser ocupado. Elige otro horario.',OUTSIDE_SCHEDULE:'Ese horario está fuera del horario del profesional.',OUTSIDE_AVAILABILITY:'Ese horario ya no está disponible.',SERVICE_NOT_AVAILABLE:'El servicio seleccionado ya no está disponible.',PROFESSIONAL_NOT_AVAILABLE:'El profesional seleccionado ya no está disponible.',BOOKING_DURATION_INVALID:'La duración del servicio no coincide con el horario seleccionado.'};$('bookingStatus').textContent=map[r.error.message]||r.error.message;bookingContextByDate.delete(bookingSelectedDate);await renderBookingCalendar();return;}
-    const x=r.data||{};$('bookingSuccess').hidden=false;$('bookingSuccessText').textContent=`${x.service_name||service.name} con ${x.professional_name||'el profesional seleccionado'}, el ${formatDate(bookingSelectedDate)} de ${formatTime(x.start_time||start)} a ${formatTime(x.end_time||end)}. Tu solicitud quedó registrada como pendiente.`;$('bookingStatus').textContent='';sessionStorage.removeItem(PENDING_KEY);bookingContextByDate.delete(bookingSelectedDate);
+    const x=r.data||{};$('bookingSuccess').hidden=false;$('bookingSuccessText').textContent=`${x.service_name||service.name} con ${x.professional_name||'el profesional seleccionado'}, el ${formatDate(bookingSelectedDate)} de ${formatTime(x.start_time||start)} a ${formatTime(x.end_time||end)}. Tu solicitud quedó registrada como pendiente.`;$('bookingStatus').textContent='';clearPendingDraft();bookingContextByDate.delete(bookingSelectedDate);
   }
 
   $('reserveButton').addEventListener('click',openBooking);
@@ -162,7 +216,13 @@
   $('bookingPrevMonth').addEventListener('click',async()=>{bookingMonth.setMonth(bookingMonth.getMonth()-1);bookingContextByDate=new Map();await renderBookingCalendar();});
   $('bookingNextMonth').addEventListener('click',async()=>{bookingMonth.setMonth(bookingMonth.getMonth()+1);bookingContextByDate=new Map();await renderBookingCalendar();});
   $('confirmBooking').addEventListener('click',confirmBooking);
-  $('bookingLogin').addEventListener('click',()=>{const draft=draftFromForm();sessionStorage.setItem(PENDING_KEY,JSON.stringify(draft));location.href=`login.html?return=${encodeURIComponent(draft.returnUrl)}`;});
+  $('bookingLogin').addEventListener('click',()=>{const draft=draftFromForm();savePendingDraft(draft);location.href=`login.html?return=${encodeURIComponent(draft.returnUrl)}`;});
+  $('whatsapp').addEventListener('click',(event)=>{
+    const href=$('whatsapp').getAttribute('href')||'';
+    if(!/^https:\/\/wa\.me\/\d+$/.test(href)){ event.preventDefault(); return; }
+    event.preventDefault();
+    window.location.href=href;
+  });
 
   async function init(){
     if(!client)return showError('No fue posible inicializar la conexión con Agenda Ya.');
@@ -170,6 +230,16 @@
     const r=await client.rpc('get_public_business_profile',{p_slug:slug});
     if(r.error||!r.data){const msg=r.error?.message||'';if(/NOT_FOUND|not found/i.test(msg))return showError('El negocio no existe o ya no está disponible públicamente.');if(/NOT_PUBLISHED|published/i.test(msg))return showError('Este negocio todavía no está publicado en el marketplace.');return showError('No pudimos cargar el perfil público en este momento.');}
     render(r.data);
+    const pending=readPendingDraft();
+    const currentSlug=r.data?.business?.slug || slug;
+    if(pending?.slug === currentSlug){
+      try{
+        const s=await client.auth.getSession();
+        if(s.data?.session?.user){
+          setTimeout(()=>openBooking({scroll:true}),120);
+        }
+      }catch(_){}
+    }
   }
   init();
 })();
