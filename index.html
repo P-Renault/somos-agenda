@@ -5,13 +5,202 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Agenda YA — Encuentra. Elige. Agenda.</title>
   <meta name="description" content="Encuentra negocios, servicios y profesionales cerca de ti. Compara, elige y agenda en Agenda YA.">
+  <link rel="canonical" href="index.html">
   <link rel="stylesheet" href="styles.css">
+  <style id="agenda-ya-b11-header">
+    .topbar .brand {
+      display:flex;
+      align-items:center;
+      flex:0 0 auto;
+    }
+    .topbar .brand-logo {
+      display:block;
+      width:clamp(150px, 13vw, 205px);
+      height:auto;
+      max-height:58px;
+      object-fit:contain;
+      object-position:center;
+    }
+    .auth-actions {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      flex-shrink:0;
+    }
+    .auth-actions .btn-outline {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:1px;
+      min-height:44px;
+      padding:6px 16px;
+      border-radius:12px;
+      background:#082c63;
+      border:2px solid #082c63;
+      color:#fff;
+      font-weight:800;
+      line-height:1.02;
+      text-align:center;
+      text-decoration:none;
+      white-space:nowrap;
+      box-shadow:0 6px 18px rgba(8,44,99,.18);
+    }
+
+    .auth-actions .btn-explore-header {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      min-height:44px;
+      padding:0 18px;
+      border-radius:12px;
+      background:linear-gradient(135deg,#0b7bea,#1598f5);
+      color:#fff;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+      box-shadow:0 6px 18px rgba(14,126,232,.18);
+    }
+
+    .auth-actions .btn-explore-header .search-icon {
+      width:18px;
+      height:18px;
+      flex:0 0 18px;
+    }
+    .auth-actions .btn-outline {
+      white-space:nowrap;
+    }
+    @media (max-width:760px) {
+      .topbar {
+        display:flex;
+        align-items:center;
+        width:100%;
+        gap:6px;
+        padding-left:8px;
+        padding-right:8px;
+        box-sizing:border-box;
+        overflow:hidden;
+      }
+
+      .topbar .brand {
+        flex:0 0 96px;
+        width:96px;
+        min-width:96px;
+        max-width:96px;
+        overflow:hidden;
+      }
+
+      .topbar .brand-logo {
+        width:96px;
+        max-width:96px;
+        height:auto;
+        max-height:40px;
+        object-fit:contain;
+        display:block;
+      }
+
+      .main-nav,
+      .menu-btn {
+        display:none !important;
+      }
+
+      .auth-actions {
+        display:flex;
+        flex:1 1 auto;
+        min-width:0;
+        margin-left:0;
+        gap:6px;
+        align-items:center;
+        justify-content:flex-end;
+      }
+
+      .auth-actions .btn-outline,
+      .auth-actions .btn-explore-header {
+        min-height:40px;
+        height:40px;
+        padding:4px 8px;
+        border-radius:11px;
+        font-size:11px;
+        box-sizing:border-box;
+      }
+
+      .auth-actions .btn-outline {
+        flex:0 0 104px;
+        width:104px;
+        max-width:104px;
+      }
+
+      .auth-actions .btn-explore-header {
+        flex:1 1 auto;
+        min-width:0;
+        gap:5px;
+        white-space:nowrap;
+        overflow:hidden;
+      }
+
+      .auth-actions .btn-explore-header .search-icon {
+        width:16px;
+        height:16px;
+        flex:0 0 16px;
+      }
+
+      .auth-actions .btn-explore-header span {
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+
+    }
+
+    @media (max-width:430px) {
+      .topbar {
+        gap:5px;
+        padding-left:5px;
+        padding-right:5px;
+      }
+
+      .topbar .brand {
+        flex-basis:91px;
+        width:91px;
+        min-width:91px;
+        max-width:91px;
+      }
+
+      .topbar .brand-logo {
+        width:91px;
+        max-width:91px;
+        max-height:38px;
+      }
+
+      .auth-actions {
+        gap:5px;
+      }
+
+      .auth-actions .btn-outline {
+        flex-basis:100px;
+        width:100px;
+        max-width:100px;
+        font-size:10.5px;
+      }
+
+      .auth-actions .btn-explore-header {
+        font-size:11px;
+        padding-left:7px;
+        padding-right:7px;
+      }
+    }
+  </style>
+  <style id="agenda-ya-b11-header-fit">
+    @media (max-width:760px) {
+      html, body { max-width:100%; overflow-x:hidden; }
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="Agenda YA">
-      <span class="brand-mark">Agenda<span>YA</span><i>✦</i></span>
-      <small>Encuentra. Elige. Agenda.</small>
+    <a class="brand" href="index.html" aria-label="Agenda YA">
+      <img class="brand-logo" src="agenda-ya-logo.jpg" alt="Agenda YA — Encuentra. Elige. Agenda.">
     </a>
     <nav class="main-nav" aria-label="Navegación principal">
       <a href="#inicio">Inicio</a>
@@ -22,11 +211,13 @@
       <a href="#blog">Blog</a>
     </nav>
     <div class="auth-actions">
-      <a class="btn-outline" href="login.html">Publica tu negocio</a>
-      <a class="login-link" href="login.html">Iniciar sesión</a>
-      <a class="profile-btn" href="login.html" aria-label="Iniciar sesión">⌾</a>
+      <a class="btn-outline" href="login.html"><span>Regístrate</span><span>Inicia sesión</span></a>
+      <a class="btn-explore-header" href="explorer.html"><svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M16 16L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span>Encuentra y agenda</span><span aria-hidden="true">→</span></a>
     </div>
-    <button class="menu-btn" aria-label="Abrir menú">☰</button>
   </header>
 
   <main id="inicio">
@@ -94,7 +285,7 @@
 
     <section class="split-cards" id="planes">
       <article class="for-client"><div class="person">◯</div><div><label>♙ Para clientes</label><h2>Todo lo que necesitas,<br>en un solo lugar.</h2><ul><li>Encuentra negocios confiables</li><li>Compara servicios y precios</li><li>Agenda en segundos</li><li>Recibe confirmación inmediata</li></ul><a href="explorer.html">Buscar servicios →</a></div></article>
-      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="index.html?next=negocio">Publica tu negocio →</a></div></article>
+      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html"><span>Regístrate</span><span>Inicia sesión</span> →</a></div></article>
     </section>
 
     <section class="why">
@@ -115,65 +306,94 @@
     </section>
   </main>
 
-  <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="index.html">Iniciar sesión</a></footer>
+  <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="login.html">Iniciar sesión</a></footer>
 <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* B12.7 — recuperar una reserva pendiente después de OAuth/email confirmation.
-   El flujo de autenticación actual vuelve a la landing; si existe una reserva
-   pendiente, esta página debe saltar directamente al perfil público. */
+/* Agenda YA B12.7 — continuidad universal de reserva/autenticación.
+   El landing conserva sus accesos originales y solo actúa como router de retorno
+   cuando Supabase vuelve aquí después de correo/Google/Facebook. */
 (() => {
-  const KEY = "agendaYaPendingBooking", TTL = 2 * 60 * 60 * 1000;
-  let busy = false;
-  function pending() {
+  const PENDING_KEY = 'agendaYaPendingBooking';
+  const PENDING_TTL = 2 * 60 * 60 * 1000;
+  const SUPABASE_URL = 'https://edlsxmuhbsvtjdtmyhks.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE';
+
+  function readPending() {
     try {
-      const raw = sessionStorage.getItem(KEY) || localStorage.getItem(KEY);
+      const raw = sessionStorage.getItem(PENDING_KEY) || localStorage.getItem(PENDING_KEY);
       if (!raw) return null;
-      const d = JSON.parse(raw);
-      if (!d?.slug || !d.savedAt || Date.now() - Number(d.savedAt) > TTL) {
-        sessionStorage.removeItem(KEY); localStorage.removeItem(KEY);
+      const draft = JSON.parse(raw);
+      if (!draft || (draft.savedAt && Date.now() - Number(draft.savedAt) > PENDING_TTL)) {
+        sessionStorage.removeItem(PENDING_KEY);
+        localStorage.removeItem(PENDING_KEY);
         return null;
       }
-      return d;
+      return draft;
     } catch (_) { return null; }
   }
-  function resume(d) {
-    if (!d?.slug || busy) return;
-    busy = true;
-    const url = new URL("public-profile.html", window.location.href);
-    url.searchParams.set("slug", d.slug);
-    url.searchParams.set("resume", "1");
+
+  function go(path, params = {}) {
+    const url = new URL(path, window.location.href);
+    Object.entries(params).forEach(([k,v]) => { if (v != null && v !== '') url.searchParams.set(k, v); });
     window.location.replace(url.href);
   }
-  function loadSupabase() {
-    return new Promise((resolve) => {
-      if (window.supabase?.createClient) return resolve(true);
-      const tag = document.createElement("script");
-      tag.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-      tag.onload = () => resolve(true);
-      tag.onerror = () => resolve(false);
-      document.head.appendChild(tag);
+
+  async function routeAfterAuth() {
+    const pending = readPending();
+    if (!window.supabase?.createClient) return;
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
-  }
-  async function check() {
-    const d = pending();
-    if (!d || busy) return;
-    // Fast path for OAuth/email callbacks: public-profile.html can consume the
-    // Supabase hash/code itself, so do not force the user through the landing.
-    const hasAuthCallback = /access_token=|refresh_token=/.test(location.hash) || new URLSearchParams(location.search).has("code");
-    if (hasAuthCallback) return resume(d);
-    if (!await loadSupabase()) return;
+    let session = null;
     try {
-      const client = window.supabase.createClient(
-        "https://edlsxmuhbsvtjdtmyhks.supabase.co",
-        "sb_publishable_xyxFhqvIAFL67dIEBQ7pnA_RBC9yXpE",
-        { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }
-      );
       const result = await client.auth.getSession();
-      if (result.data?.session?.user) resume(d);
+      session = result.data?.session || null;
+    } catch (_) { return; }
+    if (!session?.user) return;
+
+    /* Prioridad absoluta: reserva pendiente. Nunca volver a Marketplace. */
+    if (pending?.slug) {
+      go('public-profile.html', { slug: pending.slug, resume: '1' });
+      return;
+    }
+
+    /* Sin reserva pendiente: conservar el comportamiento normal del sistema. */
+    try {
+      const user = session.user;
+      const profile = await client.from('profiles')
+        .select('profile_type')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile.data?.profile_type === 'customer') {
+        go('explorer.html');
+        return;
+      }
+
+      if (profile.data?.profile_type === 'business') {
+        const membership = await client.from('business_members')
+          .select('business_id')
+          .eq('user_id', user.id)
+          .eq('active', true)
+          .limit(1);
+        if (membership.data?.length) {
+          go('dashboard.html');
+          return;
+        }
+      }
     } catch (_) {}
+
+    /* Cuenta nueva/sin perfil: vuelve al onboarding, no al Marketplace. */
+    go('login.html');
   }
-  check();
-  setInterval(check, 350);
+
+  /* Solo actúa si el landing fue usado como callback de autenticación. */
+  window.addEventListener('load', () => {
+    const pending = readPending();
+    const hasAuthHash = /access_token|refresh_token|code=|error=/.test(window.location.hash + window.location.search);
+    if (pending || hasAuthHash) setTimeout(routeAfterAuth, 0);
+  });
 })();
 </script>
 </body>
