@@ -1,73 +1,118 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Perfil público de negocio en Agenda Ya">
-<title>Agenda Ya · Perfil del negocio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="public-platform.css">
-<link rel="stylesheet" href="public-profile-premium.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Perfil público de un negocio en Agenda Ya.">
+  <title>Agenda Ya · Perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="public-profile.css">
 </head>
-<body class="ay-public-profile-page">
-<main class="profile-shell">
-  <header class="profile-header">
-    <a class="profile-back" href="explorer.html" aria-label="Volver a explorar">←</a>
-    <a class="profile-brand" href="explorer.html" aria-label="Agenda Ya"><img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a>
-    <a class="profile-explore" href="explorer.html">Explorar negocios</a>
-  </header>
+<body>
+  <main class="profile-page">
+    <header class="profile-header">
+      <a class="brand" href="index.html" aria-label="Volver a Agenda Ya">
+        <img src="assets/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+      </a>
+      <a class="back-link" href="explorer.html">← Explorar</a>
+    </header>
 
-  <div id="status" class="profile-status" role="status">Cargando perfil...</div>
+    <section id="stateLoading" class="state-card loading-state" aria-live="polite">
+      <span class="loader"></span>
+      <strong>Cargando perfil…</strong>
+    </section>
 
-  <section id="profile" class="profile-content" hidden>
-    <section class="profile-intro">
-      <div class="profile-business-identity">
-        <div class="profile-business-logo-wrap" id="businessLogoWrap"><img id="businessLogo" class="profile-business-logo" src="" alt="" hidden></div>
-        <div class="profile-business-heading">
-          <div id="category" class="profile-category">Servicio</div>
-          <h1 id="name"></h1>
-          <div class="profile-location-row" id="locationRow" hidden><span class="location-pin">⌖</span><span id="location"></span></div>
+    <section id="stateError" class="state-card" hidden aria-live="polite">
+      <div class="state-icon">!</div>
+      <h1>No pudimos cargar este negocio</h1>
+      <p id="errorMessage">El perfil puede no estar publicado o el enlace puede ser incorrecto.</p>
+      <a class="primary-button" href="explorer.html">Volver a explorar →</a>
+    </section>
+
+    <article id="businessProfile" class="business-profile" hidden>
+      <section class="profile-hero">
+        <div id="cover" class="profile-cover"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-business">
+          <div id="logo" class="profile-logo"></div>
+          <div class="hero-copy">
+            <span id="category" class="category-badge"></span>
+            <h1 id="businessName"></h1>
+            <p id="location" class="hero-location"></p>
+          </div>
         </div>
+      </section>
+
+      <div class="profile-layout">
+        <div class="profile-main">
+          <section class="panel about-panel">
+            <div class="section-heading">
+              <span class="section-icon">i</span>
+              <div>
+                <h2>Sobre este negocio</h2>
+                <p>Información pública</p>
+              </div>
+            </div>
+            <p id="description" class="description"></p>
+          </section>
+
+          <section class="panel services-panel">
+            <div class="section-heading">
+              <span class="section-icon">✦</span>
+              <div>
+                <h2>Servicios</h2>
+                <p id="serviceSummary">Servicios publicados por el negocio</p>
+              </div>
+            </div>
+            <div id="services" class="services-list"></div>
+          </section>
+
+          <section class="panel professionals-panel" id="professionalsPanel" hidden>
+            <div class="section-heading">
+              <span class="section-icon">♙</span>
+              <div>
+                <h2>Profesionales</h2>
+                <p>Equipo disponible para atenderte</p>
+              </div>
+            </div>
+            <div id="professionals" class="professionals-list"></div>
+          </section>
+        </div>
+
+        <aside class="profile-side">
+          <section class="panel contact-panel">
+            <div class="section-heading compact">
+              <span class="section-icon">⌖</span>
+              <div><h2>Ubicación</h2></div>
+            </div>
+            <p id="address" class="side-value"></p>
+            <p id="city" class="side-muted"></p>
+          </section>
+
+          <section class="panel contact-panel" id="contactPanel" hidden>
+            <div class="section-heading compact">
+              <span class="section-icon">☎</span>
+              <div><h2>Contacto</h2></div>
+            </div>
+            <a id="phone" class="contact-link" href="#" hidden></a>
+            <a id="whatsapp" class="contact-link" href="#" target="_blank" rel="noopener" hidden>WhatsApp →</a>
+          </section>
+
+          <section class="panel cta-panel">
+            <span class="cta-kicker">Agenda Ya</span>
+            <h2>¿Quieres reservar?</h2>
+            <p>En el siguiente paso podrás elegir el servicio y revisar su disponibilidad.</p>
+            <button id="reserveButton" class="primary-button" type="button">Ver servicios y disponibilidad →</button>
+          </section>
+        </aside>
       </div>
-      <p id="description" class="profile-description"></p>
-    </section>
+    </article>
+  </main>
 
-    <section class="profile-booking-strip">
-      <div>
-        <span class="profile-strip-eyebrow">AGENDA YA</span>
-        <h2>Reserva directamente con este negocio</h2>
-        <p>Elige un servicio, profesional, fecha y horario disponible.</p>
-      </div>
-      <a id="bookTop" class="profile-primary-button" href="#">Agendar ahora</a>
-    </section>
-
-    <section class="profile-section" aria-labelledby="servicesTitle">
-      <div class="profile-section-head"><div><span class="profile-section-eyebrow">SERVICIOS</span><h2 id="servicesTitle">Elige lo que necesitas</h2></div><span id="serviceCount" class="profile-count"></span></div>
-      <div id="services" class="service-grid"></div>
-    </section>
-
-    <section class="profile-section profile-panel" aria-labelledby="professionalsTitle">
-      <span class="profile-section-eyebrow">EQUIPO</span><h2 id="professionalsTitle">Profesionales</h2>
-      <div id="professionals" class="professional-list"></div>
-    </section>
-
-    <section class="profile-section profile-panel" aria-labelledby="schedulesTitle">
-      <span class="profile-section-eyebrow">ATENCIÓN</span><h2 id="schedulesTitle">Horarios</h2>
-      <div id="schedules" class="schedule-list"></div>
-    </section>
-
-    <section class="profile-final-cta">
-      <div><span class="profile-section-eyebrow">¿LISTO?</span><h2>Agenda tu atención</h2><p>Consulta disponibilidad y confirma tu reserva en pocos pasos.</p></div>
-      <a id="book" class="profile-primary-button large" href="#">Agendar ahora</a>
-    </section>
-
-    <footer class="profile-footer"><span>Perfil público en <strong>Agenda Ya</strong></span><a href="explorer.html">Volver a explorar</a></footer>
-  </section>
-</main>
-<script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="public-profile.js"></script>
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="public-profile.js"></script>
 </body>
 </html>

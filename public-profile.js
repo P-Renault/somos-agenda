@@ -1,90 +1,87 @@
 (() => {
   const cfg = window.SOMOS_CONFIG || {};
   const client = window.supabase?.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-  const $ = (id) => document.getElementById(id);
-  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const money = (v) => Number(v || 0).toLocaleString('es-CL', { style:'currency', currency:'CLP', maximumFractionDigits:0 });
-  const slug = new URLSearchParams(location.search).get('slug');
-  const dayNames = {1:'Lunes',2:'Martes',3:'Miércoles',4:'Jueves',5:'Viernes',6:'Sábado',7:'Domingo'};
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const money = v => Number(v || 0).toLocaleString('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0});
 
-  function setBookingLinks(businessSlug) {
-    const href = `public-booking.html?slug=${encodeURIComponent(businessSlug)}`;
-    ['book','bookTop'].forEach(id => { const el = $(id); if (el) el.href = href; });
+  function initials(name){
+    return String(name || 'AY').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase() || 'AY';
   }
 
-  function renderBusinessLogo(business, profile, x) {
-    const logo = $('businessLogo');
-    const wrap = $('businessLogoWrap');
-    const logoUrl = business?.logo_url || profile?.logo_url || x?.logo_url || '';
-    if (!logoUrl) {
-      logo.removeAttribute('src');
-      logo.hidden = true;
-      wrap.hidden = true;
-      return;
+  function params(){ return new URLSearchParams(window.location.search); }
+
+  function showError(message){
+    $('stateLoading').hidden = true;
+    $('businessProfile').hidden = true;
+    $('stateError').hidden = false;
+    $('errorMessage').textContent = message || 'El perfil puede no estar publicado o el enlace puede ser incorrecto.';
+  }
+
+  function render(data){
+    const b = data.business || {};
+    const p = data.profile || {};
+    const c = data.category || null;
+    const services = Array.isArray(data.services) ? data.services : [];
+    const professionals = Array.isArray(data.professionals) ? data.professionals : [];
+
+    document.title = `${b.name || 'Perfil'} · Agenda Ya`;
+    $('businessName').textContent = b.name || 'Negocio';
+    $('category').textContent = c?.name || 'Servicios';
+    $('location').textContent = [p.comuna,p.city].filter(Boolean).join(', ') || 'Ubicación no informada';
+    $('description').textContent = p.description || 'Este negocio aún no ha agregado una descripción pública.';
+    $('address').textContent = p.address || 'Dirección no publicada';
+    $('city').textContent = [p.comuna,p.city].filter(Boolean).join(', ');
+
+    const logo = $('logo');
+    if (b.logo_url) logo.innerHTML = `<img src="${esc(b.logo_url)}" alt="Logo de ${esc(b.name)}">`;
+    else logo.textContent = initials(b.name);
+
+    const cover = $('cover');
+    if (p.cover_url) { cover.classList.add('has-image'); cover.style.backgroundImage = `url("${encodeURI(p.cover_url)}")`; }
+
+    if (p.phone || b.phone || p.whatsapp) {
+      $('contactPanel').hidden = false;
+      const phone = p.phone || b.phone;
+      if (phone) { $('phone').hidden = false; $('phone').textContent = `☎ ${phone}`; $('phone').href = `tel:${String(phone).replace(/[^+\d]/g,'')}`; }
+      if (p.whatsapp) { $('whatsapp').hidden = false; $('whatsapp').href = `https://wa.me/${String(p.whatsapp).replace(/\D/g,'')}`; }
     }
-    logo.alt = `Logo de ${business?.name || 'negocio'}`;
-    logo.onload = () => {
-      logo.hidden = false;
-      wrap.hidden = false;
-    };
-    logo.onerror = () => {
-      logo.removeAttribute('src');
-      logo.hidden = true;
-      wrap.hidden = true;
-    };
-    logo.src = logoUrl;
-    // Evita mostrar el icono roto mientras la imagen carga.
-    logo.hidden = true;
-    wrap.hidden = true;
-  }
 
-  function renderServices(items) {
-    $('serviceCount').textContent = items.length ? `${items.length} ${items.length === 1 ? 'servicio' : 'servicios'}` : '';
-    $('services').innerHTML = items.length ? items.map(s => `
-      <article class="service-card">
-        <div class="service-card-top"><div class="service-icon">✦</div><span class="service-duration">${esc(s.duration_minutes)} min</span></div>
-        <h3>${esc(s.name)}</h3>
-        ${s.description ? `<p>${esc(s.description)}</p>` : '<p>Servicio disponible para reserva online.</p>'}
-        <div class="service-card-bottom"><strong>${money(s.price)}</strong><a href="public-booking.html?slug=${encodeURIComponent(slug)}" class="service-book">Agendar</a></div>
-      </article>`).join('') : '<div class="profile-empty">Este negocio todavía no tiene servicios publicados.</div>';
-  }
+    $('serviceSummary').textContent = services.length ? `${services.length} servicio${services.length === 1 ? '' : 's'} publicado${services.length === 1 ? '' : 's'}` : 'Servicios publicados por el negocio';
+    $('services').innerHTML = services.length ? services.map(s => `<article class="service-card"><h3>${esc(s.name || 'Servicio')}</h3>${s.description ? `<p>${esc(s.description)}</p>` : ''}<div class="service-meta"><span>${s.duration_minutes ? `${esc(s.duration_minutes)} min` : 'Duración a consultar'}</span><span class="service-price">${s.price != null ? money(s.price) : 'Consultar'}</span></div></article>`).join('') : '<p class="empty-note">Este negocio aún no tiene servicios publicados.</p>';
 
-  function renderProfessionals(items) {
-    $('professionals').innerHTML = items.length ? items.map(p => `
-      <article class="professional-card"><div class="professional-avatar">${esc(`${(p.first_name || 'A')[0]}${(p.last_name || '')[0] || ''}`.toUpperCase())}</div><div><strong>${esc(`${p.first_name} ${p.last_name}`)}</strong><p>${esc(p.bio || 'Profesional disponible para reservas.')}</p></div></article>`).join('') : '<div class="profile-empty">No hay profesionales publicados.</div>';
-  }
-
-  function renderSchedules(items) {
-    const grouped = {};
-    items.forEach(s => (grouped[s.day_of_week] ||= []).push(s));
-    $('schedules').innerHTML = Object.keys(grouped).sort((a,b) => a-b).map(d => `
-      <div class="schedule-row"><strong>${dayNames[d] || d}</strong><span>${grouped[d].map(s => `${String(s.start_time).slice(0,5)}–${String(s.end_time).slice(0,5)}`).join(' · ')}</span></div>`).join('') || '<div class="profile-empty">Consulta los horarios disponibles al reservar.</div>';
-  }
-
-  async function init() {
-    if (!client) { $('status').textContent = 'No fue posible conectar con Agenda Ya.'; return; }
-    if (!slug) { $('status').textContent = 'Perfil no especificado.'; return; }
-    const r = await client.rpc('get_public_business_profile', { p_slug: slug });
-    if (r.error) {
-      $('status').textContent = r.error.message === 'BUSINESS_NOT_FOUND' ? 'Negocio no encontrado.' : r.error.message === 'PUBLIC_PROFILE_NOT_PUBLISHED' ? 'Este perfil todavía no está publicado.' : 'No fue posible cargar este perfil.';
-      return;
+    if (professionals.length) {
+      $('professionalsPanel').hidden = false;
+      $('professionals').innerHTML = professionals.map(pf => {
+        const name = [pf.first_name,pf.last_name].filter(Boolean).join(' ') || 'Profesional';
+        return `<article class="professional"><div class="professional-avatar">${esc(initials(name))}</div><div><h3>${esc(name)}</h3>${pf.bio ? `<p>${esc(pf.bio)}</p>` : ''}</div></article>`;
+      }).join('');
     }
-    const x = r.data || {};
-    const business = x.business || {};
-    const profile = x.profile || {};
-    $('name').textContent = business.name || 'Negocio';
-    $('category').textContent = x.category?.name || 'Servicio';
-    renderBusinessLogo(business, profile, x);
-    $('description').textContent = profile.description || 'Conoce los servicios y agenda tu atención directamente.';
-    const loc = [profile.address, profile.comuna, profile.city].filter(Boolean).join(' · ');
-    if (loc) { $('location').textContent = loc; $('locationRow').hidden = false; }
-    renderServices(x.services || []);
-    renderProfessionals(x.professionals || []);
-    renderSchedules(x.schedules || []);
-    setBookingLinks(business.slug || slug);
-    $('status').hidden = true;
-    $('profile').hidden = false;
-    document.title = `${business.name || 'Negocio'} · Agenda Ya`;
+
+    // B11.2 leaves reservation/availability for B11.3.
+    $('reserveButton').addEventListener('click',()=>{
+      $('services').scrollIntoView({behavior:'smooth',block:'start'});
+    },{once:true});
+
+    $('stateLoading').hidden = true;
+    $('stateError').hidden = true;
+    $('businessProfile').hidden = false;
   }
-  init().catch(() => { $('status').textContent = 'No fue posible cargar el perfil público.'; });
+
+  async function init(){
+    if (!client) return showError('No fue posible inicializar la conexión con Agenda Ya.');
+    const slug = params().get('slug')?.trim();
+    if (!slug) return showError('Este enlace no contiene el identificador público del negocio.');
+
+    const r = await client.rpc('get_public_business_profile',{p_slug:slug});
+    if (r.error || !r.data) {
+      const msg = r.error?.message || '';
+      if (/NOT_FOUND|not found/i.test(msg)) return showError('El negocio no existe o ya no está disponible públicamente.');
+      if (/NOT_PUBLISHED|published/i.test(msg)) return showError('Este negocio todavía no está publicado en el marketplace.');
+      return showError('No pudimos cargar el perfil público en este momento.');
+    }
+    render(r.data);
+  }
+
+  init();
 })();
