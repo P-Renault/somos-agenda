@@ -86,6 +86,59 @@
             <p>Elige un servicio y revisa su disponibilidad.</p>
             <button id="reserveButton" class="primary-button" type="button">Ver servicios y disponibilidad →</button>
           </section>
+
+          <section id="bookingPanel" class="panel booking-panel" hidden aria-labelledby="bookingTitle">
+            <div class="booking-head">
+              <div>
+                <span class="booking-kicker">RESERVA ONLINE</span>
+                <h2 id="bookingTitle">Agenda tu hora</h2>
+                <p>Elige un servicio, profesional, fecha y horario disponible.</p>
+              </div>
+              <button id="closeBooking" class="booking-close" type="button" aria-label="Cerrar reserva">×</button>
+            </div>
+            <div id="bookingAuthNotice" class="booking-auth-notice" hidden>
+              <strong>Para confirmar tu reserva necesitas una cuenta.</strong>
+              <span>Puedes revisar servicios y disponibilidad sin registrarte. Al confirmar, inicia sesión o crea tu cuenta y volverás automáticamente a esta reserva.</span>
+              <button id="bookingLogin" type="button">Iniciar sesión / Registrarme →</button>
+            </div>
+            <div class="booking-step">
+              <span>1</span><div><strong>Servicio</strong><small>Qué necesitas</small></div>
+            </div>
+            <div id="bookingServices" class="booking-services"></div>
+            <div id="bookingServiceDescription" class="booking-helper"></div>
+            <div class="booking-step">
+              <span>2</span><div><strong>Profesional</strong><small>Con quién quieres atenderte</small></div>
+            </div>
+            <div id="bookingProfessionals" class="booking-professionals"></div>
+            <div class="booking-step">
+              <span>3</span><div><strong>Fecha y horario</strong><small>Selecciona una fecha disponible</small></div>
+            </div>
+            <div class="booking-calendar-head">
+              <button id="bookingPrevMonth" type="button" aria-label="Mes anterior">‹</button>
+              <strong id="bookingMonthLabel"></strong>
+              <button id="bookingNextMonth" type="button" aria-label="Mes siguiente">›</button>
+            </div>
+            <div id="bookingCalendar" class="booking-calendar" aria-label="Calendario de disponibilidad"></div>
+            <div id="bookingDateLabel" class="booking-date-label"></div>
+            <div id="bookingSlots" class="booking-slots"></div>
+            <div id="bookingAvailability" class="booking-helper"></div>
+            <div class="booking-step">
+              <span>4</span><div><strong>Tus datos</strong><small>Se utilizarán para registrar la reserva</small></div>
+            </div>
+            <div id="bookingClientFields" class="booking-client-fields">
+              <label>Nombre<input id="bookingFirstName" maxlength="100" autocomplete="given-name"></label>
+              <label>Apellido<input id="bookingLastName" maxlength="100" autocomplete="family-name"></label>
+              <label>Correo<input id="bookingEmail" type="email" maxlength="200" autocomplete="email"></label>
+              <label>Teléfono<input id="bookingPhone" type="tel" maxlength="50" autocomplete="tel"></label>
+              <label class="booking-notes">Notas (opcional)<textarea id="bookingNotes" rows="3" maxlength="1000"></textarea></label>
+            </div>
+            <button id="confirmBooking" class="booking-confirm" type="button">Confirmar reserva →</button>
+            <p id="bookingStatus" class="booking-status" aria-live="polite"></p>
+            <div id="bookingSuccess" class="booking-success" hidden>
+              <strong>✓ Reserva solicitada</strong>
+              <p id="bookingSuccessText"></p>
+            </div>
+          </section>
         </div>
 
         <aside class="profile-side">

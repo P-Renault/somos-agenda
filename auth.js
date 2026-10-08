@@ -23,6 +23,17 @@
   let routingInProgress = false;
   const REDIRECT_URL = "https://p-renault.github.io/somos-agenda/";
   const DAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+  const PENDING_BOOKING_KEY = "agendaYaPendingBooking";
+  function pendingBooking() {
+    try { return JSON.parse(sessionStorage.getItem(PENDING_BOOKING_KEY) || "null"); } catch (_) { return null; }
+  }
+  function goPendingBooking() {
+    const draft = pendingBooking();
+    if (!draft?.returnUrl) return false;
+    sessionStorage.removeItem(PENDING_BOOKING_KEY);
+    window.location.href = draft.returnUrl;
+    return true;
+  }
 
   function setStatus(text, kind = "") {
     status.textContent = text || "";
@@ -273,7 +284,8 @@
         profileType = "customer";
         document.body.dataset.profileType = "customer";
         window.AgendaYaProfile?.setRole?.("customer");
-        // Returning customer: the marketplace is the home, not onboarding.
+        // Returning customer: resume a pending public booking before normal marketplace routing.
+        if (goPendingBooking()) return;
         window.location.href = "explorer.html";
         return;
       }
@@ -284,6 +296,7 @@
         if (business?.id) {
           document.body.dataset.profileType = "business";
           window.AgendaYaProfile?.setRole?.("business");
+          if (goPendingBooking()) return;
           showApp(user, "business");
           window.AgendaYaProfile?.refresh?.();
           return;
@@ -442,7 +455,7 @@
       if(r.error) throw r.error;
       setProfileStatus(customerStatus,"Perfil cliente guardado. Abriendo Agenda Ya…","success");
       window.AgendaYaProfile?.setRole?.("customer");
-      setTimeout(()=>{ window.location.href = "explorer.html"; }, 350);
+      setTimeout(()=>{ if (!goPendingBooking()) window.location.href = "explorer.html"; }, 350);
     } catch(err) { setProfileStatus(customerStatus,err?.message||"No fue posible guardar el perfil.","error"); }
   }
 
@@ -536,7 +549,7 @@
       if (hours.error) throw hours.error;
 
       setProfileStatus(businessScheduleStatus, "Perfil de negocio creado. Abriendo Agenda Ya…", "success");
-      setTimeout(() => showApp(currentUser), 350);
+      setTimeout(() => { if (!goPendingBooking()) showApp(currentUser); }, 350);
     } catch (err) {
       console.error("saveBusiness:", err);
       setProfileStatus(businessScheduleStatus, err?.message || "No fue posible guardar el perfil de negocio.", "error");
