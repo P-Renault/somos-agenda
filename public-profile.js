@@ -48,6 +48,48 @@
     $('mapLink').hidden = false;
   }
 
+  async function loadSimilarBusinesses(categorySlug, currentSlug){
+    const section = $('similarSection');
+    const grid = $('similarBusinesses');
+    if (!categorySlug || !client) return;
+    const r = await client.rpc('search_public_businesses', {
+      p_query: '',
+      p_category_slug: categorySlug,
+      p_city: null,
+      p_limit: 12,
+      p_offset: 0
+    });
+    if (r.error || !r.data) return;
+    const items = Array.isArray(r.data.items) ? r.data.items : [];
+    const similar = items.filter(x => x.slug && x.slug !== currentSlug).slice(0,4);
+    if (!similar.length) return;
+    grid.innerHTML = similar.map(item => {
+      const cover = item.cover_url || imageByCategory[item.category_slug] || imageByCategory.otros;
+      const logo = item.logo_url
+        ? `<img src="${esc(item.logo_url)}" alt="Logo de ${esc(item.name || 'Negocio')}">`
+        : esc(initials(item.name));
+      const loc = [item.comuna,item.city].filter(Boolean).join(', ') || 'Ubicación no informada';
+      const serviceCount = Number(item.service_count || 0);
+      const minPrice = item.min_price != null ? money(item.min_price) : '';
+      return `<a class="similar-card" href="public-profile.html?slug=${encodeURIComponent(item.slug)}">
+        <div class="similar-cover" style="background-image:url(${esc(cover)})">
+          <div class="similar-logo">${logo}</div>
+        </div>
+        <div class="similar-body">
+          <span class="similar-category">${esc(item.category_name || 'Servicios')}</span>
+          <h3 class="similar-name">${esc(item.name || 'Negocio')}</h3>
+          <p class="similar-location">${esc(loc)}</p>
+          <div class="similar-meta">
+            <span>${serviceCount} servicio${serviceCount === 1 ? '' : 's'}</span>
+            ${minPrice ? `<strong>Desde ${esc(minPrice)}</strong>` : '<strong>Ver servicios</strong>'}
+            <span class="similar-arrow">→</span>
+          </div>
+        </div>
+      </a>`;
+    }).join('');
+    section.hidden = false;
+  }
+
   function render(data){
     const b = data.business || {};
     const p = data.profile || {};
@@ -78,15 +120,18 @@
 
     if (p.phone || b.phone || p.whatsapp) {
       $('contactPanel').hidden = false;
+      $('contactLocation').textContent = [p.comuna,p.city].filter(Boolean).join(', ') || 'Contacto disponible';
       const phone = p.phone || b.phone;
       if (phone) {
         $('phone').hidden = false;
-        $('phone').textContent = `☎ ${phone}`;
+        $('phone').textContent = phone;
         $('phone').href = `tel:${String(phone).replace(/[^+\d]/g,'')}`;
       }
       if (p.whatsapp) {
         $('whatsapp').hidden = false;
         $('whatsapp').href = `https://wa.me/${String(p.whatsapp).replace(/\D/g,'')}`;
+      } else {
+        $('whatsapp').hidden = true;
       }
     }
 
@@ -120,6 +165,8 @@
     $('reserveButton').addEventListener('click',()=>{
       $('services').scrollIntoView({behavior:'smooth',block:'start'});
     },{once:true});
+
+    loadSimilarBusinesses(c?.slug, b.slug).catch(()=>{});
 
     $('stateLoading').hidden = true;
     $('stateError').hidden = true;

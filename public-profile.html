@@ -79,6 +79,13 @@
             </div>
             <div id="professionals" class="professionals-list"></div>
           </section>
+
+          <section class="panel cta-panel">
+            <span class="cta-kicker">Agenda Ya</span>
+            <h2>¿Quieres reservar?</h2>
+            <p>Elige un servicio y revisa su disponibilidad.</p>
+            <button id="reserveButton" class="primary-button" type="button">Ver servicios y disponibilidad →</button>
+          </section>
         </div>
 
         <aside class="profile-side">
@@ -96,24 +103,35 @@
           </section>
 
           <section class="panel contact-panel" id="contactPanel" hidden>
-            <div class="section-heading compact">
-              <span class="section-icon">☎</span>
-              <div><h2>Contacto</h2></div>
+            <div class="contact-reference">
+              <div class="contact-title-row">
+                <span class="whatsapp-mark" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3.2a12.7 12.7 0 0 0-11 19.1L3.2 28.8l6.7-1.7A12.7 12.7 0 1 0 16 3.2Zm0 22.9a10.1 10.1 0 0 1-5.1-1.4l-.4-.2-4 .9 1-3.9-.3-.4a10.1 10.1 0 1 1 8.8 5Zm5.5-7.5c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2c-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.1-1.6-4.3-3.6-.3-.5.3-.5.9-1.7.1-.3 0-.5-.1-.7-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.7 2 .9 2.8 1 3.8.9.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.3Z"/></svg></span>
+                <div>
+                  <h2>Contacto</h2>
+                  <p id="contactLocation" class="contact-location"></p>
+                </div>
+              </div>
+              <a id="whatsapp" class="whatsapp-cta" href="#" target="_blank" rel="noopener" hidden>
+                <span class="whatsapp-mark light" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3.2a12.7 12.7 0 0 0-11 19.1L3.2 28.8l6.7-1.7A12.7 12.7 0 1 0 16 3.2Zm0 22.9a10.1 10.1 0 0 1-5.1-1.4l-.4-.2-4 .9 1-3.9-.3-.4a10.1 10.1 0 1 1 8.8 5Zm5.5-7.5c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2c-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.1-1.6-4.3-3.6-.3-.5.3-.5.9-1.7.1-.3 0-.5-.1-.7-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.7 2 .9 2.8 1 3.8.9.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.3Z"/></svg></span>
+                <span>Agenda ahora por WhatsApp</span>
+                <span class="whatsapp-arrow">→</span>
+              </a>
+              <a id="phone" class="contact-number" href="#" hidden></a>
             </div>
-            <div class="contact-row">
-              <a id="phone" class="contact-link phone-link" href="#" hidden></a>
-              <a id="whatsapp" class="contact-link whatsapp-link" href="#" target="_blank" rel="noopener" hidden>Agenda ahora por WhatsApp →</a>
-            </div>
-          </section>
-
-          <section class="panel cta-panel">
-            <span class="cta-kicker">Agenda Ya</span>
-            <h2>¿Quieres reservar?</h2>
-            <p>En el siguiente paso podrás elegir el servicio y revisar su disponibilidad.</p>
-            <button id="reserveButton" class="primary-button" type="button">Ver servicios y disponibilidad →</button>
           </section>
         </aside>
       </div>
+
+      <section class="similar-section" id="similarSection" hidden>
+        <div class="similar-heading">
+          <div>
+            <span class="similar-kicker">AGENDA YA</span>
+            <h2>Similares</h2>
+            <p>Otros negocios de la misma categoría que podrían interesarte.</p>
+          </div>
+        </div>
+        <div id="similarBusinesses" class="similar-grid"></div>
+      </section>
     </article>
   </main>
 
