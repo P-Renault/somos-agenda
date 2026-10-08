@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Perfil público de un negocio en Agenda Ya.">
+  <title>Agenda Ya · Perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="public-profile.css">
+</head>
+<body>
+  <main class="profile-page">
+    <header class="profile-header">
+      <a class="brand" href="index.html" aria-label="Volver a Agenda Ya">
+        <img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya">
+      </a>
+      <a class="back-link" href="explorer.html">← Explorar</a>
+    </header>
+
+    <section id="stateLoading" class="state-card loading-state" aria-live="polite">
+      <span class="loader"></span>
+      <strong>Cargando perfil…</strong>
+    </section>
+
+    <section id="stateError" class="state-card" hidden aria-live="polite">
+      <div class="state-icon">!</div>
+      <h1>No pudimos cargar este negocio</h1>
+      <p id="errorMessage">El perfil puede no estar publicado o el enlace puede ser incorrecto.</p>
+      <a class="primary-button" href="explorer.html">Volver a explorar →</a>
+    </section>
+
+    <article id="businessProfile" class="business-profile" hidden>
+      <section class="profile-hero">
+        <div id="cover" class="profile-cover"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-business">
+          <div id="logo" class="profile-logo"></div>
+          <div class="hero-copy">
+            <span id="category" class="category-badge"></span>
+            <h1 id="businessName"></h1>
+            <p id="location" class="hero-location"></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="profile-layout">
+        <div class="profile-main">
+          <section class="panel about-panel">
+            <div class="section-heading">
+              <span class="section-icon">i</span>
+              <div>
+                <h2>Sobre este negocio</h2>
+                <p>Información pública</p>
+              </div>
+            </div>
+            <p id="description" class="description"></p>
+          </section>
+
+          <section class="panel services-panel">
+            <div class="section-heading">
+              <span class="section-icon">✦</span>
+              <div>
+                <h2>Servicios</h2>
+                <p id="serviceSummary">Servicios publicados por el negocio</p>
+              </div>
+            </div>
+            <div id="services" class="services-list"></div>
+          </section>
+
+          <section class="panel professionals-panel" id="professionalsPanel" hidden>
+            <div class="section-heading">
+              <span class="section-icon">♙</span>
+              <div>
+                <h2>Profesionales</h2>
+                <p>Equipo disponible para atenderte</p>
+              </div>
+            </div>
+            <div id="professionals" class="professionals-list"></div>
+          </section>
+
+          <section class="panel cta-panel">
+            <span class="cta-kicker">Agenda Ya</span>
+            <h2>¿Quieres reservar?</h2>
+            <p>Elige un servicio y revisa su disponibilidad.</p>
+            <button id="reserveButton" class="primary-button" type="button">Ver servicios y disponibilidad →</button>
+          </section>
+
+          <section id="bookingPanel" class="panel booking-panel" hidden aria-labelledby="bookingTitle">
+            <div class="booking-head">
+              <div>
+                <span class="booking-kicker">RESERVA ONLINE</span>
+                <h2 id="bookingTitle">Agenda tu hora</h2>
+                <p>Elige un servicio, profesional, fecha y horario disponible.</p>
+              </div>
+              <button id="closeBooking" class="booking-close" type="button" aria-label="Cerrar reserva">×</button>
+            </div>
+            <div id="bookingAuthNotice" class="booking-auth-notice" hidden>
+              <strong>Para confirmar tu reserva necesitas una cuenta.</strong>
+              <span>Puedes revisar servicios y disponibilidad sin registrarte. Al confirmar, inicia sesión o crea tu cuenta y volverás automáticamente a esta reserva.</span>
+              <button id="bookingLogin" type="button">Iniciar sesión / Registrarme →</button>
+            </div>
+            <div class="booking-step">
+              <span>1</span><div><strong>Servicio</strong><small>Qué necesitas</small></div>
+            </div>
+            <div id="bookingServices" class="booking-services"></div>
+            <div id="bookingServiceDescription" class="booking-helper"></div>
+            <div class="booking-step">
+              <span>2</span><div><strong>Profesional</strong><small>Con quién quieres atenderte</small></div>
+            </div>
+            <div id="bookingProfessionals" class="booking-professionals"></div>
+            <div class="booking-step">
+              <span>3</span><div><strong>Fecha y horario</strong><small>Selecciona una fecha disponible</small></div>
+            </div>
+            <div class="booking-calendar-head">
+              <button id="bookingPrevMonth" type="button" aria-label="Mes anterior">‹</button>
+              <strong id="bookingMonthLabel"></strong>
+              <button id="bookingNextMonth" type="button" aria-label="Mes siguiente">›</button>
+            </div>
+            <div id="bookingCalendar" class="booking-calendar" aria-label="Calendario de disponibilidad"></div>
+            <div id="bookingDateLabel" class="booking-date-label"></div>
+            <div id="bookingSlots" class="booking-slots"></div>
+            <div id="bookingAvailability" class="booking-helper"></div>
+            <div class="booking-step">
+              <span>4</span><div><strong>Tus datos</strong><small>Se utilizarán para registrar la reserva</small></div>
+            </div>
+            <div id="bookingClientFields" class="booking-client-fields">
+              <label>Nombre<input id="bookingFirstName" maxlength="100" autocomplete="given-name"></label>
+              <label>Apellido<input id="bookingLastName" maxlength="100" autocomplete="family-name"></label>
+              <label>Correo<input id="bookingEmail" type="email" maxlength="200" autocomplete="email"></label>
+              <label>Teléfono<input id="bookingPhone" type="tel" maxlength="50" autocomplete="tel"></label>
+              <label class="booking-notes">Notas (opcional)<textarea id="bookingNotes" rows="3" maxlength="1000"></textarea></label>
+            </div>
+            <button id="confirmBooking" class="booking-confirm" type="button">Confirmar reserva →</button>
+            <p id="bookingStatus" class="booking-status" aria-live="polite"></p>
+            <div id="bookingSuccess" class="booking-success" hidden>
+              <strong>✓ Reserva solicitada</strong>
+              <p id="bookingSuccessText"></p>
+              <a id="bookingHomeButton" class="booking-home-button" href="explorer.html">Volver al menú principal</a>
+            </div>
+          </section>
+        </div>
+
+        <aside class="profile-side">
+          <section class="panel location-panel">
+            <div class="section-heading compact">
+              <span class="section-icon">⌖</span>
+              <div><h2>Ubicación</h2></div>
+            </div>
+            <p id="address" class="side-value"></p>
+            <p id="city" class="side-muted"></p>
+            <div id="mapWrap" class="map-wrap" hidden>
+              <iframe id="mapFrame" title="Ubicación del negocio en Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <a id="mapLink" class="map-link" href="#" target="_blank" rel="noopener" hidden>Ver en Google Maps →</a>
+          </section>
+
+          <section class="panel contact-panel" id="contactPanel" hidden>
+            <div class="contact-reference">
+              <div class="contact-title-row">
+                <span class="whatsapp-mark" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3.2a12.7 12.7 0 0 0-11 19.1L3.2 28.8l6.7-1.7A12.7 12.7 0 1 0 16 3.2Zm0 22.9a10.1 10.1 0 0 1-5.1-1.4l-.4-.2-4 .9 1-3.9-.3-.4a10.1 10.1 0 1 1 8.8 5Zm5.5-7.5c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2c-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.1-1.6-4.3-3.6-.3-.5.3-.5.9-1.7.1-.3 0-.5-.1-.7-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.7 2 .9 2.8 1 3.8.9.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.3Z"/></svg></span>
+                <div>
+                  <h2>Contacto</h2>
+                  <p id="contactLocation" class="contact-location"></p>
+                </div>
+              </div>
+              <a id="whatsapp" class="whatsapp-cta" href="#" target="_blank" rel="noopener" hidden>
+                <span class="whatsapp-mark light" aria-hidden="true"><svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16 3.2a12.7 12.7 0 0 0-11 19.1L3.2 28.8l6.7-1.7A12.7 12.7 0 1 0 16 3.2Zm0 22.9a10.1 10.1 0 0 1-5.1-1.4l-.4-.2-4 .9 1-3.9-.3-.4a10.1 10.1 0 1 1 8.8 5Zm5.5-7.5c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2c-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.1-1.6-4.3-3.6-.3-.5.3-.5.9-1.7.1-.3 0-.5-.1-.7-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.7 2 .9 2.8 1 3.8.9.6-.1 1.8-.7 2.1-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.3Z"/></svg></span>
+                <span>Agenda ahora por WhatsApp</span>
+                <span class="whatsapp-arrow">→</span>
+              </a>
+              <a id="phone" class="contact-number" href="#" hidden></a>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="similar-section" id="similarSection" hidden>
+        <div class="similar-heading">
+          <div>
+            <span class="similar-kicker">AGENDA YA</span>
+            <h2>Similares</h2>
+            <p>Otros negocios de la misma categoría que podrían interesarte.</p>
+          </div>
+        </div>
+        <div id="similarBusinesses" class="similar-grid"></div>
+      </section>
+    </article>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="public-profile.js"></script>
+</body>
+</html>
