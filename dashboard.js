@@ -181,53 +181,40 @@
     const today = todayISO();
     setText("ayTodayLabel", formatToday());
 
-    const r = await client.from("bookings")
-      .select("id,client_id,service_id,professional_id,booking_date,start_time,end_time,status,clients(first_name,last_name),services(name),professionals(first_name,last_name)")
-      .eq("business_id", business.id)
-      .eq("booking_date", today)
-      .order("start_time", { ascending: true })
-      .limit(6);
+    const select = "id,client_id,service_id,professional_id,booking_date,start_time,end_time,status,clients(first_name,last_name),services(name),professionals(first_name,last_name)";
+    const [todayResult, upcomingResult] = await Promise.all([
+      client.from("bookings").select(select).eq("business_id", business.id).eq("booking_date", today).order("start_time", { ascending: true }).limit(12),
+      client.from("bookings").select(select).eq("business_id", business.id).gte("booking_date", today).order("booking_date", { ascending: true }).order("start_time", { ascending: true }).limit(12)
+    ]);
+    if (todayResult.error) throw todayResult.error;
+    if (upcomingResult.error) throw upcomingResult.error;
 
-    if (r.error) throw r.error;
-
-    const rows = r.data || [];
-    if (!rows.length) {
-      renderNoBookings();
-      return;
-    }
-
-    const labelStatus = {
-      pending: "Pendiente",
-      confirmed: "Confirmada",
-      cancelled: "Cancelada",
-      completed: "Completada",
-      no_show: "No asistió"
-    };
+    const todayRows = todayResult.data || [];
+    const upcomingRows = (upcomingResult.data || []).filter(b => !["cancelled", "rejected", "no_show"].includes(String(b.status || "").toLowerCase()));
+    const labelStatus = {pending:"Pendiente",confirmed:"Confirmada",cancelled:"Cancelada",completed:"Completada",no_show:"No asistió",rejected:"Rechazada"};
 
     const list = $("ayUpcomingBookings");
     if (list) {
-      list.innerHTML = rows.slice(0, 4).map(b => {
+      list.innerHTML = upcomingRows.slice(0, 6).map(b => {
         const clientName = b.clients ? `${b.clients.first_name || ""} ${b.clients.last_name || ""}`.trim() : "Cliente";
         const serviceName = b.services?.name || "Reserva";
         const professionalName = b.professionals ? `${b.professionals.first_name || ""} ${b.professionals.last_name || ""}`.trim() : "";
         const time = String(b.start_time || "").slice(0, 5);
+        const date = b.booking_date && b.booking_date !== today ? new Intl.DateTimeFormat("es-CL", {day:"2-digit",month:"2-digit"}).format(new Date(`${b.booking_date}T12:00:00`)) : "Hoy";
         const status = labelStatus[b.status] || b.status || "Registrada";
-        return `<div class="ay-list-row">
-          <b>${time}</b><span class="ay-dot"></span>
-          <div><strong>${escapeHtml(serviceName)}</strong><small>${escapeHtml(clientName)}${professionalName ? ` · con ${escapeHtml(professionalName)}` : ""}</small></div>
-          <mark>${escapeHtml(status)}</mark>
-        </div>`;
-      }).join("");
+        return `<div class="ay-list-row"><b>${escapeHtml(time)}</b><span class="ay-dot"></span><div><strong>${escapeHtml(serviceName)}</strong><small>${escapeHtml(date)} · ${escapeHtml(clientName)}${professionalName ? ` · con ${escapeHtml(professionalName)}` : ""}</small></div><mark>${escapeHtml(status)}</mark></div>`;
+      }).join("") || `<div class="ay-list-row"><div><strong>No hay próximas reservas</strong><small>Las nuevas reservas aparecerán aquí automáticamente.</small></div></div>`;
     }
 
     const timeline = $("ayTodayTimeline");
     if (timeline) {
-      timeline.innerHTML = rows.slice(0, 6).map(b => {
+      timeline.innerHTML = todayRows.map(b => {
         const serviceName = b.services?.name || "Reserva";
+        const clientName = b.clients ? `${b.clients.first_name || ""} ${b.clients.last_name || ""}`.trim() : "Cliente";
         const time = String(b.start_time || "").slice(0, 5);
         const pending = b.status === "pending" ? " class=\"pending\"" : "";
-        return `<div${pending}><b>${time}</b><span>${escapeHtml(serviceName)}</span></div>`;
-      }).join("");
+        return `<div${pending}><b>${escapeHtml(time)}</b><span>${escapeHtml(serviceName)} · ${escapeHtml(clientName)}</span></div>`;
+      }).join("") || `<div><span>No hay reservas para hoy.</span></div>`;
     }
   }
 
