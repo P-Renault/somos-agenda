@@ -125,14 +125,28 @@
         return d;
       } catch (_) { return null; }
     };
+    let resumeInProgress = false;
     const resume = () => {
       const d = pending();
-      if (!d?.slug) return false;
+      if (!d?.slug || resumeInProgress) return false;
+      resumeInProgress = true;
       const url = new URL("public-profile.html", window.location.href);
       url.searchParams.set("slug", d.slug);
       url.searchParams.set("resume", "1");
       window.location.replace(url.href);
       return true;
+    };
+
+    // B12.7: after email login/confirmation, resume the exact pending booking
+    // immediately, without passing through profile choice or marketplace.
+    const resumeAfterAuth = async () => {
+      if (!pending() || !window.AgendaYaAuth?.getClient) return;
+      try {
+        const client = window.AgendaYaAuth.getClient();
+        if (!client) return;
+        const result = await client.auth.getSession();
+        if (result.data?.session?.user) resume();
+      } catch (_) {}
     };
 
     // auth.js currently renders its dashboard shell inside login.html.
@@ -163,7 +177,8 @@
         };
         new MutationObserver(resumeIfSaved).observe(customerStatus, { childList: true, characterData: true, subtree: true, attributes: true });
       }
-      setInterval(() => { goDashboard(); }, 250);
+      setInterval(() => { goDashboard(); resumeAfterAuth(); }, 250);
+      setTimeout(resumeAfterAuth, 0);
     });
   })();
   </script>
