@@ -102,10 +102,14 @@
     if(exceptions.length){ return {available:exceptions.filter(x=>x.status==='available').map(x=>({start_time:x.start_time,end_time:x.end_time})),blocked:exceptions.filter(x=>x.status==='blocked')}; }
     return {available:p.schedules||[],blocked:[]};
   }
-  function slotIsFree(start,end,bookings){ return !(bookings||[]).some(b=>start<timeToMinutes(b.end_time)&&end>timeToMinutes(b.start_time)); }
+  function bookingBlocksSlot(b){
+    const status=String(b?.status||'pending').toLowerCase();
+    return !['cancelled','rejected','no_show'].includes(status);
+  }
+  function slotIsFree(start,end,bookings){ return !(bookings||[]).some(b=>bookingBlocksSlot(b)&&start<timeToMinutes(b.end_time)&&end>timeToMinutes(b.start_time)); }
   function slotsFor(p,s){
     if(!p||!s)return[]; const {available,blocked}=windowsForProfessional(p),duration=Number(s.duration_minutes||0),bookings=p.bookings||[],options=[];
-    for(const w of available){ const ws=timeToMinutes(w.start_time),we=timeToMinutes(w.end_time); for(let start=ws;start+duration<=we;start+=15){const end=start+duration;if(!blocked.some(b=>start<timeToMinutes(b.end_time)&&end>timeToMinutes(b.start_time))&&slotIsFree(start,end,bookings))options.push({start,end});} }
+    for(const w of available){ const ws=timeToMinutes(w.start_time),we=timeToMinutes(w.end_time); for(let start=ws;start+duration<=we;start+=15){const end=start+duration; if(!blocked.some(b=>start<timeToMinutes(b.end_time)&&end>timeToMinutes(b.start_time))) options.push({start,end,occupied:!slotIsFree(start,end,bookings),booking:(bookings||[]).find(b=>bookingBlocksSlot(b)&&start<timeToMinutes(b.end_time)&&end>timeToMinutes(b.start_time))||null});} }
     return [...new Map(options.map(x=>[x.start,x])).values()];
   }
   async function fetchBookingContext(date){
@@ -132,25 +136,31 @@
       else {bookingSelectedDate=null;$('bookingDateLabel').textContent='No hay fechas disponibles en este mes.';$('bookingSlots').innerHTML='';}
     } else await renderBookingSlots();
   }
-  async function selectBookingDate(date){ bookingSelectedDate=date; bookingSelectedSlot=null; $('bookingDateLabel').textContent=formatDate(date); await renderBookingCalendar(); await renderBookingSlots(); }
+  async function selectBookingDate(date){ bookingSelectedDate=date; bookingSelectedSlot=null; $('bookingDateLabel').textContent=formatDate(date); persistBookingDraft(); await renderBookingCalendar(); await renderBookingSlots(); }
   async function renderBookingSlots(){
     const wrap=$('bookingSlots');wrap.innerHTML=''; $('bookingAvailability').textContent=''; if(!bookingSelectedDate||!bookingSelectedService||!bookingSelectedProfessional){$('bookingAvailability').textContent='Selecciona servicio, profesional y fecha.';return;}
     const ctx=bookingContextByDate.get(bookingSelectedDate)||await fetchBookingContext(bookingSelectedDate); const p=(ctx.professionals||[]).find(x=>x.id===bookingSelectedProfessional),s=bookingServices().find(x=>x.id===bookingSelectedService); const slots=slotsFor(p,s);
     if(!slots.length){$('bookingAvailability').textContent='No hay horarios disponibles para esta combinación.';return;}
-    wrap.innerHTML=slots.map(x=>`<button type="button" class="booking-slot" data-start="${minutesToTime(x.start)}" data-end="${minutesToTime(x.end)}">${formatTime(minutesToTime(x.start))} – ${formatTime(minutesToTime(x.end))}</button>`).join('');
-    wrap.querySelectorAll('.booking-slot').forEach(btn=>btn.addEventListener('click',()=>{bookingSelectedSlot={start:btn.dataset.start,end:btn.dataset.end};wrap.querySelectorAll('.booking-slot').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected');}));
-    $('bookingAvailability').textContent=`${slots.length} horario${slots.length===1?'':'s'} disponible${slots.length===1?'':'s'}.`;
+    const free=slots.filter(x=>!x.occupied);
+    wrap.innerHTML=slots.map(x=>{
+      const start=minutesToTime(x.start),end=minutesToTime(x.end);
+      const cls=x.occupied?'booking-slot booking-slot-occupied':'booking-slot';
+      const label=x.occupied?'No disponible':`${formatTime(start)} – ${formatTime(end)}`;
+      return `<button type="button" class="${cls}" data-start="${start}" data-end="${end}" ${x.occupied?'disabled aria-disabled="true"':''}>${label}</button>`;
+    }).join('');
+    wrap.querySelectorAll('.booking-slot:not(.booking-slot-occupied)').forEach(btn=>btn.addEventListener('click',()=>{bookingSelectedSlot={start:btn.dataset.start,end:btn.dataset.end};wrap.querySelectorAll('.booking-slot').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected');persistBookingDraft();}));
+    $('bookingAvailability').textContent=`${free.length} horario${free.length===1?'':'s'} disponible${free.length===1?'':'s'}${free.length<slots.length?` · ${slots.length-free.length} ocupado${slots.length-free.length===1?'':'s'}`:''}.`;
   }
   function renderBookingServices(){
     const wrap=$('bookingServices');const items=bookingServices();
     wrap.innerHTML=items.length?items.map(s=>`<button type="button" class="booking-choice ${s.id===bookingSelectedService?'selected':''}" data-service="${s.id}"><span><strong>${esc(s.name)}</strong><small>${s.duration_minutes||0} min${s.price!=null?' · '+money(s.price):''}</small></span><b>✓</b></button>`).join(''):'<p class="booking-helper">Este negocio aún no tiene servicios disponibles.</p>';
-    wrap.querySelectorAll('[data-service]').forEach(btn=>btn.addEventListener('click',async()=>{bookingSelectedService=btn.dataset.service;wrap.querySelectorAll('.booking-choice').forEach(x=>x.classList.toggle('selected',x===btn));const s=items.find(x=>x.id===bookingSelectedService);$('bookingServiceDescription').textContent=s?.description||'';await renderBookingCalendar();await renderBookingSlots();}));
+    wrap.querySelectorAll('[data-service]').forEach(btn=>btn.addEventListener('click',async()=>{bookingSelectedService=btn.dataset.service;wrap.querySelectorAll('.booking-choice').forEach(x=>x.classList.toggle('selected',x===btn));const s=items.find(x=>x.id===bookingSelectedService);$('bookingServiceDescription').textContent=s?.description||'';persistBookingDraft();await renderBookingCalendar();await renderBookingSlots();}));
   }
   function renderBookingProfessionals(){
     const wrap=$('bookingProfessionals'),items=bookingProfessionals();
     if(!bookingSelectedProfessional&&items.length)bookingSelectedProfessional=items[0].id;
     wrap.innerHTML=items.length?items.map(p=>{const name=[p.first_name,p.last_name].filter(Boolean).join(' ')||'Profesional';return `<button type="button" class="booking-choice ${p.id===bookingSelectedProfessional?'selected':''}" data-professional="${p.id}"><span><strong>${esc(name)}</strong><small>${p.bio?esc(p.bio):'Disponible según agenda'}</small></span><b>✓</b></button>`;}).join(''):'<p class="booking-helper">Este negocio aún no tiene profesionales publicados.</p>';
-    wrap.querySelectorAll('[data-professional]').forEach(btn=>btn.addEventListener('click',async()=>{bookingSelectedProfessional=btn.dataset.professional;wrap.querySelectorAll('.booking-choice').forEach(x=>x.classList.toggle('selected',x===btn));await renderBookingCalendar();await renderBookingSlots();}));
+    wrap.querySelectorAll('[data-professional]').forEach(btn=>btn.addEventListener('click',async()=>{bookingSelectedProfessional=btn.dataset.professional;wrap.querySelectorAll('.booking-choice').forEach(x=>x.classList.toggle('selected',x===btn));persistBookingDraft();await renderBookingCalendar();await renderBookingSlots();}));
   }
   async function hydrateBookingIdentity(){
     bookingSession=null; try{const s=await client.auth.getSession();bookingSession=s.data?.session||null;}catch(_){bookingSession=null;}
@@ -188,9 +198,12 @@
       await renderBookingSlots();
       if(resume.slot?.start){
         const target=$(`#bookingSlots .booking-slot[data-start=\"${resume.slot.start}\"]`);
-        if(target){
+        if(target && !target.disabled){
           bookingSelectedSlot={start:target.dataset.start,end:target.dataset.end};
           target.classList.add('selected');
+        } else if(resume.slot?.start){
+          bookingSelectedSlot=null;
+          $('bookingStatus').textContent='El horario que habías seleccionado ya fue ocupado. Selecciona otro horario disponible.';
         }
       }
     }
@@ -198,6 +211,7 @@
   }
   function closeBooking(){ $('bookingPanel').hidden=true; }
   function draftFromForm(){return {slug:profileData?.business?.slug||params().get('slug')||'',date:bookingSelectedDate,serviceId:bookingSelectedService,professionalId:bookingSelectedProfessional,slot:bookingSelectedSlot,firstName:$('bookingFirstName').value.trim(),lastName:$('bookingLastName').value.trim(),email:$('bookingEmail').value.trim(),phone:$('bookingPhone').value.trim(),notes:$('bookingNotes').value.trim(),returnUrl:`public-profile.html?slug=${encodeURIComponent(profileData?.business?.slug||params().get('slug')||'')}`};}
+  function persistBookingDraft(){ const d=draftFromForm(); if(d.slug&&d.date&&d.serviceId&&d.professionalId&&d.slot?.start) savePendingDraft(d); }
   async function confirmBooking(){
     if(!bookingSelectedService||!bookingSelectedProfessional||!bookingSelectedDate||!bookingSelectedSlot){$('bookingStatus').textContent='Selecciona servicio, profesional, fecha y horario.';return;}
     const first=$('bookingFirstName').value.trim(),last=$('bookingLastName').value.trim(),email=$('bookingEmail').value.trim(),phone=$('bookingPhone').value.trim();
@@ -241,5 +255,6 @@
       }catch(_){}
     }
   }
+  ['bookingFirstName','bookingLastName','bookingEmail','bookingPhone','bookingNotes'].forEach(id=>$(id)?.addEventListener('input',persistBookingDraft));
   init();
 })();
