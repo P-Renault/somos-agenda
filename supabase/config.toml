@@ -1,0 +1,2 @@
+[functions.flow-return]
+verify_jwt = false
