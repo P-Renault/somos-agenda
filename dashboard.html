@@ -4,11 +4,30 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Agenda Ya · Dashboard</title>
+<link rel="preload" href="agenda-ya-shell.css" as="style">
+<style id="ay-dashboard-critical-first-paint">
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;max-width:100%;overflow-x:hidden}
+  .ay-app[hidden]{display:none!important}
+  .ay-header{display:flex;align-items:center;min-height:66px;max-width:100%;overflow:hidden}
+  .ay-brand{width:145px;min-width:0;max-width:45vw;flex:0 1 145px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .ay-brand img{display:block;width:145px;height:50px;max-width:100%;max-height:100%;object-fit:contain;object-position:center;flex-shrink:0}
+  @media(min-width:901px){
+    .ay-header{min-height:92px}
+    .ay-brand{width:198px;max-width:22vw;flex-basis:198px}
+    .ay-brand img{width:198px;height:68px}
+  }
+  @media(min-width:701px) and (max-width:900px){
+    .ay-brand{width:170px;flex-basis:170px}
+    .ay-brand img{width:170px;height:58px}
+  }
+</style>
 <link rel="stylesheet" href="agenda-ya-shell.css">
-<style id="ay-b13-notification-header-inline">.ay-notification-trigger{position:relative;display:inline-flex!important;align-items:center;justify-content:center}.ay-notification-trigger svg{width:22px;height:22px;display:block}@media(max-width:700px){.ay-notification-trigger{width:40px;height:40px;min-width:40px;flex:0 0 40px}.ay-notification-trigger svg{width:21px;height:21px}}</style></head>
+<style id="ay-b13-notification-header-inline">.ay-notification-trigger{position:relative;display:inline-flex!important;align-items:center;justify-content:center}.ay-notification-trigger svg{width:22px;height:22px;display:block}@media(max-width:700px){.ay-notification-trigger{width:40px;height:40px;min-width:40px;flex:0 0 40px}.ay-notification-trigger svg{width:21px;height:21px}}</style>
+</head>
 <body>
 <div class="ay-app" id="ayApp" hidden>
-    <header class="ay-header"><button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button><a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a>
+    <header class="ay-header"><button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button><a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya" width="198" height="68" fetchpriority="high"></a>
       <nav class="ay-header-nav" aria-label="Navegación principal"><button class="ay-nav-item is-active" data-view="dashboard">⌂<span>Dashboard</span></button><button class="ay-nav-item" data-view="services">✂<span>Servicios</span></button><button class="ay-nav-item" data-view="professionals">♙<span>Profesionales</span></button><button class="ay-nav-item" data-view="schedules">◷<span>Horarios</span></button><button class="ay-nav-item" data-view="availability">▣<span>Disponibilidad</span></button><button class="ay-nav-item" data-view="clients">♧<span>Clientes</span></button><button class="ay-nav-item" data-view="bookings">▤<span>Reservas</span></button><button class="ay-nav-item" data-view="calendar">▦<span>Calendario</span></button></nav>
       <div class="ay-header-actions"><button class="ay-icon-btn ay-notification-trigger" id="ayBusinessNotificationsBtn" title="Notificaciones" aria-label="Abrir notificaciones" aria-haspopup="dialog" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
