@@ -19,6 +19,57 @@
     .ay-profile-brand img{display:block;width:min(220px,70vw);height:auto;max-height:78px;object-fit:contain}
   </style>
 
+<style id="ay-profile-critical-layout">
+  /* Agenda YA · perfil inicial: estilos críticos autónomos */
+  #ayProfileView[hidden], #ayProfileFormStep[hidden],
+  #ayBusinessProfileForm[hidden], #ayBusinessScheduleForm[hidden],
+  #ayCustomerProfileForm[hidden] { display:none !important; }
+  #ayProfileView{min-height:100vh;padding:24px 16px 36px;background:linear-gradient(145deg,#f5f9ff 0%,#fff 55%,#eaf7ff 100%);color:#10294b;box-sizing:border-box}
+  #ayProfileView *{box-sizing:border-box}
+  #ayProfileView .ay-profile-wrap{width:min(100%,680px);margin:0 auto}
+  #ayProfileView .ay-profile-brand{display:flex;justify-content:center;align-items:center;margin:4px auto 22px;min-height:64px}
+  #ayProfileView .ay-profile-brand img{display:block;width:min(220px,65vw);height:auto;max-height:78px;object-fit:contain}
+  #ayProfileView .ay-profile-card{background:#fff;border:1px solid #e4ebf5;border-radius:22px;padding:clamp(20px,5vw,34px);box-shadow:0 18px 55px rgba(20,54,94,.10)}
+  #ayProfileView .ay-profile-head{text-align:center;margin-bottom:24px}
+  #ayProfileView .ay-profile-head .ay-auth-eyebrow{margin:0 0 10px;color:#1675d1;font-size:11px;font-weight:800;letter-spacing:.12em}
+  #ayProfileView .ay-profile-head h1{margin:0 0 10px;font-size:clamp(25px,6vw,34px);line-height:1.15;color:#10294b}
+  #ayProfileView .ay-profile-head>p:last-child{margin:0;color:#63738a;font-size:14px;line-height:1.5}
+  #ayProfileView .ay-profile-type{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+  #ayProfileView .ay-profile-type-btn{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;min-height:132px;padding:18px;border:1.5px solid #dce5f0;border-radius:16px;background:#fff;color:#172f50;white-space:normal;line-height:1.4;cursor:pointer}
+  #ayProfileView .ay-profile-type-btn strong{font-size:15px;font-weight:800}
+  #ayProfileView .ay-profile-type-btn span{font-size:13px;color:#64758c}
+  #ayProfileView .ay-profile-type-btn.is-active,#ayProfileView .ay-profile-type-btn[aria-pressed="true"]{border-color:#1684e8;background:#f0f8ff;box-shadow:0 0 0 2px rgba(22,132,232,.08)}
+  #ayProfileView .ay-auth-primary{display:flex;justify-content:center;align-items:center;gap:8px;width:100%;min-height:48px;padding:13px 18px;border:0;border-radius:12px;background:linear-gradient(100deg,#1678df,#159de8);color:#fff;font-size:14px;font-weight:800;cursor:pointer}
+  #ayProfileView .ay-profile-form{display:grid;gap:15px;margin-top:16px}
+  #ayProfileView .ay-profile-form>label,#ayProfileView .ay-profile-grid>label{display:flex;flex-direction:column;gap:7px;color:#253b57;font-size:12px;font-weight:750}
+  #ayProfileView input:not([type=file]){width:100%;min-height:44px;padding:11px 12px;border:1px solid #d7e0ec;border-radius:10px;background:#fff;color:#17304f;font:inherit;font-size:14px;outline:none}
+  #ayProfileView input:focus{border-color:#1684e8;box-shadow:0 0 0 3px rgba(22,132,232,.12)}
+  #ayProfileView input[type=file]{width:100%;font-size:12px}
+  #ayProfileView .ay-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  #ayProfileView .ay-phone-field{display:flex;align-items:center;border:1px solid #d7e0ec;border-radius:10px;overflow:hidden}
+  #ayProfileView .ay-phone-field .ay-phone-prefix{flex:0 0 auto;padding:0 10px;color:#63738a;font-size:13px}
+  #ayProfileView .ay-phone-field input{border:0;border-radius:0;min-width:0}
+  #ayProfileView .ay-profile-photo-row{display:flex;align-items:center;gap:13px;padding:13px;border:1px solid #e5edf6;border-radius:13px;background:#f8fbff}
+  #ayProfileView .ay-profile-avatar{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:50%;background:#e0f2ff;color:#0874cb;font-weight:900}
+  #ayProfileView .ay-profile-photo-row strong{font-size:13px}
+  #ayProfileView .ay-profile-photo-row p{margin:4px 0 0;color:#718096;font-size:12px}
+  #ayProfileView .ay-profile-back{width:100%;padding:10px;border:1px solid #dce5f0;border-radius:10px;background:#fff;color:#25649e;font-size:13px;font-weight:700}
+  #ayProfileView .ay-profile-form-title h2{margin:0 0 8px;font-size:22px}
+  #ayProfileView .ay-profile-form-title p{color:#65758b;font-size:13px;line-height:1.5}
+  #ayProfileView .ay-profile-section-title{font-size:14px;font-weight:800}
+  #ayProfileView .ay-hours-grid{display:grid;gap:9px}
+  #ayProfileView .ay-profile-status{margin:0;color:#b42318;font-size:12px;line-height:1.45}
+  #ayProfileView .ay-profile-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:10px}
+  @media(max-width:520px){
+    #ayProfileView{padding:18px 12px 28px}
+    #ayProfileView .ay-profile-brand{margin-bottom:16px}
+    #ayProfileView .ay-profile-card{border-radius:18px;padding:20px 16px}
+    #ayProfileView .ay-profile-type{grid-template-columns:1fr;gap:10px}
+    #ayProfileView .ay-profile-type-btn{min-height:0;padding:15px}
+    #ayProfileView .ay-profile-grid{grid-template-columns:1fr}
+    #ayProfileView .ay-profile-actions{grid-template-columns:1fr}
+  }
+</style>
 </head>
 <body>
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
