@@ -1,4 +1,4 @@
-/* Agenda YA · Flow Return Popup B5.1.1
+/* Agenda YA · Flow Return Popup B5.2.0
  * Modal auto-opened by dashboard.html?flow_return=1.
  * Reads status from the authenticated billing RPC through existing Billing Engine.
  * Never activates a plan and never trusts URL params as payment evidence.
@@ -15,9 +15,9 @@
   #ayFlowResultIcon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;font-size:30px;font-weight:800;background:#eef2ff;color:#3546a5}
   #ayFlowResultTitle{font-size:23px;line-height:1.25;margin:0 0 10px;font-weight:750}
   #ayFlowResultMessage{font-size:15px;line-height:1.55;color:#5b6474;margin:0 0 18px;overflow-wrap:anywhere}
-  #ayFlowResultActions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .ayFlowResultBtn{border:0;border-radius:11px;padding:12px 16px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
-  #ayFlowResultRetry{background:#edf0f6;color:#253047}#ayFlowResultClose{background:#293d7c;color:#fff}
+  #ayFlowResultActions{display:flex;justify-content:center;width:100%}
+  .ayFlowResultBtn{border:0;border-radius:11px;padding:14px 20px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px;width:100%;max-width:300px}
+  #ayFlowResultClose{background:#293d7c;color:#fff}
   #ayFlowResultMeta{font-size:12px;line-height:1.4;color:#7a8392;margin-top:14px}
   `;
   document.head.appendChild(style);
@@ -27,7 +27,7 @@
     <div id="ayFlowResultIcon" aria-hidden="true">…</div>
     <h2 id="ayFlowResultTitle">Verificando tu pago</h2>
     <p id="ayFlowResultMessage">Estamos consultando el estado real registrado en Agenda YA. El retorno del navegador no confirma por sí solo un pago.</p>
-    <div id="ayFlowResultActions"><button type="button" class="ayFlowResultBtn" id="ayFlowResultRetry">Consultar nuevamente</button><button type="button" class="ayFlowResultBtn" id="ayFlowResultClose">Volver al dashboard</button></div>
+    <div id="ayFlowResultActions"><button type="button" class="ayFlowResultBtn" id="ayFlowResultClose">Volver al dashboard</button></div>
     <div id="ayFlowResultMeta">No cierres esta ventana si el estado sigue pendiente.</div></section>`;
   document.body.appendChild(overlay);
   const $ = id => document.getElementById(id);
@@ -44,7 +44,6 @@
   async function check(){
     if(busy||terminal)return;
     busy=true; attempts++;
-    $('ayFlowResultRetry').disabled=true; $('ayFlowResultRetry').textContent='Consultando…';
     try {
       const engine=window.AgendaYaBillingEngine;
       if(!engine?.load||!engine?.get) throw new Error('El motor de facturación aún no está disponible.');
@@ -64,22 +63,21 @@
         } else if(failed.has(status)){
           terminal=true; render('rejected','Transacción rechazada','El historial de facturación registra que este intento no fue aprobado.'+money+' Tu suscripción no debe activarse por este pago.','×','Estado del servidor: '+status+'.');
         } else {
-          render('pending','Pago pendiente de confirmación','Todavía no hay una aprobación ni un rechazo definitivo.'+money+' Espera unos segundos y vuelve a consultar.','…','Estado del servidor: '+(status||'sin estado')+'. Consulta '+attempts+'.');
+          render('pending','Pago pendiente de confirmación','Todavía no hay una aprobación ni un rechazo definitivo.'+money+' Estamos comprobando el estado automáticamente.','…','Estado del servidor: '+(status||'sin estado')+'.');
         }
       }
     } catch(err){
-      render('unknown','No pudimos verificar el pago','No fue posible consultar el estado de facturación. No interpretaremos el retorno como aprobación. Intenta nuevamente.','!','Consulta '+attempts+'.');
+      render('unknown','No pudimos verificar el pago','No fue posible consultar el estado de facturación. No interpretaremos el retorno como aprobación. Vuelve al dashboard e inténtalo más tarde.','!','No se pudo confirmar el estado del servidor.');
       console.warn('[Agenda YA] Flow return popup:',err?.message||err);
     } finally {
-      busy=false; $('ayFlowResultRetry').disabled=false; $('ayFlowResultRetry').textContent='Consultar nuevamente';
+      busy=false;
     }
   }
-  $('ayFlowResultRetry').addEventListener('click',()=>void check());
   $('ayFlowResultClose').addEventListener('click',()=>{
     const url=new URL(location.href); url.searchParams.delete('flow_return'); url.searchParams.delete('token');
     location.replace(url.pathname+url.search+url.hash);
   });
   window.AgendaYaFlowReturnPopup={check};
-  const start=()=>{void check(); poller=setInterval(()=>{if(terminal||attempts>=6){clearInterval(poller);return;}void check();},5000);};
+  const start=()=>{void check(); poller=setInterval(()=>{if(terminal||attempts>=12){clearInterval(poller);return;}void check();},5000);};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
