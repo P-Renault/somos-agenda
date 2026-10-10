@@ -16,7 +16,7 @@ async function readToken(req:Request){
 Deno.serve(async(req:Request)=>{
  if(req.method!=="POST")return reply({ok:false,error:"METHOD_NOT_ALLOWED"},405);
  try{
-  const flowUrl=env("FLOW_API_URL").replace(/\/+$/,"");const key=env("FLOW_API_KEY"),secret=env("FLOW_SECRET_KEY"),url=env("SUPABASE_URL"),service=env("SUPABASE_SERVICE_ROLE_KEY");
+  const flowUrl=env("FLOW_API_URL").replace(/\\/+$/,"");const key=env("FLOW_API_KEY"),secret=env("FLOW_SECRET_KEY"),url=env("SUPABASE_URL"),service=env("SUPABASE_SERVICE_ROLE_KEY");
   if(!key||!secret||!url||!service)return reply({ok:false,error:"CONFIG_MISSING"},500);
   if(!["https://www.flow.cl/api","https://sandbox.flow.cl/api"].includes(flowUrl))return reply({ok:false,error:"FLOW_API_URL_NOT_ALLOWED"},500);
   const token=await readToken(req);if(!token||token.length>500)return reply({ok:false,error:"FLOW_TOKEN_REQUIRED"},400);
@@ -39,7 +39,6 @@ Deno.serve(async(req:Request)=>{
   }
   const {data:result,error:rpcError}=await db.rpc("process_flow_payment_webhook",{p_provider_token:token,p_flow_status:status,p_payload:data});
   if(rpcError){console.error("Payment webhook RPC failed:",rpcError.message);return reply({ok:false,error:"PAYMENT_PROCESSING_FAILED"},500)}
-  // Aprobación se verifica contra la BD; no se infiere del resultado RPC ni del navegador.
   let notificationStatus="not_applicable";
   if(status===2){
    const {data:confirmed,error:confirmedError}=await db.from("payments").select("status").eq("id",payment.id).single();
@@ -49,6 +48,11 @@ Deno.serve(async(req:Request)=>{
     if(notificationError){notificationStatus="failed";console.error("Plan notification RPC failed:",notificationError.message)}
     else notificationStatus="created_or_exists";
    }
+  } else if(status===1 || status===3 || status===4) {
+   const outcome=status===1?"pending":status===3?"rejected":"cancelled";
+   const {error:outcomeError}=await db.rpc("notify_flow_payment_outcome",{p_payment_id:payment.id,p_outcome:outcome});
+   if(outcomeError){notificationStatus="failed";console.error("Flow outcome notification failed:",outcomeError.message)}
+   else notificationStatus="created_or_exists";
   }
   return reply({ok:true,received:true,payment_id:payment.id,payment_status:result?.payment_status??payment.status,notification_status:notificationStatus});
  }catch(e){console.error("flow-webhook error:",e instanceof Error?e.message:"UNKNOWN");return reply({ok:false,error:"INTERNAL_ERROR"},500)}
