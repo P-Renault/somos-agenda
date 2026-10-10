@@ -52,59 +52,34 @@ body.ay-profile-open{overflow:hidden}
  .ay-profile-panel-head{margin-bottom:8px}
  .ay-profile-summary{margin-bottom:10px}
 }
-</style>
 
-<style id="ay-profile-mobile-fit-pa">
-/* Panel de perfil móvil: compacto, proporcionado y visible dentro del viewport */
-.ay-profile-panel[hidden],.ay-profile-fields[hidden],.ay-modal-backdrop[hidden]{display:none!important}
-.ay-profile-panel{display:flex;flex-direction:column;gap:9px;overflow:hidden}
-.ay-profile-panel-head{flex:0 0 auto;margin:0;align-items:center}
-.ay-profile-panel-head h2{font-size:25px}
-.ay-profile-summary{display:flex;flex:0 0 auto;align-items:center;gap:10px;margin:0;padding:9px 11px}
-.ay-profile-panel-avatar{width:42px;height:42px;flex:0 0 42px}
-.ay-profile-summary strong{font-size:15px;line-height:1.2}
-.ay-profile-summary span{font-size:11px;line-height:1.25}
-.ay-profile-summary em{font-size:10px}
-.ay-profile-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-height:0}
-.ay-profile-fields>label{font-size:12px;gap:4px;min-width:0}
-.ay-profile-fields input{height:38px;min-height:38px;padding:0 10px;border-radius:10px;font-size:16px}
-.ay-profile-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.ay-profile-grid-2 label{min-width:0;font-size:11px;gap:4px}
-.ay-profile-panel-status{margin:0;font-size:11px;line-height:1.25}
-.ay-profile-save{min-height:43px;flex:0 0 auto;margin:0}
+/* B5.1 · Panel de perfil compacto para ambos roles en móviles */
 @media(max-width:600px){
- .ay-modal-backdrop{background:rgba(7,23,47,.62)}
- .ay-profile-panel{top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:calc(100vw - 24px);max-width:480px;max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);padding:13px;border-radius:19px;gap:8px;overflow:hidden}
- .ay-profile-panel-head{gap:8px}
- .ay-profile-panel-head h2{font-size:22px;line-height:1.1}
+ .ay-profile-panel{top:50%;bottom:auto;left:50%;transform:translate(-50%,-50%);width:calc(100vw - 22px);max-height:calc(100dvh - 22px);overflow:hidden;padding:12px;border-radius:18px;display:flex;flex-direction:column;gap:0}
+ .ay-profile-panel-head{margin-bottom:8px;gap:8px;align-items:center}
+ .ay-profile-panel-head h2{font-size:22px;margin-top:2px}
+ .ay-profile-panel-head .ay-eyebrow{font-size:10px}
  .ay-panel-close{width:34px;height:34px;flex-basis:34px;border-radius:10px;font-size:24px}
- .ay-profile-summary{padding:8px;margin:0}
- .ay-profile-panel-avatar{width:38px;height:38px;flex-basis:38px}
- .ay-profile-summary strong{font-size:14px}
- .ay-profile-summary span{font-size:10px}
- .ay-profile-fields{gap:7px}
- .ay-profile-fields>label{font-size:11px;gap:3px}
- .ay-profile-fields input{height:35px;min-height:35px;padding:0 8px;font-size:16px}
- .ay-profile-grid-2{gap:7px}
- .ay-profile-grid-2 label{font-size:10px;gap:3px}
- .ay-profile-panel-status{font-size:10px}
- .ay-profile-save{min-height:39px}
+ .ay-profile-summary{padding:8px 10px;margin-bottom:9px;gap:9px;border-radius:13px}
+ .ay-profile-panel-avatar{width:40px;height:40px;flex-basis:40px;font-size:13px}
+ .ay-profile-summary strong{font-size:14px;line-height:1.15}
+ .ay-profile-summary span{font-size:11px;line-height:1.2;overflow-wrap:anywhere}
+ .ay-profile-summary em{font-size:10px}
+ .ay-profile-fields{gap:8px}
+ .ay-profile-fields label{font-size:11px;gap:4px;line-height:1.15}
+ .ay-profile-fields input{height:39px;min-height:39px;padding:0 9px;border-radius:10px;font-size:16px}
+ .ay-profile-grid-2{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .ay-profile-panel-status{margin:6px 0;font-size:11px;line-height:1.2}
+ .ay-profile-save{position:static;flex:0 0 auto;min-height:42px;height:42px;margin-top:5px;border-radius:12px;box-shadow:none;font-size:14px}
 }
-@media(max-height:740px) and (max-width:600px){
- .ay-profile-panel{gap:5px;padding:9px}
- .ay-profile-panel-head h2{font-size:20px}
- .ay-profile-summary{padding:6px}
- .ay-profile-panel-avatar{width:32px;height:32px;flex-basis:32px}
- .ay-profile-fields{gap:5px}
- .ay-profile-fields input{height:31px;min-height:31px}
- .ay-profile-grid-2{gap:5px}
- .ay-profile-panel-status{font-size:9px}
- .ay-profile-save{min-height:35px}
-}
-@media(max-width:360px){
- .ay-profile-panel{width:calc(100vw - 16px);padding:8px}
- .ay-profile-panel-head h2{font-size:19px}
- .ay-profile-grid-2{gap:5px}
+@media(max-height:650px) and (max-width:600px){
+ .ay-profile-panel{padding:9px;max-height:calc(100dvh - 12px)}
+ .ay-profile-panel-head{margin-bottom:5px}
+ .ay-profile-summary{padding:6px 8px;margin-bottom:6px}
+ .ay-profile-fields{gap:6px}
+ .ay-profile-grid-2{gap:6px}
+ .ay-profile-fields input{height:35px;min-height:35px}
+ .ay-profile-save{height:38px;min-height:38px}
 }
 </style>
 </head>

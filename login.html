@@ -70,6 +70,93 @@
     #ayProfileView .ay-profile-actions{grid-template-columns:1fr}
   }
 </style>
+
+<style id="ay-profile-mobile-compact-original">
+@media(max-width:700px){
+ #ayProfileView{min-height:100dvh;padding:10px 12px calc(12px + env(safe-area-inset-bottom));overflow:hidden}
+ #ayProfileView .ay-profile-wrap{width:100%;max-width:520px;margin:0 auto;gap:10px}
+ #ayProfileView .ay-profile-brand{padding:0;margin:0 auto;display:flex;justify-content:center;max-height:74px;overflow:hidden}
+ #ayProfileView .ay-profile-brand img{width:min(62vw,255px);max-height:68px;object-fit:contain;mix-blend-mode:multiply}
+ #ayProfileView .ay-profile-card{width:100%;padding:16px 14px;border-radius:20px;max-height:calc(100dvh - 98px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ #ayProfileView .ay-profile-head{margin-bottom:12px}
+ #ayProfileView .ay-profile-head h1{font-size:clamp(24px,6vw,30px);line-height:1.12;margin:4px 0}
+ #ayProfileView .ay-profile-head>p:last-child{font-size:13px;line-height:1.35;margin:4px 0 0}
+ #ayProfileView .ay-profile-choice-step{margin-top:10px}
+ #ayProfileView .ay-profile-type{grid-template-columns:1fr;gap:9px}
+ #ayProfileView .ay-profile-type-btn{min-height:68px;padding:12px 13px;border-radius:13px}
+ #ayProfileView .ay-profile-type-btn strong{font-size:15px}
+ #ayProfileView .ay-profile-type-btn span{font-size:12px;line-height:1.3}
+ #ayProfileView .ay-profile-back{min-height:34px;padding:7px 0;font-size:13px}
+ #ayProfileView .ay-profile-form{gap:10px;margin-top:9px}
+ #ayProfileView .ay-profile-form>label,#ayProfileView .ay-profile-grid>label{gap:5px;font-size:12px}
+ #ayProfileView .ay-profile-form input:not([type=file]),#ayProfileView .ay-profile-grid input:not([type=file]){height:43px;min-height:43px;padding:0 11px;border-radius:11px;font-size:16px}
+ #ayProfileView .ay-profile-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #ayProfileView .ay-phone-field{min-width:0}
+ #ayProfileView .ay-phone-prefix{padding:0 8px;font-size:11px}
+ #ayProfileView .ay-phone-field input{min-width:0;width:100%}
+ #ayProfileView .ay-profile-photo-row{padding:9px;gap:10px;margin-bottom:2px}
+ #ayProfileView .ay-profile-avatar{width:42px;height:42px;flex:0 0 42px}
+ #ayProfileView .ay-profile-photo-row strong{font-size:12px}
+ #ayProfileView .ay-profile-photo-row p{font-size:11px;margin:3px 0 0}
+ #ayProfileView .ay-profile-form input[type=file]{width:100%;max-width:100%;font-size:12px}
+ #ayProfileView .ay-profile-status{font-size:11px;line-height:1.25;margin:2px 0}
+ #ayProfileView .ay-auth-primary{width:100%;min-height:44px;height:44px;padding:0 12px;border-radius:12px;font-size:14px}
+ #ayProfileView .ay-profile-actions{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;margin-top:3px}
+ #ayProfileView .ay-profile-form-title{margin-bottom:4px}
+ #ayProfileView .ay-profile-form-title h2{font-size:22px;line-height:1.15;margin:3px 0 5px}
+ #ayProfileView .ay-profile-form-title p{font-size:12px;line-height:1.35;margin:4px 0}
+ #ayProfileView .ay-profile-section-title{font-size:12px;margin:2px 0}
+ #ayProfileView .ay-hours-grid{display:grid;grid-template-columns:1fr;gap:6px}
+ #ayProfileView .ay-hours-grid>*{min-width:0}
+ #ayProfileView .ay-hours-grid input[type=time]{height:38px;min-height:38px;font-size:14px;padding:0 5px}
+ #ayProfileView .ay-hours-grid label{font-size:12px;gap:6px}
+}
+@media(max-width:380px){
+ #ayProfileView .ay-profile-grid{grid-template-columns:1fr}
+ #ayProfileView .ay-profile-actions{grid-template-columns:1fr}
+ #ayProfileView .ay-profile-card{padding:13px 11px}
+}
+@media(max-height:650px) and (max-width:700px){
+ #ayProfileView .ay-profile-card{max-height:calc(100dvh - 78px);padding:10px 12px}
+ #ayProfileView .ay-profile-brand{max-height:56px}
+ #ayProfileView .ay-profile-brand img{max-height:52px;width:min(54vw,220px)}
+ #ayProfileView .ay-profile-form{gap:7px}
+ #ayProfileView .ay-profile-grid{gap:7px}
+ #ayProfileView .ay-profile-form input:not([type=file]),#ayProfileView .ay-profile-grid input:not([type=file]){height:38px;min-height:38px}
+}
+
+  /* B5.2 · Selección de perfil y registro móvil */
+  #ayProfileView .ay-profile-brand img,
+  .ay-auth-brand img{background:transparent!important;mix-blend-mode:normal!important;object-fit:contain}
+  #ayProfileView .ay-profile-type-btn{display:flex;flex-direction:row;align-items:center;gap:12px;min-width:0}
+  #ayProfileView .ay-role-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;margin:0;border-radius:13px;background:#e8f3ff;color:#0878ea}
+  #ayProfileView .ay-role-icon svg{display:block;width:24px;height:24px}
+  #ayProfileView .ay-role-copy{display:grid;gap:5px;min-width:0}
+  #ayProfileView .ay-role-copy strong{display:block}
+  #ayProfileView .ay-role-copy>span{display:block;margin:0}
+  @media(max-width:520px){
+    #ayProfileView{min-height:100dvh;padding:12px 12px calc(16px + env(safe-area-inset-bottom))}
+    #ayProfileView .ay-profile-wrap{width:100%;max-width:480px}
+    #ayProfileView .ay-profile-brand{min-height:60px;margin:0 auto 12px}
+    #ayProfileView .ay-profile-brand img{width:min(68vw,250px);max-height:62px}
+    #ayProfileView .ay-profile-card{padding:16px 14px;border-radius:18px}
+    #ayProfileView .ay-profile-head{margin-bottom:14px}
+    #ayProfileView .ay-profile-head h1{font-size:clamp(23px,6vw,29px)}
+    #ayProfileView .ay-profile-head>p:last-child{font-size:13px}
+    #ayProfileView .ay-profile-type{grid-template-columns:1fr;gap:9px;margin:14px 0}
+    #ayProfileView .ay-profile-type-btn{min-height:72px;padding:12px;border-radius:14px}
+    #ayProfileView .ay-role-icon{width:38px;height:38px;flex-basis:38px}
+    #ayProfileView .ay-profile-form{gap:10px;margin-top:12px}
+    #ayProfileView .ay-profile-grid{grid-template-columns:1fr 1fr;gap:10px}
+    #ayProfileView .ay-profile-form>label,#ayProfileView .ay-profile-grid>label{gap:5px;font-size:12px}
+    #ayProfileView input:not([type=file]){min-height:42px;font-size:16px;padding:9px 10px}
+    #ayProfileView input[type=file]{max-width:100%;font-size:11px}
+    #ayProfileView .ay-profile-actions{grid-template-columns:.8fr 1.2fr;gap:8px}
+    #ayProfileView .ay-auth-primary{min-height:44px;padding:10px 12px;font-size:13px}
+    #ayProfileView .ay-hours-grid{gap:7px}
+  }
+  @media(max-width:360px){#ayProfileView .ay-profile-grid{grid-template-columns:1fr}#ayProfileView .ay-profile-card{padding:14px 12px}}
+</style>
 </head>
 <body>
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
@@ -84,7 +171,7 @@
       <span>Volver a Agenda YA</span>
     </button>
         <div class="ay-auth-brand" aria-label="Agenda Ya">
-          <img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya">
+          <img src="assets/agenda-ya-logo-transparent.png" alt="Agenda Ya">
         </div>
       </div>
       <div class="ay-auth-intro">
@@ -130,9 +217,9 @@
   </section>
 
   <section class="ay-profile" id="ayProfileView" hidden aria-label="Configuración de perfil">
-    <div class="ay-profile-wrap"><div class="ay-profile-brand"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya"></div>
+    <div class="ay-profile-wrap"><div class="ay-profile-brand"><img src="assets/agenda-ya-logo-transparent.png" alt="Agenda Ya"></div>
       <div class="ay-profile-card"><div class="ay-profile-head"><p class="ay-auth-eyebrow">AGENDA YA · PERFIL</p><h1 id="ayProfileTitle">Bienvenido a Agenda Ya</h1><p id="ayProfileSubtitle">Elige tu perfil para comenzar.</p></div>
-        <div id="ayProfileChoiceStep" class="ay-profile-choice-step"><div class="ay-profile-type" role="group" aria-label="Tipo de perfil"><button type="button" class="ay-profile-type-btn is-active" data-profile-type="business" aria-pressed="true"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></button><button type="button" class="ay-profile-type-btn" data-profile-type="customer" aria-pressed="false"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></button></div><button class="ay-auth-primary ay-profile-next" id="ayProfileNext" type="button">Siguiente</button></div>
+        <div id="ayProfileChoiceStep" class="ay-profile-choice-step"><div class="ay-profile-type" role="group" aria-label="Tipo de perfil"><button type="button" class="ay-profile-type-btn is-active" data-profile-type="business" aria-pressed="true"><span class="ay-role-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M8 10h1m6 0h1m-7 3h1m6 0h1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="ay-role-copy"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></span></button><button type="button" class="ay-profile-type-btn" data-profile-type="customer" aria-pressed="false"><span class="ay-role-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 20c.4-4 2.7-6 7-6s6.6 2 7 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="ay-role-copy"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></span></button></div><button class="ay-auth-primary ay-profile-next" id="ayProfileNext" type="button">Siguiente</button></div>
         <div id="ayProfileFormStep" class="ay-profile-form-step" hidden>
           <button type="button" class="ay-profile-back" id="ayProfileBack">← Cambiar tipo de perfil</button>
           <form id="ayBusinessProfileForm" class="ay-profile-form" novalidate><div class="ay-profile-photo-row"><div class="ay-profile-avatar" id="ayBusinessAvatarPreview">AY</div><div><strong>Imagen del negocio</strong><p>Opcional. Puedes subir una imagen.</p></div></div><label>Nombre del negocio<input id="ayBusinessName" required maxlength="120" placeholder="Ej. Barbería Agenda Ya"></label><label>Tipo de servicio<input id="ayBusinessType" required maxlength="100" placeholder="Ej. Barbería, peluquería, salud..."></label><div class="ay-profile-grid"><label>Teléfono<div class="ay-phone-field"><span class="ay-phone-prefix">+56 9</span><input id="ayBusinessPhone" type="tel" inputmode="numeric" maxlength="8" placeholder="12345678"></div></label><label>Ciudad<input id="ayBusinessCity" required maxlength="80" placeholder="Temuco"></label><label>Comuna<input id="ayBusinessComuna" required maxlength="80" placeholder="Temuco"></label><label>Dirección<input id="ayBusinessAddress" required maxlength="160" placeholder="Calle y número"></label></div><label>Imagen del negocio<input id="ayBusinessLogoFile" type="file" accept="image/*"></label><p class="ay-profile-status" id="ayBusinessStatus"></p><button class="ay-auth-primary" id="ayBusinessNext" type="button">Siguiente</button></form>
@@ -144,7 +231,7 @@
   </section>
 
   <div class="ay-app" id="ayApp" hidden>
-    <header class="ay-header"><button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button><a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya"><img src="https://p-renault.github.io/somos-agenda/agenda-ya-logo-header.jpg" alt="Agenda Ya"></a>
+    <header class="ay-header"><button class="ay-icon-btn ay-mobile-only" id="ayMenuBtn" aria-label="Abrir menú">☰</button><a class="ay-brand" href="#" data-view="dashboard" aria-label="Agenda Ya"><img src="assets/agenda-ya-logo-transparent.png" alt="Agenda Ya"></a>
       <nav class="ay-header-nav" aria-label="Navegación principal"><button class="ay-nav-item is-active" data-view="dashboard">⌂<span>Dashboard</span></button><button class="ay-nav-item" data-view="services">✂<span>Servicios</span></button><button class="ay-nav-item" data-view="professionals">♙<span>Profesionales</span></button><button class="ay-nav-item" data-view="schedules">◷<span>Horarios</span></button><button class="ay-nav-item" data-view="availability">▣<span>Disponibilidad</span></button><button class="ay-nav-item" data-view="clients">♧<span>Clientes</span></button><button class="ay-nav-item" data-view="bookings">▤<span>Reservas</span></button><button class="ay-nav-item" data-view="calendar">▦<span>Calendario</span></button></nav>
       <div class="ay-header-actions"><button class="ay-icon-btn ay-notification-trigger" id="ayBusinessNotificationsBtn" title="Notificaciones" aria-label="Abrir notificaciones" aria-haspopup="dialog" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>

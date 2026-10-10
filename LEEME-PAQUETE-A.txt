@@ -1,18 +1,13 @@
 AGENDA YA · PAQUETE A · CORRECCIÓN MÓVIL
 
-Archivos con cambios:
-- profile.html: logo transparente y SVG profesionales en las dos tarjetas de selección.
-- profile.css: arquitectura móvil de la selección de perfil, formularios de cliente/negocio y horarios; conserva IDs y distribución funcional.
-- customer-profile.html: logo transparente en el encabezado del perfil cliente. Se conserva el SVG de campana existente.
-- customer-profile.css: cabecera y formularios adaptables a anchos móviles.
-- dashboard.html: panel de perfil compacto para negocio/cliente, con campos en dos columnas y sin desplazamiento interno en móviles habituales.
+Incluye archivos completos para reemplazar respetando sus nombres originales:
+- login.html: selección de perfil con iconos SVG, logo transparente y formulario móvil compacto.
+- profile.html / profile.css: selección, registro de cliente/negocio y horarios.
+- dashboard.html: panel de perfil compacto para los dos roles en móvil.
+- customer-profile.html / customer-profile.css: logo transparente, icono de campana SVG y vista móvil.
+- JS y CSS auxiliares que acompañan las vistas incluidas.
+- assets/agenda-ya-logo-transparent.png
 
-Recurso nuevo:
-- assets/agenda-ya-logo-transparent.png: logo Agenda Ya con fondo transparente, usado por profile.html y customer-profile.html.
+Instalación: descomprimir en la raíz del proyecto y reemplazar los archivos con el mismo nombre. Mantener los demás archivos existentes (config.js, auth.js, agenda-ya-shell.css/js, profile.js y motores de negocio).
 
-Se incluyen también los demás archivos originales del paquete para conservar sus nombres y facilitar la sustitución selectiva.
-No se cambiaron scripts de Supabase, pagos, reservas ni notificaciones. No se ha hecho commit ni despliegue automático en GitHub.
-Instalación:
-1. Descomprime el ZIP en la raíz del repositorio.
-2. Copia los archivos conservando exactamente sus rutas y nombres.
-3. Revisa los cambios en Git antes de publicar.
+No se han cambiado tablas, credenciales ni lógica de Supabase. Este paquete no se ha desplegado automáticamente en GitHub Pages.
