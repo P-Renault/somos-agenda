@@ -1,0 +1,9 @@
+AGENDA YA — AJUSTE MÓVIL PERFIL CLIENTE Y MARKETPLACE
+
+Archivos modificados completos incluidos con sus nombres originales:
+- dashboard.html: panel de perfil a pantalla completa en móvil, evita desbordamiento horizontal y ordena campos en una columna.
+- customer-profile.css: avatar circular y botón de notificaciones circular con campana.
+- explorer.html: vista marketplace, avatar circular y reemplazo visual del símbolo de notificación por SVG de campana.
+
+Copiar los archivos en la raíz del proyecto y reemplazar los existentes. Se conservan los demás archivos completos que estaban en el paquete de trabajo.
+No incluye despliegue a GitHub ni validación en un dispositivo físico. Verificar login cliente, panel de perfil, guardado y navegación de notificaciones antes de publicar.
