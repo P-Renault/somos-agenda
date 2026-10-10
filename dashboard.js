@@ -237,7 +237,9 @@
     if (name) name.textContent = business.name || "Mi negocio";
     const open = document.getElementById("ayOpenPublicProfile");
     if (open) open.onclick = () => {
-      window.location.href = new URL("public-profile.html", window.location.href).href;
+      const profileUrl = new URL("public-profile.html", window.location.href);
+      if (business?.slug) profileUrl.searchParams.set("slug", business.slug);
+      window.location.href = profileUrl.href;
     };
 
     const servicesBox = document.getElementById("ayPublicServices");

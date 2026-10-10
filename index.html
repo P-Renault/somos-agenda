@@ -196,6 +196,22 @@
       html, body { max-width:100%; overflow-x:hidden; }
     }
   </style>
+<style id="agenda-ya-premium-carousel-css">
+.ay-premium-carousel{position:relative;width:min(calc(100% - 32px),1440px);margin:30px auto 42px;overflow:hidden;border-radius:24px;background:#eaf5ff;box-shadow:0 18px 48px rgba(12,54,100,.13);isolation:isolate}
+.ay-carousel-track{display:flex;align-items:center;transition:transform .72s cubic-bezier(.22,.75,.25,1);will-change:transform}
+.ay-carousel-slide{display:block;flex:0 0 100%;min-width:0;line-height:0}
+.ay-carousel-slide img{display:block;width:100%;height:auto;object-fit:contain}
+.ay-carousel-arrow{position:absolute;z-index:2;top:50%;transform:translateY(-50%);width:44px;height:44px;border:1px solid #ffffffe6;border-radius:50%;background:#ffffffe6;color:#0b3975;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 5px 18px #0023502e}
+.ay-carousel-prev{left:14px}.ay-carousel-next{right:14px}
+.ay-carousel-dots{position:absolute;z-index:2;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:8px}
+.ay-carousel-dots button{width:9px;height:9px;padding:0;border:1px solid white;border-radius:20px;background:#ffffffa6;box-shadow:0 1px 6px #00235040;cursor:pointer;transition:width .25s,background .25s}
+.ay-carousel-dots button[aria-current="true"]{width:27px;background:white}
+.ay-premium-carousel:focus-visible{outline:3px solid #19b7ef;outline-offset:4px}
+.footer .ay-footer-contact{color:inherit;text-decoration:none}.footer .ay-footer-contact:hover{text-decoration:underline}
+.footer .ay-footer-credit{color:#718198}.footer .ay-footer-credit a{color:#0876dc;font-weight:800;text-decoration:none}.footer .ay-footer-credit a:hover{text-decoration:underline}
+@media(max-width:700px){.ay-premium-carousel{width:calc(100% - 20px);margin:20px auto 30px;border-radius:15px}.ay-carousel-arrow{width:34px;height:34px;font-size:22px}.ay-carousel-prev{left:7px}.ay-carousel-next{right:7px}.ay-carousel-dots{bottom:7px;gap:6px}.ay-carousel-dots button{width:7px;height:7px}.ay-carousel-dots button[aria-current="true"]{width:20px}.footer{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}.footer .ay-footer-credit{flex-basis:100%}}
+@media(prefers-reduced-motion:reduce){.ay-carousel-track{transition:none}}
+</style>
 </head>
 <body>
   <header class="topbar">
@@ -293,20 +309,39 @@
       <div class="why-grid"><article><b>✓</b><h3>Seguro y confiable</h3><p>Negocios verificados y opiniones reales.</p></article><article><b>◷</b><h3>Ahorra tiempo</h3><p>Agenda en pocos clics, sin llamadas.</p></article><article><b>☆</b><h3>Calidad garantizada</h3><p>Servicios de calidad cerca de ti.</p></article><article><b>⌖</b><h3>En tu ciudad</h3><p>Encuentra negocios locales.</p></article></div>
     </section>
 
-    <section class="testimonials" id="blog">
-      <div><h2>Lo que dicen<br>nuestros usuarios</h2><p>Miles de personas ya confían en Agenda YA para encontrar y agendar sus servicios.</p><a href="#">Ver más testimonios →</a></div>
-      <article>★★★★★<p>“Muy fácil de usar, encontré mi peluquería favorita y pude agendar al instante. ¡Excelente!”</p><b>Camila R.</b><small>Temuco</small></article>
-      <article>★★★★★<p>“Como profesional, he aumentado mis clientes gracias a Agenda YA. 100% recomendado.”</p><b>Diego M.</b><small>Temuco</small></article>
-      <article>★★★★★<p>“Me encanta la variedad de servicios y la facilidad para agendar. Ahorro mucho tiempo.”</p><b>Valentina S.</b><small>Padre Las Casas</small></article>
-    </section>
-
-    <section class="final-cta">
-      <div><h2>Tu tiempo vale más.</h2><p>Encuentra, elige y agenda hoy.</p><a href="explorer.html">Buscar servicios →</a></div>
-      <div class="final-badges"><span>◉ Miles de servicios</span><span>☆ Negocios verificados</span><span>⌖ En tu ciudad</span></div>
+    <section class="ay-premium-carousel" id="agendaYaCarousel" aria-label="Conoce Agenda YA">
+      <div class="ay-carousel-track">
+        <a class="ay-carousel-slide" href="explorer.html" aria-label="Encuentra y agenda servicios"><img src="assets/agenda-ya-carousel-1.png" alt="Agenda YA: profesionales y clientes organizan sus reservas" loading="lazy"></a>
+        <a class="ay-carousel-slide" href="login.html" aria-label="Haz crecer tu negocio con Agenda YA"><img src="assets/agenda-ya-carousel-2.png" alt="Gestiona tu negocio, servicios y reservas con Agenda YA" loading="lazy"></a>
+        <a class="ay-carousel-slide" href="explorer.html" aria-label="Tu tiempo en el lugar correcto"><img src="assets/agenda-ya-carousel-3.png" alt="Encuentra y agenda servicios cerca de ti con Agenda YA" loading="lazy"></a>
+      </div>
+      <button class="ay-carousel-arrow ay-carousel-prev" type="button" aria-label="Imagen anterior">‹</button>
+      <button class="ay-carousel-arrow ay-carousel-next" type="button" aria-label="Imagen siguiente">›</button>
+      <div class="ay-carousel-dots" aria-label="Seleccionar imagen">
+        <button type="button" aria-label="Mostrar imagen 1" aria-current="true"></button>
+        <button type="button" aria-label="Mostrar imagen 2" aria-current="false"></button>
+        <button type="button" aria-label="Mostrar imagen 3" aria-current="false"></button>
+      </div>
     </section>
   </main>
 
-  <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="login.html">Iniciar sesión</a></footer>
+  <footer class="footer"><span>© 2026 Agenda YA</span><a href="#">Términos</a><a href="#">Privacidad</a><a href="login.html">Iniciar sesión</a><a class="ay-footer-contact" href="mailto:contacto@agenda-ya.cl">contacto@agenda-ya.cl</a><span class="ay-footer-credit">Desarrollado por <a href="https://somossoftware.cl/" target="_blank" rel="noopener noreferrer">Somos Software</a></span></footer>
+<script id="agenda-ya-premium-carousel-js">
+(() => {
+ const root=document.getElementById('agendaYaCarousel'); if(!root||root.dataset.ready)return; root.dataset.ready='1';
+ const track=root.querySelector('.ay-carousel-track'),slides=[...root.querySelectorAll('.ay-carousel-slide')],dots=[...root.querySelectorAll('.ay-carousel-dots button')];
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches; let index=0,timer=null;
+ function show(next){index=(next+slides.length)%slides.length;track.style.transform=`translateX(-${index*100}%)`;dots.forEach((d,i)=>d.setAttribute('aria-current',String(i===index)));}
+ function stop(){if(timer)clearInterval(timer);timer=null;}
+ function start(){stop();if(!reduced&&!document.hidden)timer=setInterval(()=>show(index+1),5200);}
+ root.querySelector('.ay-carousel-prev').addEventListener('click',()=>{show(index-1);start();});
+ root.querySelector('.ay-carousel-next').addEventListener('click',()=>{show(index+1);start();});
+ dots.forEach((d,i)=>d.addEventListener('click',()=>{show(i);start();}));
+ root.addEventListener('mouseenter',stop);root.addEventListener('mouseleave',start);root.addEventListener('focusin',stop);root.addEventListener('focusout',start);
+ document.addEventListener('visibilitychange',()=>document.hidden?stop():start());start();
+})();
+</script>
+
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
