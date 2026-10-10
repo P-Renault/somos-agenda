@@ -82,6 +82,24 @@ body.ay-profile-open{overflow:hidden}
  .ay-profile-save{height:38px;min-height:38px}
 }
 </style>
+
+<style id="ay-profile-mobile-final">
+/* Perfil móvil: panel centrado y contenido íntegro dentro del viewport */
+@media (max-width: 700px) {
+  html:has(#ayProfilePanel), body:has(#ayProfilePanel) { max-width:100%; overflow-x:hidden; }
+  #ayProfileBackdrop { position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important; z-index:9998!important; }
+  #ayProfilePanel { position:fixed!important; z-index:9999!important; inset: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom)) 10px!important; width:auto!important; max-width:none!important; height:auto!important; max-height:none!important; min-width:0!important; box-sizing:border-box!important; margin:0!important; transform:none!important; border-radius:24px!important; overflow-x:hidden!important; overflow-y:auto!important; overscroll-behavior:contain!important; -webkit-overflow-scrolling:touch!important; padding:18px!important; }
+  #ayProfilePanel *, #ayProfilePanel *::before, #ayProfilePanel *::after { box-sizing:border-box!important; min-width:0; }
+  #ayProfilePanel .ay-profile-panel-head { position:sticky; top:-18px; z-index:2; padding:4px 0 12px; background:rgba(255,255,255,.97); }
+  #ayProfilePanel .ay-profile-summary { display:flex!important; align-items:center!important; gap:12px!important; padding:14px!important; }
+  #ayProfilePanel .ay-profile-panel-avatar { flex:0 0 56px!important; width:56px!important; height:56px!important; border-radius:50%!important; }
+  #ayProfilePanel .ay-profile-grid-2 { display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:12px!important; }
+  #ayProfilePanel .ay-profile-fields label { display:block!important; width:100%!important; margin:0 0 12px!important; }
+  #ayProfilePanel input, #ayProfilePanel select, #ayProfilePanel textarea { display:block!important; width:100%!important; max-width:100%!important; min-width:0!important; }
+  #ayProfilePanel .ay-profile-save { width:100%!important; min-height:52px!important; position:sticky; bottom:0; z-index:2; margin-top:12px!important; }
+}
+@media (max-width:380px) { #ayProfilePanel { inset: max(7px, env(safe-area-inset-top)) 7px max(7px, env(safe-area-inset-bottom)) 7px!important; padding:14px!important; border-radius:20px!important; } }
+</style>
 </head>
 <body>
 <div class="ay-app" id="ayApp" hidden>

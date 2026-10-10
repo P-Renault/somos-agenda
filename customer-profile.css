@@ -88,3 +88,13 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
  .cp-form-grid{grid-template-columns:minmax(0,1fr)}
  .cp-form-grid .cp-full{grid-column:auto}
 }
+
+
+/* Ajuste móvil final del encabezado cliente: avatar circular y botón de campana consistente */
+@media (max-width: 700px) {
+ .cp-header-actions { flex:0 0 auto; gap:8px; }
+ .cp-account { display:grid!important; place-items:center!important; width:48px!important; height:48px!important; min-width:48px!important; border-radius:50%!important; overflow:hidden!important; padding:2px!important; }
+ .cp-account .cp-avatar, .cp-avatar { width:44px!important; height:44px!important; min-width:44px!important; border-radius:50%!important; overflow:hidden!important; aspect-ratio:1/1!important; }
+ .cp-notification-btn { display:grid!important; place-items:center!important; width:44px!important; height:44px!important; min-width:44px!important; border-radius:50%!important; padding:0!important; }
+ .cp-notification-btn svg { display:block!important; width:22px!important; height:22px!important; }
+}
