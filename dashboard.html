@@ -130,20 +130,16 @@ body.ay-profile-open{overflow:hidden}
 .ay-icon-svg[aria-hidden="true"]{pointer-events:none}
 </style>
 
-<style id="ay-public-profile-view-styles">
-.ay-public-profile-hero{margin:20px 0;padding:28px 30px;border-radius:24px;background:linear-gradient(125deg,#173b70,#1266c7);color:#fff}
-.ay-public-profile-hero>span{font-size:11px;font-weight:900;letter-spacing:.12em;opacity:.8}
-.ay-public-profile-hero h2{margin:10px 0;font-size:30px;line-height:1.15}
-.ay-public-profile-hero p{max-width:760px;margin:8px 0;color:rgba(255,255,255,.9);line-height:1.55}
-.ay-public-profile-open{margin-bottom:18px}
-.ay-public-profile-open h2,.ay-public-profile-info h2{margin:0 0 8px;font-size:19px}
-.ay-public-profile-open p,.ay-public-profile-info p{color:var(--muted,#718198);line-height:1.55;margin:0 0 16px}
-.ay-public-profile-open .ay-btn{width:100%;min-height:50px;justify-content:center}
-.ay-public-profile-info{display:grid;gap:18px}
-.ay-public-profile-info article+article{padding-top:16px;border-top:1px solid var(--line,#e1e9f2)}
-.ay-public-profile-info p{margin-bottom:0}
-@media(min-width:760px){.ay-public-profile-info{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.ay-public-profile-info article+article{padding:0 0 0 20px;border-top:0;border-left:1px solid var(--line,#e1e9f2)}}
-@media(max-width:600px){.ay-public-profile-hero{padding:24px 20px;border-radius:20px}.ay-public-profile-hero h2{font-size:25px}.ay-public-profile-info{gap:16px}}
+<style id="ay-public-profile-final-styles">
+.ay-public-profile-hero{margin:18px 0 20px;padding:26px 28px;border-radius:22px;background:linear-gradient(125deg,#173b70,#1266c7);color:#fff}
+.ay-public-profile-hero>span{font-size:11px;font-weight:800;letter-spacing:.12em;opacity:.82}
+.ay-public-profile-hero h2{margin:10px 0;font-size:28px}.ay-public-profile-hero p{line-height:1.55;color:rgba(255,255,255,.9)}
+.ay-public-profile-hero .ay-btn{background:#fff;color:#1266c7;margin-top:8px}
+.ay-public-profile-grid{display:grid;gap:16px}.ay-public-profile-grid>.ay-card{padding:20px}
+.ay-public-section-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}.ay-public-section-head h2{margin:0 0 4px;font-size:19px}.ay-public-section-head p{margin:0;color:var(--muted,#718198);font-size:14px}
+.ay-public-symbol{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:14px;background:#eaf3ff;color:#1769e8;font-size:25px}
+.ay-public-list{display:grid;gap:10px}.ay-public-item{padding:12px 14px;border:1px solid var(--line,#e1e9f2);border-radius:12px}.ay-public-item strong{display:block;color:var(--text,#172b4d)}.ay-public-item small,.ay-public-loading{display:block;color:var(--muted,#718198);line-height:1.5}.ay-public-empty{padding:12px;border-radius:12px;background:#f5f8fc;color:#718198}
+@media(min-width:900px){.ay-public-profile-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 
 </head>
@@ -159,14 +155,13 @@ body.ay-profile-open{overflow:hidden}
 <section class="ay-grid-2"><article class="ay-card"><div class="ay-card-head"><h2>Próximas reservas</h2><button class="ay-link" data-view="bookings">Ver todas →</button></div><div class="ay-list" id="ayUpcomingBookings"><div class="ay-list-row"><div><strong>Sin reservas registradas</strong><small>Las reservas aparecerán aquí cuando tus clientes comiencen a agendar.</small></div></div></div></article><article class="ay-card"><div class="ay-card-head"><h2>Calendario de hoy</h2><span class="ay-muted" id="ayTodayLabel">Hoy</span></div><div class="ay-timeline" id="ayTodayTimeline"><div><span>No hay reservas para hoy.</span></div></div></article></section>
 <section class="ay-quick-grid"><button class="ay-quick" data-view="services"><span><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span><b>Gestiona tus servicios</b><small>Ir a Servicios →</small></button><button class="ay-quick" data-view="professionals"><span><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><b>Administra profesionales</b><small>Ir a Profesionales →</small></button><button class="ay-quick" data-view="schedules"><span><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6h6"/></svg></span><b>Configura horarios</b><small>Ir a Horarios →</small></button><button class="ay-quick" data-view="availability"><span><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="m9 16 2 2 4-4"/></svg></span><b>Revisa disponibilidad</b><small>Ir a Disponibilidad →</small></button></section></div>
 <div class="ay-page" id="view-public-profile" hidden>
-<section class="ay-page-head"><div><span class="ay-eyebrow">AGENDA YA · MARKETPLACE</span><h1>Perfil público</h1><p>Construye y abre la vista pública de tu negocio en el Marketplace.</p></div></section>
-<section class="ay-public-profile-hero"><span>AGENDA YA · MARKETPLACE</span><h2 id="ayPublicProfileBusinessName">Tu negocio</h2><p>Tu negocio tendrá aquí su presentación pública para clientes.</p><p>Agenda Ya prepara una publicación pública básica usando los datos de tu negocio y mantiene tus servicios, profesionales y horarios conectados al sistema.</p></section>
-<section class="ay-card ay-public-profile-open"><h2>Perfil público del negocio</h2><p>Esta es la vista que verá un cliente desde el Marketplace. Allí podrá consultar tus servicios activos, conocer a los profesionales disponibles, revisar los horarios configurados y comenzar una reserva.</p><button class="ay-btn ay-btn-primary" id="ayOpenPublicProfile" type="button">Abrir perfil público</button></section>
-<section class="ay-card ay-public-profile-info">
-<article><h2>Servicios</h2><p>Se mostrarán automáticamente los servicios activos publicados en tu negocio, con su descripción, duración y precio cuando estén disponibles.</p></article>
-<article><h2>Profesionales</h2><p>Se mostrarán automáticamente los profesionales activos asociados a tu negocio para que los clientes puedan conocer quiénes les atenderán.</p></article>
-<article><h2>Horarios</h2><p>Se utilizarán los horarios y la disponibilidad que tengas configurados en Agenda Ya para orientar las reservas de tus clientes.</p></article>
-</section>
+  <div class="ay-page-head"><div><span class="ay-eyebrow">AGENDA YA · MARKETPLACE</span><h1>Perfil público</h1><p>Vista pública del negocio y resumen de la información que se publica.</p></div></div>
+  <section class="ay-public-profile-hero"><span>AGENDA YA · MARKETPLACE</span><h2 id="ayPublicBusinessName">Mi negocio</h2><p>Presentación pública del negocio.</p><p>La información se obtiene de los registros activos vinculados a tu negocio.</p><button type="button" class="ay-btn ay-btn-primary" id="ayOpenPublicProfile">Abrir perfil público</button></section>
+  <div class="ay-public-profile-grid">
+    <section class="ay-card"><div class="ay-public-section-head"><span class="ay-public-symbol">◇</span><div><h2>Servicios</h2><p>Servicios activos publicados</p></div></div><div id="ayPublicServices" class="ay-public-list"><p class="ay-public-loading">Cargando servicios…</p></div></section>
+    <section class="ay-card"><div class="ay-public-section-head"><span class="ay-public-symbol">♙</span><div><h2>Profesionales</h2><p>Equipo asociado al negocio</p></div></div><div id="ayPublicProfessionals" class="ay-public-list"><p class="ay-public-loading">Cargando profesionales…</p></div></section>
+    <section class="ay-card"><div class="ay-public-section-head"><span class="ay-public-symbol">◷</span><div><h2>Horarios</h2><p>Configuración de horarios del negocio</p></div></div><div id="ayPublicSchedules" class="ay-public-list"><p class="ay-public-loading">Los horarios se consultan desde la configuración existente.</p></div></section>
+  </div>
 </div>
 <div class="ay-page" id="view-generic" hidden><div class="ay-page-head"><div><span class="ay-eyebrow" id="ayViewEyebrow">MÓDULO</span><h1 id="ayViewTitle">Vista</h1><p id="ayViewDescription">Espacio de trabajo del módulo.</p></div><div class="ay-actions"><button class="ay-btn ay-btn-primary">＋ Nueva acción</button></div></div><section class="ay-placeholder"><div class="ay-placeholder-icon"><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg></div><h2 id="ayPlaceholderTitle">Motor lógico pendiente de integración</h2><p>Este módulo está disponible desde la navegación y se conecta con los datos de tu negocio.</p><div class="ay-placeholder-grid"><div><strong>UI</strong><span>Lista · filtros · acciones</span></div><div><strong>Datos</strong><span>Supabase / estado</span></div><div><strong>Reglas</strong><span>Validaciones · permisos</span></div></div></section></div></main></div>
 <nav class="ay-mobile-rail" aria-label="Navegación móvil"><button data-view="dashboard"><span class="ay-icon"><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9M9 21v-7h6v7"/></svg></span><small>Inicio</small></button><button data-view="services"><span class="ay-icon"><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span><small>Servicios</small></button><button data-view="bookings"><span class="ay-icon"><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg></span><small>Reservas</small></button><button data-view="calendar"><span class="ay-icon"><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/><path d="M8 15h.01M12 15h.01M16 15h.01M8 18h.01M12 18h.01M16 18h.01"/></svg></span><small>Calendario</small></button><button id="ayMoreBtn" type="button"><span class="ay-icon"><svg class="ay-icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></span><small>Más</small></button></nav>
@@ -186,5 +181,26 @@ body.ay-profile-open{overflow:hidden}
 <script src="billing-engine.js?v=13.0.0"></script>
 <script src="subscription-lifecycle-engine.js?v=13.0.0"></script>
 <script src="flow-return-popup.js?v=5.3.0"></script>
+<script id="ayPublicProfileNavigationBridge">
+(() => {
+  function showPublicProfileView() {
+    const target = document.getElementById("view-public-profile");
+    if (!target) return;
+    document.querySelectorAll(".ay-page").forEach(page => { page.hidden = page !== target; });
+    document.querySelectorAll('[data-view="public-profile"]').forEach(btn => btn.classList.add("is-active"));
+    const generic = document.getElementById("view-generic");
+    if (generic) generic.hidden = true;
+    document.getElementById("aySidebar")?.classList.remove("is-open");
+    document.body.classList.remove("ay-menu-open");
+  }
+  document.addEventListener("click", event => {
+    const trigger = event.target.closest('[data-view="public-profile"], #ayMorePublicProfile');
+    if (!trigger) return;
+    event.preventDefault();
+    showPublicProfileView();
+  });
+})();
+</script>
+
 </body>
 </html>

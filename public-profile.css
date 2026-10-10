@@ -247,31 +247,21 @@
 @media(max-width:620px){.booking-home-button{width:100%}}
 
 
-/* Cierre UI · ocultar descripción pública vacía */
-.about-panel:has(#description:empty) {
-  display: none !important;
-}
-.about-panel #description:empty {
-  display: none !important;
-}
-
-/* Cierre UI · encabezado de Profesionales centrado como Ubicación */
+/* Cierre final · encabezado profesionales centrado */
 .professionals-panel > .section-heading {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  text-align: center;
   gap: 9px;
-  text-align: center;
 }
-.professionals-panel > .section-heading > div {
-  text-align: center;
-}
+.professionals-panel > .section-heading > div,
 .professionals-panel > .section-heading h2,
 .professionals-panel > .section-heading p {
   text-align: center;
 }
 .professionals-panel > .section-heading .section-icon {
-  margin: 0 auto;
+  margin-inline: auto;
 }

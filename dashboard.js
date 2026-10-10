@@ -224,6 +224,62 @@
     }[m]));
   }
 
+
+  function safeText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    }[m]));
+  }
+
+  async function loadPublicProfileSummary() {
+    if (!client || !business) return;
+    const name = document.getElementById("ayPublicBusinessName");
+    if (name) name.textContent = business.name || "Mi negocio";
+    const open = document.getElementById("ayOpenPublicProfile");
+    if (open) open.onclick = () => {
+      window.location.href = new URL("public-profile.html", window.location.href).href;
+    };
+
+    const servicesBox = document.getElementById("ayPublicServices");
+    const professionalsBox = document.getElementById("ayPublicProfessionals");
+    const schedulesBox = document.getElementById("ayPublicSchedules");
+
+    const [servicesResult, professionalsResult] = await Promise.all([
+      client.from("services").select("*").eq("business_id", business.id),
+      client.from("professionals").select("*").eq("business_id", business.id)
+    ]);
+
+    function renderRows(target, result, kind) {
+      if (!target) return;
+      if (result.error) {
+        target.innerHTML = '<p class="ay-public-empty">No fue posible cargar estos datos. Revisa los permisos y la configuración del módulo.</p>';
+        console.error("Agenda YA perfil público:", kind, result.error);
+        return;
+      }
+      const rows = (result.data || []).filter(row => {
+        if (row.active !== undefined) return row.active === true;
+        if (row.is_active !== undefined) return row.is_active === true;
+        if (row.status !== undefined) return ["active","activo","published","publicado"].includes(String(row.status).toLowerCase());
+        return true;
+      });
+      const markup = rows.map(row => {
+        const title = kind === "services"
+          ? (row.name || row.title || "Servicio")
+          : (`${row.first_name || ""} ${row.last_name || ""}`.trim() || row.name || row.full_name || "Profesional");
+        const detail = kind === "services"
+          ? [row.description, row.duration_minutes ? `${row.duration_minutes} min` : "", row.price != null ? `$${Number(row.price).toLocaleString("es-CL")}` : ""].filter(Boolean).join(" · ")
+          : [row.specialty, row.position, row.email].filter(Boolean).join(" · ");
+        return `<div class="ay-public-item"><strong>${safeText(title)}</strong>${detail ? `<small>${safeText(detail)}</small>` : ""}</div>`;
+      }).join("");
+      target.innerHTML = markup || `<p class="ay-public-empty">No hay ${kind === "services" ? "servicios activos" : "profesionales activos"} registrados.</p>`;
+    }
+    renderRows(servicesBox, servicesResult, "services");
+    renderRows(professionalsBox, professionalsResult, "professionals");
+    if (schedulesBox) {
+      schedulesBox.innerHTML = '<p class="ay-public-empty">La vista utiliza los horarios configurados en Agenda Ya. La tabla y los campos de horarios no están identificados en el bootstrap disponible; no se consulta una tabla supuesta para evitar errores de esquema.</p>';
+    }
+  }
+
   async function boot() {
     client = await createClient();
 
@@ -232,6 +288,7 @@
 
     showApp();
     paintBusinessIdentity();
+    try { await loadPublicProfileSummary(); } catch (err) { console.error('Agenda YA perfil público:', err); }
 
     // Dashboard remains usable even if a non-critical metric query fails.
     try {
