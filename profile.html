@@ -9,13 +9,19 @@
 <body>
 <main class="profile-page">
   <div class="profile-canvas">
-    <header class="profile-top"><img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya" class="profile-logo"></header>
+    <header class="profile-top"><img src="assets/agenda-ya-logo-transparent.png" alt="Agenda Ya" class="profile-logo"></header>
     <section class="profile-content">
       <div class="profile-heading"><span>AGENDA YA · PERFIL</span><h1 id="profileTitle">Bienvenido a Agenda Ya</h1><p id="profileSubtitle">Elige tu perfil para comenzar.</p></div>
       <section id="choiceStep" class="choice-step">
         <div class="profile-types">
-          <button class="profile-type active" type="button" data-type="business" aria-pressed="true"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></button>
-          <button class="profile-type" type="button" data-type="customer" aria-pressed="false"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></button>
+          <button class="profile-type active" type="button" data-type="business" aria-pressed="true">
+            <span class="profile-type-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M8 10h1m6 0h1M8 13h1m6 0h1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="profile-type-copy"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></span>
+          </button>
+          <button class="profile-type" type="button" data-type="customer" aria-pressed="false">
+            <span class="profile-type-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 20c.4-4 2.7-6 7-6s6.6 2 7 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <span class="profile-type-copy"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></span>
+          </button>
         </div>
         <button class="primary-btn" id="profileNext" type="button">Siguiente <b>→</b></button><p class="profile-status" id="choiceStatus"></p>
       </section>

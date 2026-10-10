@@ -51,3 +51,40 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
  .cp-form-grid{grid-template-columns:1fr}
  .cp-form-grid .cp-full{grid-column:auto}
 }
+
+
+/* AGENDA YA · CABECERA Y PERFIL CLIENTE — ajuste móvil integrado */
+.cp-brand img{background:transparent!important;mix-blend-mode:normal!important;object-fit:contain}
+@media(max-width:600px){
+ .cp-app{min-height:100dvh}
+ .cp-header{height:64px;min-height:64px;padding:6px 9px;gap:7px}
+ .cp-brand{width:auto;min-width:0;flex:1 1 auto;justify-content:center}
+ .cp-brand img{width:min(40vw,154px);max-width:100%;max-height:44px}
+ .cp-header-actions{margin-left:0;gap:5px;flex:0 0 auto}
+ .cp-notification-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;min-width:38px;flex-basis:38px;padding:0;border-radius:12px}
+ .cp-notification-btn svg{width:20px;height:20px}
+ .cp-account{display:flex;align-items:center}
+ .cp-avatar{width:37px;height:37px}
+ .cp-logout{height:35px;padding:0 8px;font-size:10px}
+ .cp-main{padding:14px 12px calc(96px + env(safe-area-inset-bottom))}
+ .cp-page-head{margin-bottom:14px}
+ .cp-page-head h1{font-size:clamp(25px,7vw,32px);line-height:1.1}
+ .cp-page-head p{font-size:14px;line-height:1.4}
+ .cp-profile-summary-card{padding:16px}
+ .cp-form-card{padding:15px}
+ .cp-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .cp-form-grid .cp-full{grid-column:1/-1}
+ .cp-form-grid label{min-width:0;font-size:12px;gap:5px}
+ .cp-form-grid input,.cp-form-grid select,.cp-form-grid textarea{width:100%;min-width:0;min-height:42px;padding:9px 10px;font-size:16px}
+ .cp-primary-btn{min-height:44px}
+}
+@media(max-width:360px){
+ .cp-header{grid-template-columns:34px minmax(0,1fr) auto;gap:4px;padding-inline:6px}
+ .cp-brand img{width:min(35vw,126px)}
+ .cp-header-actions{gap:3px}
+ .cp-notification-btn{width:33px;height:33px;min-width:33px;flex-basis:33px}
+ .cp-avatar{width:33px;height:33px}
+ .cp-logout{height:33px;padding:0 5px;font-size:9px}
+ .cp-form-grid{grid-template-columns:minmax(0,1fr)}
+ .cp-form-grid .cp-full{grid-column:auto}
+}

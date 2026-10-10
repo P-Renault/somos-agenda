@@ -1,14 +1,18 @@
-AGENDA YA — PAQUETE A · CORRECCIÓN MÓVIL
+AGENDA YA · PAQUETE A · CORRECCIÓN MÓVIL
 
-Archivos completos basados en archivos.zip y en los archivos de la rama Backup-5.0-producción.
-Se conservan los nombres originales de los archivos de aplicación.
+Archivos con cambios:
+- profile.html: logo transparente y SVG profesionales en las dos tarjetas de selección.
+- profile.css: arquitectura móvil de la selección de perfil, formularios de cliente/negocio y horarios; conserva IDs y distribución funcional.
+- customer-profile.html: logo transparente en el encabezado del perfil cliente. Se conserva el SVG de campana existente.
+- customer-profile.css: cabecera y formularios adaptables a anchos móviles.
+- dashboard.html: panel de perfil compacto para negocio/cliente, con campos en dos columnas y sin desplazamiento interno en móviles habituales.
 
-Cambios principales:
-- profile.css: ajustes responsive para registro de negocio, cliente y horario; evita recortes horizontales y mejora el uso del alto disponible.
-- customer-profile.html/css: campana SVG de notificaciones y ajustes de cabecera/formulario móvil.
-- dashboard.html: panel de perfil móvil compacto para los dos roles.
-- registro-negocio-compacto.css: ajustes responsive del formulario de negocio.
+Recurso nuevo:
+- assets/agenda-ya-logo-transparent.png: logo Agenda Ya con fondo transparente, usado por profile.html y customer-profile.html.
 
-Instalación: reemplazar los archivos por los de igual nombre en la raíz de la rama indicada.
-No se han cambiado claves, configuración de Supabase, lógica de pagos ni nombres de scripts.
-El ZIP se valida estructuralmente; no implica despliegue ni prueba visual en dispositivo real.
+Se incluyen también los demás archivos originales del paquete para conservar sus nombres y facilitar la sustitución selectiva.
+No se cambiaron scripts de Supabase, pagos, reservas ni notificaciones. No se ha hecho commit ni despliegue automático en GitHub.
+Instalación:
+1. Descomprime el ZIP en la raíz del repositorio.
+2. Copia los archivos conservando exactamente sus rutas y nombres.
+3. Revisa los cambios en Git antes de publicar.
