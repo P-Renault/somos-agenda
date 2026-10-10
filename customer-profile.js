@@ -136,13 +136,35 @@
     if(['reservations','ratings','reputation'].includes(currentView))loadCustomerEngine().catch(()=>{});
   }
 
-  async function openNotifications(){closeOverlays();$('cpNotificationPanel').hidden=false;$('cpBackdrop').hidden=false;}
+  async function loadCustomerNotifications(){
+    const box=$('cpNotifications');if(!box||!client||!user)return;
+    const sources=[
+      ['welcome',client.rpc('get_welcome_notifications',{p_limit:50})],
+      ['app',client.rpc('get_app_notifications',{p_limit:50})]
+    ];
+    const results=await Promise.all(sources.map(async([kind,promise])=>({kind,...await promise})));
+    const rows=[];
+    for(const r of results){
+      if(r.error){if(!/does not exist|Could not find the function/i.test(r.error.message||''))console.warn('Agenda YA customer notifications:',r.kind,r.error.message);continue;}
+      if(Array.isArray(r.data))rows.push(...r.data);
+    }
+    const unique=new Map();
+    rows.forEach(n=>unique.set(String(n.id||`${n.title}:${n.created_at}`),n));
+    const sorted=[...unique.values()].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
+    box.innerHTML=sorted.length?sorted.map(n=>`<article class="cp-review-item" style="padding:12px 4px;border-bottom:1px solid #e8edf4"><strong>${esc(n.title||'Agenda Ya')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda Ya.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small></article>`).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
+    const badge=$('cpNotificationBadge'),unread=sorted.filter(n=>!n.read_at).length;
+    if(badge){badge.textContent=String(unread);badge.hidden=unread===0;}
+  }
+
+  async function openNotifications(){closeOverlays();$('cpNotificationPanel').hidden=false;$('cpBackdrop').hidden=false;await loadCustomerNotifications();}
   async function logout(){const b=$('cpLogout');b.disabled=true;b.textContent='Saliendo…';try{await client.auth.signOut();}catch(_){}location.href='index.html';}
 
   async function init(){
     const u=await requireSession();if(!u)return;
     const ok=await loadProfile();if(!ok)return;
     $('cpApp').hidden=false;
+    await loadCustomerNotifications();
+    setInterval(()=>loadCustomerNotifications().catch(e=>console.warn('Agenda YA notifications:',e)),30000);
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.view)));
     $('cpMenuBtn').addEventListener('click',openSidebar);$('cpBackdrop').addEventListener('click',closeOverlays);$('cpAccountBtn').addEventListener('click',()=>activate('profile'));$('cpLogout').addEventListener('click',logout);$('cpNotificationBtn').addEventListener('click',openNotifications);$('cpNotificationClose').addEventListener('click',closeOverlays);$('cpSaveProfile').addEventListener('click',saveProfile);$('cpAvatarFile').addEventListener('change',e=>uploadAvatar(e.target.files?.[0]));
     document.querySelectorAll('[data-res-tab]').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('[data-res-tab]').forEach(x=>x.classList.toggle('is-active',x===tab));const upcoming=tab.dataset.resTab==='upcoming';$('cpUpcomingList').hidden=!upcoming;$('cpHistoryList').hidden=upcoming;}));
