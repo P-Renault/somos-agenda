@@ -52,8 +52,10 @@ async function readToken(req: Request): Promise<string> {
 }
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "GET" || req.method === "HEAD") return redirectToDashboard();
-  if (req.method !== "POST") {
+  // Flow commonly returns the browser with GET and the token in the query string.
+  // HEAD cannot carry a useful payment result, so it only redirects.
+  if (req.method === "HEAD") return redirectToDashboard();
+  if (req.method !== "GET" && req.method !== "POST") {
     return new Response("Method Not Allowed", {
       status: 405,
       headers: { Allow: "GET, HEAD, POST" },
