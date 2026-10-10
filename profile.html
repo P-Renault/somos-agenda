@@ -9,162 +9,54 @@
 <body>
 <main class="profile-page">
   <div class="profile-canvas">
-
-    <header class="profile-top">
-      <img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya" class="profile-logo">
-    </header>
-
+    <header class="profile-top"><img src="assets/agenda-ya-logo-header.png" alt="Agenda Ya" class="profile-logo"></header>
     <section class="profile-content">
-
-      <div class="profile-heading">
-        <span>AGENDA YA · PERFIL</span>
-        <h1 id="profileTitle">Bienvenido a Agenda Ya</h1>
-        <p id="profileSubtitle">Elige tu perfil para comenzar.</p>
-      </div>
-
-      <!-- ELECCIÓN DE PERFIL -->
+      <div class="profile-heading"><span>AGENDA YA · PERFIL</span><h1 id="profileTitle">Bienvenido a Agenda Ya</h1><p id="profileSubtitle">Elige tu perfil para comenzar.</p></div>
       <section id="choiceStep" class="choice-step">
         <div class="profile-types">
-          <button class="profile-type active" type="button" data-type="business" aria-pressed="true">
-            <strong>Perfil de negocio</strong>
-            <span>Gestiona servicios, horarios y recibe reservas.</span>
-          </button>
-
-          <button class="profile-type" type="button" data-type="customer" aria-pressed="false">
-            <strong>Perfil cliente</strong>
-            <span>Encuentra servicios y realiza reservas.</span>
-          </button>
+          <button class="profile-type active" type="button" data-type="business" aria-pressed="true"><strong>Perfil de negocio</strong><span>Gestiona servicios, horarios y recibe reservas.</span></button>
+          <button class="profile-type" type="button" data-type="customer" aria-pressed="false"><strong>Perfil cliente</strong><span>Encuentra servicios y realiza reservas.</span></button>
         </div>
-
-        <button class="primary-btn" id="profileNext" type="button">
-          Siguiente <b>→</b>
-        </button>
-        <p class="profile-status" id="choiceStatus"></p>
+        <button class="primary-btn" id="profileNext" type="button">Siguiente <b>→</b></button><p class="profile-status" id="choiceStatus"></p>
       </section>
-
-      <!-- FORMULARIOS -->
       <section id="formStep" class="form-step" hidden>
-
         <button class="simple-back" id="profileBack" type="button">← Cambiar tipo de perfil</button>
-
-        <!-- NEGOCIO -->
         <form id="businessForm" class="onboarding-form" novalidate hidden>
-          <div class="form-intro">
-            <span>PERFIL DE NEGOCIO · PASO 1</span>
-            <h2>Configura tu negocio</h2>
-            <p>Completa los datos básicos de tu negocio.</p>
-          </div>
-
-          <label>Nombre del negocio
-            <input id="businessName" maxlength="120" required placeholder="Ej. Barbería Agenda Ya">
-          </label>
-
-          <label>Categoría del negocio
-            <select id="businessCategory" required>
-              <option value="">Selecciona una categoría</option>
-            </select>
-          </label>
-
-          <label>Tipo de servicio
-            <input id="businessType" maxlength="100" required placeholder="Ej. Barbería, peluquería, salud...">
-          </label>
-
-          <label>Descripción pública del negocio
-            <textarea id="businessDescription" maxlength="1000" rows="4" required placeholder="Describe brevemente tu negocio, qué haces y qué puede encontrar el cliente."></textarea>
-          </label>
-
+          <div class="form-intro"><span>PERFIL DE NEGOCIO · PASO 1</span><h2>Configura tu negocio</h2><p>Completa los datos básicos de tu negocio.</p></div>
+          <label>Nombre del negocio<input id="businessName" maxlength="120" required placeholder="Ej. Barbería Agenda Ya"></label>
+          <label>Categoría del negocio<select id="businessCategory" required><option value="">Selecciona una categoría</option></select></label>
+          <label>Tipo de servicio<input id="businessType" maxlength="100" required placeholder="Ej. Barbería, peluquería, salud..."></label>
+          <label>Descripción pública del negocio<textarea id="businessDescription" maxlength="1000" rows="4" required placeholder="Describe brevemente tu negocio, qué haces y qué puede encontrar el cliente."></textarea></label>
           <div class="two-col">
-            <label>Teléfono
-              <div class="phone-field"><span>+56 9</span><input id="businessPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div>
-            </label>
-            <label>Ciudad
-              <input id="businessCity" maxlength="80" required placeholder="Temuco">
-            </label>
-            <label>Comuna
-              <input id="businessComuna" maxlength="80" required placeholder="Temuco">
-            </label>
-            <label>Dirección
-              <input id="businessAddress" maxlength="160" required placeholder="Calle y número">
-            </label>
+            <label>Teléfono<div class="phone-field"><span>+56 9</span><input id="businessPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div></label>
+            <label>Ciudad<input id="businessCity" maxlength="80" required placeholder="Temuco"></label>
+            <label>Comuna<input id="businessComuna" maxlength="80" required placeholder="Temuco"></label>
+            <label>Dirección<input id="businessAddress" maxlength="160" required placeholder="Calle y número"></label>
           </div>
-
-          <label>Imagen del negocio <small>Opcional</small>
-            <input id="businessLogo" type="file" accept="image/*">
-          </label>
-
-          <p class="profile-status" id="businessStatus"></p>
-
-          <button class="primary-btn" id="businessNext" type="button">
-            Siguiente <b>→</b>
-          </button>
+          <label>Imagen del negocio <small>Opcional</small><input id="businessLogo" type="file" accept="image/*"></label>
+          <p class="profile-status" id="businessStatus"></p><button class="primary-btn" id="businessNext" type="button">Siguiente <b>→</b></button>
         </form>
-
-        <!-- NEGOCIO · HORARIOS -->
         <form id="scheduleForm" class="onboarding-form" novalidate hidden>
-          <div class="form-intro">
-            <span>PERFIL DE NEGOCIO · PASO 2</span>
-            <h2>Configura tus horarios</h2>
-            <p>Define los días y horarios de atención.</p>
-          </div>
-
-          <div id="hours"></div>
-
-          <p class="profile-status" id="scheduleStatus"></p>
-
-          <div class="action-row">
-            <button class="simple-back" id="scheduleBack" type="button">← Volver</button>
-            <button class="primary-btn" type="submit">Guardar y abrir Dashboard <b>→</b></button>
-          </div>
+          <div class="form-intro"><span>PERFIL DE NEGOCIO · PASO 2</span><h2>Configura tus horarios</h2><p>Define los días y horarios de atención.</p></div>
+          <div id="hours"></div><p class="profile-status" id="scheduleStatus"></p>
+          <div class="action-row"><button class="simple-back" id="scheduleBack" type="button">← Volver</button><button class="primary-btn" type="submit">Guardar y abrir Dashboard <b>→</b></button></div>
         </form>
-
-        <!-- CLIENTE -->
         <form id="customerForm" class="onboarding-form" novalidate hidden>
-          <div class="form-intro">
-            <span>PERFIL CLIENTE · PASO 1</span>
-            <h2>Configura tu perfil</h2>
-            <p>Completa tus datos para comenzar a reservar.</p>
-          </div>
-
-          <label>Nombre
-            <input id="customerName" maxlength="120" required placeholder="Nombre y apellido">
-          </label>
-
+          <div class="form-intro"><span>PERFIL CLIENTE · PASO 1</span><h2>Configura tu perfil</h2><p>Completa tus datos para comenzar a reservar.</p></div>
+          <label>Nombre<input id="customerName" maxlength="120" required placeholder="Nombre y apellido"></label>
           <div class="two-col">
-            <label>Teléfono
-              <div class="phone-field"><span>+56 9</span><input id="customerPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div>
-            </label>
-            <label>Edad
-              <input id="customerAge" type="number" min="13" max="120" placeholder="Edad">
-            </label>
-            <label>Ciudad
-              <input id="customerCity" maxlength="80" required placeholder="Temuco">
-            </label>
-            <label>Comuna
-              <input id="customerComuna" maxlength="80" required placeholder="Comuna">
-            </label>
+            <label>Teléfono<div class="phone-field"><span>+56 9</span><input id="customerPhone" maxlength="8" inputmode="numeric" placeholder="12345678"></div></label>
+            <label>Edad<input id="customerAge" type="number" min="13" max="120" placeholder="Edad"></label>
+            <label>Ciudad<input id="customerCity" maxlength="80" required placeholder="Temuco"></label>
+            <label>Comuna<input id="customerComuna" maxlength="80" required placeholder="Comuna"></label>
           </div>
-
-          <label>Dirección
-            <input id="customerAddress" maxlength="160" required placeholder="Calle y número">
-          </label>
-
-          <label>Foto de perfil <small>Opcional</small>
-            <input id="customerAvatar" type="file" accept="image/*">
-          </label>
-
-          <p class="profile-status" id="customerStatus"></p>
-
-          <button class="primary-btn" type="submit">
-            Continuar al marketplace <b>→</b>
-          </button>
+          <label>Dirección<input id="customerAddress" maxlength="160" required placeholder="Calle y número"></label>
+          <label>Foto de perfil <small>Opcional</small><input id="customerAvatar" type="file" accept="image/*"></label>
+          <p class="profile-status" id="customerStatus"></p><button class="primary-btn" type="submit">Continuar al marketplace <b>→</b></button>
         </form>
       </section>
     </section>
   </div>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="profile.js"></script>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="profile.js"></script>
+</body></html>
