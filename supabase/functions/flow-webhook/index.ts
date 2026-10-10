@@ -1,4 +1,3 @@
-
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const FLOW_API_URL = Deno.env.get("FLOW_API_URL");
@@ -50,28 +49,79 @@ async function signFlowParams(
     .join("");
 }
 
+/**
+ * Extrae el token de Flow admitiendo:
+ * - Parámetro token en la URL.
+ * - Cuerpo JSON.
+ * - Formulario URL-encoded.
+ * - Formulario sin Content-Type.
+ * - Token como texto plano.
+ *
+ * No registra ni expone el token en los logs.
+ */
 async function readToken(req: Request): Promise<string> {
+  const queryToken = new URL(req.url).searchParams.get("token");
+
+  if (queryToken?.trim()) {
+    return queryToken.trim();
+  }
+
   const contentType = (
     req.headers.get("content-type") || ""
   ).toLowerCase();
 
-  if (contentType.includes("application/json")) {
-    const body = await req.json();
-    return String(body?.token || "").trim();
-  }
-
   const raw = await req.text();
 
-  if (contentType.includes("application/x-www-form-urlencoded")) {
-    return String(new URLSearchParams(raw).get("token") || "").trim();
+  if (!raw.trim()) {
+    return "";
   }
 
+  // JSON explícito o cuerpo que aparenta ser JSON.
+  if (
+    contentType.includes("application/json") ||
+    raw.trim().startsWith("{")
+  ) {
+    try {
+      const body = JSON.parse(raw);
+      const token = body && typeof body === "object"
+        ? body.token
+        : "";
+
+      if (
+        typeof token === "string" ||
+        typeof token === "number"
+      ) {
+        return String(token).trim();
+      }
+    } catch {
+      // Continuar con la interpretación de formulario o texto.
+    }
+  }
+
+  // Formulario incluso si falta el encabezado Content-Type.
+  if (
+    contentType.includes("application/x-www-form-urlencoded") ||
+    /(?:^|&)token=/.test(raw.trim())
+  ) {
+    const formToken = new URLSearchParams(
+      raw.trim(),
+    ).get("token");
+
+    if (formToken?.trim()) {
+      return formToken.trim();
+    }
+  }
+
+  // Último recurso: cuerpo con el token en texto plano.
   return raw.trim();
 }
 
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
-    return respond({ ok: false, error: "METHOD_NOT_ALLOWED" }, 405);
+    return respond(
+      { ok: false, error: "METHOD_NOT_ALLOWED" },
+      405,
+    );
   }
 
   try {
@@ -83,7 +133,11 @@ Deno.serve(async (req: Request) => {
       !SUPABASE_SERVICE_ROLE_KEY
     ) {
       console.error("Webhook configuration is incomplete.");
-      return respond({ ok: false, error: "CONFIG_MISSING" }, 500);
+
+      return respond(
+        { ok: false, error: "CONFIG_MISSING" },
+        500,
+      );
     }
 
     const flowBase = FLOW_API_URL.replace(/\/+$/, "");
@@ -101,10 +155,13 @@ Deno.serve(async (req: Request) => {
     const token = await readToken(req);
 
     if (!token || token.length > 500) {
-      return respond({ ok: false, error: "FLOW_TOKEN_REQUIRED" }, 400);
+      return respond(
+        { ok: false, error: "FLOW_TOKEN_REQUIRED" },
+        400,
+      );
     }
 
-    // Consultar el estado directamente con Flow.
+    // Consultar el estado de la transacción en Flow.
     const statusParams: Record<string, string> = {
       apiKey: FLOW_API_KEY,
       token,
@@ -115,15 +172,32 @@ Deno.serve(async (req: Request) => {
       FLOW_SECRET_KEY,
     );
 
-    const statusUrl = new URL(`${flowBase}/payment/getStatus`);
-    statusUrl.searchParams.set("apiKey", FLOW_API_KEY);
-    statusUrl.searchParams.set("token", token);
-    statusUrl.searchParams.set("s", signature);
+    const statusUrl = new URL(
+      `${flowBase}/payment/getStatus`,
+    );
 
-    const flowResponse = await fetch(statusUrl.toString(), {
-      method: "GET",
-      signal: AbortSignal.timeout(20000),
-    });
+    statusUrl.searchParams.set(
+      "apiKey",
+      FLOW_API_KEY,
+    );
+
+    statusUrl.searchParams.set(
+      "token",
+      token,
+    );
+
+    statusUrl.searchParams.set(
+      "s",
+      signature,
+    );
+
+    const flowResponse = await fetch(
+      statusUrl.toString(),
+      {
+        method: "GET",
+        signal: AbortSignal.timeout(20000),
+      },
+    );
 
     const rawFlowResponse = await flowResponse.text();
 
@@ -132,7 +206,10 @@ Deno.serve(async (req: Request) => {
     try {
       flowData = JSON.parse(rawFlowResponse);
     } catch {
-      console.error("Flow getStatus returned invalid JSON.");
+      console.error(
+        "Flow getStatus returned invalid JSON.",
+      );
+
       return respond(
         { ok: false, error: "FLOW_INVALID_RESPONSE" },
         502,
@@ -140,19 +217,25 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!flowResponse.ok) {
-      // Diagnostic only: never log API keys, secrets, signatures, or payment tokens.
-      const flowCode = typeof flowData.code === "string" || typeof flowData.code === "number"
-        ? flowData.code
-        : null;
-      const flowMessage = typeof flowData.message === "string"
-        ? flowData.message.slice(0, 300)
-        : null;
+      const flowCode =
+        typeof flowData.code === "string" ||
+        typeof flowData.code === "number"
+          ? flowData.code
+          : null;
 
-      console.error("Flow getStatus request failed:", {
-        httpStatus: flowResponse.status,
-        flowCode,
-        flowMessage,
-      });
+      const flowMessage =
+        typeof flowData.message === "string"
+          ? flowData.message.slice(0, 300)
+          : null;
+
+      console.error(
+        "Flow getStatus request failed:",
+        {
+          httpStatus: flowResponse.status,
+          flowCode,
+          flowMessage,
+        },
+      );
 
       return respond(
         {
@@ -166,7 +249,11 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const commerceOrder = String(flowData.commerceOrder || "");
+    // Validar los datos devueltos por Flow.
+    const commerceOrder = String(
+      flowData.commerceOrder || "",
+    );
+
     const flowStatus = Number(flowData.status);
     const amount = Number(flowData.amount);
     const currency = String(flowData.currency || "");
@@ -179,13 +266,17 @@ Deno.serve(async (req: Request) => {
       amount <= 0 ||
       currency !== "CLP"
     ) {
-      console.error("Flow transaction data failed validation.");
+      console.error(
+        "Flow transaction data failed validation.",
+      );
+
       return respond(
         { ok: false, error: "FLOW_DATA_INVALID" },
         400,
       );
     }
 
+    // Cliente administrativo de Supabase.
     const adminClient = createClient(
       SUPABASE_URL,
       SUPABASE_SERVICE_ROLE_KEY,
@@ -197,7 +288,11 @@ Deno.serve(async (req: Request) => {
       },
     );
 
-    const { data: payment, error: paymentError } = await adminClient
+    // Localizar el pago usando el token recibido.
+    const {
+      data: payment,
+      error: paymentError,
+    } = await adminClient
       .from("payments")
       .select(
         "id, business_id, subscription_id, provider, provider_token, provider_order_id, amount, currency, status, target_plan_id",
@@ -207,7 +302,11 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
 
     if (paymentError) {
-      console.error("Payment lookup failed:", paymentError.message);
+      console.error(
+        "Payment lookup failed:",
+        paymentError.message,
+      );
+
       return respond(
         { ok: false, error: "PAYMENT_LOOKUP_FAILED" },
         500,
@@ -215,19 +314,29 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!payment) {
-      console.error("No payment matches the Flow token.");
-      return respond({ ok: false, error: "PAYMENT_NOT_FOUND" }, 404);
+      console.error(
+        "No payment matches the Flow token.",
+      );
+
+      return respond(
+        { ok: false, error: "PAYMENT_NOT_FOUND" },
+        404,
+      );
     }
 
+    // Verificar que la transacción coincida con el pago registrado.
     if (
       payment.provider_order_id !== commerceOrder ||
       Number(payment.amount) !== amount ||
       payment.currency !== currency
     ) {
-      console.error("Flow transaction does not match stored payment.", {
-        paymentId: payment.id,
-        commerceOrder,
-      });
+      console.error(
+        "Flow transaction does not match stored payment.",
+        {
+          paymentId: payment.id,
+          commerceOrder,
+        },
+      );
 
       return respond(
         { ok: false, error: "PAYMENT_MISMATCH" },
@@ -235,7 +344,11 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const { data: result, error: rpcError } = await adminClient.rpc(
+    // Procesar el pago mediante la función SQL existente.
+    const {
+      data: result,
+      error: rpcError,
+    } = await adminClient.rpc(
       "process_flow_payment_webhook",
       {
         p_provider_token: token,
@@ -245,31 +358,47 @@ Deno.serve(async (req: Request) => {
     );
 
     if (rpcError) {
-      console.error("Payment webhook RPC failed:", rpcError.message);
+      console.error(
+        "Payment webhook RPC failed:",
+        rpcError.message,
+      );
+
       return respond(
-        { ok: false, error: "PAYMENT_PROCESSING_FAILED" },
+        {
+          ok: false,
+          error: "PAYMENT_PROCESSING_FAILED",
+        },
         500,
       );
     }
 
-    console.log("Flow webhook processed:", {
-      paymentId: payment.id,
-      flowStatus,
-      result,
-    });
+    console.log(
+      "Flow webhook processed:",
+      {
+        paymentId: payment.id,
+        flowStatus,
+        result,
+      },
+    );
 
     return respond({
       ok: true,
       received: true,
       payment_id: payment.id,
-      payment_status: result?.payment_status ?? payment.status,
+      payment_status:
+        result?.payment_status ?? payment.status,
     });
   } catch (error) {
     console.error(
       "flow-webhook internal error:",
-      error instanceof Error ? error.message : "UNKNOWN",
+      error instanceof Error
+        ? error.message
+        : "UNKNOWN",
     );
 
-    return respond({ ok: false, error: "INTERNAL_ERROR" }, 500);
+    return respond(
+      { ok: false, error: "INTERNAL_ERROR" },
+      500,
+    );
   }
 });
