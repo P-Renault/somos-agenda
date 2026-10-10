@@ -157,6 +157,77 @@
   }
   @media(max-width:360px){#ayProfileView .ay-profile-grid{grid-template-columns:1fr}#ayProfileView .ay-profile-card{padding:14px 12px}}
 </style>
+
+<style id="ay-business-hours-mobile-architecture">
+/* Ajuste nativo del onboarding: horario responsive, sin tocar lógica ni campos. */
+#ayProfileView #ayBusinessScheduleForm { min-width:0; }
+#ayProfileView #ayBusinessScheduleForm .ay-hours-grid { gap:10px; }
+#ayProfileView #ayBusinessScheduleForm .ay-hour-row {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  padding:10px 12px;
+  border:1px solid #e2eaf4;
+  border-radius:14px;
+  background:#f8fbff;
+}
+#ayProfileView #ayBusinessScheduleForm .ay-hour-row label {
+  display:flex; align-items:center; gap:8px; min-width:0;
+  color:#203957; font-size:13px; font-weight:750;
+}
+#ayProfileView #ayBusinessScheduleForm .ay-hour-row input[type="checkbox"] {
+  width:20px; height:20px; min-height:20px; flex:0 0 20px;
+  accent-color:#1479e8; margin:0;
+}
+#ayProfileView #ayBusinessScheduleForm .ay-hour-row input[type="time"] {
+  width:100%; min-width:0; min-height:42px; height:42px;
+  padding:8px 9px; border:1px solid #d8e2ee; border-radius:10px;
+  background:#fff; color:#193451; font:inherit; font-size:13px;
+}
+@media(max-width:600px) {
+  #ayProfileView { min-height:100dvh; padding:10px 12px calc(12px + env(safe-area-inset-bottom)); }
+  #ayProfileView .ay-profile-wrap { width:100%; max-width:520px; }
+  #ayProfileView .ay-profile-brand { min-height:46px; margin:0 auto 10px; }
+  #ayProfileView .ay-profile-brand img { width:min(174px,54vw); max-height:52px; }
+  #ayProfileView .ay-profile-card { padding:16px 14px; border-radius:20px; }
+  #ayProfileView .ay-profile-form-title h2 { font-size:23px; line-height:1.15; }
+  #ayProfileView .ay-profile-form-title p { margin:0 0 14px; font-size:13px; line-height:1.4; }
+  #ayProfileView #ayBusinessScheduleForm { gap:12px; }
+  #ayProfileView #ayBusinessScheduleForm .ay-hours-grid { gap:8px; }
+  #ayProfileView #ayBusinessScheduleForm .ay-hour-row {
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:8px;
+    padding:10px;
+    border-radius:13px;
+  }
+  #ayProfileView #ayBusinessScheduleForm .ay-hour-row label {
+    grid-column:1 / -1; padding-bottom:7px;
+    border-bottom:1px solid #e6edf6; font-size:14px;
+  }
+  #ayProfileView #ayBusinessScheduleForm .ay-hour-row input[type="time"] {
+    height:40px; min-height:40px; font-size:13px;
+  }
+  #ayProfileView #ayBusinessScheduleForm .ay-profile-actions {
+    position:sticky; bottom:0; z-index:2;
+    grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+    gap:8px; padding-top:10px;
+    background:linear-gradient(180deg,rgba(255,255,255,0),#fff 25%);
+  }
+  #ayProfileView #ayBusinessScheduleForm .ay-profile-actions button {
+    min-width:0; min-height:44px; padding:10px 8px; font-size:12px;
+    line-height:1.25; border-radius:12px;
+  }
+  #ayProfileView #ayBusinessScheduleStatus { font-size:12px; }
+}
+@media(max-width:360px) {
+  #ayProfileView #ayBusinessScheduleForm .ay-hour-row { padding:8px; gap:6px; }
+  #ayProfileView #ayBusinessScheduleForm .ay-hour-row input[type="time"] { padding:7px 5px; font-size:12px; }
+  #ayProfileView #ayBusinessScheduleForm .ay-profile-actions { grid-template-columns:1fr; }
+}
+</style>
+
 </head>
 <body>
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
