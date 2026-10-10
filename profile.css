@@ -65,3 +65,63 @@ button,input{font:inherit}
 }
 @media(max-width:360px){.two-col{grid-template-columns:1fr}.action-row{grid-template-columns:1fr}.action-row .simple-back{justify-content:center}.profile-content,.profile-page.form-mode .profile-content{left:0;right:0}}
 @media(max-height:620px) and (max-width:700px){.profile-top{height:82px}.profile-logo{width:min(55vw,230px);max-height:65px;margin-top:5px}.profile-content,.profile-page.form-mode .profile-content{top:82px}.onboarding-form{gap:7px}.onboarding-form input,.onboarding-form select{height:38px}.phone-field span{height:38px}.onboarding-form textarea{min-height:68px}.primary-btn{height:40px}}
+
+
+/* AGENDA YA · AJUSTE REAL DEL REGISTRO MÓVIL — conserva los IDs y la lógica original */
+@media (max-width:700px){
+  html,body{width:100%;max-width:100%;}
+  .profile-page{height:100dvh;min-height:100dvh;max-height:100dvh;overflow:hidden;}
+  .profile-canvas{height:100%;min-height:0;}
+  .profile-content,.profile-page.form-mode .profile-content{
+    top:clamp(94px,16dvh,132px);bottom:env(safe-area-inset-bottom,8px);
+    overflow-y:auto;overflow-x:hidden;scrollbar-width:none;
+    padding:0 0 max(14px,env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;
+  }
+  .profile-content::-webkit-scrollbar{display:none}
+  .form-step{height:auto;min-height:100%;overflow:visible;padding-bottom:8px}
+  .onboarding-form{width:100%;max-width:100%;}
+  .onboarding-form label{min-width:0;}
+  .onboarding-form input,.onboarding-form select,.onboarding-form textarea{max-width:100%;}
+  .two-col{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .phone-field{grid-template-columns:64px minmax(0,1fr);}
+  .phone-field input{width:100%;}
+  .onboarding-form input[type=file]{width:100%;min-width:0;overflow:hidden;}
+  .primary-btn{min-width:0;white-space:normal;}
+  #scheduleForm{gap:10px;}
+  #hours{width:100%;min-width:0;gap:6px;}
+  #hours .ay-hour-row{grid-template-columns:minmax(70px,1fr) minmax(0,1fr) minmax(0,1fr);width:100%;min-width:0;gap:5px;}
+  #hours .ay-hour-row label{min-width:0;overflow-wrap:anywhere;}
+  #hours .ay-hour-row input[type=time]{width:100%;min-width:0;height:40px;padding:0 3px;font-size:13px;}
+  #hours .ay-hour-row input[type=checkbox]{width:16px;height:16px;flex:0 0 16px;}
+}
+@media(max-width:420px){
+  .profile-canvas{padding-inline:16px;}
+  .profile-top{height:clamp(88px,14dvh,112px);}
+  .profile-logo{width:min(70vw,280px);max-height:11dvh;margin-top:8px;}
+  .profile-content,.profile-page.form-mode .profile-content{top:clamp(88px,14dvh,112px);}
+  .two-col{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 8px;}
+  .onboarding-form label{font-size:13px;}
+  .onboarding-form input,.onboarding-form select{font-size:16px;}
+  .phone-field{grid-template-columns:58px minmax(0,1fr);}
+  .phone-field span{font-size:11px;}
+  #hours .ay-hour-row{grid-template-columns:minmax(60px,.9fr) minmax(0,1fr) minmax(0,1fr);gap:4px;}
+  #hours .ay-hour-row label{font-size:10px;}
+  #hours .ay-hour-row input[type=time]{font-size:12px;}
+}
+@media(max-width:360px){
+  .two-col{grid-template-columns:minmax(0,1fr);}
+  .action-row{grid-template-columns:minmax(0,1fr);}
+  .action-row .simple-back{justify-content:center;}
+}
+@media(max-height:700px) and (max-width:700px){
+  .profile-top{height:78px;}
+  .profile-logo{width:min(52vw,220px);max-height:58px;margin-top:4px;}
+  .profile-content,.profile-page.form-mode .profile-content{top:78px;}
+  .onboarding-form{gap:8px;margin-top:7px;}
+  .onboarding-form label{gap:4px;}
+  .onboarding-form input,.onboarding-form select{height:40px;}
+  .phone-field span{height:40px;}
+  .onboarding-form textarea{min-height:64px;}
+  .primary-btn{height:42px;margin-top:8px;}
+}

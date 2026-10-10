@@ -1,0 +1,14 @@
+AGENDA YA — PAQUETE A · CORRECCIÓN MÓVIL
+
+Archivos completos basados en archivos.zip y en los archivos de la rama Backup-5.0-producción.
+Se conservan los nombres originales de los archivos de aplicación.
+
+Cambios principales:
+- profile.css: ajustes responsive para registro de negocio, cliente y horario; evita recortes horizontales y mejora el uso del alto disponible.
+- customer-profile.html/css: campana SVG de notificaciones y ajustes de cabecera/formulario móvil.
+- dashboard.html: panel de perfil móvil compacto para los dos roles.
+- registro-negocio-compacto.css: ajustes responsive del formulario de negocio.
+
+Instalación: reemplazar los archivos por los de igual nombre en la raíz de la rama indicada.
+No se han cambiado claves, configuración de Supabase, lógica de pagos ni nombres de scripts.
+El ZIP se valida estructuralmente; no implica despliegue ni prueba visual en dispositivo real.

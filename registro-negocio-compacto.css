@@ -89,3 +89,20 @@ form{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
   .status{font-size:9px}
   .next{height:36px;font-size:13px}
 }
+
+
+/* PAQUETE A · Evita recortes en el registro compacto en pantallas móviles */
+@media(max-width:560px){
+ html,body{min-height:100%;height:auto;overflow-x:hidden;overflow-y:auto}
+ .page{min-height:100svh;height:auto;overflow:visible}
+ .form-card{flex:0 0 auto}
+ form{grid-template-columns:1fr 1fr}
+ .field,.field.full{min-width:0}
+ .field input:not([type=file]),.phone,.file-input{min-width:0}
+}
+@media(max-width:360px){
+ .page{padding-left:10px;padding-right:10px}
+ .form-card{padding-left:10px;padding-right:10px}
+ form{grid-template-columns:1fr}
+ .field.full,.status,.next{grid-column:1}
+}

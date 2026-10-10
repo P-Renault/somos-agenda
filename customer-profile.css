@@ -14,32 +14,40 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 @media(max-width:600px){.cp-data-kpis{grid-template-columns:repeat(2,1fr)}}
 
 
-/* B5.1 · Ajuste móvil integrado en customer-profile.css original */
-.cp-brand{min-width:0;flex:0 1 230px;overflow:hidden}
-.cp-brand img{max-width:100%;object-fit:contain;mix-blend-mode:multiply;background:transparent}
-.cp-notification-btn{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;padding:0}
-.cp-notification-btn svg{display:block;width:22px;height:22px}
-.cp-notification-btn b[hidden]{display:none!important}
-.cp-notification-btn b:not([hidden]){position:absolute;right:4px;top:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#e53935;color:#fff;font-size:10px;line-height:16px;text-align:center}
-@media(max-width:700px){
- .cp-header{height:68px;padding:7px 12px;gap:8px}
- .cp-mobile-only{display:inline-flex;align-items:center;justify-content:center;flex:0 0 42px;width:42px;height:42px}
- .cp-brand{width:auto;flex:1 1 auto;min-width:0;justify-content:center}
- .cp-brand img{width:clamp(125px,36vw,190px);max-width:100%;max-height:48px}
- .cp-header-actions{margin-left:0;gap:6px;flex:0 0 auto}
- .cp-notification-btn{width:40px;height:40px;flex-basis:40px;border-radius:13px}
- .cp-notification-btn svg{width:21px;height:21px}
- .cp-avatar{width:40px;height:40px}
- .cp-logout{height:38px;padding:0 10px}
- .cp-main{padding:22px 14px calc(112px + env(safe-area-inset-bottom))}
- .cp-mobile-rail{padding:7px 8px calc(7px + env(safe-area-inset-bottom));bottom:calc(8px + env(safe-area-inset-bottom));}
+/* PAQUETE A · Ajustes móviles integrados en la hoja original */
+.cp-brand img{background:transparent!important;object-fit:contain;mix-blend-mode:multiply}
+.cp-notification-btn{display:inline-flex;align-items:center;justify-content:center;padding:0;flex:0 0 44px}
+.cp-notification-btn svg{display:block;width:21px;height:21px}
+@media(max-width:600px){
+ .cp-header{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:6px;padding:8px 10px}
+ .cp-brand{min-width:0;max-width:none}
+ .cp-brand img{width:min(38vw,155px);height:auto;max-height:46px}
+ .cp-header-actions{display:flex;align-items:center;gap:5px;min-width:0}
+ .cp-notification-btn{width:38px;height:38px;min-width:38px;flex-basis:38px;border-radius:12px}
+ .cp-notification-btn svg{width:20px;height:20px}
+ .cp-account{display:flex;align-items:center}
+ .cp-avatar{width:38px;height:38px}
+ .cp-logout{height:36px;padding:0 8px;font-size:10px}
+ .cp-main{padding:16px 12px 88px}
+ .cp-page-head h1{font-size:26px}
+ .cp-page-head p{font-size:14px;line-height:1.45}
+ .cp-profile-grid{gap:12px}
+ .cp-profile-summary-card{padding:16px}
+ .cp-form-card{padding:16px}
+ .cp-form-grid{grid-template-columns:1fr 1fr;gap:10px}
+ .cp-form-grid .cp-full{grid-column:1/-1}
+ .cp-form-grid label{font-size:12px;gap:5px}
+ .cp-form-grid input{min-height:42px;padding:9px 10px;font-size:16px}
+ .cp-primary-btn{min-height:44px;width:100%}
 }
-@media(max-width:380px){
- .cp-header{padding-left:8px;padding-right:8px;gap:5px}
- .cp-mobile-only{width:36px;height:40px;flex-basis:36px}
- .cp-brand img{width:clamp(112px,33vw,145px)}
- .cp-header-actions{gap:4px}
- .cp-notification-btn{width:36px;height:38px;flex-basis:36px}
- .cp-avatar{width:36px;height:36px}
- .cp-logout{padding:0 7px;font-size:11px}
+@media(max-width:360px){
+ .cp-header{grid-template-columns:36px minmax(0,1fr) auto;gap:4px;padding-inline:7px}
+ .cp-icon-btn{width:36px;min-width:36px}
+ .cp-brand img{width:min(33vw,125px)}
+ .cp-header-actions{gap:3px}
+ .cp-notification-btn{width:34px;height:34px;min-width:34px;flex-basis:34px}
+ .cp-avatar{width:34px;height:34px}
+ .cp-logout{height:34px;padding:0 6px;font-size:9px}
+ .cp-form-grid{grid-template-columns:1fr}
+ .cp-form-grid .cp-full{grid-column:auto}
 }
