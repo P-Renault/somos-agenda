@@ -265,3 +265,16 @@
 .professionals-panel > .section-heading .section-icon {
   margin-inline: auto;
 }
+
+
+/* Cierre de producto: ocultar la sección aún no habilitada de descripción pública. */
+#aboutBusinessPanel, .about-panel { display: none !important; }
+
+/* Presentación profesional de los horarios en el perfil del negocio. */
+.ay-public-schedule-person { padding: 14px 0; border-bottom: 1px solid var(--line, #e3eaf3); }
+.ay-public-schedule-person:last-child { border-bottom: 0; }
+.ay-public-schedule-person h3 { margin: 0 0 10px; color: var(--ink, #182b49); font-size: 15px; }
+.ay-public-schedule-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 7px 0; color: var(--muted, #718198); font-size: 14px; }
+.ay-public-schedule-row strong { color: var(--ink, #182b49); text-align: right; font-weight: 700; }
+.ay-public-empty-state { display: grid; gap: 12px; justify-items: start; padding: 14px 16px; border-radius: 14px; background: #f4f8fd; }
+.ay-public-empty-state .ay-public-empty { margin: 0; }

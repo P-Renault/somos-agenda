@@ -244,9 +244,15 @@
     const professionalsBox = document.getElementById("ayPublicProfessionals");
     const schedulesBox = document.getElementById("ayPublicSchedules");
 
-    const [servicesResult, professionalsResult] = await Promise.all([
-      client.from("services").select("*").eq("business_id", business.id),
-      client.from("professionals").select("*").eq("business_id", business.id)
+    const [servicesResult, professionalsResult, schedulesResult] = await Promise.all([
+      client.from("services").select("*").eq("business_id", business.id).order("name"),
+      client.from("professionals").select("*").eq("business_id", business.id).order("first_name").order("last_name"),
+      client.from("professional_schedules")
+        .select("professional_id,day_of_week,start_time,end_time,active")
+        .eq("business_id", business.id)
+        .eq("active", true)
+        .order("day_of_week", { ascending: true })
+        .order("start_time", { ascending: true })
     ]);
 
     function renderRows(target, result, kind) {
@@ -276,7 +282,40 @@
     renderRows(servicesBox, servicesResult, "services");
     renderRows(professionalsBox, professionalsResult, "professionals");
     if (schedulesBox) {
-      schedulesBox.innerHTML = '<p class="ay-public-empty">La vista utiliza los horarios configurados en Agenda Ya. La tabla y los campos de horarios no están identificados en el bootstrap disponible; no se consulta una tabla supuesta para evitar errores de esquema.</p>';
+      if (schedulesResult.error) {
+        console.error("Agenda YA perfil público: horarios", schedulesResult.error);
+        schedulesBox.innerHTML = '<p class="ay-public-empty">No fue posible cargar los horarios en este momento. Intenta nuevamente más tarde.</p>';
+      } else {
+        const dayNames = { 1: "Lunes", 2: "Martes", 3: "Miércoles", 4: "Jueves", 5: "Viernes", 6: "Sábado", 7: "Domingo" };
+        const activeProfessionals = (professionalsResult.data || []).filter(row => {
+          if (row.active !== undefined) return row.active === true;
+          if (row.is_active !== undefined) return row.is_active === true;
+          if (row.status !== undefined) return ["active", "activo", "published", "publicado"].includes(String(row.status).toLowerCase());
+          return true;
+        });
+        const professionalById = new Map(activeProfessionals.map(p => [p.id, p]));
+        const schedules = (schedulesResult.data || []).filter(row => professionalById.has(row.professional_id));
+        const groups = new Map();
+        schedules.forEach(row => {
+          const p = professionalById.get(row.professional_id);
+          const professionalName = `${p.first_name || ""} ${p.last_name || ""}`.trim() || p.name || p.full_name || "Profesional";
+          if (!groups.has(row.professional_id)) groups.set(row.professional_id, { name: professionalName, days: new Map() });
+          const group = groups.get(row.professional_id);
+          const day = Number(row.day_of_week);
+          if (!group.days.has(day)) group.days.set(day, []);
+          group.days.get(day).push(`${String(row.start_time || "").slice(0, 5)}–${String(row.end_time || "").slice(0, 5)}`);
+        });
+        if (groups.size) {
+          schedulesBox.innerHTML = [...groups.values()].map(group => {
+            const rows = [...group.days.entries()].sort((a, b) => a[0] - b[0]).map(([day, times]) =>
+              `<div class="ay-public-schedule-row"><span>${safeText(dayNames[day] || "Día")}</span><strong>${safeText(times.join(", "))}</strong></div>`
+            ).join("");
+            return `<article class="ay-public-schedule-person"><h3>${safeText(group.name)}</h3>${rows}</article>`;
+          }).join("");
+        } else {
+          schedulesBox.innerHTML = '<div class="ay-public-empty-state"><p class="ay-public-empty">Aún no hay horarios configurados para los profesionales activos.</p><button type="button" class="ay-btn ay-btn-light" data-view="schedules">Configurar horarios</button></div>';
+        }
+      }
     }
   }
 

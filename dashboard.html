@@ -142,6 +142,15 @@ body.ay-profile-open{overflow:hidden}
 @media(min-width:900px){.ay-public-profile-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 
+<style id="ay-public-profile-schedules-final-styles">
+#view-public-profile .ay-public-schedule-person{padding:14px 0;border-bottom:1px solid var(--line,#e1e9f2)}
+#view-public-profile .ay-public-schedule-person:last-child{border-bottom:0}
+#view-public-profile .ay-public-schedule-person h3{margin:0 0 10px;font-size:15px;color:var(--ink,#182b49)}
+#view-public-profile .ay-public-schedule-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:14px;color:var(--muted,#718198)}
+#view-public-profile .ay-public-schedule-row strong{text-align:right;color:var(--ink,#182b49)}
+#view-public-profile .ay-public-empty-state{display:grid;gap:12px;justify-items:start;padding:14px;border-radius:14px;background:#f4f8fd}
+#view-public-profile .ay-public-empty-state p{margin:0}
+</style>
 </head>
 <body>
 <div class="ay-app" id="ayApp" hidden>

@@ -1,0 +1,13 @@
+AGENDA YA — CORRECCIÓN FINAL DE HORARIOS Y PERFIL PÚBLICO
+
+Archivos: public-profile.html, public-profile.css, dashboard.html, dashboard.js.
+
+Cambios:
+- Se oculta la tarjeta “Sobre este negocio” hasta que exista el campo de descripción pública.
+- Se conserva el encabezado de Profesionales centrado.
+- La vista Dashboard > Perfil público consulta servicios, profesionales y professional_schedules del negocio autenticado.
+- Los horarios se agrupan por profesional y día (1=lunes ... 7=domingo), con sus horas reales.
+- Si no existen horarios, se muestra un estado vacío profesional y un acceso a Configurar horarios.
+- Si falla la consulta, el usuario ve un mensaje neutral; el detalle técnico queda solo en consola.
+
+No se modifican las funciones de pago, webhooks, RPC ni la estructura de Supabase.
