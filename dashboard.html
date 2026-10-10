@@ -17,6 +17,42 @@
 </style>
 <link rel="stylesheet" href="agenda-ya-shell.css">
 <style id="ay-b13-notification-header-inline">.ay-notification-trigger{position:relative;display:inline-flex!important;align-items:center;justify-content:center}.ay-notification-trigger svg{width:22px;height:22px;display:block}@media(max-width:700px){.ay-notification-trigger{width:40px;height:40px;min-width:40px;flex:0 0 40px}.ay-notification-trigger svg{width:21px;height:21px}}</style>
+<style id="ay-profile-responsive">
+.ay-modal-backdrop[hidden],.ay-profile-panel[hidden]{display:none!important}
+.ay-modal-backdrop{position:fixed;inset:0;z-index:900;background:rgba(7,23,47,.56);backdrop-filter:blur(3px)}
+.ay-profile-panel{position:fixed;z-index:901;top:50%;left:50%;transform:translate(-50%,-50%);width:min(620px,calc(100vw - 36px));max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:clamp(18px,3vw,28px);border:1px solid #e2eaf4;border-radius:22px;background:#fff;box-shadow:0 24px 80px rgba(8,35,76,.24);color:#10254a}
+.ay-profile-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.ay-profile-panel-head h2{margin:5px 0 0;font-size:clamp(23px,3vw,30px);line-height:1.15}
+.ay-panel-close{display:inline-flex;align-items:center;justify-content:center;flex:0 0 40px;width:40px;height:40px;border:0;border-radius:12px;background:#f1f5fa;color:#16345c;font-size:28px;line-height:1;cursor:pointer}
+.ay-profile-summary{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:18px;border:1px solid #e7edf5;border-radius:16px;background:#f8fbff;min-width:0}
+.ay-profile-panel-avatar{display:flex;align-items:center;justify-content:center;flex:0 0 52px;width:52px;height:52px;border-radius:50%;background:#e2efff;color:#0878ea;font-weight:800}
+.ay-profile-summary>div:last-child{display:grid;gap:3px;min-width:0}
+.ay-profile-summary strong,.ay-profile-summary span,.ay-profile-summary em{overflow-wrap:anywhere}
+.ay-profile-summary span{color:#64748b;font-size:13px}
+.ay-profile-summary em{color:#0878ea;font-size:12px;font-style:normal;font-weight:700}
+.ay-profile-fields{display:grid;gap:14px;min-width:0}
+.ay-profile-fields label{display:grid;gap:7px;min-width:0;color:#17345b;font-size:14px;font-weight:700}
+.ay-profile-fields input{display:block;width:100%;min-width:0;height:46px;padding:0 12px;border:1px solid #d9e3ef;border-radius:12px;background:#fff;color:#1d2d45;font:inherit;font-size:16px;font-weight:400;outline:none}
+.ay-profile-fields input:focus{border-color:#80b6f3;box-shadow:0 0 0 3px rgba(8,120,234,.1)}
+.ay-profile-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ay-profile-panel-status{min-height:0;margin:12px 0;color:#64748b;font-size:13px}
+.ay-profile-save{width:100%;min-height:48px;justify-content:center}
+body.ay-profile-open{overflow:hidden}
+@media(max-width:600px){
+ .ay-profile-panel{top:auto;bottom:0;left:0;transform:none;width:100%;max-height:calc(100dvh - env(safe-area-inset-top) - 10px);padding:20px 16px calc(18px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0;border-bottom:0}
+ .ay-profile-panel-head{margin-bottom:14px}
+ .ay-profile-summary{padding:11px;margin-bottom:14px}
+ .ay-profile-grid-2{grid-template-columns:minmax(0,1fr);gap:12px}
+ .ay-profile-fields{gap:12px}
+ .ay-profile-fields input{height:46px;font-size:16px}
+ .ay-profile-save{position:sticky;bottom:0;margin-top:6px;box-shadow:0 -8px 14px rgba(255,255,255,.92)}
+}
+@media(max-height:520px) and (max-width:600px){
+ .ay-profile-panel{max-height:100dvh;padding-top:12px}
+ .ay-profile-panel-head{margin-bottom:8px}
+ .ay-profile-summary{margin-bottom:10px}
+}
+</style>
 </head>
 <body>
 <div class="ay-app" id="ayApp" hidden>
