@@ -84,14 +84,6 @@
     if (badge) badge.textContent = 'Motor activo';
     const hero = $('.ay-settings-engine-badge');
     if (hero) hero.textContent = 'Membership Engine · Activo';
-    document.querySelectorAll('.ay-settings-contract-grid span').forEach(x => {
-      if (x.textContent.trim() === 'Membership Engine') x.textContent = 'Membership Engine · Activo';
-    });
-    const title = $('.ay-settings-contract h3');
-    if (title) title.textContent = 'Motores B13–B20 activos';
-    const description = $('.ay-settings-contract p');
-    if (description) description.textContent =
-      'Membership, entitlements, límites, billing, ciclo de vida y checkout Flow están conectados al backend.';
   }
 
   async function load() {

@@ -415,10 +415,7 @@
           <p class="ay-settings-muted">El estado real será determinado por Billing + Membership. La interfaz no lo inferirá desde el navegador.</p>
         </article>
       </section>
-      <section class="ay-settings-card ay-settings-contract">
-        <div><span class="ay-settings-label">CONTRATO DE INTEGRACIÓN</span><h3>Preparado para los motores B13.3–B13.7</h3><p>Esta entrega construye únicamente las vistas. Los motores se conectarán en el siguiente despliegue sin rediseñar esta interfaz.</p></div>
-        <div class="ay-settings-contract-grid"><span>Membership Engine</span><span>Entitlements</span><span>Limits</span><span>Billing</span><span>Subscription lifecycle</span></div>
-      </section>`;
+      `;
     settingsSection("Configuración", "SISTEMA", "Preferencias, cuenta, membresía, límites y suscripción del negocio.", body);
   }
 
