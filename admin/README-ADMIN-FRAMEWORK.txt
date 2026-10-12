@@ -32,3 +32,7 @@ PRÓXIMA FASE DE INTEGRACIÓN
 
 SEGURIDAD
 No se añadió ninguna clave privada ni service_role. No se debe considerar privada una ruta por ocultar su enlace: los permisos deben verificarse en backend. No desplegar acciones administrativas reales hasta completar la autorización del servidor.
+
+
+ACTUALIZACIÓN v1.1 — AUTENTICACIÓN
+El login y registro ahora usan Supabase Auth. Para habilitar el acceso del propietario, aplicar ../supabase/migrations/009_platform_admins_v1_1.sql y asignar manualmente el UUID en platform_admins según README-ADMIN-AUTH-v1.1.txt. El registro por sí solo nunca concede rol administrativo.
