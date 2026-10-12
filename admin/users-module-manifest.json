@@ -1,0 +1,17 @@
+{
+  "product": "Agenda YA Admin",
+  "version": "1.3",
+  "module": "Usuarios",
+  "requires": [
+    "Admin Auth v1.2",
+    "public.platform_admins",
+    "public.profiles",
+    "public.businesses",
+    "public.business_members",
+    "public.audit_logs",
+    "Supabase Edge Function admin-users"
+  ],
+  "public_registration_in_admin": false,
+  "service_role_in_browser": false,
+  "production_deployed": false
+}
