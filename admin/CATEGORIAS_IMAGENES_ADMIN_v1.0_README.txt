@@ -1,0 +1,31 @@
+AGENDA YA — CATEGORÍAS E IMÁGENES ADMIN v1.0
+
+Archivos del paquete (respetar las rutas):
+- admin/platform-modules.js
+- admin/admin.css
+- admin/index.html
+- supabase/functions/admin-platform/index.ts
+
+Implementación:
+- Vista de categorías con métricas procedentes de Supabase.
+- Búsqueda, filtro por estado, paginación, exportación CSV y formulario de creación/edición.
+- Panel de detalle con icono, información y galería de portadas locales en assets/category-covers/.
+- Acción explícita para asignar una portada a perfiles públicos que tengan el category_id seleccionado.
+- Diseño responsive: tabla en escritorio y tarjetas en móvil.
+
+Despliegue:
+1. Copiar los archivos del ZIP conservando sus rutas originales.
+2. En Supabase > Edge Functions > admin-platform > Code, reemplazar index.ts por el incluido y desplegar.
+3. Confirmar que el proyecto publicado contiene assets/category-covers/ (los archivos JPG ya están en el paquete base Agenda YA).
+4. Probar la búsqueda, filtro, alta/edición de categoría y selección de portada con una categoría de prueba.
+
+Requisitos de esquema usados:
+- business_categories: id, name, slug, description, image_url, sort_order, active, created_at.
+- business_public_profiles: id, category_id, cover_url, updated_at.
+- platform_admins y audit_logs, ya usados por admin-platform.
+
+Notas:
+- Las cifras de visualizaciones no se inventan: el diseño deja esa métrica como no disponible hasta conectar una fuente real de eventos.
+- El total de 96 imágenes corresponde a los 12 grupos de 8 portadas que incluye la versión base del proyecto.
+- Asignar portada actualiza cover_url de los perfiles públicos de esa categoría; confirma la acción en pantalla antes de aplicarla.
+- No se han ejecutado pruebas contra la instancia de producción. Si las columnas difieren, no despliegues hasta ajustar el esquema real.
