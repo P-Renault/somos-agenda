@@ -21,7 +21,20 @@ Deno.serve(async req=>{
  const admin=createClient(url,service,{auth:{persistSession:false,autoRefreshToken:false}});const {data:assignment,error:roleError}=await admin.from('platform_admins').select('role,is_active').eq('user_id',user.id).maybeSingle();if(roleError||!assignment?.is_active||!['super_admin','admin','support','finance','content'].includes(assignment.role))return json({error:'No tienes permisos de administración'},403);
  let body:any;try{body=await req.json()}catch{return json({error:'JSON inválido'},400)}const action=String(body.action||'');
  try{
- if(action==='analytics'){const counts:Record<string,number|null>={};for(const [k,t] of [['businesses','businesses'],['marketplace','business_public_profiles'],['subscriptions','subscriptions'],['payments','payments'],['categories','business_categories'],['tickets','platform_support_tickets']] as const){const {count,error}=await admin.from(t).select('*',{count:'exact',head:true});counts[k]=error?null:count}let userCount=0,userPage=1;while(userPage<=100){const {data,error}=await admin.auth.admin.listUsers({page:userPage,perPage:1000});if(error){counts.users=null;break}userCount+=data.users.length;if(data.users.length<1000)break;userPage++}if(counts.users!==null)counts.users=userCount;return json({counts})}
+ if(action==='analytics'){
+  const counts:Record<string,number|null>={};
+  for(const [k,t] of [['businesses','businesses'],['marketplace','business_public_profiles'],['subscriptions','subscriptions'],['payments','payments'],['categories','business_categories'],['tickets','platform_support_tickets']] as const){const {count,error}=await admin.from(t).select('*',{count:'exact',head:true});counts[k]=error?null:(count??0)}
+  let userCount=0,userPage=1;while(userPage<=100){const {data,error}=await admin.auth.admin.listUsers({page:userPage,perPage:1000});if(error){counts.users=null;break}userCount+=data.users.length;if(data.users.length<1000)break;userPage++}if(counts.users!==null)counts.users=userCount;
+  // Aggregations below use only records returned by the live database; absent/failed sources stay null.
+  let cities:any[]|null=null,categories:any[]|null=null,activity:any[]|null=null;
+  const {data:businessRows,error:businessRowsError}=await admin.from('businesses').select('id,name,city,comuna,created_at,active').order('created_at',{ascending:false}).limit(5000);
+  if(!businessRowsError&&businessRows){const grouped=new Map<string,number>();for(const r of businessRows){const label=String(r.city||r.comuna||'Sin ciudad informada').trim();grouped.set(label,(grouped.get(label)||0)+1)}cities=[...grouped.entries()].map(([city,count])=>({city,count})).sort((a,b)=>b.count-a.count).slice(0,8)}
+  const {data:profileRows,error:profileRowsError}=await admin.from('business_public_profiles').select('category_id,updated_at').limit(10000);
+  const {data:categoryRows,error:categoryRowsError}=await admin.from('business_categories').select('id,name').limit(1000);
+  if(!profileRowsError&&!categoryRowsError&&profileRows&&categoryRows){const names=new Map(categoryRows.map((c:any)=>[String(c.id),String(c.name||'Sin categoría')]));const grouped=new Map<string,number>();for(const r of profileRows){const label=names.get(String(r.category_id))||'Sin categoría';grouped.set(label,(grouped.get(label)||0)+1)}categories=[...grouped.entries()].map(([category,count])=>({category,count})).sort((a,b)=>b.count-a.count).slice(0,8)}
+  const {data:logs,error:logsError}=await admin.from('audit_logs').select('id,created_at,actor_user_id,action,entity_type,entity_id,metadata').order('created_at',{ascending:false}).limit(10);if(!logsError&&logs)activity=logs;
+  return json({counts,cities,categories,activity,availability:{cities:!!cities,categories:!!categories,activity:!!activity,historicalGrowth:false,marketplaceViews:false,reservations:false,conversion:false,revenueByPlan:false}})
+}
  const key=String(body.module||''),spec=specs[key];if(!spec)return json({error:'Módulo no permitido'},400);
  if(action==='categories_overview'){
   const {data:cats,error:catError,count:catCount}=await admin.from('business_categories').select('id,active',{count:'exact'}).limit(10000);
