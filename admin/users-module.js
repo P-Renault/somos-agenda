@@ -1,143 +1,35 @@
-/* Agenda YA Admin Users Module v1.3 — real data through the protected admin-users Edge Function. */
+/* Agenda YA · Admin Users v1.5 — responsive, real Supabase data via protected admin-users Edge Function. */
 (()=>{'use strict';
-const $=s=>document.querySelector(s);
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const date=v=>v?new Date(v).toLocaleString('es-CL',{dateStyle:'medium',timeStyle:'short'}):'Nunca';
-const statusLabel=s=>s==='active'?'Activo':s==='pending'?'Pendiente de confirmar':'Suspendido';
-const statusClass=s=>s==='active'?'green':s==='pending'?'orange':'red';
-let page=1,perPage=10,query='',profileType='',statusFilter='',selected=null,users=[],loading=false;
-async function call(action,extra={}) {
- const c=window.agendaAdminSupabase;
- if(!c) throw new Error(window.__agendaAdminAuthInitError||'Cliente Supabase no disponible.');
- const {data,error}=await c.functions.invoke('admin-users',{body:{action,page,perPage,query,profileType,status:statusFilter,...extra}});
- if(error) {
-   let detail=error.message||'Error invocando admin-users';
-   try { if(error.context?.json) { const j=await error.context.json(); detail=j.message||j.error||detail; } } catch {}
-   throw new Error(detail+' · Verifica que la Edge Function admin-users esté desplegada.');
- }
- if(data?.error) throw new Error(data.message||data.error);
- return data;
-}
-function toast(msg){const region=$('#toastRegion');if(!region){alert(msg);return}const n=document.createElement('div');n.className='toast';n.textContent=msg;region.appendChild(n);setTimeout(()=>n.remove(),3800)}
-function setBanner(connected,msg='Datos reales de Supabase · Módulo Usuarios'){
- const b=$('.demo-banner');if(!b)return;
- b.classList.toggle('users-live-banner',connected);
- b.innerHTML=`<span class="demo-dot"></span><strong>${esc(msg)}</strong><span>${connected?'Usuarios conectados mediante Edge Function protegida.':'Conectando con el motor administrativo…'}</span>`;
-}
-function heading(){
- return `<div class="page-heading"><div class="heading-title"><span class="heading-icon">♟</span><div><h1>Usuarios</h1><p>Gestión de cuentas registradas en Agenda YA</p></div></div><div class="heading-actions"><button class="btn btn-secondary" id="usersExport">⇩ Exportar CSV</button><button class="btn btn-secondary" id="usersRefresh">↻ Actualizar</button></div></div>`;
-}
-function render(){
- const content=$('#pageContent');if(!content)return;
- content.innerHTML=`
- ${heading()}
- <div class="users-kpi-grid" aria-label="Indicadores de usuarios">
-  <article class="users-kpi users-kpi-blue"><div class="users-kpi-top"><span class="users-kpi-icon">♟</span><span class="users-kpi-tag">SUPABASE</span></div><span class="users-kpi-label">Total de usuarios</span><strong id="usersTotal">—</strong><small>Usuarios registrados en Auth</small><div class="users-kpi-track"><i id="usersTotalBar"></i></div></article>
-  <article class="users-kpi users-kpi-green"><div class="users-kpi-top"><span class="users-kpi-icon">✓</span><span class="users-kpi-tag">CONFIRMADOS</span></div><span class="users-kpi-label">Usuarios activos</span><strong id="usersActive">—</strong><small id="usersActiveMeta">Cuentas activas según Supabase</small><div class="users-kpi-track"><i id="usersActiveBar"></i></div></article>
-  <article class="users-kpi users-kpi-purple"><div class="users-kpi-top"><span class="users-kpi-icon">▣</span><span class="users-kpi-tag">MEMBRESÍAS</span></div><span class="users-kpi-label">Usuarios de negocios</span><strong id="usersBusiness">—</strong><small id="usersBusinessMeta">Usuarios únicos con membresía</small><div class="users-kpi-track"><i id="usersBusinessBar"></i></div></article>
-  <article class="users-kpi users-kpi-amber"><div class="users-kpi-top"><span class="users-kpi-icon">☷</span><span class="users-kpi-tag">VISTA ACTUAL</span></div><span class="users-kpi-label">Resultados consultados</span><strong id="usersPageCount">—</strong><small id="usersPageMeta">En la página actual</small><div class="users-kpi-track"><i id="usersPageBar"></i></div></article>
- </div>
- <div class="panel users-controls">
-  <div class="users-search"><span>⌕</span><input id="usersQuery" value="${esc(query)}" placeholder="Buscar nombre, correo, teléfono o ciudad…" aria-label="Buscar usuarios"></div>
-  <select id="usersType" aria-label="Tipo de perfil"><option value="">Todos los perfiles</option><option value="customer">Clientes</option><option value="business">Usuarios de negocios</option></select>
-  <select id="usersStatus" aria-label="Estado"><option value="">Todos los estados</option><option value="active">Activos</option><option value="pending">Pendientes</option><option value="suspended">Suspendidos</option></select>
-  <select id="usersPerPage" aria-label="Filas por página"><option value="10">10 por página</option><option value="20">20 por página</option><option value="50">50 por página</option></select>
- </div>
- <div class="users-layout">
-  <div class="panel users-table-panel">
-   <div class="panel-heading"><div><h2>Listado de usuarios</h2><small id="usersSummary">Cargando datos reales…</small></div><span class="live-chip">SUPABASE</span></div>
-   <div class="users-table-wrap"><table class="users-table"><thead><tr><th>Usuario</th><th>Tipo</th><th>Negocios</th><th>Estado</th><th>Registro</th><th>Último acceso</th><th>Acciones</th></tr></thead><tbody id="usersRows"><tr><td colspan="7" class="users-empty">Consultando Supabase…</td></tr></tbody></table></div>
-   <div class="users-pagination"><span id="usersPageLabel">Página 1</span><div><button class="btn btn-secondary" id="usersPrev">← Anterior</button><button class="btn btn-secondary" id="usersNext">Siguiente →</button></div></div>
-  </div>
-  <aside class="panel users-detail" id="usersDetail"><div class="users-empty">Selecciona un usuario para ver su perfil y sus negocios.</div></aside>
- </div>`;
- bind();load();
-}
-function bind(){
- $('#usersRefresh').onclick=()=>load();
- $('#usersQuery').addEventListener('keydown',e=>{if(e.key==='Enter'){query=e.target.value.trim();page=1;load()}});
- $('#usersQuery').addEventListener('change',e=>{query=e.target.value.trim();page=1;load()});
- $('#usersType').value=profileType;$('#usersStatus').value=statusFilter;$('#usersPerPage').value=String(perPage);
- $('#usersType').onchange=e=>{profileType=e.target.value;page=1;load()};
- $('#usersStatus').onchange=e=>{statusFilter=e.target.value;page=1;load()};
- $('#usersPerPage').onchange=e=>{perPage=Number(e.target.value)||10;page=1;load()};
- $('#usersPrev').onclick=()=>{if(page>1){page--;load()}};
- $('#usersNext').onclick=()=>{if(users.length===perPage){page++;load()}};
- $('#usersExport').onclick=exportCsv;
-}
-async function load(){
- if(loading)return;loading=true;setBanner(false);
- const tbody=$('#usersRows');if(tbody)tbody.innerHTML='<tr><td colspan="7" class="users-empty">Cargando usuarios…</td></tr>';
- try{
-  const d=await call('list');
-  users=d.users||[];
-  $('#usersTotal').textContent=Number(d.totalUsers||0).toLocaleString('es-CL');
-  $('#usersBusiness').textContent=Number(d.businessUsers||0).toLocaleString('es-CL');
-  $('#usersActive').textContent=Number(d.activeUsers||0).toLocaleString('es-CL');
-  $('#usersPageCount').textContent=users.length.toLocaleString('es-CL');
-  const total=Number(d.totalUsers||0),active=Number(d.activeUsers||0),business=Number(d.businessUsers||0);
-  const pct=(n,base)=>base>0?Math.max(0,Math.min(100,n/base*100)):0;
-  $('#usersTotalBar').style.width=(total?100:0)+'%';
-  $('#usersActiveBar').style.width=pct(active,total)+'%';
-  $('#usersBusinessBar').style.width=pct(business,total)+'%';
-  $('#usersPageBar').style.width=pct(users.length,perPage)+'%';
-  $('#usersActiveMeta').textContent=`${pct(active,total).toLocaleString('es-CL',{maximumFractionDigits:1})}% del total`;
-  $('#usersBusinessMeta').textContent=`${pct(business,total).toLocaleString('es-CL',{maximumFractionDigits:1})}% del total`;
-  $('#usersPageMeta').textContent=`Página ${page} · ${perPage} por página`;
-  $('#usersSummary').textContent=`Mostrando ${users.length} de ${Number(d.totalFiltered||0).toLocaleString('es-CL')} usuarios filtrados.`;
-  $('#usersPageLabel').textContent=`Página ${page} de ${Number(d.pageCount||1)}`;
-  $('#usersPrev').disabled=page<=1;$('#usersNext').disabled=page>=Number(d.pageCount||1);
-  if(!users.length){tbody.innerHTML='<tr><td colspan="7" class="users-empty">No se encontraron usuarios en esta página con esos filtros.</td></tr>'}
-  else tbody.innerHTML=users.map(u=>`<tr data-user-id="${esc(u.id)}" class="${selected?.id===u.id?'selected':''}">
-   <td><div class="user-cell"><div class="user-avatar">${u.avatar_url?`<img src="${esc(u.avatar_url)}" alt="">`:esc((u.full_name||u.email||'U').trim().slice(0,1).toUpperCase())}</div><div><strong>${esc(u.full_name||'Sin nombre')}</strong><small>${esc(u.email)}</small></div></div></td>
-   <td><span class="type-chip">${u.profile_type==='business'?'Negocio':'Cliente'}</span></td>
-   <td>${Number(u.business_count||0)}</td><td><span class="status-chip ${statusClass(u.status)}">${statusLabel(u.status)}</span></td>
-   <td>${esc(date(u.created_at))}</td><td>${esc(date(u.last_sign_in_at))}</td>
-   <td><div class="user-row-actions"><button class="btn btn-small btn-secondary" data-user-action="detail" data-id="${esc(u.id)}">Ver</button><button class="btn btn-small btn-secondary" data-user-action="edit" data-id="${esc(u.id)}">Editar</button><button class="btn btn-small ${u.status==='suspended'?'btn-primary':'btn-danger'}" data-user-action="status" data-id="${esc(u.id)}" data-status="${u.status==='suspended'?'active':'suspended'}">${u.status==='suspended'?'Reactivar':'Suspender'}</button></div></td>
-  </tr>`).join('');
-  setBanner(true);
-  tbody.querySelectorAll('tr[data-user-id]').forEach(tr=>tr.addEventListener('click',e=>{if(e.target.closest('button'))return;const u=users.find(x=>x.id===tr.dataset.userId);if(u)showDetail(u)}));
-  tbody.querySelectorAll('[data-user-action]').forEach(b=>b.addEventListener('click',async e=>{e.stopPropagation();const u=users.find(x=>x.id===b.dataset.id);if(!u)return;const act=b.dataset.userAction;if(act==='detail')showDetail(u);if(act==='edit')editUser(u);if(act==='status')changeStatus(u,b.dataset.status)}));
-  if(selected){const fresh=users.find(u=>u.id===selected.id);if(fresh)showDetail(fresh)}
- }catch(e){
-  setBanner(false,'No se pudo conectar el módulo Usuarios');
-  tbody.innerHTML=`<tr><td colspan="7" class="users-empty users-error">${esc(e.message)}<br><small>Confirma que desplegaste supabase/functions/admin-users y que el secreto de servicio está configurado solo en Supabase.</small></td></tr>`;
-  $('#usersSummary').textContent='Error de integración';
-  $('#usersActive').textContent='—';$('#usersBusiness').textContent='—';$('#usersPageCount').textContent='—';$('#usersTotal').textContent='—';
- }finally{loading=false}
-}
-function showDetail(u){
- selected=u;
- const detail=$('#usersDetail');if(!detail)return;
- detail.innerHTML=`<div class="users-detail-head"><div class="user-avatar user-avatar-large">${u.avatar_url?`<img src="${esc(u.avatar_url)}" alt="">`:esc((u.full_name||u.email||'U').trim().slice(0,1).toUpperCase())}</div><div><h2>${esc(u.full_name||'Sin nombre')}</h2><p>${esc(u.email)}</p><span class="status-chip ${statusClass(u.status)}">${statusLabel(u.status)}</span></div></div>
- <div class="users-detail-actions"><button class="btn btn-primary" data-detail-action="edit">✎ Editar perfil</button><button class="btn btn-secondary" data-detail-action="csv">⇩ Exportar ficha</button></div>
- <h3>Información de cuenta</h3><dl class="users-dl">
- <dt>UUID</dt><dd><code>${esc(u.id)}</code></dd><dt>Tipo de perfil</dt><dd>${u.profile_type==='business'?'Usuario de negocio':'Cliente'}</dd><dt>Teléfono</dt><dd>${esc(u.phone||'No informado')}</dd><dt>Ciudad</dt><dd>${esc([u.comuna,u.city].filter(Boolean).join(', ')||'No informada')}</dd><dt>Correo confirmado</dt><dd>${u.email_confirmed_at?'Sí':'No'}</dd><dt>Fecha de registro</dt><dd>${esc(date(u.created_at))}</dd><dt>Último acceso</dt><dd>${esc(date(u.last_sign_in_at))}</dd></dl>
- <h3>Negocios asociados (${(u.businesses||[]).length})</h3>
- ${(u.businesses||[]).length?`<div class="user-business-list">${u.businesses.map(b=>`<div><strong>${esc(b.name||'Negocio')}</strong><small>${esc(b.role||'miembro')} · ${b.active===false?'Inactivo':'Activo'}</small>${b.slug?`<a href="../negocio/${encodeURIComponent(b.slug)}" target="_blank" rel="noopener">Abrir perfil ↗</a>`:''}</div>`).join('')}</div>`:'<p class="users-muted">No hay negocios activos asociados en la página consultada.</p>'}
- <p class="users-muted">Las acciones administrativas se registran en audit_logs cuando la tabla lo permite.</p>`;
- detail.querySelector('[data-detail-action="edit"]').onclick=()=>editUser(u);
- detail.querySelector('[data-detail-action="csv"]').onclick=()=>downloadCsv([u],`agenda-ya-usuario-${u.id.slice(0,8)}.csv`);
-}
-async function editUser(u){
- const full_name=prompt('Nombre completo:',u.full_name||'');if(full_name===null)return;
- const phone=prompt('Teléfono:',u.phone||'');if(phone===null)return;
- const city=prompt('Ciudad:',u.city||'');if(city===null)return;
- const comuna=prompt('Comuna:',u.comuna||'');if(comuna===null)return;
- try{await call('update_profile',{userId:u.id,full_name,phone,city,comuna});toast('Perfil actualizado.');await load()}catch(e){toast('No se pudo actualizar: '+e.message)}
-}
-async function changeStatus(u,status){
- if(status==='suspended'&&!confirm(`¿Suspender la cuenta ${u.email}? El usuario no podrá iniciar sesión mientras esté suspendido.`))return;
- if(status==='active'&&!confirm(`¿Reactivar la cuenta ${u.email}?`))return;
- try{await call('set_status',{userId:u.id,status});toast(status==='active'?'Cuenta reactivada.':'Cuenta suspendida.');await load()}catch(e){toast('No se pudo cambiar el estado: '+e.message)}
-}
-function downloadCsv(rows,name){
- const cols=['id','email','full_name','profile_type','phone','city','comuna','status','created_at','last_sign_in_at','business_count'];
- const quote=v=>`"${String(v??'').replace(/"/g,'""')}"`;
- const csv=[cols.join(','),...rows.map(u=>cols.map(k=>quote(k==='business_count'?(u.business_count??(u.businesses||[]).length):u[k])).join(','))].join('\r\n');
- const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-}
-function exportCsv(){if(!users.length){toast('No hay usuarios para exportar en esta página.');return}downloadCsv(users,`agenda-ya-usuarios-pagina-${page}.csv`)}
-window.addEventListener('hashchange',()=>{if(location.hash==='#users')render()});
-if(location.hash==='#users')render();
+const $=s=>document.querySelector(s), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=v=>v?new Date(v).toLocaleString('es-CL',{dateStyle:'medium',timeStyle:'short'}):'—';
+const statusLabel=s=>({active:'Activo',pending:'Pendiente',suspended:'Suspendido'}[s]||'Desconocido');
+const statusClass=s=>({active:'green',pending:'orange',suspended:'red'}[s]||'gray');
+let page=1,perPage=10,query='',profileType='',statusFilter='',selected=null,users=[],loading=false,lastData={};
+async function call(action,extra={}){const c=window.agendaAdminSupabase;if(!c)throw new Error(window.__agendaAdminAuthInitError||'Cliente Supabase no disponible.');const {data,error}=await c.functions.invoke('admin-users',{body:{action,page,perPage,query,profileType,status:statusFilter,...extra}});if(error){let m=error.message||'Error invocando admin-users';try{if(error.context?.json){const j=await error.context.json();m=j.message||j.error||m}}catch{}throw new Error(m+' · Verifica el despliegue de admin-users.')}if(data?.error)throw new Error(data.message||data.error);return data}
+function toast(msg){const r=$('#toastRegion');if(!r){alert(msg);return}const n=document.createElement('div');n.className='toast';n.textContent=msg;r.appendChild(n);setTimeout(()=>n.remove(),3500)}
+function banner(ok,msg){const b=$('.demo-banner');if(!b)return;b.classList.toggle('users-live-banner',ok);b.innerHTML=`<span class="demo-dot"></span><strong>${esc(msg|| (ok?'Datos reales de Supabase · Módulo Usuarios':'Conectando con Supabase · Módulo Usuarios'))}</strong><span>${ok?'Datos consultados mediante Edge Function protegida.':'No se mostrarán métricas de demostración.'}</span>`}
+function heading(){return `<div class="page-heading users-page-heading"><div class="heading-icon">♟</div><div class="heading-copy"><h1>Usuarios</h1><p>Gestión de usuarios registrados en Agenda YA</p></div><div class="heading-actions"><button class="btn btn-secondary" id="usersExport">⇩ Exportar CSV <span class="users-action-caret">⌄</span></button><button class="btn btn-primary" id="usersRefresh">↻ Actualizar</button></div></div>`}
+function kpi(cls,icon,label,id,metaId,tag){return `<article class="users-kpi ${cls}"><div class="users-kpi-icon">${icon}</div><div class="users-kpi-copy"><span class="users-kpi-label">${label}</span><strong id="${id}">—</strong><small id="${metaId}">${tag}</small></div></article>`}
+function render(){const root=$('#pageContent');if(!root)return;root.innerHTML=`${heading()}
+<div class="users-kpi-grid" aria-label="Indicadores reales de usuarios">
+${kpi('users-kpi-blue','♟','Total usuarios','usersTotal','usersTotalMeta','Registrados en Supabase Auth')}
+${kpi('users-kpi-green','◉','Usuarios activos','usersActive','usersActiveMeta','Cuentas confirmadas')}
+${kpi('users-kpi-amber','▣','Usuarios de negocios','usersBusiness','usersBusinessMeta','Con membresía activa')}
+${kpi('users-kpi-purple','✦','Profesionales','usersProfessionals','usersProfessionalsMeta','Según tipo de perfil')}
+${kpi('users-kpi-red','⊘','Usuarios inactivos','usersInactive','usersInactiveMeta','Pendientes o suspendidos')}
+</div>
+<div class="panel users-controls"><label class="users-search"><span>⌕</span><input id="usersQuery" value="${esc(query)}" placeholder="Buscar por nombre, correo o teléfono…" aria-label="Buscar usuarios"><button id="usersSearchBtn" type="button" aria-label="Buscar">⌕</button></label><label class="users-filter"><span>Rol</span><select id="usersType"><option value="">Todos</option><option value="business">Negocio</option><option value="professional">Profesional</option><option value="customer">Cliente</option></select></label><label class="users-filter"><span>Estado</span><select id="usersStatus"><option value="">Todos</option><option value="active">Activo</option><option value="pending">Pendiente</option><option value="suspended">Suspendido</option></select></label><label class="users-filter users-page-size"><span>Filas</span><select id="usersPerPage"><option value="10">10 por página</option><option value="20">20 por página</option><option value="50">50 por página</option></select></label><button class="btn btn-ghost users-clear" id="usersClear">Limpiar filtros</button></div>
+<div class="users-layout"><section class="panel users-table-panel"><div class="users-panel-heading"><div><h2>Listado de usuarios</h2><p id="usersSummary">Consultando Supabase…</p></div><span class="live-chip">● DATOS REALES</span></div><div class="users-table-wrap"><table class="users-table"><thead><tr><th><input type="checkbox" disabled aria-label="Selección múltiple no disponible"></th><th>Usuario</th><th>Rol</th><th>Negocio</th><th>Estado</th><th>Registro</th><th>Acciones</th></tr></thead><tbody id="usersRows"><tr><td colspan="7" class="users-empty">Consultando Supabase…</td></tr></tbody></table></div><div class="users-pagination"><span id="usersPageLabel">Página 1</span><div><button class="btn btn-secondary" id="usersPrev">‹</button><span id="usersPageNumbers"></span><button class="btn btn-secondary" id="usersNext">›</button></div></div></section><aside class="panel users-detail" id="usersDetail"><div class="users-detail-placeholder"><span>♟</span><h3>Detalle del usuario</h3><p>Selecciona una fila para consultar su información, membresías y estado de cuenta.</p></div></aside></div>`;
+$('#usersType').value=profileType;$('#usersStatus').value=statusFilter;$('#usersPerPage').value=String(perPage);
+$('#usersRefresh').onclick=()=>load();$('#usersExport').onclick=exportCsv;$('#usersSearchBtn').onclick=applySearch;$('#usersQuery').addEventListener('keydown',e=>{if(e.key==='Enter')applySearch()});$('#usersType').onchange=e=>{profileType=e.target.value;page=1;load()};$('#usersStatus').onchange=e=>{statusFilter=e.target.value;page=1;load()};$('#usersPerPage').onchange=e=>{perPage=Number(e.target.value)||10;page=1;load()};$('#usersClear').onclick=()=>{query='';profileType='';statusFilter='';page=1;render()};$('#usersPrev').onclick=()=>{if(page>1){page--;load()}};$('#usersNext').onclick=()=>{if(page<Number(lastData.pageCount||1)){page++;load()}};load()}
+function applySearch(){query=$('#usersQuery').value.trim();page=1;load()}
+function roleName(u){if(u.profile_type==='business')return 'Negocio';if(u.profile_type==='professional')return 'Profesional';return 'Cliente'}
+function avatar(u,large=false){return `<div class="user-avatar${large?' user-avatar-large':''}">${u.avatar_url?`<img src="${esc(u.avatar_url)}" alt="">`:esc((u.full_name||u.email||'U').trim().slice(0,1).toUpperCase())}</div>`}
+function bindRows(){const body=$('#usersRows');body.querySelectorAll('tr[data-id]').forEach(tr=>tr.onclick=e=>{if(e.target.closest('button'))return;const u=users.find(x=>x.id===tr.dataset.id);if(u)showDetail(u)});body.querySelectorAll('[data-user-action]').forEach(b=>b.onclick=e=>{e.stopPropagation();const u=users.find(x=>x.id===b.dataset.id);if(!u)return;if(b.dataset.userAction==='detail')showDetail(u);else if(b.dataset.userAction==='edit')editUser(u);else changeStatus(u,b.dataset.status)})}
+async function load(){if(loading)return;loading=true;banner(false);const body=$('#usersRows');if(body)body.innerHTML='<tr><td colspan="7" class="users-empty">Cargando usuarios reales…</td></tr>';try{const d=await call('list');lastData=d;users=d.users||[];const total=Number(d.totalUsers||0),active=Number(d.activeUsers||0),business=Number(d.businessUsers||0),professional=Number(d.professionalUsers||0),inactive=Number(d.pendingUsers||0)+Number(d.suspendedUsers||0);$('#usersTotal').textContent=total.toLocaleString('es-CL');$('#usersActive').textContent=active.toLocaleString('es-CL');$('#usersBusiness').textContent=business.toLocaleString('es-CL');$('#usersProfessionals').textContent=professional.toLocaleString('es-CL');$('#usersInactive').textContent=inactive.toLocaleString('es-CL');$('#usersTotalMeta').textContent='Registrados en Supabase Auth';$('#usersActiveMeta').textContent=`${total?Math.round(active/total*100):0}% del total`;$('#usersBusinessMeta').textContent=`${total?Math.round(business/total*100):0}% del total`;$('#usersProfessionalsMeta').textContent='Perfiles profesionales';$('#usersInactiveMeta').textContent=`${total?Math.round(inactive/total*100):0}% del total`;$('#usersSummary').textContent=`Mostrando ${users.length} de ${Number(d.totalFiltered||0).toLocaleString('es-CL')} usuarios filtrados.`;$('#usersPageLabel').textContent=`Mostrando ${users.length} de ${Number(d.totalFiltered||0).toLocaleString('es-CL')} usuarios`;$('#usersPageNumbers').textContent=`${page} / ${Number(d.pageCount||1)}`;$('#usersPrev').disabled=page<=1;$('#usersNext').disabled=page>=Number(d.pageCount||1);if(!users.length)body.innerHTML='<tr><td colspan="7" class="users-empty">No hay usuarios para los filtros seleccionados.</td></tr>';else body.innerHTML=users.map(u=>`<tr data-id="${esc(u.id)}" class="${selected?.id===u.id?'selected':''}"><td data-label="Selección"><span class="users-row-dot">${selected?.id===u.id?'●':'○'}</span></td><td data-label="Usuario"><div class="user-cell">${avatar(u)}<div><strong>${esc(u.full_name||'Sin nombre')}</strong><small>${esc(u.email)}</small></div></div></td><td data-label="Rol"><span class="type-chip ${u.profile_type==='professional'?'type-professional':''}">${roleName(u)}</span></td><td data-label="Negocio"><div class="users-business-cell">${(u.businesses||[]).length?`<strong>${esc(u.businesses[0].name||'Negocio')}</strong><small>${Number(u.business_count||0)>1?`+${Number(u.business_count)-1} más`:esc(u.businesses[0].role||'Miembro')}</small>`:'<span class="users-muted">Sin membresía</span>'}</div></td><td data-label="Estado"><span class="status-chip ${statusClass(u.status)}">${statusLabel(u.status)}</span></td><td data-label="Registro">${esc(fmt(u.created_at))}</td><td data-label="Acciones"><div class="user-row-actions"><button class="users-icon-btn" title="Ver detalle" aria-label="Ver detalle" data-user-action="detail" data-id="${esc(u.id)}">◉</button><button class="users-icon-btn" title="Editar usuario" aria-label="Editar usuario" data-user-action="edit" data-id="${esc(u.id)}">✎</button><button class="users-icon-btn ${u.status==='suspended'?'is-restore':'is-danger'}" title="${u.status==='suspended'?'Reactivar cuenta':'Suspender cuenta'}" aria-label="${u.status==='suspended'?'Reactivar cuenta':'Suspender cuenta'}" data-user-action="status" data-status="${u.status==='suspended'?'active':'suspended'}" data-id="${esc(u.id)}">${u.status==='suspended'?'↻':'⋮'}</button></div></td></tr>`).join('');bindRows();if(selected){const fresh=users.find(u=>u.id===selected.id);if(fresh)showDetail(fresh)}banner(true)}catch(e){banner(false,'No se pudo conectar el módulo Usuarios');body.innerHTML=`<tr><td colspan="7" class="users-empty users-error">${esc(e.message)}<br><small>Verifica la Edge Function admin-users y las tablas profiles y business_members.</small></td></tr>`;['usersTotal','usersActive','usersBusiness','usersProfessionals','usersInactive'].forEach(id=>{const el=$('#'+id);if(el)el.textContent='—'});$('#usersSummary').textContent='Error de integración'}finally{loading=false}}
+function showDetail(u){selected=u;const detail=$('#usersDetail');if(!detail)return;detail.innerHTML=`<button class="users-detail-close" id="usersDetailClose" aria-label="Cerrar detalle">×</button><div class="users-detail-profile">${avatar(u,true)}<div class="users-detail-name"><h2>${esc(u.full_name||'Sin nombre')}</h2><p>${esc(u.email)}</p><div class="users-detail-badges"><span class="status-chip ${statusClass(u.status)}">${statusLabel(u.status)}</span><span class="type-chip">${roleName(u)}</span></div></div></div><div class="users-detail-actions"><button class="btn btn-primary" id="usersEditSelected">✎ Editar usuario</button><button class="btn ${u.status==='suspended'?'btn-secondary':'btn-danger'}" id="usersStatusSelected">${u.status==='suspended'?'↻ Reactivar cuenta':'⊘ Suspender cuenta'}</button></div><div class="users-detail-tabs"><span class="active">Información</span><span>Membresías (${(u.businesses||[]).length})</span><span>Cuenta</span></div><dl class="users-dl"><dt>Nombre completo</dt><dd>${esc(u.full_name||'Sin nombre')}</dd><dt>Correo electrónico</dt><dd>${esc(u.email)}</dd><dt>Teléfono</dt><dd>${esc(u.phone||'No informado')}</dd><dt>Rol del usuario</dt><dd>${roleName(u)}</dd><dt>Ciudad / comuna</dt><dd>${esc([u.city,u.comuna].filter(Boolean).join(', ')||'No informada')}</dd><dt>Estado de cuenta</dt><dd><span class="status-chip ${statusClass(u.status)}">${statusLabel(u.status)}</span></dd><dt>Fecha de registro</dt><dd>${esc(fmt(u.created_at))}</dd><dt>Último acceso</dt><dd>${esc(fmt(u.last_sign_in_at))}</dd><dt>Correo verificado</dt><dd>${u.email_confirmed_at?'Sí':'No'}</dd><dt>ID de usuario</dt><dd><code>${esc(u.id)}</code></dd></dl><h3 class="users-detail-section-title">Negocios asociados</h3>${(u.businesses||[]).length?`<div class="user-business-list">${u.businesses.map(b=>`<div><strong>${esc(b.name||'Negocio')}</strong><small>${esc(b.role||'Miembro')} · ${b.active===false?'Inactivo':'Activo'}</small>${b.slug?`<a href="../negocio/${encodeURIComponent(b.slug)}" target="_blank" rel="noopener">Ver perfil público ↗</a>`:''}</div>`).join('')}</div>`:'<div class="users-detail-empty">Este usuario no tiene membresías de negocio activas.</div>'}<p class="users-detail-note">Las modificaciones se guardan mediante la función protegida de Supabase. La suscripción se mostrará cuando exista una relación verificable para este usuario.</p>`;$('#usersDetailClose').onclick=()=>{selected=null;detail.innerHTML='<div class="users-detail-placeholder"><span>♟</span><h3>Detalle del usuario</h3><p>Selecciona una fila para consultar su información.</p></div>';load()};$('#usersEditSelected').onclick=()=>editUser(u);$('#usersStatusSelected').onclick=()=>changeStatus(u,u.status==='suspended'?'active':'suspended')}
+async function editUser(u){const full_name=prompt('Nombre completo:',u.full_name||'');if(full_name===null)return;const phone=prompt('Teléfono:',u.phone||'');if(phone===null)return;const city=prompt('Ciudad:',u.city||'');if(city===null)return;const comuna=prompt('Comuna:',u.comuna||'');if(comuna===null)return;try{await call('update_profile',{userId:u.id,full_name,phone,city,comuna});toast('Perfil actualizado correctamente.');await load()}catch(e){toast('No se pudo actualizar: '+e.message)}}
+async function changeStatus(u,status){if(status==='suspended'&&!confirm(`¿Suspender la cuenta ${u.email}?`))return;if(status==='active'&&!confirm(`¿Reactivar la cuenta ${u.email}?`))return;try{await call('set_status',{userId:u.id,status});toast(status==='active'?'Cuenta reactivada.':'Cuenta suspendida.');await load()}catch(e){toast('No se pudo cambiar el estado: '+e.message)}}
+function downloadCsv(rows,name){const cols=['id','email','full_name','profile_type','phone','city','comuna','status','created_at','last_sign_in_at','business_count'];const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[cols.join(','),...rows.map(u=>cols.map(k=>q(u[k])).join(','))].join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}function exportCsv(){if(!users.length){toast('No hay usuarios para exportar.');return}downloadCsv(users,`agenda-ya-usuarios-pagina-${page}.csv`)}
+window.addEventListener('hashchange',()=>{if(location.hash==='#users')render()});if(location.hash==='#users')render();
 })();
