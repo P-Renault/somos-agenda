@@ -1,3 +1,6 @@
 # Agenda YA Supabase local configuration
 [functions.admin-users]
 verify_jwt = true
+
+[functions.admin-platform]
+verify_jwt = true
