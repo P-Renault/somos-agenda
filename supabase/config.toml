@@ -1,2 +1,3 @@
-[functions.flow-return]
-verify_jwt = false
+# Agenda YA Supabase local configuration
+[functions.admin-users]
+verify_jwt = true
