@@ -63,6 +63,11 @@ body{background:linear-gradient(180deg,#f8faff 0%,#f3f7fc 100%)}
 
 
 /* Agenda YA production polish · B5.0 clean header with support only */
+/* Escritorio: mantener marca a la izquierda y acciones de cuenta agrupadas al extremo derecho. */
+@media(min-width:901px){
+  .ay-header-actions{margin-left:auto!important;flex:0 0 auto;justify-content:flex-end}
+  .ay-brand{margin-right:0}
+}
 .ay-header-nav{display:none!important}
 .ay-header-contact-link{display:none;align-items:center;justify-content:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;color:var(--ay-blue);text-decoration:none;background:transparent}
 .ay-header-contact-link:hover,.ay-header-contact-link:focus-visible{background:#edf5ff;outline:none}
