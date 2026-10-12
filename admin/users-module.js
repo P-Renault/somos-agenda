@@ -31,11 +31,11 @@ function render(){
  const content=$('#pageContent');if(!content)return;
  content.innerHTML=`
  ${heading()}
- <div class="kpi-grid users-kpis">
-  <div class="kpi-card"><div class="kpi-icon blue">♟</div><div><span>Total usuarios registrados</span><strong id="usersTotal">—</strong><small>Perfiles registrados</small></div></div>
-  <div class="kpi-card"><div class="kpi-icon green">◉</div><div><span>Usuarios activos</span><strong id="usersActive">—</strong><small>Global · cuentas confirmadas</small></div></div>
-  <div class="kpi-card"><div class="kpi-icon orange">▣</div><div><span>Usuarios de negocios</span><strong id="usersBusiness">—</strong><small>Usuarios únicos con membresía</small></div></div>
-  <div class="kpi-card"><div class="kpi-icon purple">✓</div><div><span>En esta página</span><strong id="usersPageCount">—</strong><small>Resultados consultados</small></div></div>
+ <div class="users-kpi-grid" aria-label="Indicadores de usuarios">
+  <article class="users-kpi users-kpi-blue"><div class="users-kpi-top"><span class="users-kpi-icon">♟</span><span class="users-kpi-tag">SUPABASE</span></div><span class="users-kpi-label">Total de usuarios</span><strong id="usersTotal">—</strong><small>Usuarios registrados en Auth</small><div class="users-kpi-track"><i id="usersTotalBar"></i></div></article>
+  <article class="users-kpi users-kpi-green"><div class="users-kpi-top"><span class="users-kpi-icon">✓</span><span class="users-kpi-tag">CONFIRMADOS</span></div><span class="users-kpi-label">Usuarios activos</span><strong id="usersActive">—</strong><small id="usersActiveMeta">Cuentas activas según Supabase</small><div class="users-kpi-track"><i id="usersActiveBar"></i></div></article>
+  <article class="users-kpi users-kpi-purple"><div class="users-kpi-top"><span class="users-kpi-icon">▣</span><span class="users-kpi-tag">MEMBRESÍAS</span></div><span class="users-kpi-label">Usuarios de negocios</span><strong id="usersBusiness">—</strong><small id="usersBusinessMeta">Usuarios únicos con membresía</small><div class="users-kpi-track"><i id="usersBusinessBar"></i></div></article>
+  <article class="users-kpi users-kpi-amber"><div class="users-kpi-top"><span class="users-kpi-icon">☷</span><span class="users-kpi-tag">VISTA ACTUAL</span></div><span class="users-kpi-label">Resultados consultados</span><strong id="usersPageCount">—</strong><small id="usersPageMeta">En la página actual</small><div class="users-kpi-track"><i id="usersPageBar"></i></div></article>
  </div>
  <div class="panel users-controls">
   <div class="users-search"><span>⌕</span><input id="usersQuery" value="${esc(query)}" placeholder="Buscar nombre, correo, teléfono o ciudad…" aria-label="Buscar usuarios"></div>
@@ -75,6 +75,15 @@ async function load(){
   $('#usersBusiness').textContent=Number(d.businessUsers||0).toLocaleString('es-CL');
   $('#usersActive').textContent=Number(d.activeUsers||0).toLocaleString('es-CL');
   $('#usersPageCount').textContent=users.length.toLocaleString('es-CL');
+  const total=Number(d.totalUsers||0),active=Number(d.activeUsers||0),business=Number(d.businessUsers||0);
+  const pct=(n,base)=>base>0?Math.max(0,Math.min(100,n/base*100)):0;
+  $('#usersTotalBar').style.width=(total?100:0)+'%';
+  $('#usersActiveBar').style.width=pct(active,total)+'%';
+  $('#usersBusinessBar').style.width=pct(business,total)+'%';
+  $('#usersPageBar').style.width=pct(users.length,perPage)+'%';
+  $('#usersActiveMeta').textContent=`${pct(active,total).toLocaleString('es-CL',{maximumFractionDigits:1})}% del total`;
+  $('#usersBusinessMeta').textContent=`${pct(business,total).toLocaleString('es-CL',{maximumFractionDigits:1})}% del total`;
+  $('#usersPageMeta').textContent=`Página ${page} · ${perPage} por página`;
   $('#usersSummary').textContent=`Mostrando ${users.length} de ${Number(d.totalFiltered||0).toLocaleString('es-CL')} usuarios filtrados.`;
   $('#usersPageLabel').textContent=`Página ${page} de ${Number(d.pageCount||1)}`;
   $('#usersPrev').disabled=page<=1;$('#usersNext').disabled=page>=Number(d.pageCount||1);
