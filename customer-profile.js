@@ -67,7 +67,14 @@
   }
 
   function renderReservations(){
-    const today=new Date().toISOString().slice(0,10),upcoming=reservations.filter(x=>['pending','confirmed'].includes(String(x.status||'').toLowerCase())&&String(x.booking_date||'')>=today),history=reservations.filter(x=>!upcoming.includes(x));
+    const today=new Date().toISOString().slice(0,10);
+    const upcoming=reservations.filter(x=>['pending','confirmed'].includes(String(x.status||'').toLowerCase())&&String(x.booking_date||'')>=today);
+    const history=reservations.filter(x=>!upcoming.includes(x));
+    const put=(id,value)=>{const el=$(id);if(el)el.textContent=String(value);};
+    put('cpKpiUpcoming',upcoming.length);
+    put('cpKpiPending',upcoming.filter(x=>String(x.status||'').toLowerCase()==='pending').length);
+    put('cpKpiConfirmed',upcoming.filter(x=>String(x.status||'').toLowerCase()==='confirmed').length);
+    put('cpKpiHistory',history.length);
     $('cpUpcomingList').innerHTML=upcoming.length?upcoming.map(reservationCard).join(''):`<div class="cp-empty"><strong>No tienes próximas reservas.</strong><br>Busca un servicio y agenda tu próxima hora.</div>`;
     $('cpHistoryList').innerHTML=history.length?history.map(reservationCard).join(''):`<div class="cp-empty"><strong>No hay reservas en tu historial.</strong><br>Las reservas completadas o canceladas aparecerán aquí.</div>`;
   }
