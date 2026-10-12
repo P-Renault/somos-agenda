@@ -21,7 +21,7 @@ function tools(){
  return `<section class="engine-tools"><label class="engine-search">⌕ <input id="engineSearch" value="${esc(search)}" placeholder="Buscar en los datos reales…"></label><select id="engineStatus" aria-label="Filtrar estado"><option value="all">Todos los estados</option><option value="active" ${status==='active'?'selected':''}>Activos / publicados</option><option value="inactive" ${status==='inactive'?'selected':''}>Inactivos / no publicados</option><option value="pending" ${status==='pending'?'selected':''}>Pendientes / borradores</option></select><select id="engineSize" aria-label="Registros por página"><option value="10" ${size===10?'selected':''}>10</option><option value="20" ${size===20?'selected':''}>20</option><option value="50" ${size===50?'selected':''}>50</option></select></section>`
 }
 function businessLogo(r){return r.logo_url||r.business_logo_url||r.logo||r.image_url||r.icon_url||''}
-function businessCover(r){return r.cover_url||r.cover_image_url||r.banner_url||r.banner_image_url||r.public_cover_url||r.public_profile?.cover_url||''}
+function businessCover(r){return r.public_profile?.cover_url||r.cover_url||r.cover_image_url||r.banner_url||r.banner_image_url||r.public_cover_url||''}
 function imageMarkup(url,alt,cls,fallback){return url?`<img class="${cls||''}" src="${esc(url)}" alt="${esc(alt||'')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'image-fallback',textContent:${JSON.stringify(fallback||'▣')}}))">`:`<span class="image-fallback">${esc(fallback||'▣')}</span>`}
 function businessCards(){
  const active=rows.filter(r=>r.active===true).length;
