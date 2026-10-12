@@ -280,13 +280,6 @@
         <div><strong>Perfil público del negocio</strong><p class="ay-module-meta">Esta es la vista que verá un cliente desde el Marketplace. Desde aquí podrá conocer tus servicios y comenzar una reserva.</p></div>
         <button id="ayOpenPublicProfile" class="ay-btn ay-btn-primary" type="button" ${slug?"":"disabled"}>Abrir perfil público</button>
       </section>
-      <section class="ay-module-card">
-        <div class="ay-module-grid">
-          <div><strong>Servicios</strong><p class="ay-module-meta">Se mostrarán automáticamente los servicios activos.</p></div>
-          <div><strong>Profesionales</strong><p class="ay-module-meta">Se mostrarán automáticamente los profesionales activos.</p></div>
-          <div><strong>Horarios</strong><p class="ay-module-meta">Se utilizarán los horarios configurados en Agenda Ya.</p></div>
-        </div>
-      </section>
     </div>`;
 
     const btn=$("ayOpenPublicProfile");
