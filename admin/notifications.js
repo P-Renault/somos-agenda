@@ -6,6 +6,92 @@
   let opened = false, loading = false, items = [], unread = 0, refreshTimer = null;
   const button = () => $('#notificationsBtn');
 
+  // Responsive panel styles are installed by this module so the notification
+  // popup remains proportional even if the page's main stylesheet is cached.
+  function installResponsiveStyles() {
+    if ($('#adminNotificationsResponsiveStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'adminNotificationsResponsiveStyles';
+    style.textContent = `
+      #adminNotificationsPanel.admin-notifications-panel {
+        position: fixed !important;
+        z-index: 10000 !important;
+        top: max(72px, calc(env(safe-area-inset-top, 0px) + 58px)) !important;
+        right: 16px !important;
+        left: auto !important;
+        width: min(420px, calc(100vw - 32px)) !important;
+        min-width: 0 !important;
+        max-width: calc(100vw - 32px) !important;
+        max-height: calc(100dvh - 96px - env(safe-area-inset-bottom, 0px)) !important;
+        box-sizing: border-box !important;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      #adminNotificationsPanel.admin-notifications-panel[hidden] { display: none !important; }
+      #adminNotificationsPanel *, #adminNotificationsPanel *::before, #adminNotificationsPanel *::after {
+        box-sizing: border-box;
+        min-width: 0;
+      }
+      #adminNotificationsPanel .admin-notifications-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        flex: 0 0 auto;
+      }
+      #adminNotificationsPanel .admin-notifications-head > div { flex: 1 1 auto; min-width: 0; }
+      #adminNotificationsPanel .admin-notifications-readall {
+        flex: 0 1 auto;
+        max-width: 48%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: right;
+      }
+      #adminNotificationsPanel .admin-notifications-list {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+      #adminNotificationsPanel .admin-notifications-foot {
+        flex: 0 0 auto;
+        flex-wrap: wrap;
+      }
+      #adminNotificationsPanel .admin-notifications-foot span { overflow-wrap: anywhere; }
+      #adminNotificationsPanel .admin-notification-copy { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+      #adminNotificationsPanel .admin-notification-copy p { overflow-wrap: anywhere; word-break: normal; }
+      @media (max-width: 600px) {
+        #adminNotificationsPanel.admin-notifications-panel {
+          top: max(64px, calc(env(safe-area-inset-top, 0px) + 54px)) !important;
+          right: 8px !important;
+          left: 8px !important;
+          width: auto !important;
+          min-width: 0 !important;
+          max-width: none !important;
+          max-height: calc(100dvh - 88px - env(safe-area-inset-bottom, 0px)) !important;
+          border-radius: 15px !important;
+        }
+        #adminNotificationsPanel .admin-notifications-head { padding: 13px !important; gap: 8px; }
+        #adminNotificationsPanel .admin-notifications-head strong { font-size: 15px; }
+        #adminNotificationsPanel .admin-notifications-head small { font-size: 11px; line-height: 1.4; }
+        #adminNotificationsPanel .admin-notifications-readall { max-width: 45%; font-size: 10px; line-height: 1.35; }
+        #adminNotificationsPanel .admin-notification-item { padding: 12px 13px !important; gap: 10px; }
+        #adminNotificationsPanel .admin-notification-copy > strong { font-size: 12px; line-height: 1.4; }
+        #adminNotificationsPanel .admin-notification-copy p { font-size: 12px; line-height: 1.45; }
+        #adminNotificationsPanel .admin-notifications-foot { padding: 8px 12px !important; }
+        #adminNotificationsPanel .admin-notifications-foot span { font-size: 9px; }
+      }
+      @media (max-width: 360px) {
+        #adminNotificationsPanel .admin-notifications-head { flex-wrap: wrap; }
+        #adminNotificationsPanel .admin-notifications-readall { max-width: 100%; }
+      }
+    `;
+    document.head.append(style);
+  }
+
   async function call(action, extra = {}) {
     const sb = window.agendaAdminSupabase;
     if (!sb) throw new Error('Cliente Supabase no inicializado.');
@@ -25,6 +111,7 @@
   }
 
   function ensurePanel() {
+    installResponsiveStyles();
     let panel = $('#adminNotificationsPanel');
     if (panel) return panel;
     panel = document.createElement('section');
