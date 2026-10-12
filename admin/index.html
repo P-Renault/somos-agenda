@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#075be8"><meta name="robots" content="noindex,nofollow">
+<title>Panel Administrativo · Agenda YA</title>
+<link rel="icon" href="assets/agenda-ya-icon.jpg"><link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#dashboard" aria-label="Agenda YA administración"><img src="assets/agenda-ya-logo-header.jpg" alt="Agenda YA"><span class="brand-glow"></span></a>
+    <div class="side-label"><span class="admin-pill">ADMIN</span><div><strong>Panel Administrativo</strong><small>Control y gestión de la plataforma</small></div></div>
+    <nav id="mainNav" class="main-nav" aria-label="Navegación administrativa"></nav>
+    <div class="side-profile"><div class="avatar avatar-admin">PR</div><div class="profile-text"><strong>Administrador</strong><small>Acceso de demostración</small></div><button class="icon-button" title="Perfil" aria-label="Perfil">⌄</button></div>
+    <a class="logout-link" href="login.html"><span>↪</span> Cerrar sesión</a>
+  </aside>
+  <div class="sidebar-scrim" id="sidebarScrim"></div>
+  <main class="main-area">
+    <header class="topbar">
+      <button class="icon-button menu-toggle" id="menuToggle" aria-label="Abrir menú">☰</button>
+      <label class="global-search"><span>⌕</span><input id="globalSearch" placeholder="Buscar usuarios, negocios, pagos..." aria-label="Búsqueda global"><kbd>⌘ K</kbd></label>
+      <div class="top-actions"><button class="icon-button notification-button" id="notificationsBtn" aria-label="Notificaciones">♧<i>5</i></button><div class="top-user"><div class="avatar avatar-admin">PR</div><div><strong>Administrador</strong><small>Agenda YA</small></div><span>⌄</span></div></div>
+    </header>
+    <div class="demo-banner"><span class="demo-dot"></span><strong>Framework visual · Datos de demostración</strong><span>Los datos aún no están conectados a producción.</span></div>
+    <section class="page-content" id="pageContent" tabindex="-1"></section>
+    <footer class="footer-note">Agenda YA · Panel administrativo <span>Framework UI v1.0 · Preparado para integración</span></footer>
+  </main>
+</div>
+<div class="toast-region" id="toastRegion" aria-live="polite"></div>
+<dialog id="genericDialog" class="app-dialog"><form method="dialog"><button class="dialog-close" aria-label="Cerrar">×</button><div id="dialogContent"></div><div class="dialog-actions"><button class="btn btn-secondary" value="cancel">Cancelar</button><button class="btn btn-primary" id="dialogConfirm" value="confirm">Confirmar</button></div></form></dialog>
+<script src="admin.js"></script>
+</body></html>
