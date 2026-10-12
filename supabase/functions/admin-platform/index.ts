@@ -35,6 +35,45 @@ Deno.serve(async req=>{
  const userClient=createClient(url,anon,{global:{headers:{Authorization:auth}}});const {data:{user},error:userError}=await userClient.auth.getUser();if(userError||!user)return json({error:'Sesión inválida o vencida'},401);
  const admin=createClient(url,service,{auth:{persistSession:false,autoRefreshToken:false}});const {data:assignment,error:roleError}=await admin.from('platform_admins').select('role,is_active').eq('user_id',user.id).maybeSingle();if(roleError||!assignment?.is_active||!['super_admin','admin','support','finance','content'].includes(assignment.role))return json({error:'No tienes permisos de administración'},403);
  let body:any;try{body=await req.json()}catch{return json({error:'JSON inválido'},400)}const action=String(body.action||'');
+ // Motor de notificaciones administrativas: acceso exclusivo tras validar sesión y rol.
+ if(action==='notifications_list'){
+  const limit=Math.max(1,Math.min(50,Number(body.limit)||30));
+  const {data:items,error}=await admin.from('admin_notifications').select('id,title,message,type,target_module,target_id,created_at,dedupe_key').order('created_at',{ascending:false}).limit(limit);
+  if(error)return json({error:`No se pudieron consultar las notificaciones: ${error.message}`},400);
+  const ids=(items||[]).map((n:any)=>n.id);
+  let readIds=new Set<string>();
+  if(ids.length){const {data:reads,error:readError}=await admin.from('admin_notification_reads').select('notification_id').eq('user_id',user.id).in('notification_id',ids);if(readError)return json({error:`No se pudo consultar el estado de lectura: ${readError.message}`},400);readIds=new Set((reads||[]).map((r:any)=>String(r.notification_id)));}
+  const rows=(items||[]).map((n:any)=>({...n,is_read:readIds.has(String(n.id))}));
+  return json({rows,unread:rows.filter((n:any)=>!n.is_read).length});
+ }
+ if(action==='notifications_mark_read'){
+  const id=String(body.id||'');if(!id)return json({error:'Falta el identificador de la notificación'},400);
+  const {data:exists,error:existsError}=await admin.from('admin_notifications').select('id').eq('id',id).maybeSingle();
+  if(existsError)return json({error:existsError.message},400);if(!exists)return json({error:'La notificación no existe'},404);
+  const {error}=await admin.from('admin_notification_reads').upsert({notification_id:id,user_id:user.id,read_at:new Date().toISOString()},{onConflict:'notification_id,user_id'});
+  if(error)return json({error:`No se pudo marcar como leída: ${error.message}`},400);
+  return json({ok:true});
+ }
+ if(action==='notifications_mark_all_read'){
+  const {data:items,error}=await admin.from('admin_notifications').select('id').limit(1000);
+  if(error)return json({error:error.message},400);
+  if((items||[]).length){const now=new Date().toISOString();const rows=(items||[]).map((n:any)=>({notification_id:n.id,user_id:user.id,read_at:now}));const {error:writeError}=await admin.from('admin_notification_reads').upsert(rows,{onConflict:'notification_id,user_id'});if(writeError)return json({error:`No se pudieron marcar todas como leídas: ${writeError.message}`},400);}
+  return json({ok:true,marked:(items||[]).length});
+ }
+ if(action==='notifications_create'){
+  if(!['super_admin','admin'].includes(assignment.role))return json({error:'Solo un administrador principal puede emitir notificaciones'},403);
+  const title=String(body.title||'').trim().slice(0,160),message=String(body.message||'').trim().slice(0,1000),type=String(body.type||'info');
+  const allowedTypes=['info','success','warning','error','support','payment','subscription'];
+  const allowedModules=['dashboard','users','businesses','marketplace','subscriptions','payments','categories','analytics','support','cms','settings','audit'];
+  const targetModule=String(body.target_module||'dashboard');
+  if(!title||!message)return json({error:'Título y mensaje son obligatorios'},400);
+  if(!allowedTypes.includes(type)||!allowedModules.includes(targetModule))return json({error:'Tipo o destino de notificación no válido'},400);
+  const dedupe=body.dedupe_key?String(body.dedupe_key).slice(0,220):null;
+  const {data:row,error}=await admin.from('admin_notifications').insert({title,message,type,target_module:targetModule,target_id:body.target_id?String(body.target_id):null,created_by:user.id,dedupe_key:dedupe}).select('id,title,message,type,target_module,target_id,created_at,dedupe_key').single();
+  if(error){if(error.code==='23505'&&dedupe)return json({ok:true,duplicate:true});return json({error:`No se pudo crear la notificación: ${error.message}`},400);}
+  await admin.from('audit_logs').insert({actor_user_id:user.id,action:'notification_create',entity_type:'admin_notifications',entity_id:row.id,metadata:{title,type,target_module:targetModule}});
+  return json({ok:true,row});
+ }
  try{
  if(action==='analytics'){
   const counts:Record<string,number|null>={};
