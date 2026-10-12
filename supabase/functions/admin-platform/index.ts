@@ -7,7 +7,7 @@ const specs:Record<string,{table:string;select:string;search:string[];editable:s
  payments:{table:'payments',select:'id,business_id,subscription_id,provider,provider_payment_id,provider_order_id,checkout_url,target_plan_id,amount,currency,status,created_at',search:['provider_order_id','provider_payment_id','provider','status'],editable:[],create:[],order:'created_at'},
  categories:{table:'business_categories',select:'id,name,slug,description,image_url,sort_order,active,created_at',search:['name','slug','description'],editable:['name','slug','description','image_url','sort_order','active'],create:['name','slug','description','image_url','sort_order','active'],order:'sort_order'},
  support:{table:'platform_support_tickets',select:'id,ticket_code,subject,requester_email,category,priority,status,assigned_to,resolution,description,created_at',search:['ticket_code','subject','requester_email','status'],editable:['status','priority','assigned_to','resolution'],create:['subject','requester_email','category','priority','status','description'],order:'created_at'},
- cms:{table:'platform_content',select:'id,title,slug,content_type,body,status,published_at,updated_at',search:['title','slug','content_type','status'],editable:['title','slug','content_type','body','status','published_at'],create:['title','slug','content_type','body','status'],order:'updated_at'},
+ cms:{table:'platform_content',select:'id,title,slug,section,content_type,body,status,meta_title,meta_description,featured_image,published_at,created_at,updated_at,updated_by',search:['title','slug','content_type','status','section'],editable:['title','slug','section','content_type','body','status','meta_title','meta_description','featured_image','published_at'],create:['title','slug','section','content_type','body','status','meta_title','meta_description','featured_image'],order:'updated_at'},
  settings:{table:'platform_settings',select:'key,value,description,updated_at',search:['key','description'],editable:['value','description'],create:[],order:'key'},
  audit:{table:'audit_logs',select:'id,created_at,actor_user_id,action,entity_type,entity_id,metadata',search:['action','entity_type','entity_id'],editable:[],create:[],order:'created_at'}
 };
@@ -36,32 +36,6 @@ Deno.serve(async req=>{
   return json({counts,cities,categories,activity,availability:{cities:!!cities,categories:!!categories,activity:!!activity,historicalGrowth:false,marketplaceViews:false,reservations:false,conversion:false,revenueByPlan:false}})
 }
  const key=String(body.module||''),spec=specs[key];if(!spec)return json({error:'Módulo no permitido'},400);
- if(action==='support_overview'){
-  const {count:total,error}=await admin.from('platform_support_tickets').select('id',{count:'exact',head:true});
-  if(error)return json({error:`No se pudieron consultar los tickets: ${error.message}`},400);
-  const statuses:Record<string,number>={};
-  for(const state of ['open','new','in_progress','waiting','closed','resolved']){const {count}=await admin.from('platform_support_tickets').select('id',{count:'exact',head:true}).eq('status',state);statuses[state]=count??0}
-  const {count:contentReports}=await admin.from('platform_support_tickets').select('id',{count:'exact',head:true}).ilike('category','%content%');
-  return json({total:total??0,statuses,content_reports:contentReports??null,historicalMetricsAvailable:false});
- }
- if(action==='support_detail'){
-  const id=String(body.id||'');if(!id)return json({error:'Falta el ID del ticket'},400);
-  const {data:ticket,error}=await admin.from('platform_support_tickets').select(specs.support.select).eq('id',id).maybeSingle();
-  if(error)return json({error:`No se pudo consultar el ticket: ${error.message}`},400);if(!ticket)return json({error:'Ticket no encontrado'},404);
-  const {data:messages,error:messagesError}=await admin.from('platform_support_messages').select('id,ticket_id,author_user_id,author_role,author_label,body,created_at').eq('ticket_id',id).order('created_at',{ascending:true}).limit(500);
-  if(messagesError&&messagesError.code!=='42P01')return json({error:`No se pudo consultar la conversación: ${messagesError.message}`},400);
-  return json({ticket,messages:messagesError?[]:(messages||[]),messagesAvailable:!messagesError});
- }
- if(action==='support_reply'){
-  const id=String(body.id||''),message=String(body.body||'').trim();if(!id||!message)return json({error:'Ticket y respuesta son obligatorios'},400);if(message.length>10000)return json({error:'La respuesta supera el máximo de 10.000 caracteres'},400);
-  const {data:ticket,error:ticketError}=await admin.from('platform_support_tickets').select('id,status').eq('id',id).maybeSingle();if(ticketError)return json({error:ticketError.message},400);if(!ticket)return json({error:'Ticket no encontrado'},404);
-  const {data:adminProfile}=await admin.from('profiles').select('full_name').eq('id',user.id).maybeSingle();
-  const {data:row,error}=await admin.from('platform_support_messages').insert({ticket_id:id,author_user_id:user.id,author_role:assignment.role,author_label:adminProfile?.full_name||user.email||'Administrador',body:message}).select('id,ticket_id,author_user_id,author_role,author_label,body,created_at').single();
-  if(error)return json({error:`No se pudo guardar la respuesta. Verifica que aplicaste la migración de mensajes: ${error.message}`},400);
-  await admin.from('platform_support_tickets').update({updated_at:new Date().toISOString()}).eq('id',id);
-  await admin.from('audit_logs').insert({actor_user_id:user.id,action:'support_reply',entity_type:'platform_support_tickets',entity_id:id,metadata:{message_id:row.id}});
-  return json({message:row});
- }
  if(action==='categories_overview'){
   const {data:cats,error:catError,count:catCount}=await admin.from('business_categories').select('id,active',{count:'exact'}).limit(10000);
   if(catError)return json({error:`No se pudieron consultar las categorías: ${catError.message}`},400);
@@ -106,6 +80,7 @@ Deno.serve(async req=>{
   const search=String(body.search||'').trim().slice(0,100).replace(/[%,()]/g,'');
   const state=String(body.status||'');
   let q=admin.from(spec.table).select(spec.select,{count:'exact'}).order(spec.order,{ascending:false,nullsFirst:false});
+  if(key==='cms'){const contentType=String(body.content_type||'all');const section=String(body.section||'all');if(contentType!=='all')q=q.eq('content_type',contentType);if(section!=='all')q=q.eq('section',section);}
   if(key==='subscriptions'){
    // Resolve plan UUIDs through the real plans table; never run ILIKE against UUID columns.
    const {data:planRows}=await admin.from('plans').select('id,code,name');
@@ -136,7 +111,6 @@ Deno.serve(async req=>{
    }
   } else {
    if(search&&spec.search.length)q=q.or(spec.search.map(c=>`${c}.ilike.%${search}%`).join(','));
-   if(key==='support'){const category=String(body.category||'all');const priority=String(body.priority||'all');if(category!=='all')q=q.eq('category',category);if(priority!=='all')q=q.eq('priority',priority);if(state==='active')q=q.in('status',['open','new','in_progress']);else if(state==='pending')q=q.in('status',['waiting','pending']);else if(state==='inactive')q=q.in('status',['closed','resolved']);}
    if(state==='active'){if(key==='marketplace')q=q.eq('public_enabled',true);else if(['businesses','categories'].includes(key))q=q.eq('active',true);else if(key==='cms')q=q.eq('status','published');}
    if(state==='inactive'){if(key==='marketplace')q=q.eq('public_enabled',false);else if(['businesses','categories'].includes(key))q=q.eq('active',false);else if(key==='cms')q=q.in('status',['draft','archived']);}
    if(state==='pending'&&key==='support')q=q.in('status',['open','in_progress','waiting']);
@@ -168,9 +142,9 @@ Deno.serve(async req=>{
   return json({rows:result,total:count||0,page,page_size:size});
  }
  if(action==='create'){
- if(!spec.create.length)return json({error:'La creación no está habilitada en este módulo'},405);const data=safeData(body.data||{},spec.create);if(key==='businesses')data.created_by=user.id;if(key==='settings')return json({error:'Las claves de configuración se administran mediante upsert explícito'},405);const {data:row,error}=await admin.from(spec.table).insert(data).select(spec.select).single();if(error)return json({error:error.message},400);await admin.from('audit_logs').insert({actor_user_id:user.id,action:'create',entity_type:key,entity_id:row.id||null,metadata:{module:key,fields:Object.keys(data)}});return json({row});}
+ if(!spec.create.length)return json({error:'La creación no está habilitada en este módulo'},405);const data=safeData(body.data||{},spec.create);if(key==='businesses')data.created_by=user.id;if(key==='support'){data.ticket_code=data.ticket_code||`TCK-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${crypto.randomUUID().slice(0,6).toUpperCase()}`;}if(key==='cms'){data.created_by=user.id;data.updated_by=user.id;data.updated_at=new Date().toISOString();if(data.status==='published'&&!data.published_at)data.published_at=new Date().toISOString();}if(key==='settings')return json({error:'Las claves de configuración se administran mediante upsert explícito'},405);const {data:row,error}=await admin.from(spec.table).insert(data).select(spec.select).single();if(error)return json({error:error.message},400);await admin.from('audit_logs').insert({actor_user_id:user.id,action:'create',entity_type:key,entity_id:row.id||null,metadata:{module:key,fields:Object.keys(data)}});return json({row});}
  if(action==='update'){
- if(!spec.editable.length)return json({error:'Este módulo es de solo lectura desde el panel'},405);const id=String(body.id||'');if(!id)return json({error:'Falta el identificador del registro'},400);const data=safeData(body.data||{},spec.editable);if(!Object.keys(data).length)return json({error:'No hay cambios válidos'},400);if(key==='settings'){const value=data.value;const {data:row,error}=await admin.from(spec.table).update({value,description:data.description,updated_by:user.id,updated_at:new Date().toISOString()}).eq('key',id).select(spec.select).single();if(error)return json({error:error.message},400);return json({row})}const {data:row,error}=await admin.from(spec.table).update(data).eq('id',id).select(spec.select).single();if(error)return json({error:error.message},400);await admin.from('audit_logs').insert({actor_user_id:user.id,action:'update',entity_type:key,entity_id:id,metadata:{module:key,fields:Object.keys(data)}});return json({row});}
+ if(!spec.editable.length)return json({error:'Este módulo es de solo lectura desde el panel'},405);const id=String(body.id||'');if(!id)return json({error:'Falta el identificador del registro'},400);const data=safeData(body.data||{},spec.editable);if(key==='cms'){data.updated_by=user.id;data.updated_at=new Date().toISOString();if(data.status==='published'&&!data.published_at)data.published_at=new Date().toISOString();}if(!Object.keys(data).length)return json({error:'No hay cambios válidos'},400);if(key==='settings'){const value=data.value;const {data:row,error}=await admin.from(spec.table).update({value,description:data.description,updated_by:user.id,updated_at:new Date().toISOString()}).eq('key',id).select(spec.select).single();if(error)return json({error:error.message},400);return json({row})}const {data:row,error}=await admin.from(spec.table).update(data).eq('id',id).select(spec.select).single();if(error)return json({error:error.message},400);await admin.from('audit_logs').insert({actor_user_id:user.id,action:'update',entity_type:key,entity_id:id,metadata:{module:key,fields:Object.keys(data)}});return json({row});}
  return json({error:'Acción no permitida'},400);
  }catch(e){return json({error:e instanceof Error?e.message:'Error interno'},500)}
 });
