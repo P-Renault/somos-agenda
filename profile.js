@@ -78,6 +78,18 @@
     window.scrollTo(0,0);
   }
 
+  async function populateBusinessCategories(selectedId = "") {
+    const select = $("businessCategory");
+    if (!select || !client) return;
+    const r = await client.from("business_categories").select("id,slug,name").eq("active", true).order("name");
+    if (r.error) throw r.error;
+    const current = selectedId || select.value;
+    select.innerHTML = '<option value="">Selecciona una categoría</option>' + (r.data || []).map(c =>
+      `<option value="${String(c.id).replace(/[&<>"']/g, "")}">${String(c.name).replace(/[&<>"']/g, "")}</option>`
+    ).join("");
+    if (current) select.value = current;
+  }
+
   function initHours(){
     $("hours").innerHTML = DAYS.map((day,i) => `
       <div class="ay-hour-row">
@@ -115,7 +127,8 @@
       ["businessType","businessStatus","tipo de servicio"],
       ["businessCity","businessStatus","ciudad"],
       ["businessComuna","businessStatus","comuna"],
-      ["businessAddress","businessStatus","dirección"]
+      ["businessAddress","businessStatus","dirección"],
+      ["businessCategory","businessStatus","categoría del negocio"]
     ];
 
     for(const [id,statusId,label] of required){
@@ -249,6 +262,27 @@
 
       if(update.error) throw update.error;
 
+      const selectedCategoryId = $("businessCategory")?.value || null;
+      if (!selectedCategoryId) throw new Error("Selecciona la categoría de tu negocio.");
+      const existingPublicProfile = await client.from("business_public_profiles")
+        .select("description,public_enabled")
+        .eq("business_id", businessId).maybeSingle();
+      if (existingPublicProfile.error) throw existingPublicProfile.error;
+      const currentPublicProfile = existingPublicProfile.data || {};
+      const publicProfileSave = await client.rpc("upsert_public_profile", {
+        p_business_id: businessId,
+        p_display_name: name,
+        p_description: $("businessDescription")?.value.trim() || null,
+        p_category_id: selectedCategoryId,
+        p_address: address,
+        p_comuna: comuna,
+        p_city: city,
+        p_phone: p ? `+56 9 ${p}` : null,
+        p_whatsapp: p ? `+56 9 ${p}` : null,
+        p_public_enabled: currentPublicProfile.public_enabled === true
+      });
+      if (publicProfileSave.error) throw publicProfileSave.error;
+
       const profile=await client.from("profiles").upsert({
         id:user.id,
         profile_type:"business",
@@ -362,6 +396,8 @@
         }
       }
     );
+
+    await populateBusinessCategories().catch(err => console.warn("Categorías no disponibles:", err));
 
     // Important: after OAuth or the email login, Supabase may need one event
     // loop to restore the persisted session. We wait instead of redirecting

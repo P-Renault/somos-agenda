@@ -257,6 +257,10 @@
     $("ayBusinessComuna").value = b?.comuna || "";
     $("ayBusinessAddress").value = b?.address || "";
     $("ayBusinessAvatarPreview").textContent = initials(b?.name || user?.email);
+    if (b?.id && client && $("ayBusinessCategory")) {
+      client.from("business_public_profiles").select("category_id").eq("business_id", b.id).maybeSingle()
+        .then(r => { if (!r.error && r.data?.category_id) populateBusinessCategories(r.data.category_id).catch(()=>{}); });
+    }
   }
 
   async function routeSession(user) {
@@ -459,14 +463,30 @@
     } catch(err) { setProfileStatus(customerStatus,err?.message||"No fue posible guardar el perfil.","error"); }
   }
 
+  async function populateBusinessCategories(selectedId = "") {
+    const select = $("ayBusinessCategory");
+    if (!select || !client) return;
+    const result = await client.from("business_categories").select("id,slug,name").eq("active", true).order("name");
+    if (result.error) {
+      console.warn("No se pudieron cargar las categorías:", result.error);
+      return;
+    }
+    const current = selectedId || select.value;
+    select.innerHTML = '<option value="">Selecciona una categoría</option>' + (result.data || []).map(c =>
+      `<option value="${String(c.id).replace(/[&<>"']/g, "")}" data-slug="${String(c.slug).replace(/[^a-z0-9-]/g, "")}">${String(c.name).replace(/[&<>"']/g, "")}</option>`
+    ).join("");
+    if (current) select.value = current;
+  }
+
   function validateBusinessDetails() {
     const name = $("ayBusinessName").value.trim();
     const type = $("ayBusinessType").value.trim();
     const city = $("ayBusinessCity").value.trim();
     const comuna = $("ayBusinessComuna").value.trim();
     const address = $("ayBusinessAddress").value.trim();
-    if (!name || !type || !city || !comuna || !address) {
-      setProfileStatus(businessStatus, "Completa nombre, tipo de servicio, ciudad, comuna y dirección.", "error");
+    const categoryId = $("ayBusinessCategory")?.value || "";
+    if (!name || !type || !city || !comuna || !address || !categoryId) {
+      setProfileStatus(businessStatus, "Completa nombre, tipo de servicio, categoría, ciudad, comuna y dirección.", "error");
       return false;
     }
     return true;
@@ -527,6 +547,27 @@
       }).eq("id", business.id);
       if (upd.error) throw upd.error;
 
+      const selectedCategoryId = $("ayBusinessCategory")?.value || null;
+      if (!selectedCategoryId) throw new Error("Selecciona la categoría de tu negocio.");
+      const existingPublicProfile = await client.from("business_public_profiles")
+        .select("description,public_enabled,category_id,cover_url,display_name")
+        .eq("business_id", business.id).maybeSingle();
+      if (existingPublicProfile.error) throw existingPublicProfile.error;
+      const currentPublicProfile = existingPublicProfile.data || {};
+      const publicProfileSave = await client.rpc("upsert_public_profile", {
+        p_business_id: business.id,
+        p_display_name: name,
+        p_description: currentPublicProfile.description || null,
+        p_category_id: selectedCategoryId,
+        p_address: address,
+        p_comuna: comuna,
+        p_city: city,
+        p_phone: phone || null,
+        p_whatsapp: phone || null,
+        p_public_enabled: currentPublicProfile.public_enabled === true
+      });
+      if (publicProfileSave.error) throw publicProfileSave.error;
+
       const profileUpdate = await client.from("profiles").upsert({
         id: currentUser.id, profile_type: "business", full_name: name, phone, address, city, comuna,
         avatar_url: logo || null, updated_at: new Date().toISOString()
@@ -564,6 +605,7 @@
     client=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{
       auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
     });
+    populateBusinessCategories().catch(err => console.warn("Categorías no disponibles:", err));
 
     form.addEventListener("submit",submitAuth);
     switchBtn.addEventListener("click",()=>setMode(mode==="login"?"signup":"login"));

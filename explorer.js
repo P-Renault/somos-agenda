@@ -5,16 +5,30 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const money = v => Number(v || 0).toLocaleString('es-CL', {style:'currency',currency:'CLP',maximumFractionDigits:0});
   const imageByCategory = {
-    barberia:'assets/card_barber.jpg', peluqueria:'assets/card_barber.jpg', estetica:'assets/card_aura.jpg',
-    salud:'assets/card_med.jpg', bienestar:'assets/card_med.jpg', entrenamiento:'assets/card_fit.jpg',
-    educacion:'assets/card_somos.jpg', 'servicios-profesionales':'assets/card_somos.jpg', hogar:'assets/card_home.jpg',
-    automotriz:'assets/card_auto.jpg', mascotas:'assets/card_pet.jpg', otros:'assets/card_somos.jpg'
+    barberia:['assets/category-covers/barberia-01.jpg','assets/category-covers/barberia-02.jpg','assets/category-covers/barberia-03.jpg','assets/category-covers/barberia-04.jpg','assets/category-covers/barberia-05.jpg','assets/category-covers/barberia-06.jpg','assets/category-covers/barberia-07.jpg','assets/category-covers/barberia-08.jpg'],
+    peluqueria:['assets/category-covers/peluqueria-01.jpg','assets/category-covers/peluqueria-02.jpg','assets/category-covers/peluqueria-03.jpg','assets/category-covers/peluqueria-04.jpg','assets/category-covers/peluqueria-05.jpg','assets/category-covers/peluqueria-06.jpg','assets/category-covers/peluqueria-07.jpg','assets/category-covers/peluqueria-08.jpg'],
+    estetica:['assets/category-covers/estetica-01.jpg','assets/category-covers/estetica-02.jpg','assets/category-covers/estetica-03.jpg','assets/category-covers/estetica-04.jpg','assets/category-covers/estetica-05.jpg','assets/category-covers/estetica-06.jpg','assets/category-covers/estetica-07.jpg','assets/category-covers/estetica-08.jpg'],
+    salud:['assets/category-covers/salud-01.jpg','assets/category-covers/salud-02.jpg','assets/category-covers/salud-03.jpg','assets/category-covers/salud-04.jpg','assets/category-covers/salud-05.jpg','assets/category-covers/salud-06.jpg','assets/category-covers/salud-07.jpg','assets/category-covers/salud-08.jpg'],
+    bienestar:['assets/category-covers/bienestar-01.jpg','assets/category-covers/bienestar-02.jpg','assets/category-covers/bienestar-03.jpg','assets/category-covers/bienestar-04.jpg','assets/category-covers/bienestar-05.jpg','assets/category-covers/bienestar-06.jpg','assets/category-covers/bienestar-07.jpg','assets/category-covers/bienestar-08.jpg'],
+    entrenamiento:['assets/category-covers/entrenamiento-01.jpg','assets/category-covers/entrenamiento-02.jpg','assets/category-covers/entrenamiento-03.jpg','assets/category-covers/entrenamiento-04.jpg','assets/category-covers/entrenamiento-05.jpg','assets/category-covers/entrenamiento-06.jpg','assets/category-covers/entrenamiento-07.jpg','assets/category-covers/entrenamiento-08.jpg'],
+    educacion:['assets/category-covers/educacion-01.jpg','assets/category-covers/educacion-02.jpg','assets/category-covers/educacion-03.jpg','assets/category-covers/educacion-04.jpg','assets/category-covers/educacion-05.jpg','assets/category-covers/educacion-06.jpg','assets/category-covers/educacion-07.jpg','assets/category-covers/educacion-08.jpg'],
+    'servicios-profesionales':['assets/category-covers/servicios-profesionales-01.jpg','assets/category-covers/servicios-profesionales-02.jpg','assets/category-covers/servicios-profesionales-03.jpg','assets/category-covers/servicios-profesionales-04.jpg','assets/category-covers/servicios-profesionales-05.jpg','assets/category-covers/servicios-profesionales-06.jpg','assets/category-covers/servicios-profesionales-07.jpg','assets/category-covers/servicios-profesionales-08.jpg'],
+    hogar:['assets/category-covers/hogar-01.jpg','assets/category-covers/hogar-02.jpg','assets/category-covers/hogar-03.jpg','assets/category-covers/hogar-04.jpg','assets/category-covers/hogar-05.jpg','assets/category-covers/hogar-06.jpg','assets/category-covers/hogar-07.jpg','assets/category-covers/hogar-08.jpg'],
+    automotriz:['assets/category-covers/automotriz-01.jpg','assets/category-covers/automotriz-02.jpg','assets/category-covers/automotriz-03.jpg','assets/category-covers/automotriz-04.jpg','assets/category-covers/automotriz-05.jpg','assets/category-covers/automotriz-06.jpg','assets/category-covers/automotriz-07.jpg','assets/category-covers/automotriz-08.jpg'],
+    mascotas:['assets/category-covers/mascotas-01.jpg','assets/category-covers/mascotas-02.jpg','assets/category-covers/mascotas-03.jpg','assets/category-covers/mascotas-04.jpg','assets/category-covers/mascotas-05.jpg','assets/category-covers/mascotas-06.jpg','assets/category-covers/mascotas-07.jpg','assets/category-covers/mascotas-08.jpg'],
+    otros:['assets/category-covers/otros-01.jpg','assets/category-covers/otros-02.jpg','assets/category-covers/otros-03.jpg','assets/category-covers/otros-04.jpg','assets/category-covers/otros-05.jpg','assets/category-covers/otros-06.jpg','assets/category-covers/otros-07.jpg','assets/category-covers/otros-08.jpg']
   };
+  function stableCategoryImage(slug, key='') {
+    const pool = imageByCategory[slug] || imageByCategory.otros;
+    const text = String(key || slug || 'agenda-ya');
+    let hash = 0; for (let i=0; i<text.length; i++) hash = ((hash * 31) + text.charCodeAt(i)) >>> 0;
+    return pool[hash % pool.length];
+  }
   const iconByCategory = {barberia:'✂',peluqueria:'✂',estetica:'✿',salud:'♥',bienestar:'✧',entrenamiento:'♜',educacion:'▣','servicios-profesionales':'▣',hogar:'⌂',automotriz:'●',mascotas:'●',otros:'•'};
   let categoriesData = [];
 
   function categoryImage(item){
-    return item.cover_url || imageByCategory[item.category_slug] || 'assets/card_somos.jpg';
+    return item.cover_url || stableCategoryImage(item.category_slug, item.slug);
   }
   function initials(name){
     return String(name || 'AY').trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase() || 'AY';
