@@ -23,16 +23,23 @@ Deno.serve(async req=>{
  try{
  if(action==='analytics'){const counts:Record<string,number|null>={};for(const [k,t] of [['businesses','businesses'],['marketplace','business_public_profiles'],['subscriptions','subscriptions'],['payments','payments'],['categories','business_categories'],['tickets','platform_support_tickets']] as const){const {count,error}=await admin.from(t).select('*',{count:'exact',head:true});counts[k]=error?null:count}let userCount=0,userPage=1;while(userPage<=100){const {data,error}=await admin.auth.admin.listUsers({page:userPage,perPage:1000});if(error){counts.users=null;break}userCount+=data.users.length;if(data.users.length<1000)break;userPage++}if(counts.users!==null)counts.users=userCount;return json({counts})}
  const key=String(body.module||''),spec=specs[key];if(!spec)return json({error:'Módulo no permitido'},400);
- if(action==='payments_overview'){
-  const {data:all,error}=await admin.from('payments').select('id,amount,currency,status,created_at,subscription_id,target_plan_id').order('created_at',{ascending:false}).limit(10000);
-  if(error)return json({error:`No se pudo calcular el resumen de pagos: ${error.message}`},400);
-  const rows=all||[];const now=new Date();const monthStart=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),1));
-  const approved=(s:any)=>/approved|paid|completed|success|aprobado|pagado|succeeded/i.test(String(s||''));
-  const pending=(s:any)=>/pending|waiting|pendiente|processing|in_progress/i.test(String(s||''));
-  const rejected=(s:any)=>/reject|failed|declined|rechazado|fallido|error/i.test(String(s||''));
-  const refunded=(s:any)=>/refund|reembols/i.test(String(s||''));
-  const inMonth=rows.filter((r:any)=>r.created_at&&new Date(r.created_at)>=monthStart);
-  return json({total:rows.length,approved:rows.filter((r:any)=>approved(r.status)).length,pending:rows.filter((r:any)=>pending(r.status)).length,rejected:rows.filter((r:any)=>rejected(r.status)).length,refunded:rows.filter((r:any)=>refunded(r.status)).length,revenueMonth:inMonth.filter((r:any)=>approved(r.status)).reduce((a:number,r:any)=>a+Number(r.amount||0),0),revenueTotal:rows.filter((r:any)=>approved(r.status)).reduce((a:number,r:any)=>a+Number(r.amount||0),0),source:'payments',generatedAt:new Date().toISOString()});
+ if(action==='categories_overview'){
+  const {data:cats,error:catError,count:catCount}=await admin.from('business_categories').select('id,active',{count:'exact'}).limit(10000);
+  if(catError)return json({error:`No se pudieron consultar las categorías: ${catError.message}`},400);
+  const {count:profileCount,error:profileError}=await admin.from('business_public_profiles').select('id',{count:'exact',head:true});
+  const {count:coveredProfiles,error:coveredError}=await admin.from('business_public_profiles').select('id',{count:'exact',head:true}).not('cover_url','is',null);
+  return json({total:catCount??cats?.length??0,active:(cats||[]).filter((c:any)=>c.active===true).length,libraryImages:96,profileCount:profileError?null:profileCount,coveredProfiles:coveredError?null:coveredProfiles});
+ }
+ if(action==='assign_category_cover'){
+  const id=String(body.id||'');const cover=String(body.cover||'');
+  if(!id||!/^\.\.\/assets\/category-covers\/[a-z0-9-]+-\d{2}\.jpg$/i.test(cover))return json({error:'Categoría o ruta de portada no válida'},400);
+  const {data:category,error:categoryError}=await admin.from('business_categories').select('id,name').eq('id',id).maybeSingle();
+  if(categoryError||!category)return json({error:'La categoría no existe'},404);
+  const publicUrl='https://agenda-ya.cl/'+cover.replace(/^\.\.\//,'');
+  const {data:profiles,error:updateError}=await admin.from('business_public_profiles').update({cover_url:publicUrl,updated_at:new Date().toISOString()}).eq('category_id',id).select('id');
+  if(updateError)return json({error:`No se pudo actualizar las portadas: ${updateError.message}`},400);
+  await admin.from('audit_logs').insert({actor_user_id:user.id,action:'assign_category_cover',entity_type:'business_categories',entity_id:id,metadata:{category_name:category.name,cover_url:publicUrl,updated_profiles:profiles?.length||0}});
+  return json({ok:true,updated:profiles?.length||0,cover_url:publicUrl});
  }
  if(action==='subscriptions_overview'){
   const {data:subs,error:subsError}=await admin.from('subscriptions').select('id,business_id,plan_id,status,created_at').limit(10000);
@@ -88,28 +95,6 @@ Deno.serve(async req=>{
     const wanted=(payRows||[]).filter((r:any)=>patterns[payment]?.some(term=>String(r.status||'').toLowerCase().includes(term))).map((r:any)=>r.subscription_id).filter(Boolean);
     q=wanted.length?q.in('id',wanted):q.eq('id','00000000-0000-0000-0000-000000000000');
    }
-  } else if(key==='payments') {
-   if(body.from)q=q.gte('created_at',String(body.from)+'T00:00:00.000Z');
-   if(body.to)q=q.lte('created_at',String(body.to)+'T23:59:59.999Z');
-   if(state==='active')q=q.in('status',['approved','paid','completed','success','succeeded','aprobado','pagado']);
-   if(state==='pending')q=q.in('status',['pending','waiting','pendiente','processing','in_progress']);
-   if(state==='inactive')q=q.in('status',['rejected','failed','declined','refunded','rechazado','fallido','refunded']);
-   const requestedPlan=String(body.plan||'all').toUpperCase();
-   if(requestedPlan!=='ALL') {
-    const {data:plans}=await admin.from('plans').select('id,code,name');
-    const planIds=(plans||[]).filter((p:any)=>String(p.code||p.name||'').toUpperCase().includes(requestedPlan)).map((p:any)=>p.id);
-    const {data:subs}=await admin.from('subscriptions').select('id').in('plan_id',planIds.length?planIds:['00000000-0000-0000-0000-000000000000']);
-    const subIds=(subs||[]).map((x:any)=>x.id);
-    q=subIds.length?q.in('subscription_id',subIds):q.eq('subscription_id','00000000-0000-0000-0000-000000000000');
-   }
-   if(search){
-    const {data:orderRows}=await admin.from('payments').select('id').or(`provider_order_id.ilike.%${search}%,provider_payment_id.ilike.%${search}%,provider.ilike.%${search}%,status.ilike.%${search}%`).limit(1000);
-    const {data:bizRows}=await admin.from('businesses').select('id').or(`name.ilike.%${search}%,email.ilike.%${search}%`).limit(1000);
-    const bizIds=(bizRows||[]).map((b:any)=>b.id);
-    const {data:bizPayments}=bizIds.length?await admin.from('payments').select('id').in('business_id',bizIds).limit(1000):{data:[]};
-    const ids=[...new Set([...(orderRows||[]).map((x:any)=>x.id),...(bizPayments||[]).map((x:any)=>x.id)])];
-    q=ids.length?q.in('id',ids):q.eq('id','00000000-0000-0000-0000-000000000000');
-   }
   } else {
    if(search&&spec.search.length)q=q.or(spec.search.map(c=>`${c}.ilike.%${search}%`).join(','));
    if(state==='active'){if(key==='marketplace')q=q.eq('public_enabled',true);else if(['businesses','categories'].includes(key))q=q.eq('active',true);else if(key==='cms')q=q.eq('status','published');}
@@ -119,6 +104,12 @@ Deno.serve(async req=>{
   const {data,error,count}=await q.range(page*size,page*size+size-1);
   if(error)return json({error:`No se pudo consultar ${key}: ${error.message}`},400);
   let result:any[]=data||[];
+  if(key==='categories'&&result.length){
+   result=await Promise.all(result.map(async (r:any)=>{
+    const {count,error}=await admin.from('business_public_profiles').select('id',{count:'exact',head:true}).eq('category_id',r.id);
+    return {...r,business_count:error?null:(count??0),view_count:null};
+   }));
+  }
   if(key==='subscriptions'&&result.length){
    const bizIds=[...new Set(result.map((r:any)=>r.business_id).filter(Boolean))];
    const {data:biz}=bizIds.length?await admin.from('businesses').select('id,name,email,logo_url').in('id',bizIds):{data:[]};
@@ -132,15 +123,6 @@ Deno.serve(async req=>{
     const paymentsForSub=(payRows||[]).filter((x:any)=>String(x.subscription_id)===String(r.id));const latest:any=paymentsForSub[0]||null;
     return {...r,business_name:b.name||null,business_email:b.email||null,business_logo_url:b.logo_url||null,plan_name:String(p.code||p.name||'FREE').toUpperCase(),plan_code:String(p.code||'free').toUpperCase(),plan_price:p.price_monthly??null,payment_status:latest?.status||null,amount:latest?.amount??null,latest_payment_at:latest?.created_at||null};
    });
-  }
-  if(key==='payments'&&result.length){
-   const bizIds=[...new Set(result.map((r:any)=>r.business_id).filter(Boolean))];
-   const subIds=[...new Set(result.map((r:any)=>r.subscription_id).filter(Boolean))];
-   const {data:bizRows}=bizIds.length?await admin.from('businesses').select('id,name,email,logo_url').in('id',bizIds):{data:[]};
-   const {data:subRows}=subIds.length?await admin.from('subscriptions').select('id,plan_id,status').in('id',subIds):{data:[]};
-   const {data:planRows}=await admin.from('plans').select('id,code,name,price_monthly');
-   const bizMap=new Map((bizRows||[]).map((b:any)=>[String(b.id),b]));const subMap=new Map((subRows||[]).map((x:any)=>[String(x.id),x]));const planMap=new Map((planRows||[]).map((x:any)=>[String(x.id),x]));
-   result=result.map((r:any)=>{const b:any=bizMap.get(String(r.business_id))||{};const sub:any=subMap.get(String(r.subscription_id))||{};const plan:any=planMap.get(String(sub.plan_id||r.target_plan_id))||{};return {...r,business_name:b.name||null,business_email:b.email||null,business_logo_url:b.logo_url||null,plan_name:String(plan.code||plan.name||'No disponible').toUpperCase(),subscription_status:sub.status||null}});
   }
   if(key==='marketplace'&&result.length){const ids=[...new Set(result.map((r:any)=>r.category_id).filter(Boolean))];if(ids.length){const {data:cats}=await admin.from('business_categories').select('id,name,slug').in('id',ids);const map=new Map((cats||[]).map((c:any)=>[c.id,c]));result=result.map((r:any)=>({...r,category_name:map.get(r.category_id)?.name||'Sin categoría',active:r.businesses?.active??false,business_logo_url:r.businesses?.logo_url||null,business_name:r.businesses?.name||null}));}else result=result.map((r:any)=>({...r,category_name:'Sin categoría',active:r.businesses?.active??false,business_logo_url:r.businesses?.logo_url||null,business_name:r.businesses?.name||null}));}
   return json({rows:result,total:count||0,page,page_size:size});
