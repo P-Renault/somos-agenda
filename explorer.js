@@ -70,6 +70,26 @@
     </article>`;
   }
 
+  async function refreshMarketNotificationState(){
+    const button=$('marketNotification');
+    const dot=$('marketNotificationDot');
+    if(!button||!client)return;
+    try{
+      const session=await client.auth.getSession();
+      if(!session.data?.session?.user){if(dot)dot.hidden=true;return;}
+      const calls=[
+        client.rpc('get_welcome_notifications',{p_limit:50}),
+        client.rpc('get_customer_notifications',{p_limit:50}),
+        client.rpc('get_app_notifications',{p_limit:50})
+      ];
+      const results=await Promise.all(calls.map(p=>p.catch(()=>({data:null,error:true}))));
+      const unread=results.some(r=>!r.error&&Array.isArray(r.data)&&r.data.some(n=>!n.read_at));
+      if(dot)dot.hidden=!unread;
+      button.classList.toggle('has-unread',unread);
+      button.setAttribute('aria-label',unread?'Notificaciones nuevas':'Notificaciones');
+    }catch(e){console.warn('Agenda YA: no se pudo actualizar el indicador de notificaciones.',e?.message||e);}
+  }
+
   async function sessionRole(){
     const account = $('marketAccount');
     if (!client) return;
@@ -81,8 +101,10 @@
     const display = profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Mi perfil';
     const avatar = profile.avatar_url ? `<span class="account-avatar has-image" style="background-image:url('${encodeURI(profile.avatar_url)}')"></span>` : `<span class="account-avatar">${esc(initials(display))}</span>`;
     if(profile.profile_type === 'customer'){
-      account.innerHTML = `<button class="market-notification" id="marketNotification" type="button" aria-label="Abrir notificaciones" aria-haspopup="true"><span class="market-bell-emoji" aria-hidden="true">🔔</span><b id="marketNotificationIndicator" aria-hidden="true" hidden></b></button><a class="account-button signed" href="customer-profile.html?view=profile" aria-label="Mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
+      account.innerHTML = `<button class="market-notification" id="marketNotification" type="button" aria-label="Notificaciones" aria-haspopup="dialog" title="Notificaciones"><span class="market-notification-emoji" aria-hidden="true">🔔</span><b id="marketNotificationDot" aria-hidden="true" hidden></b></button><a class="account-button signed" href="customer-profile.html?view=profile" aria-label="Mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
       $('marketNotification').addEventListener('click', ()=>{ window.location.href='customer-profile.html?view=profile&notifications=1'; });
+      refreshMarketNotificationState();
+      if(!window.__ayMarketNotificationTimer)window.__ayMarketNotificationTimer=setInterval(refreshMarketNotificationState,30000);
       $('marketLogout').addEventListener('click', async ()=>{
         const btn=$('marketLogout'); btn.disabled=true; btn.textContent='Saliendo…';
         try{ await client.auth.signOut(); }catch(_){}

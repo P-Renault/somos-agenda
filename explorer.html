@@ -13,10 +13,9 @@
     .market-header-actions .account-button,.market-header-actions .account-button.signed{width:48px;height:48px;min-width:48px;border-radius:50%;overflow:hidden;padding:2px;display:grid;place-items:center}
     .market-header-actions .account-avatar{width:100%;height:100%;min-width:0;aspect-ratio:1/1;border-radius:50%;overflow:hidden;background-size:cover;background-position:center;display:grid;place-items:center}
     .market-notification{width:46px;height:46px;min-width:46px;display:grid;place-items:center;border-radius:50%;border:1px solid #e3ebf4;background:#fff;color:#234568;position:relative;padding:0}
-    .market-notification .market-bell-emoji{display:block;font-size:23px;line-height:1;color:#f3b900}
-    .market-notification b[hidden]{display:none!important}
+    .market-notification svg{display:block;width:22px;height:22px}.market-notification-emoji{font-size:23px;line-height:1}.market-notification b[hidden]{display:none}
     .market-notification b{position:absolute;right:5px;top:5px;width:9px;height:9px;border-radius:50%;background:#e53935}
-    @media(max-width:700px){.market-header{height:76px}.market-brand img{width:190px;height:62px;object-fit:contain;background:transparent}.market-header-actions{gap:8px}.market-header-actions .account-button,.market-header-actions .account-button.signed{width:44px;height:44px;min-width:44px}.market-notification{width:42px;height:42px;min-width:42px}.market-notification .market-bell-emoji{font-size:22px}}
+    @media(max-width:700px){.market-header{height:76px}.market-brand img{width:190px;height:62px;object-fit:contain;background:transparent}.market-header-actions{gap:8px}.market-header-actions .account-button,.market-header-actions .account-button.signed{width:44px;height:44px;min-width:44px}.market-notification{width:42px;height:42px;min-width:42px}.market-notification svg{width:21px;height:21px}}
   </style>
 </head>
 <body class="marketplace-page">
@@ -38,5 +37,7 @@
   <section class="market-results-bar"><p id="resultStatus">Buscando negocios...</p><button id="clearFilters" type="button" hidden>Limpiar filtros</button></section>
   <section id="results" class="market-grid" aria-live="polite"></section>
 </main>
-<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="explorer.js"></script><script src="customer-welcome-notifications.js"></script>
+<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="explorer.js"></script>
+<!-- Explorer usa la tarjeta y los motores de notificación del perfil cliente. -->
+
 </body></html>
