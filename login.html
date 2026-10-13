@@ -228,6 +228,59 @@
 }
 </style>
 
+
+  <style id="ay-login-confirm-password-alignment-fix">
+    /* El icono del candado queda alineado con el input, nunca encima del placeholder. */
+    #ayAuthForm .ay-auth-field.ay-auth-confirm-field {
+      display: flex !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+      position: relative;
+      width: 100%;
+      min-width: 0;
+    }
+    #ayAuthForm .ay-auth-field.ay-auth-confirm-field > .ay-auth-field-icon {
+      position: static !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      align-self: flex-end !important;
+      flex: 0 0 20px !important;
+      width: 20px !important;
+      height: 43px !important;
+      margin: 0 0 0 16px !important;
+      padding: 0 !important;
+      transform: none !important;
+      pointer-events: none;
+    }
+    #ayAuthForm .ay-auth-field.ay-auth-confirm-field > .ay-auth-field-icon svg {
+      display: block !important;
+      width: 20px !important;
+      height: 20px !important;
+      margin: 0 !important;
+    }
+    #ayAuthForm .ay-auth-field.ay-auth-confirm-field > .ay-auth-field-copy {
+      display: flex !important;
+      flex: 1 1 auto !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      min-width: 0 !important;
+      width: auto !important;
+      margin: 0 14px 0 0 !important;
+      padding: 0 !important;
+    }
+    #ayAuthForm .ay-auth-field.ay-auth-confirm-field .ay-auth-label {
+      display: block !important;
+      margin: 0 0 7px !important;
+    }
+    #ayAuthForm .ay-auth-field.ay-auth-confirm-field .ay-auth-input {
+      display: block !important;
+      box-sizing: border-box !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+    }
+  </style>
 </head>
 <body>
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
