@@ -19,7 +19,6 @@
     calendarCursor: new Date(), calendarSelected: null, calendarProfessional: "all",
     editing: {}
   };
-  let requestedBookingId = null;
 
   const $ = (id) => document.getElementById(id);
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
@@ -223,8 +222,22 @@
     const refs=await bookingRefs().catch(e=>({clients:[],services:[],professionals:[]}));
     const cm=new Map(refs.clients.map(x=>[x.id,`${x.first_name} ${x.last_name}`]));
     const sm=new Map(refs.services.map(x=>[x.id,x.name])); const pm=new Map(refs.professionals.map(x=>[x.id,`${x.first_name} ${x.last_name}`]));
-    body.insertAdjacentHTML("beforeend",state.bookings.length?`<div class="ay-module-list">${state.bookings.map(b=>`<article class="ay-module-item"><div class="ay-module-item-head"><div><h3>${esc(cm.get(b.client_id)||"Cliente")}</h3><p class="ay-module-meta">${esc(sm.get(b.service_id)||"Servicio")} · ${esc(pm.get(b.professional_id)||"Profesional")}</p><p class="ay-module-meta">${esc(b.booking_date)} · ${String(b.start_time).slice(0,5)}–${String(b.end_time).slice(0,5)}</p></div><span class="ay-module-badge ${b.status==="cancelled"?"is-off":""}">${esc(statusLabels[b.status]||b.status)}</span></div>${b.notes?`<p class="ay-module-note">${esc(b.notes)}</p>`:""}<div class="ay-module-actions-row"><button class="ay-btn ay-btn-light" data-ay-action="edit-booking" data-id="${b.id}">Editar</button><button class="ay-btn ay-btn-light" data-ay-action="delete-booking" data-id="${b.id}">Eliminar</button></div></article>`).join("")}</div>`:empty("Aún no hay reservas","Crea una reserva manual o recibe una desde el perfil público."));
+    body.insertAdjacentHTML("beforeend",state.bookings.length?`<div class="ay-module-list">${state.bookings.map(b=>`<article class="ay-module-item" data-agenda-booking-id="${b.id}"><div class="ay-module-item-head"><div><h3>${esc(cm.get(b.client_id)||"Cliente")}</h3><p class="ay-module-meta">${esc(sm.get(b.service_id)||"Servicio")} · ${esc(pm.get(b.professional_id)||"Profesional")}</p><p class="ay-module-meta">${esc(b.booking_date)} · ${String(b.start_time).slice(0,5)}–${String(b.end_time).slice(0,5)}</p></div><span class="ay-module-badge ${b.status==="cancelled"?"is-off":""}">${esc(statusLabels[b.status]||b.status)}</span></div>${b.notes?`<p class="ay-module-note">${esc(b.notes)}</p>`:""}<div class="ay-module-actions-row"><button class="ay-btn ay-btn-light" data-ay-action="edit-booking" data-id="${b.id}">Editar</button><button class="ay-btn ay-btn-light" data-ay-action="delete-booking" data-id="${b.id}">Eliminar</button></div></article>`).join("")}</div>`:empty("Aún no hay reservas","Crea una reserva manual o recibe una desde el perfil público."));
   }
+  let pendingNotificationBookingId = window.__AgendaYaPendingBookingId || null;
+  async function openNotificationBooking(bookingId){
+    if(!bookingId)return;
+    pendingNotificationBookingId=String(bookingId);
+    if(currentView!=='bookings'){await activate('bookings');return;}
+    const row=state.bookings.find(x=>String(x.id)===String(bookingId));
+    if(!row){status('La reserva asociada a esta notificación ya no está disponible.','error');return;}
+    const card=document.querySelector(`[data-agenda-booking-id="${CSS.escape(String(bookingId))}"]`);
+    if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.style.outline='3px solid #1672e8';card.style.outlineOffset='3px';setTimeout(()=>{card.style.outline='';card.style.outlineOffset='';},2600);}
+    pendingNotificationBookingId=null;window.__AgendaYaPendingBookingId=null;
+    await bookingForm(row);
+  }
+  window.addEventListener('agendaYa:open-booking',e=>{const id=e.detail?.bookingId||window.__AgendaYaPendingBookingId;if(!id)return;pendingNotificationBookingId=String(id);if(currentView==='bookings')setTimeout(()=>openNotificationBooking(id),80);else void activate('bookings');});
+
   async function bookingForm(x=null){
     const refs=await bookingRefs(); state.editing={type:"booking",id:x?.id||null};
     const co=refs.clients.map(v=>({value:v.id,label:`${v.first_name} ${v.last_name}`}));
@@ -443,15 +456,7 @@
       else if(currentView==="schedules")await renderSchedules();
       else if(currentView==="availability")await renderAvailability();
       else if(currentView==="clients")await renderClients();
-      else if(currentView==="bookings"){
-        await renderBookings();
-        if(requestedBookingId){
-          const id=requestedBookingId;requestedBookingId=null;
-          const booking=state.bookings.find(item=>String(item.id)===String(id));
-          if(booking) await bookingForm(booking);
-          else status("No se encontró la reserva solicitada en este negocio.","error");
-        }
-      }
+      else if(currentView==="bookings"){await renderBookings();const target=pendingNotificationBookingId||window.__AgendaYaPendingBookingId;if(target)await openNotificationBooking(target);}
       else if(currentView==="calendar")await renderCalendar();
       else if(currentView==="public-profile")await renderPublicProfile();
       else if(currentView==="settings")renderSettings();
@@ -516,7 +521,7 @@
       if (currentView !== view) void activate(view);
     }, 0);
   }, true);
-  window.AgendaYaModules={version:"1.3.1",activate,openBooking:(id)=>{if(!id)return;requestedBookingId=String(id);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate("bookings");else void activate("bookings");},refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
+  window.AgendaYaModules={version:"1.3.1",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
   const initialView = window.AgendaYaUI?.getPendingView?.() || window.AgendaYaUI?.getCurrentView?.() || "dashboard";
   void activate(initialView);
 

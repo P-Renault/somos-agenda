@@ -40,8 +40,6 @@
     const ctx=await e.refresh(user,profile);
     reservations=ctx.reservations||[];
     renderReservations();
-    const requestedBooking=new URLSearchParams(location.search).get('booking_id');
-    if(requestedBooking){const target=document.querySelector(`[data-booking-id="${CSS.escape(requestedBooking)}"]`);if(target){target.style.transition='box-shadow .2s ease';target.style.boxShadow='0 0 0 3px #1672e8';target.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>{target.style.boxShadow='';},3500);}}
     renderRatings();
     renderReputation(ctx.reputation||{score:null,count:0,received:[]});
     return ctx;
@@ -65,7 +63,7 @@
 
   function reservationCard(row){
     const d=dateLabel(row.booking_date),service=row.services?.name||'Servicio',business=row.businesses?.name||'Negocio',slug=row.businesses?.slug||'',pro=[row.professionals?.first_name,row.professionals?.last_name].filter(Boolean).join(' '),href=slug?`public-profile.html?slug=${encodeURIComponent(slug)}`:'explorer.html';
-    return `<article class="cp-reservation-card" id="cpReservation-${esc(row.id)}" data-booking-id="${esc(row.id)}"><div class="cp-date-box"><strong>${esc(d.day)}</strong><small>${esc(d.month)}</small></div><div><h3>${esc(service)}</h3><div class="cp-business">${esc(business)}</div><div class="cp-meta"><span>▣ ${esc(d.full)}</span><span>◷ ${esc(timeLabel(row.start_time))}–${esc(timeLabel(row.end_time))}</span>${pro?`<span>♙ ${esc(pro)}</span>`:''}</div><div class="cp-res-actions"><a class="cp-text-link" href="${esc(href)}">Ver negocio →</a></div></div><div class="cp-status-wrap"><span class="cp-status ${statusClass(row.status)}">${esc(statusLabel(row.status))}</span></div></article>`;
+    return `<article class="cp-reservation-card" data-reservation-id="${esc(row.id)}"><div class="cp-date-box"><strong>${esc(d.day)}</strong><small>${esc(d.month)}</small></div><div><h3>${esc(service)}</h3><div class="cp-business">${esc(business)}</div><div class="cp-meta"><span>▣ ${esc(d.full)}</span><span>◷ ${esc(timeLabel(row.start_time))}–${esc(timeLabel(row.end_time))}</span>${pro?`<span>♙ ${esc(pro)}</span>`:''}</div><div class="cp-res-actions"><a class="cp-text-link" href="${esc(href)}">Ver negocio →</a></div></div><div class="cp-status-wrap"><span class="cp-status ${statusClass(row.status)}">${esc(statusLabel(row.status))}</span></div></article>`;
   }
 
   function renderReservations(){
@@ -159,6 +157,7 @@
         const bookingRows=await engine.fetchNotifications();
         if(Array.isArray(bookingRows))rows.push(...bookingRows.map(n=>({
           id:n.id,
+          booking_id:n.booking_id||null,
           title:n.title||'Estado de reserva actualizado',
           message:n.text||'Tu reserva tiene una actualización.',
           created_at:n.created_at,
@@ -171,12 +170,13 @@
     }
     for(const r of results){
       if(r.error){if(!/does not exist|Could not find the function/i.test(r.error.message||''))console.warn('Agenda YA customer notifications:',r.kind,r.error.message);continue;}
-      if(Array.isArray(r.data))rows.push(...r.data.map(n=>({...n,source:r.kind,message:n.message||n.text||'Tienes una actualización en Agenda YA.'})));
+      if(Array.isArray(r.data))rows.push(...r.data.map(n=>({...n,source:r.kind,booking_id:n.booking_id||n.metadata?.booking_id||null,message:n.message||n.text||'Tienes una actualización en Agenda YA.'})));
     }
     const unique=new Map();
     rows.forEach(n=>unique.set(String(n.source||'general')+':'+String(n.id||`${n.title}:${n.created_at}`),n));
     const sorted=[...unique.values()].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
-    box.innerHTML=sorted.length?sorted.map(n=>{const bookingId=n.booking_id||n.metadata?.booking_id||null;const destination=n.destination||n.metadata?.destination||null;const href=bookingId?`customer-profile.html?view=reservations&booking_id=${encodeURIComponent(bookingId)}`:destination&&/^\/(explorer|customer-profile|public-profile)\.html(?:[?#].*)?$/.test(destination)?destination:null;return `<article class="cp-review-item cp-notification-entry" style="padding:12px 4px;border-bottom:1px solid #e8edf4"><strong>${esc(n.title||'Agenda YA')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda YA.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small>${href?`<p><a class="cp-text-link" href="${esc(href)}">${bookingId?'Ver esta reserva →':'Abrir →'}</a></p>`:''}</article>`;}).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
+    box.innerHTML=sorted.length?sorted.map((n,i)=>`<article class="cp-review-item cp-notification-clickable" data-notification-index="${i}" style="padding:12px 4px;border-bottom:1px solid #e8edf4;cursor:pointer" role="button" tabindex="0"><strong>${esc(n.title||'Agenda YA')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda YA.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small></article>`).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
+    window.__AgendaYaCustomerNotificationRows=sorted;
     const badge=$('cpNotificationBadge'),unread=sorted.filter(n=>!n.read_at).length;
     if(badge){badge.textContent=String(unread);badge.hidden=unread===0;}
   }
@@ -193,13 +193,19 @@
   async function logout(){const b=$('cpLogout');b.disabled=true;b.textContent='Saliendo…';try{await client.auth.signOut();}catch(_){}location.href='index.html';}
 
   async function init(){
+    if(!document.getElementById('cpNotificationTargetStyle')){const st=document.createElement('style');st.id='cpNotificationTargetStyle';st.textContent='.cp-notification-target{outline:3px solid #1672e8!important;outline-offset:3px;transition:outline-color .25s} .cp-notification-clickable{cursor:pointer}';document.head.appendChild(st);}
     const u=await requireSession();if(!u)return;
     const ok=await loadProfile();if(!ok)return;
     $('cpApp').hidden=false;
     await loadCustomerNotifications();
     setInterval(()=>loadCustomerNotifications().catch(e=>console.warn('Agenda YA notifications:',e)),30000);
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.view)));
-    $('cpMenuBtn').addEventListener('click',openSidebar);$('cpBackdrop').addEventListener('click',closeOverlays);$('cpAccountBtn').addEventListener('click',()=>activate('profile'));$('cpLogout').addEventListener('click',logout);$('cpNotificationBtn').addEventListener('click',openNotifications);$('cpNotificationClose').addEventListener('click',closeOverlays);$('cpSaveProfile').addEventListener('click',saveProfile);$('cpAvatarFile').addEventListener('change',e=>uploadAvatar(e.target.files?.[0]));
+    $('cpMenuBtn').addEventListener('click',openSidebar);$('cpBackdrop').addEventListener('click',closeOverlays);$('cpAccountBtn').addEventListener('click',()=>activate('profile'));$('cpLogout').addEventListener('click',logout);$('cpNotificationBtn').addEventListener('click',openNotifications);$('cpNotificationClose').addEventListener('click',closeOverlays);
+    const notificationBox=$('cpNotifications');
+    const openNotificationEvent=async item=>{if(!item)return;closeOverlays();const bookingId=item.booking_id||item.metadata?.booking_id||item.data?.booking_id||null;const type=String(item.notification_type||item.type||item.source||'').toLowerCase();if(bookingId){activate('reservations');try{await loadCustomerEngine();}catch(_){}setTimeout(()=>{const card=document.querySelector(`[data-reservation-id="${CSS.escape(String(bookingId))}"]`);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('cp-notification-target');setTimeout(()=>card.classList.remove('cp-notification-target'),2600);}},120);return;}if(/review|rating|reputation|valoraci|reseñ/.test(type+' '+String(item.title||''))){activate(/received|client|reputation/.test(type)?'reputation':'ratings');return;}const dest=item.destination||item.metadata?.destination;if(dest&&typeof dest==='string'&&!/^(javascript:|https?:\/\/)/i.test(dest)){location.href=dest;return;}if(/plan|payment|subscription|membres|pago|suscrip/.test(type+' '+String(item.title||''))){activate('profile');return;}activate('profile');};
+    notificationBox?.addEventListener('click',e=>{const row=e.target.closest('[data-notification-index]');if(row)openNotificationEvent(window.__AgendaYaCustomerNotificationRows?.[Number(row.dataset.notificationIndex)]);});
+    notificationBox?.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-notification-index]')){e.preventDefault();openNotificationEvent(window.__AgendaYaCustomerNotificationRows?.[Number(e.target.dataset.notificationIndex)]);}});
+    $('cpSaveProfile').addEventListener('click',saveProfile);$('cpAvatarFile').addEventListener('change',e=>uploadAvatar(e.target.files?.[0]));
     document.querySelectorAll('[data-res-tab]').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('[data-res-tab]').forEach(x=>x.classList.toggle('is-active',x===tab));const upcoming=tab.dataset.resTab==='upcoming';$('cpUpcomingList').hidden=!upcoming;$('cpHistoryList').hidden=upcoming;}));
     $('cpPhone').addEventListener('input',e=>e.target.value=e.target.value.replace(/\D/g,'').slice(0,8));
     const params=new URLSearchParams(location.search);activate(params.get('view')||'profile');if(params.get('notifications')==='1')setTimeout(openNotifications,80);
