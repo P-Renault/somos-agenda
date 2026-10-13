@@ -111,3 +111,6 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
  .cp-account .cp-avatar,.cp-avatar{width:42px!important;height:42px!important;min-width:42px!important}
  .cp-notification-btn{width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important;border:1px solid #e3ebf4!important;background:#fff!important;color:#234568!important}
 }
+
+/* Icono de notificación a color: conservar el emoji 🔔 en el encabezado. */
+.cp-notification-emoji{display:block;font-size:24px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}

@@ -202,7 +202,35 @@
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.view)));
     $('cpMenuBtn').addEventListener('click',openSidebar);$('cpBackdrop').addEventListener('click',closeOverlays);$('cpAccountBtn').addEventListener('click',()=>activate('profile'));$('cpLogout').addEventListener('click',logout);$('cpNotificationBtn').addEventListener('click',openNotifications);$('cpNotificationClose').addEventListener('click',closeOverlays);
     const notificationBox=$('cpNotifications');
-    const openNotificationEvent=async item=>{if(!item)return;closeOverlays();const bookingId=item.booking_id||item.metadata?.booking_id||item.data?.booking_id||null;const type=String(item.notification_type||item.type||item.source||'').toLowerCase();if(bookingId){activate('reservations');try{await loadCustomerEngine();}catch(_){}setTimeout(()=>{const card=document.querySelector(`[data-reservation-id="${CSS.escape(String(bookingId))}"]`);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('cp-notification-target');setTimeout(()=>card.classList.remove('cp-notification-target'),2600);}},120);return;}if(/review|rating|reputation|valoraci|reseñ/.test(type+' '+String(item.title||''))){activate(/received|client|reputation/.test(type)?'reputation':'ratings');return;}const dest=item.destination||item.metadata?.destination;if(dest&&typeof dest==='string'&&!/^(javascript:|https?:\/\/)/i.test(dest)){location.href=dest;return;}if(/plan|payment|subscription|membres|pago|suscrip/.test(type+' '+String(item.title||''))){activate('profile');return;}activate('profile');};
+    const openNotificationEvent=async item=>{
+      if(!item)return;
+      closeOverlays();
+      const bookingId=item.booking_id||item.metadata?.booking_id||item.data?.booking_id||item.metadata?.reservation_id||item.data?.reservation_id||null;
+      const type=String(item.notification_type||item.type||item.kind||item.source||'').toLowerCase();
+      const eventText=[type,item.title,item.message,item.metadata?.target_type,item.data?.target_type].filter(Boolean).join(' ').toLowerCase();
+      const isReputation=/review|rating|reputation|valoraci|reseñ|resen|calific/.test(eventText);
+      const isReceived=/received|client|customer_reputation|reputation_received|valoracion_recibida|valoración recibida/.test(eventText);
+      if(isReputation){
+        if(isReceived){activate('reputation');return;}
+        activate('ratings');
+        if(bookingId){
+          try{await loadCustomerEngine();}catch(_){}
+          let tries=0;
+          const openRating=()=>{
+            const target=document.querySelector(`[data-rating-booking="${CSS.escape(String(bookingId))}"]`);
+            if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.click();target.closest('.cp-rating-card')?.classList.add('cp-notification-target');return;}
+            if(++tries<12)setTimeout(openRating,180);
+          };
+          setTimeout(openRating,100);
+        }
+        return;
+      }
+      if(bookingId){activate('reservations');try{await loadCustomerEngine();}catch(_){}setTimeout(()=>{const card=document.querySelector(`[data-reservation-id="${CSS.escape(String(bookingId))}"]`);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('cp-notification-target');setTimeout(()=>card.classList.remove('cp-notification-target'),2600);}},120);return;}
+      const dest=item.destination||item.metadata?.destination||item.data?.destination;
+      if(dest&&typeof dest==='string'&&!/^(javascript:|https?:\/\/)/i.test(dest)){location.href=dest;return;}
+      if(/plan|payment|subscription|membres|pago|suscrip/.test(eventText)){activate('profile');return;}
+      activate('profile');
+    };
     notificationBox?.addEventListener('click',e=>{const row=e.target.closest('[data-notification-index]');if(row)openNotificationEvent(window.__AgendaYaCustomerNotificationRows?.[Number(row.dataset.notificationIndex)]);});
     notificationBox?.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-notification-index]')){e.preventDefault();openNotificationEvent(window.__AgendaYaCustomerNotificationRows?.[Number(e.target.dataset.notificationIndex)]);}});
     $('cpSaveProfile').addEventListener('click',saveProfile);$('cpAvatarFile').addEventListener('change',e=>uploadAvatar(e.target.files?.[0]));
