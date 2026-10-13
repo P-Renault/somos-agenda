@@ -49,7 +49,25 @@
     const badge=$('.ay-b13-notif-badge');if(badge){badge.textContent=state.unread>99?'99+':String(state.unread);badge.hidden=state.unread<1;}
     const btn=getButton();if(btn)btn.setAttribute('aria-expanded',state.open?'true':'false');
   }
-  function openBusinessEvent(r){if(!r)return;close();const bookingId=r.booking_id||(r.kind==='reservation'?String(r.id||'').replace(/^reservation:/,''):null);if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');else window.location.href='dashboard.html?view=bookings&booking_id='+encodeURIComponent(bookingId);return;}const type=String(r.kind||r.type||'').toLowerCase();if(type==='plan'||type==='plan_changed'||r.subscription_id){window.__AgendaYaPendingSubscriptionId=r.subscription_id||r.data?.subscription_id||null;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}if(type==='payment'||r.payment_id){window.__AgendaYaPendingPaymentId=r.payment_id||r.id;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}if(r.destination&&typeof r.destination==='string'&&!/^(javascript:|https?:\/\/)/i.test(r.destination)){location.href=r.destination;return;}if(r.target_module==='payments'||r.target_module==='subscriptions'||/welcome/.test(type)){if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate(/welcome/.test(type)?'dashboard':'settings');else location.href=/welcome/.test(type)?'dashboard.html':'dashboard.html?view=settings';return;}if(/review|rating|reputation/.test(type+' '+String(r.title||''))){if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');}else if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');}}
+  function openBusinessEvent(r){
+    if(!r)return;
+    close();
+    const type=String(r.kind||r.type||r.notification_type||'').toLowerCase();
+    const text=[type,r.title,r.message,r.target_type,r.data?.target_type].filter(Boolean).join(' ').toLowerCase();
+    const bookingId=r.booking_id||(r.kind==='reservation'?String(r.id||'').replace(/^reservation:/,''):null);
+    // Las valoraciones se abren desde la reserva concreta a la que pertenecen.
+    if(/review|rating|reputation|valoraci|reseñ|resen|calific/.test(text)){
+      if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);window.__AgendaYaPendingReviewId=r.review_id||r.data?.review_id||r.metadata?.review_id||null;}
+      if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');
+      else window.location.href='dashboard.html?view=bookings'+(bookingId?'&booking_id='+encodeURIComponent(bookingId):'');
+      return;
+    }
+    if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');else window.location.href='dashboard.html?view=bookings&booking_id='+encodeURIComponent(bookingId);return;}
+    if(type==='plan'||type==='plan_changed'||r.subscription_id){window.__AgendaYaPendingSubscriptionId=r.subscription_id||r.data?.subscription_id||null;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}
+    if(type==='payment'||r.payment_id){window.__AgendaYaPendingPaymentId=r.payment_id||r.id;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}
+    if(r.destination&&typeof r.destination==='string'&&!/^(javascript:|https?:\/\/)/i.test(r.destination)){location.href=r.destination;return;}
+    if(r.target_module==='payments'||r.target_module==='subscriptions'||/welcome/.test(type)){if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate(/welcome/.test(type)?'dashboard':'settings');else location.href=/welcome/.test(type)?'dashboard.html':'dashboard.html?view=settings';}
+  }
   function toggle(){state.open=!state.open;render();if(state.open)markRead();}
   function close(){state.open=false;const p=$('#ayB13BusinessNotifPanel');if(p)p.hidden=true;const b=getButton();if(b)b.setAttribute('aria-expanded','false');}
   async function load(){
