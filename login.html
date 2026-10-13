@@ -229,56 +229,54 @@
 </style>
 
 
-  <style id="ay-login-confirm-password-alignment-fix">
-    /* El icono del candado queda alineado con el input, nunca encima del placeholder. */
+  <style id="ay-login-confirm-password-layout-final">
+    /* Confirmación: misma estructura y alineación que Email y Contraseña. */
+    #ayAuthForm #ayPasswordConfirmWrap[hidden] { display: none !important; }
     #ayAuthForm .ay-auth-field.ay-auth-confirm-field {
-      display: flex !important;
-      align-items: stretch !important;
-      gap: 12px !important;
-      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0;
       width: 100%;
       min-width: 0;
     }
     #ayAuthForm .ay-auth-field.ay-auth-confirm-field > .ay-auth-field-icon {
-      position: static !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      align-self: flex-end !important;
-      flex: 0 0 20px !important;
-      width: 20px !important;
-      height: 43px !important;
-      margin: 0 0 0 16px !important;
-      padding: 0 !important;
-      transform: none !important;
+      position: static;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 44px;
+      width: 44px;
+      height: 100%;
+      min-height: 44px;
+      margin: 0;
+      padding: 0;
       pointer-events: none;
     }
     #ayAuthForm .ay-auth-field.ay-auth-confirm-field > .ay-auth-field-icon svg {
-      display: block !important;
-      width: 20px !important;
-      height: 20px !important;
-      margin: 0 !important;
+      display: block;
+      width: 22px;
+      height: 22px;
+      margin: 0;
     }
     #ayAuthForm .ay-auth-field.ay-auth-confirm-field > .ay-auth-field-copy {
-      display: flex !important;
-      flex: 1 1 auto !important;
-      flex-direction: column !important;
-      justify-content: flex-start !important;
-      min-width: 0 !important;
-      width: auto !important;
-      margin: 0 14px 0 0 !important;
-      padding: 0 !important;
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-width: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
     }
     #ayAuthForm .ay-auth-field.ay-auth-confirm-field .ay-auth-label {
-      display: block !important;
-      margin: 0 0 7px !important;
+      display: block;
+      margin: 0 0 7px;
     }
     #ayAuthForm .ay-auth-field.ay-auth-confirm-field .ay-auth-input {
-      display: block !important;
-      box-sizing: border-box !important;
-      width: 100% !important;
-      min-width: 0 !important;
-      margin: 0 !important;
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
     }
   </style>
 </head>
@@ -488,6 +486,64 @@
       document.addEventListener("DOMContentLoaded", bindPasswordToggle, { once: true });
     } else {
       bindPasswordToggle();
+    }
+  })();
+  </script>
+  <script id="ay-login-confirm-password-mode-fix">
+  (() => {
+    const init = () => {
+      const form = document.getElementById("ayAuthForm");
+      const wrap = document.getElementById("ayPasswordConfirmWrap");
+      const confirm = document.getElementById("ayAuthPasswordConfirm");
+      const switchButton = document.getElementById("ayAuthSwitch");
+      const switchText = document.getElementById("ayAuthSwitchText");
+      const submit = document.getElementById("ayAuthSubmit");
+      const password = document.getElementById("ayAuthPassword");
+      if (!form || !wrap || !confirm || !switchButton || !submit) return;
+
+      const isCreateMode = () => {
+        const label = (submit.textContent || "").toLocaleLowerCase("es");
+        const switchLabel = (switchButton.textContent || "").toLocaleLowerCase("es");
+        return label.includes("crear cuenta") || switchLabel.includes("iniciar sesión") || switchLabel.includes("iniciar sesion");
+      };
+      const syncMode = (createMode) => {
+        wrap.hidden = !createMode;
+        confirm.required = createMode;
+        confirm.disabled = !createMode;
+        if (!createMode) {
+          confirm.value = "";
+          confirm.setCustomValidity("");
+          if (password) password.autocomplete = "current-password";
+        } else if (password) {
+          password.autocomplete = "new-password";
+        }
+        if (switchText) switchText.textContent = createMode ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?";
+        submit.querySelector("span")?.replaceChildren(document.createTextNode(createMode ? "Crear cuenta" : "Iniciar sesión"));
+        const arrow = submit.querySelector("b");
+        if (arrow) arrow.textContent = createMode ? "" : "→";
+      };
+
+      // Estado inicial seguro: login con solo email y contraseña.
+      syncMode(false);
+      switchButton.addEventListener("click", () => {
+        // auth.js actualiza primero las etiquetas; leer el estado después de ese cambio.
+        window.setTimeout(() => syncMode(isCreateMode()), 0);
+      });
+
+      form.addEventListener("submit", (event) => {
+        if (wrap.hidden) return;
+        if (password && confirm.value !== password.value) {
+          event.preventDefault();
+          confirm.setCustomValidity("Las contraseñas no coinciden.");
+          confirm.reportValidity();
+          confirm.addEventListener("input", () => confirm.setCustomValidity(""), { once: true });
+        }
+      }, true);
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init, { once: true });
+    } else {
+      init();
     }
   })();
   </script>
