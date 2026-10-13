@@ -103,7 +103,7 @@
       const tasks=[
         client.rpc('get_customer_notifications',{p_limit:50}).then(x=>({kind:'booking',...x})).catch(error=>({kind:'booking',error})),
         client.rpc('get_welcome_notifications',{p_limit:50}).then(x=>({kind:'welcome',...x})).catch(error=>({kind:'welcome',error})),
-        client.rpc('get_app_notifications',{p_limit:50}).then(x=>({kind:'app',...x})).catch(error=>({kind:'app',error}))
+        client.rpc('get_app_notifications',{p_limit:100}).then(x=>({kind:'app',...x})).catch(error=>({kind:'app',error}))
       ];
       const results=await Promise.all(tasks); const next=[];let success=0;
       for(const res of results){
@@ -116,7 +116,7 @@
           }else if(res.kind==='welcome'){
             next.push({...n,title:n.title||'¡Bienvenido a Agenda Ya!',message:n.message||'Descubre los servicios disponibles en Agenda Ya.',source:'welcome'});
           }else{
-            next.push({...n,source:'app',notification_type:n.notification_type||n.type||'notification',booking_id:n.booking_id||n.metadata?.booking_id||null,message:n.message||'Tienes una actualización en Agenda Ya.'});
+            next.push({...n,source:'app',title:n.title||'Notificación de Agenda Ya',message:n.message||'Tienes una actualización en Agenda Ya.'});
           }
         }
       }
