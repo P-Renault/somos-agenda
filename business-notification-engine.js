@@ -10,37 +10,36 @@
     if($('#ayB13BusinessNotifStyles'))return;
     const s=document.createElement('style');s.id='ayB13BusinessNotifStyles';s.textContent=`
     .ay-notification-trigger{position:relative!important;display:inline-flex!important;align-items:center;justify-content:center}
-    .ay-notification-trigger svg{width:22px;height:22px;display:block}.ay-b13-notif-wrap{position:relative;display:inline-flex}
+    .ay-notification-trigger{font-size:23px;line-height:1;color:#f3b900}.ay-notification-trigger svg{display:none;width:22px;height:22px}.ay-b13-notif-wrap{position:relative;display:inline-flex}
     .ay-b13-notif-badge{position:absolute;top:-2px;right:-2px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#e53935;color:#fff;font:700 10px/17px Arial;text-align:center;box-shadow:0 0 0 2px #fff;z-index:2}
     .ay-b13-notif-panel{position:fixed;z-index:100000;top:78px;right:18px;width:min(390px,calc(100vw - 28px));max-height:min(620px,calc(100vh - 105px));background:#fff;border:1px solid #dfe7f2;border-radius:20px;box-shadow:0 18px 55px #142b4c2e;overflow:hidden;display:flex;flex-direction:column}
     .ay-b13-notif-panel[hidden]{display:none!important}.ay-b13-notif-head{padding:17px 18px 13px;border-bottom:1px solid #e8edf4;display:flex;align-items:center;justify-content:space-between;gap:12px}
     .ay-b13-notif-head strong{font-size:18px;color:#152f55}.ay-b13-notif-head small{display:block;color:#7b8798;margin-top:3px;font-size:12px}
     .ay-b13-notif-close{border:0;background:#f3f6fa;border-radius:10px;width:34px;height:34px;font-size:21px;cursor:pointer;color:#243b5d}
     .ay-b13-notif-list{overflow:auto;padding:8px}.ay-b13-notif-item{padding:13px 12px;border-radius:14px;margin:3px 0;background:#fff;border:1px solid transparent}
-    .ay-b13-notif-item.is-unread{background:#f5f9ff;border-color:#dceaff}.ay-b13-notif-clickable{cursor:pointer}.ay-b13-notif-clickable:focus{outline:2px solid #1672e8;outline-offset:2px}.ay-b13-notif-open{display:block;margin-top:7px;color:#1672e8;font-size:12px;font-weight:700}.ay-b13-notif-item strong{display:block;color:#18345b;font-size:14px;line-height:1.35}
+    .ay-b13-notif-item.is-unread{background:#f5f9ff;border-color:#dceaff}.ay-b13-notif-item strong{display:block;color:#18345b;font-size:14px;line-height:1.35}
     .ay-b13-notif-item p{margin:5px 0;color:#68778b;font-size:13px;line-height:1.4}.ay-b13-notif-item small{color:#98a3b2;font-size:11px}
     .ay-b13-notif-empty{padding:38px 18px;text-align:center;color:#7c899a;font-size:14px}
-    @media(max-width:700px){.ay-b13-notif-panel{top:74px;right:10px;width:calc(100vw - 20px);max-height:calc(100vh - 92px);border-radius:18px}.ay-notification-trigger{width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px}.ay-notification-trigger svg{width:21px;height:21px}}
+    @media(max-width:700px){.ay-b13-notif-panel{top:74px;right:10px;width:calc(100vw - 20px);max-height:calc(100vh - 92px);border-radius:18px}.ay-notification-trigger{width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px}.ay-notification-trigger{font-size:22px}.ay-notification-trigger svg{width:21px;height:21px}}
     `;document.head.appendChild(s);
   }
   function getButton(){return $('#ayBusinessNotificationsBtn')||$('.ay-header-actions .ay-icon-btn[title="Notificaciones"]');}
   function mount(){
     ensureStyles();const btn=getButton();if(!btn)return false;
-    btn.id='ayBusinessNotificationsBtn';btn.classList.add('ay-notification-trigger');btn.setAttribute('aria-haspopup','dialog');
+    btn.id='ayBusinessNotificationsBtn';btn.classList.add('ay-notification-trigger');btn.setAttribute('aria-haspopup','dialog');btn.innerHTML='🔔';btn.setAttribute('aria-label','Notificaciones');
     if(!btn.dataset.b13NotifBound){btn.dataset.b13NotifBound='1';btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggle();});
       const wrap=document.createElement('span');wrap.className='ay-b13-notif-wrap';btn.parentNode.insertBefore(wrap,btn);wrap.appendChild(btn);
       const badge=document.createElement('span');badge.className='ay-b13-notif-badge';badge.hidden=true;wrap.appendChild(badge);}
     return true;
   }
   function normalize(r,kind){
-    if(kind==='reservation')return {id:'reservation:'+r.id,record_id:r.booking_id||r.id,kind,title:r.service_name||'Reserva actualizada',message:!r.previous_status?`Nueva reserva de ${r.client_name||'cliente'}.`:`Reserva de ${r.client_name||'cliente'}: ${label(r.previous_status)} → ${label(r.new_status)}.`,created_at:r.created_at||r.booking_date,read_at:r.read_at,detail:r.booking_date&&`${r.booking_date}${r.start_time?' · '+String(r.start_time).slice(0,5):''}`};
-    return {id:kind+':'+(r.id||r.payment_id||r.subscription_id||r.user_id||''),record_id:r.booking_id||r.payment_id||r.subscription_id||r.id||null,kind,title:r.title||'Notificación',message:r.message||'',destination:r.destination||null,created_at:r.created_at,read_at:r.read_at,detail:r.payment_status?('Estado: '+label(r.payment_status)):''};
+    if(kind==='reservation')return {id:'reservation:'+r.id,kind,title:r.service_name||'Reserva actualizada',message:!r.previous_status?`Nueva reserva de ${r.client_name||'cliente'}.`:`Reserva de ${r.client_name||'cliente'}: ${label(r.previous_status)} → ${label(r.new_status)}.`,created_at:r.created_at||r.booking_date,read_at:r.read_at,detail:r.booking_date&&`${r.booking_date}${r.start_time?' · '+String(r.start_time).slice(0,5):''}`};
+    return {id:kind+':'+r.id,kind,title:r.title||'Notificación',message:r.message||'',created_at:r.created_at,read_at:r.read_at,detail:r.payment_status?('Estado: '+label(r.payment_status)):''};
   }
   function render(){
     let p=$('#ayB13BusinessNotifPanel');if(!p){p=document.createElement('section');p.id='ayB13BusinessNotifPanel';p.className='ay-b13-notif-panel';p.hidden=true;p.setAttribute('role','dialog');p.setAttribute('aria-label','Notificaciones');document.body.appendChild(p);}
-    p.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread?`${state.unread} sin leer`:'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map(r=>`<article role="button" tabindex="0" data-notification-kind="${esc(r.kind)}" data-record-id="${esc(r.record_id||'')}" data-destination="${esc(r.destination||'')}" class="ay-b13-notif-item ay-b13-notif-clickable ${r.read_at?'':'is-unread'}"><strong>${esc(r.title)}</strong><p>${esc(r.message)}</p><small>${esc(fmtDate(r.created_at))}${r.detail?' · '+esc(r.detail):''}</small><span class="ay-b13-notif-open">Abrir →</span></article>`).join(''):'<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>'}</div>`;
+    p.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread?`${state.unread} sin leer`:'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map(r=>`<article class="ay-b13-notif-item ${r.read_at?'':'is-unread'}"><strong>${esc(r.title)}</strong><p>${esc(r.message)}</p><small>${esc(fmtDate(r.created_at))}${r.detail?' · '+esc(r.detail):''}</small></article>`).join(''):'<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>'}</div>`;
     p.hidden=!state.open;$('.ay-b13-notif-close',p)?.addEventListener('click',close);
-    if(!p.dataset.navigationBound){p.dataset.navigationBound='1';const openNotification=e=>{const item=e.target.closest?.('[data-notification-kind]');if(!item)return;if(e.type==='keydown'&&!['Enter',' '].includes(e.key))return;if(e.type==='keydown')e.preventDefault();const kind=item.dataset.notificationKind;const dest=item.dataset.destination;close();if(dest&&/^\/(dashboard|explorer|customer-profile|public-profile)\.html(?:[?#].*)?$/.test(dest)){location.href=dest;return;}if(kind==='reservation'){document.querySelector('[data-view="bookings"]')?.click();return;}if(kind==='plan'){document.querySelector('[data-view="settings"]')?.click();setTimeout(()=>document.querySelector('[data-ay-action="membership-engine-placeholder"]')?.click(),150);return;}if(kind==='payment'){document.querySelector('[data-view="settings"]')?.click();setTimeout(()=>document.querySelector('#ayBillingView')?.scrollIntoView({behavior:'smooth',block:'start'}),150);return;}if(kind==='welcome'){location.href='dashboard.html';}};p.addEventListener('click',openNotification);p.addEventListener('keydown',openNotification);}
     const badge=$('.ay-b13-notif-badge');if(badge){badge.textContent=state.unread>99?'99+':String(state.unread);badge.hidden=state.unread<1;}
     getButton()?.setAttribute('aria-expanded',state.open?'true':'false');
   }
