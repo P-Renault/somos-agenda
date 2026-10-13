@@ -81,8 +81,7 @@
     const display = profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Mi perfil';
     const avatar = profile.avatar_url ? `<span class="account-avatar has-image" style="background-image:url('${encodeURI(profile.avatar_url)}')"></span>` : `<span class="account-avatar">${esc(initials(display))}</span>`;
     if(profile.profile_type === 'customer'){
-      account.innerHTML = `<button class="market-notification" id="marketNotification" type="button" aria-label="Notificaciones" title="Notificaciones">🔔<b aria-hidden="true"></b></button><a class="account-button signed" href="customer-profile.html?view=profile" aria-label="Mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
-      $('marketNotification').addEventListener('click', ()=>{ window.location.href='customer-profile.html?view=profile&notifications=1'; });
+      account.innerHTML = `<button class="market-notification" id="marketNotification" type="button" aria-label="Abrir notificaciones" aria-expanded="false"><span class="market-bell-emoji" aria-hidden="true">🔔</span><b aria-hidden="true" hidden></b></button><a class="account-button signed" href="customer-profile.html?view=profile" aria-label="Mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
       $('marketLogout').addEventListener('click', async ()=>{
         const btn=$('marketLogout'); btn.disabled=true; btn.textContent='Saliendo…';
         try{ await client.auth.signOut(); }catch(_){}
