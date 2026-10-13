@@ -91,16 +91,9 @@
       list.querySelectorAll('[data-notification-index]').forEach(el=>el.addEventListener('click',()=>openAssociatedEvent(rows[Number(el.dataset.notificationIndex)])));
     }
     function openAssociatedEvent(r){
-      if(!r)return;
-      const type=String(r.notification_type||r.type||r.kind||'').toLowerCase();
-      const targetType=String(r.metadata?.target_type||r.data?.target_type||'').toLowerCase();
-      const eventText=`${type} ${r.title||''} ${r.message||''} ${targetType}`.toLowerCase();
-      // Una valoración recibida por el cliente debe abrir reputación, no la reserva.
-      if(/reputation_updated|reputation|valoraci|reseñ|resen|rating|review|calific/.test(eventText)){
-        window.location.href='customer-profile.html?view=reputation';return;
-      }
       if(r.booking_id){window.location.href=`customer-profile.html?view=reservations&booking_id=${encodeURIComponent(r.booking_id)}`;return;}
       if(r.destination){const d=String(r.destination);if(d.startsWith('/')&&!d.startsWith('//')){window.location.href=d;return;}}
+      if(/valoraci|reseñ|reputaci/i.test(`${r.title||''} ${r.message||''}`)){window.location.href='customer-profile.html?view=ratings';return;}
       if(/bienvenid|explora|servicios/i.test(`${r.title||''} ${r.message||''}`)){isOpen=false;render();return;}
       window.location.href='customer-profile.html?view=profile';
     }
@@ -110,7 +103,6 @@
       const tasks=[
         client.rpc('get_customer_notifications',{p_limit:50}).then(x=>({kind:'booking',...x})).catch(error=>({kind:'booking',error})),
         client.rpc('get_welcome_notifications',{p_limit:50}).then(x=>({kind:'welcome',...x})).catch(error=>({kind:'welcome',error})),
-        // Fuente central: incluye reputation_updated y review_received.
         client.rpc('get_app_notifications',{p_limit:50}).then(x=>({kind:'app',...x})).catch(error=>({kind:'app',error}))
       ];
       const results=await Promise.all(tasks); const next=[];let success=0;
@@ -124,7 +116,7 @@
           }else if(res.kind==='welcome'){
             next.push({...n,title:n.title||'¡Bienvenido a Agenda Ya!',message:n.message||'Descubre los servicios disponibles en Agenda Ya.',source:'welcome'});
           }else{
-            next.push({...n,booking_id:n.booking_id||n.metadata?.booking_id||null,title:n.title||'Notificación de Agenda YA',message:n.message||'Tienes una actualización en Agenda YA.',source:'app'});
+            next.push({...n,source:'app',notification_type:n.notification_type||n.type||'notification',booking_id:n.booking_id||n.metadata?.booking_id||null,message:n.message||'Tienes una actualización en Agenda Ya.'});
           }
         }
       }
@@ -134,7 +126,7 @@
       if(!success){list.innerHTML='<div class="market-notifications-error">No se pudieron cargar las notificaciones. Comprueba tu conexión e inténtalo nuevamente.</div>';if(dot)dot.hidden=false;return;}
       render();
     }
-    async function toggle(){isOpen=!isOpen;render();if(isOpen){await loadNotifications();if(rows.some(r=>!r.read_at)){const pending=rows.filter(r=>!r.read_at);const jobs=[];if(pending.some(r=>r.source==='booking'))jobs.push(client.rpc('mark_customer_notifications_read'));if(pending.some(r=>r.source==='welcome'))jobs.push(client.rpc('mark_welcome_notifications_read'));if(pending.some(r=>r.source==='app'))jobs.push(client.rpc('mark_agenda_notifications_read'));if(jobs.length){await Promise.all(jobs.map(p=>p.catch(()=>null)));await loadNotifications();}}}}
+    async function toggle(){isOpen=!isOpen;render();if(isOpen){await loadNotifications();if(rows.some(r=>!r.read_at)){const pending=rows.filter(r=>!r.read_at);const jobs=[];if(pending.some(r=>r.source==='booking'))jobs.push(client.rpc('mark_customer_notifications_read'));if(pending.some(r=>r.source==='welcome'))jobs.push(client.rpc('mark_welcome_notifications_read'));if(pending.some(r=>r.source==='app'))jobs.push(client.rpc('mark_app_notifications_read',{p_notification_id:null}));if(jobs.length){await Promise.all(jobs.map(p=>p.catch(()=>null)));await loadNotifications();}}}}
     button.addEventListener('click',toggle);
     panel.querySelector('.market-notifications-close').addEventListener('click',()=>{isOpen=false;render()});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isOpen){isOpen=false;render()}});
