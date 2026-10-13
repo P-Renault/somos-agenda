@@ -9,7 +9,14 @@
   const PENDING_KEY = 'agendaYaPendingBooking';
   const PENDING_TTL = 2 * 60 * 60 * 1000;
   function savePendingDraft(draft){
-    const payload = {...draft, savedAt: Date.now()};
+    const previous = readPendingDraft();
+    const sameFlow = previous?.slug && previous.slug === draft?.slug;
+    const payload = {
+      ...draft,
+      flowStartedAt: draft?.flowStartedAt || (sameFlow ? previous.flowStartedAt : null) || Date.now(),
+      profilePendingContext: draft?.profilePendingContext || (sameFlow ? previous.profilePendingContext : null) || null,
+      savedAt: Date.now()
+    };
     const raw = JSON.stringify(payload);
     sessionStorage.setItem(PENDING_KEY, raw);
     localStorage.setItem(PENDING_KEY, raw);
@@ -217,7 +224,7 @@
     if(options.scroll !== false) $('bookingPanel').scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeBooking(){ $('bookingPanel').hidden=true; }
-  function draftFromForm(){return {slug:profileData?.business?.slug||params().get('slug')||'',date:bookingSelectedDate,serviceId:bookingSelectedService,professionalId:bookingSelectedProfessional,slot:bookingSelectedSlot,firstName:$('bookingFirstName').value.trim(),lastName:$('bookingLastName').value.trim(),email:$('bookingEmail').value.trim(),phone:$('bookingPhone').value.trim(),notes:$('bookingNotes').value.trim(),returnUrl:`public-profile.html?slug=${encodeURIComponent(profileData?.business?.slug||params().get('slug')||'')}`};}
+  function draftFromForm(){const slug=profileData?.business?.slug||params().get('slug')||'';const prior=readPendingDraft();return {slug,date:bookingSelectedDate,serviceId:bookingSelectedService,professionalId:bookingSelectedProfessional,slot:bookingSelectedSlot,firstName:$('bookingFirstName').value.trim(),lastName:$('bookingLastName').value.trim(),email:$('bookingEmail').value.trim(),phone:$('bookingPhone').value.trim(),notes:$('bookingNotes').value.trim(),profilePendingContext:prior?.slug===slug?prior.profilePendingContext:null,flowStartedAt:prior?.slug===slug?prior.flowStartedAt:null,returnUrl:`public-profile.html?slug=${encodeURIComponent(slug)}`};}
   function persistBookingDraft(){
     const d=draftFromForm();
     if(d.slug&&d.date&&d.serviceId&&d.professionalId&&d.slot?.start){
@@ -251,13 +258,27 @@
     if(!bookingSelectedService||!bookingSelectedProfessional||!bookingSelectedDate||!bookingSelectedSlot){$('bookingStatus').textContent='Selecciona servicio, profesional, fecha y horario.';return;}
     const first=$('bookingFirstName').value.trim(),last=$('bookingLastName').value.trim(),email=$('bookingEmail').value.trim(),phone=$('bookingPhone').value.trim();
     if(!first||!last||(!email&&!phone)){ $('bookingStatus').textContent='Completa nombre, apellido y al menos un medio de contacto.';return; }
-    if(!bookingSession){ savePendingDraft(draftFromForm());$('bookingStatus').textContent='Necesitas iniciar sesión para confirmar la reserva. Tu selección quedará guardada.';$('bookingAuthNotice').hidden=false;$('bookingLogin').focus();return; }
+    if(!bookingSession){ savePendingDraft({...draftFromForm(),profilePendingContext:'reservation_signup'});$('bookingStatus').textContent='Necesitas iniciar sesión para confirmar la reserva. Tu selección quedará guardada.';$('bookingAuthNotice').hidden=false;$('bookingLogin').focus();return; }
     const service=bookingServices().find(x=>x.id===bookingSelectedService),start=bookingSelectedSlot.start,end=bookingSelectedSlot.end;
     const btn=$('confirmBooking');btn.disabled=true;btn.textContent='Confirmando…';$('bookingStatus').textContent='Verificando disponibilidad…';
     const r=await client.rpc('create_public_booking',{p_slug:profileData.business.slug,p_client_first_name:first,p_client_last_name:last,p_client_email:email||null,p_client_phone:phone||null,p_service_id:service.id,p_professional_id:bookingSelectedProfessional,p_booking_date:bookingSelectedDate,p_start_time:start,p_end_time:end,p_notes:$('bookingNotes').value.trim()||null});
     btn.disabled=false;btn.textContent='Confirmar reserva →';
     if(r.error){const map={AUTH_REQUIRED:'Tu sesión expiró. Inicia sesión nuevamente.',BOOKING_OVERLAP:'Ese horario acaba de ser ocupado. Elige otro horario.',OUTSIDE_SCHEDULE:'Ese horario está fuera del horario del profesional.',OUTSIDE_AVAILABILITY:'Ese horario ya no está disponible.',SERVICE_NOT_AVAILABLE:'El servicio seleccionado ya no está disponible.',PROFESSIONAL_NOT_AVAILABLE:'El profesional seleccionado ya no está disponible.',BOOKING_DURATION_INVALID:'La duración del servicio no coincide con el horario seleccionado.'};$('bookingStatus').textContent=map[r.error.message]||r.error.message;bookingContextByDate.delete(bookingSelectedDate);await renderBookingCalendar();return;}
-    const x=r.data||{};$('bookingSuccess').hidden=false;$('bookingSuccessText').textContent=`${x.service_name||service.name} con ${x.professional_name||'el profesional seleccionado'}, el ${formatDate(bookingSelectedDate)} de ${formatTime(x.start_time||start)} a ${formatTime(x.end_time||end)}. Tu solicitud quedó registrada como pendiente.`;$('bookingStatus').textContent='';clearPendingDraft();bookingContextByDate.delete(bookingSelectedDate);
+    const x=r.data||{};
+    const pendingFlow=readPendingDraft();
+    if(pendingFlow?.profilePendingContext==='reservation_signup'){
+      try{
+        const session=await client.auth.getSession();
+        const user=session.data?.session?.user;
+        const createdAt=Date.parse(user?.created_at||'');
+        const flowStartedAt=Number(pendingFlow.flowStartedAt||pendingFlow.savedAt||0);
+        if(user?.id&&Number.isFinite(createdAt)&&flowStartedAt>0&&createdAt>=flowStartedAt-30000){
+          const notify=await client.rpc('create_customer_profile_pending_notification',{p_context:'reservation_signup',p_booking_id:x.booking_id||x.id||null});
+          if(notify.error&&!/does not exist|Could not find the function/i.test(notify.error.message||''))console.warn('Agenda YA profile pending notification:',notify.error.message);
+        }
+      }catch(notificationError){console.warn('Agenda YA profile pending notification:',notificationError?.message||notificationError);}
+    }
+    $('bookingSuccess').hidden=false;$('bookingSuccessText').textContent=`${x.service_name||service.name} con ${x.professional_name||'el profesional seleccionado'}, el ${formatDate(bookingSelectedDate)} de ${formatTime(x.start_time||start)} a ${formatTime(x.end_time||end)}. Tu solicitud quedó registrada como pendiente.`;$('bookingStatus').textContent='';clearPendingDraft();bookingContextByDate.delete(bookingSelectedDate);
   }
 
   $('reserveButton').addEventListener('click',openBooking);
@@ -273,12 +294,47 @@
     window.location.href=href;
   });
 
+  function visitorKey(){
+    const key='agendaYaPublicProfileVisitorKey';
+    try{
+      let value=sessionStorage.getItem(key);
+      if(!value){
+        if(window.crypto?.randomUUID)value=window.crypto.randomUUID();
+        else {const bytes=new Uint8Array(16);window.crypto?.getRandomValues?.(bytes);value=[...bytes].map((b,i)=>((i===4?b&15|64:i===6?b&63|128:b).toString(16).padStart(2,'0'))).join('');}
+        if(!/^[0-9a-f-]{32,36}$/i.test(value||''))value='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16);});
+        sessionStorage.setItem(key,value);
+      }
+      return value;
+    }catch(_){return window.crypto?.randomUUID?.()||null;}
+  }
+  async function recordPublicProfileView(data){
+    const businessId=data?.business?.id||data?.business_id;
+    if(!businessId||!client)return;
+    try{
+      const key=visitorKey();
+      if(!key)return;
+      const result=await client.rpc('record_business_profile_view',{p_business_id:businessId,p_visitor_key:key});
+      if(result.error&&!/does not exist|Could not find the function/i.test(result.error.message||''))console.warn('Agenda YA profile view:',result.error.message);
+    }catch(error){console.warn('Agenda YA profile view:',error?.message||error);}
+  }
+
   async function init(){
     if(!client)return showError('No fue posible inicializar la conexión con Agenda Ya.');
     const slug=params().get('slug')?.trim();if(!slug)return showError('Este enlace no contiene el identificador público del negocio.');
     const r=await client.rpc('get_public_business_profile',{p_slug:slug});
     if(r.error||!r.data){const msg=r.error?.message||'';if(/NOT_FOUND|not found/i.test(msg))return showError('El negocio no existe o ya no está disponible públicamente.');if(/NOT_PUBLISHED|published/i.test(msg))return showError('Este negocio todavía no está publicado en el marketplace.');return showError('No pudimos cargar el perfil público en este momento.');}
     render(r.data);
+    // Count one authenticated customer visit per business/day; errors never block the public profile.
+    try {
+      const session = await client.auth.getSession();
+      const businessId = r.data?.business?.id || r.data?.business_id || null;
+      if (session.data?.session?.user && businessId) {
+        const viewResult = await client.rpc('record_business_profile_view', { p_business_id: businessId });
+        if (viewResult.error && !/does not exist|Could not find the function/i.test(viewResult.error.message||'')) {
+          console.warn('Agenda YA profile view notification:', viewResult.error.message);
+        }
+      }
+    } catch (viewError) { console.warn('Agenda YA profile view notification:', viewError?.message || viewError); }
     const pending=readPendingDraft();
     const currentSlug=r.data?.business?.slug || slug;
     if(pending?.slug === currentSlug){

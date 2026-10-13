@@ -1,0 +1,50 @@
+AGENDA YA 5.0 — Integración de notificaciones B1
+Base auditada: somos-agenda-Backup-5.0-producci-n (11).zip
+
+CONTENIDO (solo archivos completos modificados o nueva migración):
+- auth.js
+- explorer.js
+- customer-data-engine.js
+- customer-profile.js
+- business-notification-engine.js
+- public/business-notification-engine.js
+- public-profile.js
+- supabase/migrations/002_unified_notification_events_v1.sql
+
+BRECHAS DETECTADAS EN LA BASE:
+1. El frontend consultaba get_app_notifications, función que no estaba en el inventario SQL compartido.
+2. Las vistas cliente, marketplace y negocio no consultaban consistentemente agenda_notifications.
+3. No existía get_agenda_notifications / mark_agenda_notifications_read en el inventario entregado.
+4. No había registro de vistas de perfiles públicos conectado desde public-profile.js.
+5. No estaba implementada la notificación contextual de perfil cliente pendiente para registro durante reserva o acceso social.
+6. No se detectó un generador adicional de aviso por cambio de fecha/hora, solicitud de evaluación al completar la reserva, ticket recibido/en curso ni recordatorios programados.
+
+QUÉ SE CONSERVA:
+- Los motores existentes de estados de reserva, pagos, cambio de plan, bienvenida y reputación.
+- El trigger ay_notify_reputation_review ya instalado por el usuario; esta migración NO lo reemplaza ni crea otro trigger de reputación.
+- El contrato de los RPC existentes get_customer_notifications, get_business_notifications y funciones mark_* existentes.
+- La UI actual de campana y panel; no se añaden botones extra.
+
+QUÉ AGREGA LA MIGRACIÓN:
+- Consulta y marcado de lectura de agenda_notifications, filtrados por auth.uid().
+- Notificación contextual customer_profile_incomplete solo cuando se llama desde reservation_signup o social_auth y se comprueba que el perfil sigue incompleto.
+- Resolución del aviso cuando el perfil cliente queda completo.
+- Aviso de perfil público de negocio incompleto, sin considerar public_enabled como campo de perfil obligatorio.
+- Aviso por cambio de fecha/hora, solicitud de evaluación al completar reserva, vistas de perfil deduplicadas por visitante/perfil/día, tickets de soporte recibidos/en curso y generador de recordatorios de reservas a 24 h y vencimiento de suscripción a 7/5 días.
+- Si pg_cron está instalado, programa el generador cada 15 minutos; si no está instalado, se debe invocar generate_agenda_notification_reminders() desde un scheduler confiable.
+
+ORDEN DE DESPLIEGUE:
+1. En Supabase SQL Editor, ejecutar completo el archivo 002_unified_notification_events_v1.sql.
+2. Si termina sin error, reemplazar los archivos listados conservando sus rutas relativas en el proyecto.
+3. Publicar los cambios del frontend.
+4. Probar con cuentas de cliente y negocio: campana, lectura, navegación a reserva/evaluación, perfil pendiente, visita pública, ticket y recordatorios.
+
+VALIDACIÓN REALIZADA EN ESTE paquete:
+- Se comprobó la sintaxis JavaScript de los siete archivos JS con Node.js (node --check).
+- Se compararon las brechas con el ZIP base y el inventario de funciones/triggers compartido en conversación.
+- No se ejecutó la migración contra el proyecto Supabase real ni se probó la APK/producción desde este entorno. No considerar desplegado hasta completar los pasos anteriores.
+
+NOTA SOBRE EL FLUJO DE RESERVA:
+- La notificación de perfil cliente pendiente no se genera para todos los registros ni por cada login.
+- En el flujo de reserva se requiere que la cuenta haya sido creada durante ese flujo, que se complete una reserva y que el perfil siga incompleto.
+- En Google/Facebook, la función SQL verifica el proveedor social y el estado real del perfil.

@@ -34,6 +34,14 @@
     window.location.href = draft.returnUrl;
     return true;
   }
+  async function notifySocialCustomerProfilePending(user) {
+    if (!client || !user?.id) return;
+    // La función SQL valida el proveedor social y el estado real del perfil; aquí no se infiere.
+    try {
+      const result = await client.rpc('create_customer_profile_pending_notification', { p_context: 'social_auth', p_booking_id: null });
+      if (result.error && !/does not exist|Could not find the function/i.test(result.error.message || '')) console.warn('Agenda YA profile notification:', result.error.message);
+    } catch (error) { console.warn('Agenda YA profile notification:', error?.message || error); }
+  }
 
   function setStatus(text, kind = "") {
     status.textContent = text || "";
@@ -288,6 +296,7 @@
         profileType = "customer";
         document.body.dataset.profileType = "customer";
         window.AgendaYaProfile?.setRole?.("customer");
+        void notifySocialCustomerProfilePending(user);
         // Returning customer: resume a pending public booking before normal marketplace routing.
         if (goPendingBooking()) return;
         window.location.href = "explorer.html";
@@ -457,6 +466,7 @@
         avatar_url:avatar||null,updated_at:new Date().toISOString()
       },{onConflict:"id"});
       if(r.error) throw r.error;
+      void notifySocialCustomerProfilePending(currentUser);
       setProfileStatus(customerStatus,"Perfil cliente guardado. Abriendo Agenda Ya…","success");
       window.AgendaYaProfile?.setRole?.("customer");
       setTimeout(()=>{ if (!goPendingBooking()) window.location.href = "explorer.html"; }, 350);

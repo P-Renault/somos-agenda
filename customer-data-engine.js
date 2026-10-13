@@ -88,33 +88,58 @@
   }
 
   async function fetchNotifications() {
-    const r = await client.rpc('get_customer_notifications', { p_limit: 50 });
-    if (r.error) throw r.error;
-    return (r.data || []).map(n => ({
-      id:n.id,
-      booking_id:n.booking_id,
-      target_module:'bookings',
-      target_id:n.booking_id,
-      event_type:'booking_status',
-      title: status(n.new_status) === 'confirmed' ? 'Reserva confirmada'
-        : status(n.new_status) === 'completed' ? 'Reserva completada'
-        : ['cancelled','rejected'].includes(status(n.new_status)) ? 'Reserva cancelada'
-        : status(n.new_status) === 'no_show' ? 'Reserva marcada como no asistida'
-        : 'Estado de reserva actualizado',
-      text:`${n.service_name || 'Servicio'} · ${n.business_name || 'Negocio'}`,
-      status:status(n.new_status),
-      previous_status:status(n.previous_status),
-      date:n.booking_date,
-      time:time(n.start_time),
-      read_at:n.read_at,
-      created_at:n.created_at
-    }));
+    const jobs = await Promise.allSettled([
+      client.rpc('get_customer_notifications', { p_limit: 50 }).then(r => ({ source: 'booking', ...r })),
+      client.rpc('get_agenda_notifications', { p_limit: 100 }).then(r => ({ source: 'agenda', ...r })),
+      client.rpc('get_welcome_notifications', { p_limit: 50 }).then(r => ({ source: 'welcome', ...r }))
+    ]);
+    const rows = [];
+    for (const job of jobs) {
+      if (job.status !== 'fulfilled' || job.value?.error) continue;
+      const { source, data } = job.value;
+      for (const n of Array.isArray(data) ? data : []) {
+        if (source === 'booking') {
+          rows.push({
+            id:n.id, booking_id:n.booking_id, target_module:'bookings', target_id:n.booking_id,
+            event_type:'booking_status', source, title: status(n.new_status) === 'confirmed' ? 'Reserva confirmada'
+              : status(n.new_status) === 'completed' ? 'Reserva completada'
+              : ['cancelled','rejected'].includes(status(n.new_status)) ? 'Reserva cancelada'
+              : status(n.new_status) === 'no_show' ? 'Reserva marcada como no asistida' : 'Estado de reserva actualizado',
+            text:`${n.service_name || 'Servicio'} · ${n.business_name || 'Negocio'}`,
+            status:status(n.new_status), previous_status:status(n.previous_status), date:n.booking_date,
+            time:time(n.start_time), read_at:n.read_at, created_at:n.created_at
+          });
+        } else {
+          const metadata=n.metadata||n.data||{};
+          rows.push({ ...n, source, metadata, booking_id:n.booking_id||metadata.booking_id||null,
+            event_type:metadata.event_type||n.notification_type||source,
+            target_module:metadata.target_module||null, target_id:metadata.target_id||null,
+            title:n.title||'Notificación de Agenda Ya', text:n.message||n.text||'Tienes una actualización en Agenda Ya.',
+            date:metadata.booking_date||n.booking_date||null, time:time(metadata.start_time||n.start_time),
+            read_at:n.read_at||null, created_at:n.created_at });
+        }
+      }
+    }
+    const seen=new Set();
+    return rows.filter(n=>{
+      const m=n.metadata||{};
+      const type=String(n.notification_type||n.type||n.event_type||'').toLowerCase();
+      const key=(n.source==='welcome'||type.includes('welcome'))
+        ? `welcome:${String(n.title||'').trim().toLowerCase()}`
+        : (m.idempotency_key||n.idempotency_key||`${n.event_type||n.source}:${n.booking_id||m.booking_id||''}:${n.review_id||m.review_id||''}:${n.title||''}:${n.created_at||''}`);
+      if(seen.has(key))return false;seen.add(key);return true;
+    }).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
   }
 
   async function markNotificationsRead() {
-    const r = await client.rpc('mark_customer_notifications_read');
-    if (r.error) throw r.error;
-    return Number(r.data || 0);
+    const results = await Promise.allSettled([
+      client.rpc('mark_customer_notifications_read'),
+      client.rpc('mark_agenda_notifications_read'),
+      client.rpc('mark_welcome_notifications_read')
+    ]);
+    const failed = results.find(x => x.status === 'rejected' || x.value?.error);
+    if (failed && results.every(x => x.status === 'rejected' || x.value?.error)) throw (failed.reason || failed.value.error);
+    return results.reduce((n,x)=>n+(x.status==='fulfilled'&&!x.value.error?Number(x.value.data||0):0),0);
   }
 
   async function fetchRatingsAndReputation() {
@@ -135,18 +160,19 @@
     const list = document.getElementById('cpNotifications');
     const badge = document.getElementById('cpNotificationBadge');
     if (!list) return;
+    window.__AgendaYaCustomerNotificationRows = notifications || [];
     if (!notifications.length) {
       list.innerHTML = '<div class="cp-empty">No hay actividad reciente de reservas.</div>';
       if (badge) badge.hidden = true;
       return;
     }
-    list.innerHTML = notifications.map(n =>
-      `<article class="cp-notification-item">
+    list.innerHTML = notifications.map((n, index) =>
+      `<article class="cp-notification-item cp-notification-clickable" data-notification-index="${index}" role="button" tabindex="0">
         <span class="cp-notification-dot ${esc(n.status)}"></span>
         <div>
           <strong>${esc(n.title)}</strong>
           <p>${esc(n.text)}</p>
-          <small>${esc(dateLabel(n.date))} · ${esc(n.time)}</small>
+          <small>${esc(n.date ? dateLabel(n.date) : (n.created_at ? new Date(n.created_at).toLocaleDateString('es-CL') : ''))}${n.time ? ' · '+esc(n.time) : ''}</small>
         </div>
       </article>`
     ).join('');
