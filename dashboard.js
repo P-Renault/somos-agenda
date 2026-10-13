@@ -177,6 +177,13 @@
     if (timeline) timeline.innerHTML = `<div><span>${message}</span></div>`;
   }
 
+  if (!document.getElementById("ayUpcomingBookingInteractionStyle")) {
+    const style = document.createElement("style");
+    style.id = "ayUpcomingBookingInteractionStyle";
+    style.textContent = `.ay-upcoming-booking{display:grid;grid-template-columns:68px 4px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;box-sizing:border-box;padding:18px 14px;text-align:left;cursor:pointer;font:inherit;color:inherit;border:0;background:#f6f9fe;border-radius:14px;transition:background .15s,box-shadow .15s}.ay-upcoming-booking:hover,.ay-upcoming-booking:focus-visible{background:#edf5ff;box-shadow:0 0 0 2px #c9e0ff;outline:none}.ay-upcoming-booking mark{justify-self:end}`;
+    document.head.appendChild(style);
+  }
+
   async function loadTodayBookings() {
     const today = todayISO();
     setText("ayTodayLabel", formatToday());
@@ -202,8 +209,20 @@
         const time = String(b.start_time || "").slice(0, 5);
         const date = b.booking_date && b.booking_date !== today ? new Intl.DateTimeFormat("es-CL", {day:"2-digit",month:"2-digit"}).format(new Date(`${b.booking_date}T12:00:00`)) : "Hoy";
         const status = labelStatus[b.status] || b.status || "Registrada";
-        return `<div class="ay-list-row"><b>${escapeHtml(time)}</b><span class="ay-dot"></span><div><strong>${escapeHtml(serviceName)}</strong><small>${escapeHtml(date)} · ${escapeHtml(clientName)}${professionalName ? ` · con ${escapeHtml(professionalName)}` : ""}</small></div><mark>${escapeHtml(status)}</mark></div>`;
+        return `<button type="button" class="ay-list-row ay-upcoming-booking" data-ay-open-booking="${escapeHtml(b.id)}" aria-label="Abrir reserva de ${escapeHtml(clientName)}: ${escapeHtml(serviceName)}"><b>${escapeHtml(time)}</b><span class="ay-dot"></span><div><strong>${escapeHtml(serviceName)}</strong><small>${escapeHtml(date)} · ${escapeHtml(clientName)}${professionalName ? ` · con ${escapeHtml(professionalName)}` : ""}</small></div><mark>${escapeHtml(status)}</mark></button>`;
       }).join("") || `<div class="ay-list-row"><div><strong>No hay próximas reservas</strong><small>Las nuevas reservas aparecerán aquí automáticamente.</small></div></div>`;
+    }
+
+    const upcomingList = $("ayUpcomingBookings");
+    if (upcomingList && !upcomingList.dataset.bookingNavigationBound) {
+      upcomingList.dataset.bookingNavigationBound = "1";
+      upcomingList.addEventListener("click", event => {
+        const item = event.target.closest("[data-ay-open-booking]");
+        if (!item) return;
+        const id = item.dataset.ayOpenBooking;
+        if (window.AgendaYaModules?.openBooking) void window.AgendaYaModules.openBooking(id);
+        else if (window.AgendaYaUI?.activate) window.AgendaYaUI.activate("bookings");
+      });
     }
 
     const timeline = $("ayTodayTimeline");

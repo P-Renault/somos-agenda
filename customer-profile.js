@@ -63,7 +63,7 @@
 
   function reservationCard(row){
     const d=dateLabel(row.booking_date),service=row.services?.name||'Servicio',business=row.businesses?.name||'Negocio',slug=row.businesses?.slug||'',pro=[row.professionals?.first_name,row.professionals?.last_name].filter(Boolean).join(' '),href=slug?`public-profile.html?slug=${encodeURIComponent(slug)}`:'explorer.html';
-    return `<article class="cp-reservation-card"><div class="cp-date-box"><strong>${esc(d.day)}</strong><small>${esc(d.month)}</small></div><div><h3>${esc(service)}</h3><div class="cp-business">${esc(business)}</div><div class="cp-meta"><span>▣ ${esc(d.full)}</span><span>◷ ${esc(timeLabel(row.start_time))}–${esc(timeLabel(row.end_time))}</span>${pro?`<span>♙ ${esc(pro)}</span>`:''}</div><div class="cp-res-actions"><a class="cp-text-link" href="${esc(href)}">Ver negocio →</a></div></div><div class="cp-status-wrap"><span class="cp-status ${statusClass(row.status)}">${esc(statusLabel(row.status))}</span></div></article>`;
+    return `<article class="cp-reservation-card" data-booking-id="${esc(row.id)}"><div class="cp-date-box"><strong>${esc(d.day)}</strong><small>${esc(d.month)}</small></div><div><h3>${esc(service)}</h3><div class="cp-business">${esc(business)}</div><div class="cp-meta"><span>▣ ${esc(d.full)}</span><span>◷ ${esc(timeLabel(row.start_time))}–${esc(timeLabel(row.end_time))}</span>${pro?`<span>♙ ${esc(pro)}</span>`:''}</div><div class="cp-res-actions"><a class="cp-text-link" href="${esc(href)}">Ver negocio →</a></div></div><div class="cp-status-wrap"><span class="cp-status ${statusClass(row.status)}">${esc(statusLabel(row.status))}</span></div></article>`;
   }
 
   function renderReservations(){
@@ -161,7 +161,11 @@
           message:n.text||'Tu reserva tiene una actualización.',
           created_at:n.created_at,
           read_at:n.read_at,
-          source:'booking-status'
+          source:'booking-status',
+          booking_id:n.booking_id||n.target_id||null,
+          target_id:n.target_id||n.booking_id||null,
+          target_module:n.target_module||'bookings',
+          event_type:n.event_type||'booking_status'
         })));
       }catch(e){
         console.warn('Agenda YA customer booking notifications:',e?.message||e);
@@ -174,11 +178,35 @@
     const unique=new Map();
     rows.forEach(n=>unique.set(String(n.source||'general')+':'+String(n.id||`${n.title}:${n.created_at}`),n));
     const sorted=[...unique.values()].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
-    box.innerHTML=sorted.length?sorted.map(n=>`<article class="cp-review-item" style="padding:12px 4px;border-bottom:1px solid #e8edf4"><strong>${esc(n.title||'Agenda YA')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda YA.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small></article>`).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
+    box.innerHTML=sorted.length?sorted.map((n,i)=>`<button type="button" class="cp-review-item cp-notification-link" data-notification-index="${i}" style="display:block;width:100%;text-align:left;padding:12px 4px;border:0;border-bottom:1px solid #e8edf4;background:transparent;cursor:pointer;color:inherit"><strong>${esc(n.title||'Agenda YA')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda YA.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small></button>`).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
+    box.onclick=async event=>{
+      const item=event.target.closest('[data-notification-index]');if(!item)return;
+      const n=sorted[Number(item.dataset.notificationIndex)];if(!n)return;
+      closeOverlays();
+      const module=String(n.target_module|| (n.booking_id||n.target_id?'bookings':'')).toLowerCase();
+      const target=String(n.target_id||n.booking_id||'');
+      if(module.includes('booking')||module.includes('reservation')||module==='reservas'){
+        activate('reservations');
+        try{await loadCustomerEngine();}catch(_){}
+        const card=[...document.querySelectorAll('[data-booking-id]')].find(el=>el.dataset.bookingId===target);
+        if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.add('cp-notification-target');setTimeout(()=>card.classList.remove('cp-notification-target'),2200);}
+        return;
+      }
+      if(module.includes('rating')||module.includes('review')||module.includes('comment')){
+        activate('ratings');
+        const id=String(n.target_id||n.rating_id||n.comment_id||'');
+        const card=[...document.querySelectorAll('[data-rating-id],[data-comment-id],[data-rating-booking]')].find(el=>el.dataset.ratingId===id||el.dataset.commentId===id||el.dataset.ratingBooking===id);
+        card?.scrollIntoView({behavior:'smooth',block:'center'});
+        return;
+      }
+      if(n.target_url){location.href=n.target_url;return;}
+      if(target&&module){console.info('Agenda YA: el evento notificado no tiene un destino navegable configurado.',{module,target});}
+    };
     const badge=$('cpNotificationBadge'),unread=sorted.filter(n=>!n.read_at).length;
     if(badge){badge.textContent=String(unread);badge.hidden=unread===0;}
   }
 
+  if(!document.getElementById('cpNotificationTargetStyle')){const st=document.createElement('style');st.id='cpNotificationTargetStyle';st.textContent='.cp-notification-target{outline:3px solid #1b73e8!important;outline-offset:3px;border-radius:14px!important;transition:outline-color .2s} .cp-notification-link:hover,.cp-notification-link:focus-visible{background:#f2f7ff!important}';document.head.appendChild(st);}
   async function openNotifications(){
     closeOverlays();$('cpNotificationPanel').hidden=false;$('cpBackdrop').hidden=false;
     await loadCustomerNotifications();

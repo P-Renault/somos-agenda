@@ -93,6 +93,9 @@
     return (r.data || []).map(n => ({
       id:n.id,
       booking_id:n.booking_id,
+      target_module:'bookings',
+      target_id:n.booking_id,
+      event_type:'booking_status',
       title: status(n.new_status) === 'confirmed' ? 'Reserva confirmada'
         : status(n.new_status) === 'completed' ? 'Reserva completada'
         : ['cancelled','rejected'].includes(status(n.new_status)) ? 'Reserva cancelada'

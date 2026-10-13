@@ -16,7 +16,7 @@
     .ay-b13-notif-panel[hidden]{display:none!important}.ay-b13-notif-head{padding:17px 18px 13px;border-bottom:1px solid #e8edf4;display:flex;align-items:center;justify-content:space-between;gap:12px}
     .ay-b13-notif-head strong{font-size:18px;color:#152f55}.ay-b13-notif-head small{display:block;color:#7b8798;margin-top:3px;font-size:12px}
     .ay-b13-notif-close{border:0;background:#f3f6fa;border-radius:10px;width:34px;height:34px;font-size:21px;cursor:pointer;color:#243b5d}
-    .ay-b13-notif-list{overflow:auto;padding:8px}.ay-b13-notif-item{padding:13px 12px;border-radius:14px;margin:3px 0;background:#fff;border:1px solid transparent}
+    .ay-b13-notif-list{overflow:auto;padding:8px}.ay-b13-notif-item{padding:13px 12px;border-radius:14px;margin:3px 0;background:#fff;border:1px solid transparent;font:inherit;box-sizing:border-box}.ay-b13-notif-item:hover,.ay-b13-notif-item:focus-visible{background:#f1f7ff;border-color:#dceaff}
     .ay-b13-notif-item.is-unread{background:#f5f9ff;border-color:#dceaff}.ay-b13-notif-item strong{display:block;color:#18345b;font-size:14px;line-height:1.35}
     .ay-b13-notif-item p{margin:5px 0;color:#68778b;font-size:13px;line-height:1.4}.ay-b13-notif-item small{color:#98a3b2;font-size:11px}
     .ay-b13-notif-empty{padding:38px 18px;text-align:center;color:#7c899a;font-size:14px}
@@ -33,13 +33,20 @@
     return true;
   }
   function normalize(r,kind){
-    if(kind==='reservation')return {id:'reservation:'+r.id,kind,title:r.service_name||'Reserva actualizada',message:!r.previous_status?`Nueva reserva de ${r.client_name||'cliente'}.`:`Reserva de ${r.client_name||'cliente'}: ${label(r.previous_status)} → ${label(r.new_status)}.`,created_at:r.created_at||r.booking_date,read_at:r.read_at,detail:r.booking_date&&`${r.booking_date}${r.start_time?' · '+String(r.start_time).slice(0,5):''}`};
-    return {id:kind+':'+r.id,kind,title:r.title||'Notificación',message:r.message||'',created_at:r.created_at,read_at:r.read_at,detail:r.payment_status?('Estado: '+label(r.payment_status)):''};
+    if(kind==='reservation')return {id:'reservation:'+r.id,kind,title:r.service_name||'Reserva actualizada',message:!r.previous_status?`Nueva reserva de ${r.client_name||'cliente'}.`:`Reserva de ${r.client_name||'cliente'}: ${label(r.previous_status)} → ${label(r.new_status)}.`,created_at:r.created_at||r.booking_date,read_at:r.read_at,detail:r.booking_date&&`${r.booking_date}${r.start_time?' · '+String(r.start_time).slice(0,5):''}`,target_module:'bookings',target_id:r.booking_id||r.target_id||r.id,booking_id:r.booking_id||r.target_id||r.id};
+    return {id:kind+':'+r.id,kind,title:r.title||'Notificación',message:r.message||'',created_at:r.created_at,read_at:r.read_at,detail:r.payment_status?('Estado: '+label(r.payment_status)):'',target_module:r.target_module||r.entity_type||r.related_type||'',target_id:r.target_id||r.booking_id||r.related_id||r.entity_id||'',target_url:r.target_url||r.url||''};
   }
   function render(){
     let p=$('#ayB13BusinessNotifPanel');if(!p){p=document.createElement('section');p.id='ayB13BusinessNotifPanel';p.className='ay-b13-notif-panel';p.hidden=true;p.setAttribute('role','dialog');p.setAttribute('aria-label','Notificaciones');document.body.appendChild(p);}
-    p.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread?`${state.unread} sin leer`:'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map(r=>`<article class="ay-b13-notif-item ${r.read_at?'':'is-unread'}"><strong>${esc(r.title)}</strong><p>${esc(r.message)}</p><small>${esc(fmtDate(r.created_at))}${r.detail?' · '+esc(r.detail):''}</small></article>`).join(''):'<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>'}</div>`;
+    p.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread?`${state.unread} sin leer`:'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map((r,i)=>`<button type="button" class="ay-b13-notif-item ${r.read_at?'':'is-unread'}" data-ay-notif-index="${i}" style="display:block;width:100%;text-align:left;cursor:pointer;color:inherit"><strong>${esc(r.title)}</strong><p>${esc(r.message)}</p><small>${esc(fmtDate(r.created_at))}${r.detail?' · '+esc(r.detail):''}</small></button>`).join(''):'<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>'}</div>`;
     p.hidden=!state.open;$('.ay-b13-notif-close',p)?.addEventListener('click',close);
+    p.querySelectorAll('[data-ay-notif-index]').forEach(item=>item.addEventListener('click',()=>{
+      const r=state.rows[Number(item.dataset.ayNotifIndex)];if(!r)return;close();
+      const mod=String(r.target_module||'').toLowerCase(),id=String(r.target_id||r.booking_id||'');
+      if((mod.includes('booking')||mod.includes('reservation')||mod==='reservas')&&id&&window.AgendaYaModules?.openBooking){void window.AgendaYaModules.openBooking(id);return;}
+      if(r.target_url){window.location.href=r.target_url;return;}
+      if(id&&mod){window.dispatchEvent(new CustomEvent('agendaYa:notification-target',{detail:{module:mod,id,notification:r}}));}
+    }));
     const badge=$('.ay-b13-notif-badge');if(badge){badge.textContent=state.unread>99?'99+':String(state.unread);badge.hidden=state.unread<1;}
     getButton()?.setAttribute('aria-expanded',state.open?'true':'false');
   }

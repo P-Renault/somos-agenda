@@ -19,6 +19,7 @@
     calendarCursor: new Date(), calendarSelected: null, calendarProfessional: "all",
     editing: {}
   };
+  let requestedBookingId = null;
 
   const $ = (id) => document.getElementById(id);
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));
@@ -442,7 +443,15 @@
       else if(currentView==="schedules")await renderSchedules();
       else if(currentView==="availability")await renderAvailability();
       else if(currentView==="clients")await renderClients();
-      else if(currentView==="bookings")await renderBookings();
+      else if(currentView==="bookings"){
+        await renderBookings();
+        if(requestedBookingId){
+          const id=requestedBookingId;requestedBookingId=null;
+          const booking=state.bookings.find(item=>String(item.id)===String(id));
+          if(booking) await bookingForm(booking);
+          else status("No se encontró la reserva solicitada en este negocio.","error");
+        }
+      }
       else if(currentView==="calendar")await renderCalendar();
       else if(currentView==="public-profile")await renderPublicProfile();
       else if(currentView==="settings")renderSettings();
@@ -507,7 +516,7 @@
       if (currentView !== view) void activate(view);
     }, 0);
   }, true);
-  window.AgendaYaModules={version:"1.3.1",activate,refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
+  window.AgendaYaModules={version:"1.3.1",activate,openBooking:(id)=>{if(!id)return;requestedBookingId=String(id);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate("bookings");else void activate("bookings");},refresh:()=>activate(currentView),getContext:()=>({user,business,role,businessId:businessId(),contextLoadedAt:contextState.loadedAt})};
   const initialView = window.AgendaYaUI?.getPendingView?.() || window.AgendaYaUI?.getCurrentView?.() || "dashboard";
   void activate(initialView);
 
