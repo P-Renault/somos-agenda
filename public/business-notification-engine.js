@@ -42,27 +42,31 @@
   function render(){
     let panel=$('#ayB13BusinessNotifPanel');
     if(!panel){panel=document.createElement('section');panel.id='ayB13BusinessNotifPanel';panel.className='ay-b13-notif-panel';panel.hidden=true;panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Notificaciones');document.body.appendChild(panel);}
-    panel.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread?`${state.unread} sin leer`:'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map(r=>`<article data-type="${esc(r.type||'booking')}" class="ay-b13-notif-item ${r.read_at?'':'is-unread'}"><strong>${esc(titleFor(r))}</strong><p>${esc(messageFor(r))}</p><small>${esc(fmtDate(dateFor(r)))}</small></article>`).join(''):'<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>'}</div>`;
+    panel.innerHTML=`<div class="ay-b13-notif-head"><div><strong>Notificaciones</strong><small>${state.unread?`${state.unread} sin leer`:'Todo al día'}</small></div><button class="ay-b13-notif-close" type="button" aria-label="Cerrar notificaciones">×</button></div><div class="ay-b13-notif-list">${state.rows.length?state.rows.map((r,i)=>`<article data-notification-index="${i}" data-type="${esc(r.type||r.kind||'booking')}" class="ay-b13-notif-item ${r.read_at?'':'is-unread'}" role="button" tabindex="0" style="cursor:pointer"><strong>${esc(titleFor(r))}</strong><p>${esc(messageFor(r))}</p><small>${esc(fmtDate(dateFor(r)))}</small></article>`).join(''):'<div class="ay-b13-notif-empty">No hay notificaciones todavía.</div>'}</div>`;
     panel.hidden=!state.open;
     const closeBtn=$('.ay-b13-notif-close',panel);if(closeBtn&&!closeBtn.dataset.bound){closeBtn.dataset.bound='1';closeBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();close();});}
+    const list=$('.ay-b13-notif-list',panel);if(list&&!list.dataset.eventBound){list.dataset.eventBound='1';const activateRow=el=>openBusinessEvent(state.rows[Number(el.dataset.notificationIndex)]);list.addEventListener('click',e=>{const el=e.target.closest('[data-notification-index]');if(el)activateRow(el);});list.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-notification-index]')){e.preventDefault();activateRow(e.target);}});}
     const badge=$('.ay-b13-notif-badge');if(badge){badge.textContent=state.unread>99?'99+':String(state.unread);badge.hidden=state.unread<1;}
     const btn=getButton();if(btn)btn.setAttribute('aria-expanded',state.open?'true':'false');
   }
+  function openBusinessEvent(r){if(!r)return;close();const bookingId=r.booking_id||(r.kind==='reservation'?String(r.id||'').replace(/^reservation:/,''):null);if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');else window.location.href='dashboard.html?view=bookings&booking_id='+encodeURIComponent(bookingId);return;}const type=String(r.kind||r.type||'').toLowerCase();if(type==='plan'||type==='plan_changed'||r.subscription_id){window.__AgendaYaPendingSubscriptionId=r.subscription_id||r.data?.subscription_id||null;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}if(type==='payment'||r.payment_id){window.__AgendaYaPendingPaymentId=r.payment_id||r.id;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}if(r.destination&&typeof r.destination==='string'&&!/^(javascript:|https?:\/\/)/i.test(r.destination)){location.href=r.destination;return;}if(r.target_module==='payments'||r.target_module==='subscriptions'||/welcome/.test(type)){if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate(/welcome/.test(type)?'dashboard':'settings');else location.href=/welcome/.test(type)?'dashboard.html':'dashboard.html?view=settings';return;}if(/review|rating|reputation/.test(type+' '+String(r.title||''))){if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');}else if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');}}
   function toggle(){state.open=!state.open;render();if(state.open)markRead();}
   function close(){state.open=false;const p=$('#ayB13BusinessNotifPanel');if(p)p.hidden=true;const b=getButton();if(b)b.setAttribute('aria-expanded','false');}
   async function load(){
     if(!state.client)return;
-    const [bookingResult,planResult,welcomeResult]=await Promise.all([
+    const [bookingResult,planResult,welcomeResult,paymentResult]=await Promise.all([
       state.client.rpc('get_business_notifications',{p_limit:50}),
       state.client.rpc('get_business_plan_notifications',{p_limit:50}),
-      state.client.rpc('get_welcome_notifications',{p_limit:50})
+      state.client.rpc('get_welcome_notifications',{p_limit:50}),
+      state.client.rpc('get_business_payment_notifications',{p_limit:50})
     ]);
     if(bookingResult.error){console.error('Agenda YA business notifications:',bookingResult.error);return;}
     if(planResult.error)console.error('Agenda YA plan notifications:',planResult.error);
-    const bookings=(Array.isArray(bookingResult.data)?bookingResult.data:[]).map(r=>({...r,type:r.type||'booking',title:r.title||r.service_name||'Reserva'}));
-    const plans=!planResult.error&&Array.isArray(planResult.data)?planResult.data:[];
-    const welcomes=!welcomeResult.error&&Array.isArray(welcomeResult.data)?welcomeResult.data:[];
-    state.rows=[...bookings,...plans,...welcomes].sort((a,b)=>new Date(dateFor(b)||0)-new Date(dateFor(a)||0)).slice(0,50);
+    const bookings=(Array.isArray(bookingResult.data)?bookingResult.data:[]).map(r=>({...r,kind:'reservation',booking_id:r.booking_id||r.id,title:r.title||r.service_name||'Reserva'}));
+    const plans=!planResult.error&&Array.isArray(planResult.data)?planResult.data.map(r=>({...r,kind:'plan',payment_id:r.payment_id||r.data?.payment_id||null,subscription_id:r.subscription_id||r.data?.subscription_id||null,data:r.data||null})):[];
+    const welcomes=!welcomeResult.error&&Array.isArray(welcomeResult.data)?welcomeResult.data.map(r=>({...r,kind:'welcome',destination:r.destination||r.data?.destination||null,data:r.data||null})):[];
+    const payments=!paymentResult.error&&Array.isArray(paymentResult.data)?paymentResult.data.map(r=>({...r,kind:'payment',payment_id:r.payment_id||r.id})):[];
+    state.rows=[...bookings,...plans,...welcomes,...payments].sort((a,b)=>new Date(dateFor(b)||0)-new Date(dateFor(a)||0)).slice(0,50);
     state.unread=state.rows.filter(x=>!x.read_at).length;render();
   }
   async function markRead(){
