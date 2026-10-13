@@ -9,7 +9,7 @@
   function fmtDate(d){if(!d)return '';try{return new Intl.DateTimeFormat('es-CL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(d));}catch(_){return String(d);}}
   function label(n){const x=String(n||'').toLowerCase();return ({pending:'Pendiente',confirmed:'Confirmada',completed:'Completada',cancelled:'Cancelada',rejected:'Rechazada'})[x]||x||'Actualizada';}
   function titleFor(r){return r.title || r.service_name || (r.type==='plan_changed'?'Cambio de plan':r.type?.endsWith('_welcome')?'Bienvenida':'Reserva');}
-  function messageFor(r){if(r.type==='plan_changed'||r.type?.endsWith('_welcome'))return r.message||'¡Bienvenido a Agenda Ya!';return !r.previous_status?`Nueva reserva de ${r.client_name||'cliente'}.`:`Reserva de ${r.client_name||'cliente'}: ${label(r.previous_status)} → ${label(r.new_status)}.`;}
+  function messageFor(r){if(r.message)return r.message;if(r.type==='plan_changed'||r.type?.endsWith('_welcome'))return '¡Bienvenido a Agenda Ya!';return !r.previous_status?`Nueva reserva de ${r.client_name||'cliente'}.`:`Reserva de ${r.client_name||'cliente'}: ${label(r.previous_status)} → ${label(r.new_status)}.`;}
   function dateFor(r){return r.created_at || r.booking_date || null;}
   function ensureStyles(){
     if($('#ayB13BusinessNotifStyles'))return;
@@ -75,8 +75,8 @@
   function openBusinessEvent(r){
     if(!r)return;
     close();
-    const type=String(r.kind||r.type||r.notification_type||'').toLowerCase();
-    const text=[type,r.title,r.message,r.target_type,r.data?.target_type].filter(Boolean).join(' ').toLowerCase();
+    const type=String(r.metadata?.event_type||r.notification_type||r.type||r.kind||'').toLowerCase();
+    const text=[type,r.title,r.message,r.target_type,r.data?.target_type,r.metadata?.target_type].filter(Boolean).join(' ').toLowerCase();
     const bookingId=r.booking_id||(r.kind==='reservation'?String(r.id||'').replace(/^reservation:/,''):null);
     // Las valoraciones se abren desde la reserva concreta a la que pertenecen.
     if(/review|rating|reputation|valoraci|reseñ|resen|calific/.test(text)){
@@ -96,6 +96,9 @@
       navigateToBusinessSection('billing','__AgendaYaPendingPaymentId',paymentId);
       return;
     }
+    if(/business_profile_incomplete|business_profile_view/.test(type)){if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('public-profile');else location.href='dashboard.html?view=public-profile';return;}
+    if(/subscription_renewal/.test(type)){navigateToBusinessSection('membership','__AgendaYaPendingSubscriptionId',r.subscription_id||r.metadata?.subscription_id);return;}
+    if(/support_ticket/.test(type)){window.__AgendaYaPendingSupportTicketId=r.metadata?.ticket_id||r.data?.ticket_id||null;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else location.href='dashboard.html?view=settings&focus=support-ticket'+(window.__AgendaYaPendingSupportTicketId?'&ticket_id='+encodeURIComponent(window.__AgendaYaPendingSupportTicketId):'');return;}
     if(r.destination&&typeof r.destination==='string'&&!/^(javascript:|https?:\/\/)/i.test(r.destination)){location.href=r.destination;return;}
     if(r.target_module==='payments'||r.target_module==='subscriptions'||/welcome/.test(type)){if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate(/welcome/.test(type)?'dashboard':'settings');else location.href=/welcome/.test(type)?'dashboard.html':'dashboard.html?view=settings';}
   }
@@ -103,31 +106,47 @@
   function close(){state.open=false;const p=$('#ayB13BusinessNotifPanel');if(p)p.hidden=true;const b=getButton();if(b)b.setAttribute('aria-expanded','false');}
   async function load(){
     if(!state.client)return;
-    const [bookingResult,planResult,welcomeResult,paymentResult]=await Promise.all([
+    const [bookingResult,planResult,welcomeResult,paymentResult,agendaResult]=await Promise.all([
       state.client.rpc('get_business_notifications',{p_limit:50}),
       state.client.rpc('get_business_plan_notifications',{p_limit:50}),
       state.client.rpc('get_welcome_notifications',{p_limit:50}),
-      state.client.rpc('get_business_payment_notifications',{p_limit:50})
+      state.client.rpc('get_business_payment_notifications',{p_limit:50}),
+      state.client.rpc('get_agenda_notifications',{p_limit:100}).catch(error=>({error}))
     ]);
-    if(bookingResult.error){console.error('Agenda YA business notifications:',bookingResult.error);return;}
-    if(planResult.error)console.error('Agenda YA plan notifications:',planResult.error);
+    if(bookingResult.error)console.warn('Agenda YA business reservation notifications:',bookingResult.error.message||bookingResult.error);
+    if(planResult.error)console.warn('Agenda YA plan notifications:',planResult.error.message||planResult.error);
     const bookings=(Array.isArray(bookingResult.data)?bookingResult.data:[]).map(r=>({...r,kind:'reservation',booking_id:r.booking_id||r.id,title:r.title||r.service_name||'Reserva'}));
     const plans=!planResult.error&&Array.isArray(planResult.data)?planResult.data.map(r=>({...r,kind:'plan',payment_id:r.payment_id||r.data?.payment_id||null,subscription_id:r.subscription_id||r.data?.subscription_id||null,data:r.data||null})):[];
     const welcomes=!welcomeResult.error&&Array.isArray(welcomeResult.data)?welcomeResult.data.map(r=>({...r,kind:'welcome',destination:r.destination||r.data?.destination||null,data:r.data||null})):[];
     const payments=!paymentResult.error&&Array.isArray(paymentResult.data)?paymentResult.data.map(r=>({...r,kind:'payment',payment_id:r.payment_id||r.id})):[];
-    state.rows=[...bookings,...plans,...welcomes,...payments].sort((a,b)=>new Date(dateFor(b)||0)-new Date(dateFor(a)||0)).slice(0,50);
+    const agenda=!agendaResult?.error&&Array.isArray(agendaResult?.data)?agendaResult.data.map(r=>normalize(r,'agenda')):[];
+    const merged=[...bookings,...plans,...welcomes,...payments,...agenda];
+    const seen=new Set();
+    state.rows=merged.filter(r=>{
+      const type=String(r.notification_type||r.type||r.kind||'').toLowerCase();
+      const meta=r.metadata||r.data||{};
+      const key=(r.kind==='welcome'||type.includes('welcome'))
+        ? `welcome:${String(titleFor(r)||'').trim().toLowerCase()}`
+        : ((r.kind==='plan'||type==='plan_changed')
+          ? `plan:${r.payment_id||meta.payment_id||r.subscription_id||meta.subscription_id||String(titleFor(r)||'').trim().toLowerCase()}`
+          : String(r.id));
+      if(seen.has(key))return false;seen.add(key);return true;
+    }).sort((a,b)=>new Date(dateFor(b)||0)-new Date(dateFor(a)||0)).slice(0,50);
     state.unread=state.rows.filter(x=>!x.read_at).length;render();
   }
   async function markRead(){
     if(!state.client||state.unread<1)return;
-    const hasPlanUnread=state.rows.some(x=>x.type==='plan_changed'&&!x.read_at);
+    const pending=state.rows.filter(x=>!x.read_at);
     const calls=[state.client.rpc('mark_business_notifications_read')];
-    if(state.rows.some(x=>x.type?.endsWith('_welcome')&&!x.read_at))calls.push(state.client.rpc('mark_welcome_notifications_read'));
-    if(hasPlanUnread)calls.push(state.client.rpc('mark_business_plan_notifications_read'));
-    const results=await Promise.all(calls);
-    results.forEach((r,i)=>{if(r.error)console.error(i?'Agenda YA mark plan notifications:':'Agenda YA mark business notifications:',r.error);});
+    if(pending.some(x=>x.kind==='welcome'||String(x.type||'').endsWith('_welcome')))calls.push(state.client.rpc('mark_welcome_notifications_read'));
+    if(pending.some(x=>x.kind==='plan'||x.type==='plan_changed'))calls.push(state.client.rpc('mark_business_plan_notifications_read'));
+    if(pending.some(x=>x.kind==='payment'))calls.push(state.client.rpc('mark_business_payment_notifications_read'));
+    if(pending.some(x=>x.kind==='agenda'))calls.push(state.client.rpc('mark_agenda_notifications_read'));
+    const results=await Promise.all(calls.map(p=>p.catch(error=>({error}))));
+    results.forEach(r=>{if(r.error&&!/does not exist|Could not find the function/i.test(r.error.message||''))console.warn('Agenda YA mark read:',r.error.message||r.error);});
     await load();
   }
+
   function bindGlobalClose(){
     document.addEventListener('click',e=>{const p=$('#ayB13BusinessNotifPanel'),b=getButton();if(!state.open||!p)return;if(p.contains(e.target)||b?.contains(e.target))return;close();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
