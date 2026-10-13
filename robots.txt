@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard.html
+Disallow: /crm.html
+Disallow: /login.html
+Disallow: /login-2.html
+Disallow: /profile.html
+Disallow: /customer-profile.html
+Disallow: /customer-reservations.html
+Disallow: /public-profile-admin.html
+
+Sitemap: https://agenda-ya.cl/sitemap.xml
