@@ -70,24 +70,95 @@
     </article>`;
   }
 
-  async function refreshMarketNotificationState(){
-    const button=$('marketNotification');
-    const dot=$('marketNotificationDot');
-    if(!button||!client)return;
+  let marketNotificationRows=[];
+  let marketNotificationPanel=null;
+  function ensureMarketNotificationPanel(){
+    if(marketNotificationPanel)return marketNotificationPanel;
+    marketNotificationPanel=document.createElement('section');
+    marketNotificationPanel.className='market-notifications-panel';
+    marketNotificationPanel.id='marketNotificationsPanel';
+    marketNotificationPanel.hidden=true;
+    marketNotificationPanel.setAttribute('role','dialog');
+    marketNotificationPanel.setAttribute('aria-label','Notificaciones');
+    marketNotificationPanel.innerHTML='<div class="market-notifications-head"><div><small>AGENDA YA</small><h2>Notificaciones</h2></div><button type="button" id="marketNotificationsClose" aria-label="Cerrar notificaciones">×</button></div><div class="market-notifications-list" id="marketNotificationsList"><div class="market-notification-empty">Cargando notificaciones…</div></div>';
+    document.body.appendChild(marketNotificationPanel);
+    marketNotificationPanel.querySelector('#marketNotificationsClose').addEventListener('click',closeMarketNotifications);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMarketNotifications();});
+    document.addEventListener('click',e=>{if(marketNotificationPanel&&!marketNotificationPanel.hidden&&!e.target.closest('#marketNotificationsPanel')&&!e.target.closest('#marketNotification'))closeMarketNotifications();});
+    return marketNotificationPanel;
+  }
+  function closeMarketNotifications(){if(marketNotificationPanel)marketNotificationPanel.hidden=true;const b=$('marketNotification');if(b)b.setAttribute('aria-expanded','false');}
+  function formatNotificationDate(value){if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?'':new Intl.DateTimeFormat('es-CL',{dateStyle:'medium',timeStyle:'short'}).format(d);}
+  function normalizeMarketNotification(n,source){
+    const booking=source==='booking-status';
+    let title=n.title||'Actualización de Agenda Ya';
+    let message=n.message||n.text||'Tienes una actualización en Agenda Ya.';
+    if(booking){
+      const st=String(n.status||n.new_status||'').toLowerCase();
+      title=st==='confirmed'?'Reserva confirmada':st==='completed'?'Reserva completada':['cancelled','rejected'].includes(st)?'Reserva cancelada':st==='no_show'?'Reserva marcada como no asistida':'Estado de reserva actualizado';
+      message=n.text||n.message||'Tu reserva tiene una actualización.';
+    }
+    return {...n,source,title,message,booking_id:n.booking_id||n.metadata?.booking_id||null,destination:n.destination||n.metadata?.destination||null,created_at:n.created_at||null,read_at:n.read_at||null};
+  }
+  async function fetchMarketNotifications(){
+    if(!client)return [];
+    const sources=[
+      ['welcome',client.rpc('get_welcome_notifications',{p_limit:50})],
+      ['app',client.rpc('get_app_notifications',{p_limit:50})]
+    ];
+    const results=await Promise.all(sources.map(async([source,promise])=>({source,...await promise.catch(error=>({data:null,error}))})));
+    const rows=[];
+    for(const r of results){if(!r.error&&Array.isArray(r.data))rows.push(...r.data.map(n=>normalizeMarketNotification(n,r.source)));}
     try{
-      const session=await client.auth.getSession();
-      if(!session.data?.session?.user){if(dot)dot.hidden=true;return;}
-      const calls=[
-        client.rpc('get_welcome_notifications',{p_limit:50}),
-        client.rpc('get_customer_notifications',{p_limit:50}),
-        client.rpc('get_app_notifications',{p_limit:50})
-      ];
-      const results=await Promise.all(calls.map(p=>p.catch(()=>({data:null,error:true}))));
-      const unread=results.some(r=>!r.error&&Array.isArray(r.data)&&r.data.some(n=>!n.read_at));
+      const engine=window.AgendaYaCustomerData;
+      if(engine?.fetchNotifications){const bookingRows=await engine.fetchNotifications();if(Array.isArray(bookingRows))rows.push(...bookingRows.map(n=>normalizeMarketNotification(n,'booking-status')));}
+      else {const r=await client.rpc('get_customer_notifications',{p_limit:50});if(!r.error&&Array.isArray(r.data))rows.push(...r.data.map(n=>normalizeMarketNotification(n,'booking-status')));}
+    }catch(e){console.warn('Agenda YA: no se pudieron cargar notificaciones de reservas.',e?.message||e);}
+    const unique=new Map();
+    rows.forEach(n=>unique.set(`${n.source}:${n.id||`${n.title}:${n.created_at}`}`,n));
+    return [...unique.values()].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
+  }
+  async function refreshMarketNotificationState(){
+    const button=$('marketNotification');const dot=$('marketNotificationDot');if(!button||!client)return;
+    try{
+      const session=await client.auth.getSession();if(!session.data?.session?.user){if(dot)dot.hidden=true;return;}
+      marketNotificationRows=await fetchMarketNotifications();
+      const unread=marketNotificationRows.some(n=>!n.read_at);
       if(dot)dot.hidden=!unread;
       button.classList.toggle('has-unread',unread);
       button.setAttribute('aria-label',unread?'Notificaciones nuevas':'Notificaciones');
+      if(marketNotificationPanel&&!marketNotificationPanel.hidden)renderMarketNotifications();
     }catch(e){console.warn('Agenda YA: no se pudo actualizar el indicador de notificaciones.',e?.message||e);}
+  }
+  function renderMarketNotifications(){
+    const list=marketNotificationPanel?.querySelector('#marketNotificationsList');if(!list)return;
+    if(!marketNotificationRows.length){list.innerHTML='<div class="market-notification-empty">No tienes notificaciones.</div>';return;}
+    list.innerHTML=marketNotificationRows.map((n,i)=>{
+      const action=n.booking_id?`<button class="market-notification-action" type="button" data-notification-action="booking" data-booking-id="${esc(n.booking_id)}">Ver reserva</button>`:n.destination?`<button class="market-notification-action" type="button" data-notification-action="destination" data-destination="${esc(n.destination)}">Abrir</button>`:'';
+      return `<article class="market-notification-item ${n.read_at?'':'unread'}"><strong>${esc(n.title)}</strong><p>${esc(n.message)}</p><time>${esc(formatNotificationDate(n.created_at))}</time>${action}</article>`;
+    }).join('');
+    list.querySelectorAll('[data-notification-action]').forEach(btn=>btn.addEventListener('click',()=>{
+      const type=btn.dataset.notificationAction;
+      if(type==='booking'){const id=btn.dataset.bookingId;window.location.href=`customer-profile.html?view=reservations&booking_id=${encodeURIComponent(id)}`;return;}
+      if(type==='destination'){const destination=btn.dataset.destination||'';if(destination.startsWith('/')&&!destination.startsWith('//'))window.location.href=destination;}
+    }));
+  }
+  async function markMarketNotificationsRead(){
+    const calls=[client.rpc('mark_welcome_notifications_read'),client.rpc('mark_customer_notifications_read')];
+    await Promise.all(calls.map(p=>p.catch(()=>null)));
+  }
+  async function toggleMarketNotifications(){
+    const panel=ensureMarketNotificationPanel();
+    if(!panel.hidden){closeMarketNotifications();return;}
+    panel.hidden=false;const b=$('marketNotification');if(b)b.setAttribute('aria-expanded','true');
+    panel.querySelector('#marketNotificationsList').innerHTML='<div class="market-notification-empty">Cargando notificaciones…</div>';
+    marketNotificationRows=await fetchMarketNotifications();renderMarketNotifications();
+    if(marketNotificationRows.some(n=>!n.read_at)){
+      await markMarketNotificationsRead();
+      // Actualizar el estado leído solo después de abrir la tarjeta, sin cerrar el panel.
+      marketNotificationRows=await fetchMarketNotifications();renderMarketNotifications();
+      const unread=marketNotificationRows.some(n=>!n.read_at);const dot=$('marketNotificationDot');if(dot)dot.hidden=!unread;if(b)b.classList.toggle('has-unread',unread);
+    }
   }
 
   async function sessionRole(){
@@ -101,8 +172,8 @@
     const display = profile.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Mi perfil';
     const avatar = profile.avatar_url ? `<span class="account-avatar has-image" style="background-image:url('${encodeURI(profile.avatar_url)}')"></span>` : `<span class="account-avatar">${esc(initials(display))}</span>`;
     if(profile.profile_type === 'customer'){
-      account.innerHTML = `<button class="market-notification" id="marketNotification" type="button" aria-label="Notificaciones" aria-haspopup="dialog" title="Notificaciones"><span class="market-notification-emoji" aria-hidden="true">🔔</span><b id="marketNotificationDot" aria-hidden="true" hidden></b></button><a class="account-button signed" href="customer-profile.html?view=profile" aria-label="Mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
-      $('marketNotification').addEventListener('click', ()=>{ window.location.href='customer-profile.html?view=profile&notifications=1'; });
+      account.innerHTML = `<button class="market-notification" id="marketNotification" type="button" aria-label="Notificaciones" aria-haspopup="dialog" aria-expanded="false" title="Notificaciones"><span class="market-notification-emoji" aria-hidden="true">🔔</span><b id="marketNotificationDot" aria-hidden="true" hidden></b></button><a class="account-button signed" href="customer-profile.html?view=profile" aria-label="Mi perfil">${avatar}</a><button class="market-logout" id="marketLogout" type="button">Salir</button>`;
+      $('marketNotification').addEventListener('click', toggleMarketNotifications);
       refreshMarketNotificationState();
       if(!window.__ayMarketNotificationTimer)window.__ayMarketNotificationTimer=setInterval(refreshMarketNotificationState,30000);
       $('marketLogout').addEventListener('click', async ()=>{
