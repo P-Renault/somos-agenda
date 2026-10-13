@@ -147,7 +147,8 @@
     const box=$('cpNotifications');if(!box||!client||!user)return;
     const sources=[
       ['welcome',client.rpc('get_welcome_notifications',{p_limit:50})],
-      ['app',client.rpc('get_app_notifications',{p_limit:50})]
+      ['app',client.rpc('get_app_notifications',{p_limit:50})],
+      ['agenda',client.rpc('get_agenda_notifications',{p_limit:100})]
     ];
     const engine=window.AgendaYaCustomerData;
     const results=await Promise.all(sources.map(async([kind,promise])=>({kind,...await promise})));
@@ -201,6 +202,7 @@
     closeOverlays();$('cpNotificationPanel').hidden=false;$('cpBackdrop').hidden=false;
     await loadCustomerNotifications();
     const engine=window.AgendaYaCustomerData;
+    try{const marked=await client.rpc('mark_agenda_notifications_read',{p_notification_ids:null});if(!marked.error)await loadCustomerNotifications();}catch(_){}
     if(engine?.markNotificationsRead){
       try{await engine.markNotificationsRead();await loadCustomerNotifications();}
       catch(e){console.warn('Agenda YA: no se pudieron marcar como leídas las notificaciones de reservas.',e?.message||e);}
