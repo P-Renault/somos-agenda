@@ -27,6 +27,7 @@
       .ay-b13-notif-item.is-unread{background:#f5f9ff;border-color:#dceaff}.ay-b13-notif-item strong{display:block;color:#18345b;font-size:14px}
       .ay-b13-notif-item p{margin:5px 0;color:#68778b;font-size:13px;line-height:1.4}.ay-b13-notif-item small{color:#98a3b2;font-size:11px}
       .ay-b13-notif-item[data-type="plan_changed"]{border-left:3px solid #1672e8}.ay-b13-notif-empty{padding:38px 18px;text-align:center;color:#7c899a;font-size:14px}
+      .ay-notification-event-focus{outline:3px solid #1672e8!important;outline-offset:5px!important;transition:outline-color .2s}
       @media(max-width:700px){.ay-b13-notif-panel{top:74px;right:10px;width:calc(100vw - 20px);max-height:calc(100vh - 92px);border-radius:18px}.ay-notification-trigger{width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px}.ay-notification-trigger svg{width:21px;height:21px}.ay-b13-notif-badge{top:0;right:0}}
     `;document.head.appendChild(s);
   }
@@ -49,6 +50,28 @@
     const badge=$('.ay-b13-notif-badge');if(badge){badge.textContent=state.unread>99?'99+':String(state.unread);badge.hidden=state.unread<1;}
     const btn=getButton();if(btn)btn.setAttribute('aria-expanded',state.open?'true':'false');
   }
+  function navigateToBusinessSection(section, pendingKey, pendingId){
+    if(pendingKey && pendingId) window[pendingKey]=String(pendingId);
+    const targetId=section==='membership'?'ayMembershipView':section==='billing'?'ayBillingView':'aySettingsView';
+    const focusTarget=()=>{
+      const el=document.getElementById(targetId);
+      if(!el)return false;
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.classList.add('ay-notification-event-focus');
+      window.setTimeout(()=>el.classList.remove('ay-notification-event-focus'),2200);
+      return true;
+    };
+    if(window.AgendaYaUI?.activate){
+      window.AgendaYaUI.activate('settings');
+      let attempts=0;
+      const retryFocus=()=>{if(focusTarget()||attempts++>=12)return;window.setTimeout(retryFocus,180);};
+      window.setTimeout(retryFocus,80);
+    }else{
+      const params=new URLSearchParams({view:'settings',focus:section});
+      if(pendingId)params.set(section==='membership'?'subscription_id':'payment_id',String(pendingId));
+      window.location.href='dashboard.html?'+params.toString();
+    }
+  }
   function openBusinessEvent(r){
     if(!r)return;
     close();
@@ -63,8 +86,16 @@
       return;
     }
     if(bookingId){window.__AgendaYaPendingBookingId=String(bookingId);if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('bookings');else window.location.href='dashboard.html?view=bookings&booking_id='+encodeURIComponent(bookingId);return;}
-    if(type==='plan'||type==='plan_changed'||r.subscription_id){window.__AgendaYaPendingSubscriptionId=r.subscription_id||r.data?.subscription_id||null;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}
-    if(type==='payment'||r.payment_id){window.__AgendaYaPendingPaymentId=r.payment_id||r.id;if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate('settings');else window.location.href='dashboard.html?view=settings';return;}
+    if(type==='plan'||type==='plan_changed'||r.subscription_id||r.new_plan_id||r.data?.new_plan_id){
+      const subscriptionId=r.subscription_id||r.data?.subscription_id||null;
+      navigateToBusinessSection('membership','__AgendaYaPendingSubscriptionId',subscriptionId);
+      return;
+    }
+    if(type==='payment'||r.payment_id){
+      const paymentId=r.payment_id||r.data?.payment_id||r.id;
+      navigateToBusinessSection('billing','__AgendaYaPendingPaymentId',paymentId);
+      return;
+    }
     if(r.destination&&typeof r.destination==='string'&&!/^(javascript:|https?:\/\/)/i.test(r.destination)){location.href=r.destination;return;}
     if(r.target_module==='payments'||r.target_module==='subscriptions'||/welcome/.test(type)){if(window.AgendaYaUI?.activate)window.AgendaYaUI.activate(/welcome/.test(type)?'dashboard':'settings');else location.href=/welcome/.test(type)?'dashboard.html':'dashboard.html?view=settings';}
   }
