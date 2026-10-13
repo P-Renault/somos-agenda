@@ -149,21 +149,45 @@
       ['welcome',client.rpc('get_welcome_notifications',{p_limit:50})],
       ['app',client.rpc('get_app_notifications',{p_limit:50})]
     ];
+    const engine=window.AgendaYaCustomerData;
     const results=await Promise.all(sources.map(async([kind,promise])=>({kind,...await promise})));
     const rows=[];
+    if(engine?.fetchNotifications){
+      try{
+        const bookingRows=await engine.fetchNotifications();
+        if(Array.isArray(bookingRows))rows.push(...bookingRows.map(n=>({
+          id:n.id,
+          title:n.title||'Estado de reserva actualizado',
+          message:n.text||'Tu reserva tiene una actualización.',
+          created_at:n.created_at,
+          read_at:n.read_at,
+          source:'booking-status'
+        })));
+      }catch(e){
+        console.warn('Agenda YA customer booking notifications:',e?.message||e);
+      }
+    }
     for(const r of results){
       if(r.error){if(!/does not exist|Could not find the function/i.test(r.error.message||''))console.warn('Agenda YA customer notifications:',r.kind,r.error.message);continue;}
-      if(Array.isArray(r.data))rows.push(...r.data);
+      if(Array.isArray(r.data))rows.push(...r.data.map(n=>({...n,source:r.kind,message:n.message||n.text||'Tienes una actualización en Agenda YA.'})));
     }
     const unique=new Map();
-    rows.forEach(n=>unique.set(String(n.id||`${n.title}:${n.created_at}`),n));
+    rows.forEach(n=>unique.set(String(n.source||'general')+':'+String(n.id||`${n.title}:${n.created_at}`),n));
     const sorted=[...unique.values()].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
-    box.innerHTML=sorted.length?sorted.map(n=>`<article class="cp-review-item" style="padding:12px 4px;border-bottom:1px solid #e8edf4"><strong>${esc(n.title||'Agenda Ya')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda Ya.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small></article>`).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
+    box.innerHTML=sorted.length?sorted.map(n=>`<article class="cp-review-item" style="padding:12px 4px;border-bottom:1px solid #e8edf4"><strong>${esc(n.title||'Agenda YA')}</strong><p>${esc(n.message||'Tienes una actualización en Agenda YA.')}</p><small>${esc(n.created_at?new Intl.DateTimeFormat('es-CL',{dateStyle:'full',timeStyle:'short'}).format(new Date(n.created_at)):'')}</small></article>`).join(''):'<div class="cp-empty">No tienes notificaciones nuevas.</div>';
     const badge=$('cpNotificationBadge'),unread=sorted.filter(n=>!n.read_at).length;
     if(badge){badge.textContent=String(unread);badge.hidden=unread===0;}
   }
 
-  async function openNotifications(){closeOverlays();$('cpNotificationPanel').hidden=false;$('cpBackdrop').hidden=false;await loadCustomerNotifications();}
+  async function openNotifications(){
+    closeOverlays();$('cpNotificationPanel').hidden=false;$('cpBackdrop').hidden=false;
+    await loadCustomerNotifications();
+    const engine=window.AgendaYaCustomerData;
+    if(engine?.markNotificationsRead){
+      try{await engine.markNotificationsRead();await loadCustomerNotifications();}
+      catch(e){console.warn('Agenda YA: no se pudieron marcar como leídas las notificaciones de reservas.',e?.message||e);}
+    }
+  }
   async function logout(){const b=$('cpLogout');b.disabled=true;b.textContent='Saliendo…';try{await client.auth.signOut();}catch(_){}location.href='index.html';}
 
   async function init(){
