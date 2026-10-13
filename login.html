@@ -255,7 +255,7 @@
           <form class="ay-auth-form" id="ayAuthForm" novalidate>
             <label class="ay-auth-field"><span class="ay-auth-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="3"/><path d="m5 9 11 9L27 9"/></svg></span><span class="ay-auth-field-copy"><span class="ay-auth-label">Email</span><input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" placeholder="tu@email.com" required></span></label>
             <label class="ay-auth-field"><span class="ay-auth-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="6" y="14" width="20" height="14" rx="3"/><path d="M10 14V10a6 6 0 0 1 12 0v4"/></svg></span><span class="ay-auth-field-copy ay-auth-password-copy"><span class="ay-auth-label">Contraseña</span><input class="ay-auth-input" id="ayAuthPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Ingresa tu contraseña" required><button class="ay-auth-eye" id="ayAuthPasswordToggle" type="button" aria-label="Mostrar contraseña"><svg class="ay-eye-open" viewBox="0 0 32 32"><path d="M3 16s4.8-7 13-7 13 7 13 7-4.8 7-13 7S3 16 3 16Z"/><circle cx="16" cy="16" r="3.5"/></svg><svg class="ay-eye-closed" viewBox="0 0 32 32"><path d="m5 5 22 22M12.5 12.5a5 5 0 0 0 7 7M8 8.8C4.9 11 3 14 3 16c0 0 4.8 7 13 7 2.2 0 4.2-.5 5.9-1.3M24 20.5C27 18.4 29 16 29 16s-4.8-7-13-7c-1.5 0-2.9.2-4.2.6"/></svg></button></span></label>
-            <label class="ay-auth-label ay-auth-confirm-field" id="ayPasswordConfirmWrap" hidden><span>Confirmar contraseña</span><input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6"></label>
+            <label class="ay-auth-field ay-auth-confirm-field" id="ayPasswordConfirmWrap" hidden><span class="ay-auth-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="6" y="14" width="20" height="14" rx="3"/><path d="M10 14V10a6 6 0 0 1 12 0v4"/></svg></span><span class="ay-auth-field-copy"><span class="ay-auth-label">Confirmar contraseña</span><input class="ay-auth-input" id="ayAuthPasswordConfirm" type="password" autocomplete="new-password" minlength="6" placeholder="Confirma tu contraseña"></span></label>
             <button class="ay-auth-primary" id="ayAuthSubmit" type="submit"><span>Iniciar sesión</span><b>→</b></button>
           </form>
           <p class="ay-auth-status" id="ayAuthStatus" aria-live="polite"></p>
@@ -410,6 +410,32 @@
       setInterval(() => { goDashboard(); resumeAfterAuth(); }, 250);
       setTimeout(resumeAfterAuth, 0);
     });
+  })();
+  </script>
+  <script id="ay-login-password-visibility-fix">
+  (() => {
+    const bindPasswordToggle = () => {
+      const password = document.getElementById("ayAuthPassword");
+      const toggle = document.getElementById("ayAuthPasswordToggle");
+      if (!password || !toggle || toggle.dataset.ayBound === "1") return;
+      toggle.dataset.ayBound = "1";
+      toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        const show = password.type === "password";
+        password.type = show ? "text" : "password";
+        toggle.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
+        toggle.setAttribute("aria-pressed", show ? "true" : "false");
+        const openEye = toggle.querySelector(".ay-eye-open");
+        const closedEye = toggle.querySelector(".ay-eye-closed");
+        if (openEye) openEye.style.display = show ? "none" : "";
+        if (closedEye) closedEye.style.display = show ? "" : "none";
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bindPasswordToggle, { once: true });
+    } else {
+      bindPasswordToggle();
+    }
   })();
   </script>
 </body>
