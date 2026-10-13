@@ -100,20 +100,45 @@
     }
     return {...n,source,title,message,booking_id:n.booking_id||n.metadata?.booking_id||null,destination:n.destination||n.metadata?.destination||null,created_at:n.created_at||null,read_at:n.read_at||null};
   }
+  async function rpcWithTimeout(name,args={},timeoutMs=10000){
+    if(!client) return {data:null,error:new Error('Cliente Supabase no disponible')};
+    let timer;
+    try{
+      return await Promise.race([
+        client.rpc(name,args),
+        new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(`Tiempo de espera agotado al cargar ${name}`)),timeoutMs);})
+      ]);
+    }catch(error){return {data:null,error};}
+    finally{clearTimeout(timer);}
+  }
   async function fetchMarketNotifications(){
     if(!client)return [];
-    const sources=[
-      ['welcome',client.rpc('get_welcome_notifications',{p_limit:50})],
-      ['app',client.rpc('get_app_notifications',{p_limit:50})]
-    ];
-    const results=await Promise.all(sources.map(async([source,promise])=>({source,...await promise.catch(error=>({data:null,error}))})));
+    // Solo se consultan RPC confirmadas en el esquema de producción.
+    // get_app_notifications no aparece en el inventario SQL y no debe bloquear la tarjeta.
+    const [welcomeResult,bookingResult]=await Promise.all([
+      rpcWithTimeout('get_welcome_notifications',{p_limit:50}),
+      rpcWithTimeout('get_customer_notifications',{p_limit:50})
+    ]);
     const rows=[];
-    for(const r of results){if(!r.error&&Array.isArray(r.data))rows.push(...r.data.map(n=>normalizeMarketNotification(n,r.source)));}
-    try{
-      const engine=window.AgendaYaCustomerData;
-      if(engine?.fetchNotifications){const bookingRows=await engine.fetchNotifications();if(Array.isArray(bookingRows))rows.push(...bookingRows.map(n=>normalizeMarketNotification(n,'booking-status')));}
-      else {const r=await client.rpc('get_customer_notifications',{p_limit:50});if(!r.error&&Array.isArray(r.data))rows.push(...r.data.map(n=>normalizeMarketNotification(n,'booking-status')));}
-    }catch(e){console.warn('Agenda YA: no se pudieron cargar notificaciones de reservas.',e?.message||e);}
+    if(!welcomeResult.error&&Array.isArray(welcomeResult.data)){
+      rows.push(...welcomeResult.data.map(n=>normalizeMarketNotification({...n,message:n.message||n.text||'Tienes una actualización en Agenda Ya.',destination:n.destination||n.data?.destination||null},'welcome')));
+    }else if(welcomeResult.error){console.warn('Agenda YA: error al cargar bienvenida:',welcomeResult.error.message||welcomeResult.error);}
+    if(!bookingResult.error&&Array.isArray(bookingResult.data)){
+      rows.push(...bookingResult.data.map(n=>normalizeMarketNotification({...n,message:n.service_name&&n.business_name?`${n.service_name} · ${n.business_name}`:(n.message||n.text||'Tu reserva tiene una actualización.'),destination:n.destination||null},'booking-status')));
+    }else if(bookingResult.error){console.warn('Agenda YA: error al cargar reservas:',bookingResult.error.message||bookingResult.error);}
+    // El motor compartido se usa solo como respaldo si la RPC directa falló, nunca como bloqueo.
+    if(bookingResult.error){
+      try{
+        const engine=window.AgendaYaCustomerData;
+        if(engine?.fetchNotifications){
+          const fallback=await Promise.race([
+            engine.fetchNotifications(),
+            new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado en el motor de reservas')),10000))
+          ]);
+          if(Array.isArray(fallback))rows.push(...fallback.map(n=>normalizeMarketNotification(n,'booking-status')));
+        }
+      }catch(e){console.warn('Agenda YA: motor de reservas no disponible:',e?.message||e);}
+    }
     const unique=new Map();
     rows.forEach(n=>unique.set(`${n.source}:${n.id||`${n.title}:${n.created_at}`}`,n));
     return [...unique.values()].sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0)).slice(0,100);
@@ -152,12 +177,19 @@
     if(!panel.hidden){closeMarketNotifications();return;}
     panel.hidden=false;const b=$('marketNotification');if(b)b.setAttribute('aria-expanded','true');
     panel.querySelector('#marketNotificationsList').innerHTML='<div class="market-notification-empty">Cargando notificaciones…</div>';
-    marketNotificationRows=await fetchMarketNotifications();renderMarketNotifications();
-    if(marketNotificationRows.some(n=>!n.read_at)){
-      await markMarketNotificationsRead();
-      // Actualizar el estado leído solo después de abrir la tarjeta, sin cerrar el panel.
-      marketNotificationRows=await fetchMarketNotifications();renderMarketNotifications();
-      const unread=marketNotificationRows.some(n=>!n.read_at);const dot=$('marketNotificationDot');if(dot)dot.hidden=!unread;if(b)b.classList.toggle('has-unread',unread);
+    try{
+      marketNotificationRows=await fetchMarketNotifications();
+      renderMarketNotifications();
+      // Marcar como leídas solo después de mostrar el contenido; errores de marcado no vacían la tarjeta.
+      if(marketNotificationRows.some(n=>!n.read_at)){
+        await markMarketNotificationsRead();
+        marketNotificationRows=await fetchMarketNotifications();
+        renderMarketNotifications();
+        const unread=marketNotificationRows.some(n=>!n.read_at);const dot=$('marketNotificationDot');if(dot)dot.hidden=!unread;if(b)b.classList.toggle('has-unread',unread);
+      }
+    }catch(e){
+      console.error('Agenda YA: no se pudieron cargar las notificaciones del Marketplace.',e?.message||e);
+      panel.querySelector('#marketNotificationsList').innerHTML='<div class="market-notification-empty">No se pudieron cargar las notificaciones. Comprueba tu conexión e inténtalo nuevamente.</div>';
     }
   }
 
