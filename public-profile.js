@@ -257,22 +257,7 @@
     const r=await client.rpc('create_public_booking',{p_slug:profileData.business.slug,p_client_first_name:first,p_client_last_name:last,p_client_email:email||null,p_client_phone:phone||null,p_service_id:service.id,p_professional_id:bookingSelectedProfessional,p_booking_date:bookingSelectedDate,p_start_time:start,p_end_time:end,p_notes:$('bookingNotes').value.trim()||null});
     btn.disabled=false;btn.textContent='Confirmar reserva →';
     if(r.error){const map={AUTH_REQUIRED:'Tu sesión expiró. Inicia sesión nuevamente.',BOOKING_OVERLAP:'Ese horario acaba de ser ocupado. Elige otro horario.',OUTSIDE_SCHEDULE:'Ese horario está fuera del horario del profesional.',OUTSIDE_AVAILABILITY:'Ese horario ya no está disponible.',SERVICE_NOT_AVAILABLE:'El servicio seleccionado ya no está disponible.',PROFESSIONAL_NOT_AVAILABLE:'El profesional seleccionado ya no está disponible.',BOOKING_DURATION_INVALID:'La duración del servicio no coincide con el horario seleccionado.'};$('bookingStatus').textContent=map[r.error.message]||r.error.message;bookingContextByDate.delete(bookingSelectedDate);await renderBookingCalendar();return;}
-    const x=r.data||{};
-    // Notificar perfil incompleto solo después de completar una reserva autenticada.
-    // La bienvenida existente permanece intacta.
-    try {
-      const { data: sessionData } = await client.auth.getSession();
-      if (sessionData?.session?.user) {
-        const pendingNotice = await client.rpc('create_customer_profile_pending_notification', {
-          p_context: 'reservation_signup',
-          p_booking_id: x.booking_id || x.id || null
-        });
-        if (pendingNotice?.error) console.warn('Agenda YA perfil pendiente:', pendingNotice.error.message);
-      }
-    } catch (noticeError) {
-      console.warn('Agenda YA perfil pendiente:', noticeError?.message || noticeError);
-    }
-    $('bookingSuccess').hidden=false;$('bookingSuccessText').textContent=`${x.service_name||service.name} con ${x.professional_name||'el profesional seleccionado'}, el ${formatDate(bookingSelectedDate)} de ${formatTime(x.start_time||start)} a ${formatTime(x.end_time||end)}. Tu solicitud quedó registrada como pendiente.`;$('bookingStatus').textContent='';clearPendingDraft();bookingContextByDate.delete(bookingSelectedDate);
+    const x=r.data||{};$('bookingSuccess').hidden=false;$('bookingSuccessText').textContent=`${x.service_name||service.name} con ${x.professional_name||'el profesional seleccionado'}, el ${formatDate(bookingSelectedDate)} de ${formatTime(x.start_time||start)} a ${formatTime(x.end_time||end)}. Tu solicitud quedó registrada como pendiente.`;$('bookingStatus').textContent='';clearPendingDraft();bookingContextByDate.delete(bookingSelectedDate);
   }
 
   $('reserveButton').addEventListener('click',openBooking);
@@ -294,6 +279,20 @@
     const r=await client.rpc('get_public_business_profile',{p_slug:slug});
     if(r.error||!r.data){const msg=r.error?.message||'';if(/NOT_FOUND|not found/i.test(msg))return showError('El negocio no existe o ya no está disponible públicamente.');if(/NOT_PUBLISHED|published/i.test(msg))return showError('Este negocio todavía no está publicado en el marketplace.');return showError('No pudimos cargar el perfil público en este momento.');}
     render(r.data);
+    // Registra la visita al perfil público para que el propietario la reciba en su campana.
+    // La RPC valida publicación, evita auto-visitas y deduplica por visitante/perfil/día.
+    try {
+      const visitBusinessId = r.data?.business?.id;
+      if (visitBusinessId) {
+        const visit = await client.rpc('register_business_profile_view', {
+          p_business_id: visitBusinessId,
+          p_slug: r.data?.business?.slug || slug
+        });
+        if (visit.error) console.warn('Agenda Ya: no se pudo registrar la visita al perfil público:', visit.error.message || visit.error);
+      }
+    } catch (visitError) {
+      console.warn('Agenda Ya: error registrando visita al perfil público:', visitError);
+    }
     const pending=readPendingDraft();
     const currentSlug=r.data?.business?.slug || slug;
     if(pending?.slug === currentSlug){
