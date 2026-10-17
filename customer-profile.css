@@ -151,3 +151,41 @@ html,body,button,input,select,textarea{font-family:var(--cp-font)}
  .cp-mobile-rail{height:72px;bottom:max(8px,env(safe-area-inset-bottom));padding:5px}
  .cp-mobile-rail small{font-size:9px;font-weight:600}
 }
+
+
+/* B6.0 · Perfil cliente independiente: vista móvil compacta sin scroll interno */
+@media (max-width: 600px) {
+  .cp-main { padding: 10px 10px 86px; }
+  .cp-page-head { margin-bottom: 10px; }
+  .cp-page-head h1 { font-size: 21px; line-height: 1.15; margin: 0; }
+  .cp-page-head p { display: none; }
+  .cp-profile-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; }
+  .cp-card { min-width: 0; padding: 11px; border-radius: 14px; }
+  .cp-profile-summary-card { display: grid; grid-template-columns: 48px minmax(0,1fr) auto; grid-template-rows: auto auto; align-items: center; justify-items: stretch; gap: 2px 9px; text-align: left; padding: 10px; }
+  .cp-profile-large-avatar { grid-column: 1; grid-row: 1 / span 2; width: 46px; height: 46px; margin: 0; border-width: 2px; font-size: 15px; }
+  .cp-profile-summary-card > div:not(.cp-profile-large-avatar) { grid-column: 2; grid-row: 1 / span 2; min-width: 0; }
+  .cp-profile-summary-card h2 { font-size: 14px; line-height: 1.2; overflow-wrap: anywhere; }
+  .cp-profile-summary-card p { margin: 3px 0 0; font-size: 10px; overflow-wrap: anywhere; }
+  .cp-role-pill { margin-top: 4px; padding: 3px 7px; font-size: 9px; }
+  .cp-upload-btn { grid-column: 3; grid-row: 1 / span 2; margin: 0; min-height: 32px; padding: 0 8px; border-radius: 9px; font-size: 10px; white-space: nowrap; }
+  .cp-help { display: none; }
+  .cp-form-card { padding: 11px; }
+  .cp-card-head { margin-bottom: 8px; }
+  .cp-card-head h2 { font-size: 15px; }
+  .cp-card-head p { display: none; }
+  .cp-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 8px; }
+  .cp-form-grid .cp-full { grid-column: 1 / -1; }
+  .cp-form-grid label { min-width: 0; gap: 3px; font-size: 10px; line-height: 1.15; }
+  .cp-form-grid input, .cp-form-grid select, .cp-form-grid textarea { min-width: 0; min-height: 34px; height: 34px; padding: 6px 8px; border-radius: 8px; font-size: 14px; }
+  .cp-form-status { min-height: 0; margin: 5px 0; font-size: 10px; }
+  .cp-primary-btn { width: 100%; min-width: 0; min-height: 36px; height: 36px; padding: 0 12px; border-radius: 9px; font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .cp-main { padding-left: 7px; padding-right: 7px; }
+  .cp-profile-summary-card { grid-template-columns: 40px minmax(0,1fr) auto; gap: 2px 7px; }
+  .cp-profile-large-avatar { width: 39px; height: 39px; }
+  .cp-upload-btn { padding: 0 6px; font-size: 9px; }
+  .cp-form-grid { gap: 6px; }
+  .cp-form-grid label { font-size: 9px; }
+  .cp-form-grid input, .cp-form-grid select, .cp-form-grid textarea { padding: 5px 6px; font-size: 13px; }
+}
