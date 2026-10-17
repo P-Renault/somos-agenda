@@ -53,9 +53,9 @@
     role=ctx.role||role;
     const p=ctx.profile||{}, b=ctx.business||{};
     const display=role==='business'?(b.name||p.full_name||ctx.user.email):(p.full_name||ctx.user.email);
-    const avatarUrl=role==='business'?(p.avatar_url||b.logo_url):(p.avatar_url);
+    const avatarUrl=role==='business'?(b.logo_url||p.avatar_url):(p.avatar_url);
     const avatar=$('ayProfileAvatar');
-    if(avatar){ avatar.textContent=initials(display,ctx.user.email); if(avatarUrl){avatar.style.backgroundImage=`url(${encodeURI(avatarUrl)})`;avatar.classList.add('has-image');}else{avatar.style.backgroundImage='';avatar.classList.remove('has-image');} }
+    if(avatar){ avatar.textContent=initials(display,ctx.user.email); if(avatarUrl){avatar.style.backgroundImage=`url("${String(avatarUrl).replace(/["\\]/g,'')}")`;avatar.classList.add('has-image');}else{avatar.style.backgroundImage='';avatar.classList.remove('has-image');} }
     $('ayProfileName').textContent=display||'Mi perfil';
     $('ayProfileEmail').textContent=ctx.user.email||'';
     $('ayProfileRole').textContent=role==='business'?'Perfil de negocio':'Perfil cliente';
