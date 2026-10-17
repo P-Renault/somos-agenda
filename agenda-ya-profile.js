@@ -55,9 +55,8 @@
     const display=role==='business'?(b.name||p.full_name||ctx.user.email):(p.full_name||ctx.user.email);
     const avatarUrl=role==='business'?(b.logo_url||p.avatar_url):(p.avatar_url);
     const avatar=$('ayProfileAvatar');
-    if(avatar){ avatar.textContent=initials(display,ctx.user.email); if(avatarUrl){avatar.style.backgroundImage=`url(${encodeURI(avatarUrl)})`;avatar.classList.add('has-image');}else{avatar.style.backgroundImage='';avatar.classList.remove('has-image');} }
+    if(avatar){ const fallback=initials(display,ctx.user.email); avatar.textContent=fallback; avatar.style.backgroundImage=''; avatar.classList.remove('has-image'); if(avatarUrl){ const img=new Image(); img.onload=()=>{avatar.style.backgroundImage=`url("${String(avatarUrl).replace(/["\\]/g,'')}")`;avatar.classList.add('has-image');avatar.textContent='';}; img.onerror=()=>{avatar.style.backgroundImage='';avatar.classList.remove('has-image');avatar.textContent=fallback;}; img.src=avatarUrl; } }
     $('ayProfileName').textContent=display||'Mi perfil';
-    const profileTitle=$('ayProfileTitle'); if(profileTitle) profileTitle.textContent=role==='business'?'Perfil del negocio':'Mi perfil';
     $('ayProfileEmail').textContent=ctx.user.email||'';
     $('ayProfileRole').textContent=role==='business'?'Perfil de negocio':'Perfil cliente';
     $('ayProfileBusinessFields').hidden=role!=='business';
