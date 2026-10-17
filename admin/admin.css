@@ -697,3 +697,37 @@
 @media(max-width:1100px){.support-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.support-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.support-overview-grid{grid-template-columns:1fr}.support-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.support-list-panel .engine-tools{display:grid;grid-template-columns:1fr;gap:9px}.support-list-panel .engine-search,.support-list-panel .engine-tools select{width:100%;max-width:none}.support-table{min-width:760px}.support-list-panel .engine-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.support-status-row{grid-template-columns:85px minmax(30px,1fr) 24px;gap:8px}.support-quick-actions .btn{flex:1 1 calc(50% - 8px);white-space:normal}.support-detail-card>.engine-panel-heading{align-items:flex-start;flex-wrap:wrap}.framework-modal-head h2{font-size:22px}.framework-form{gap:12px}.framework-form .engine-form-field{min-width:0}.framework-form-actions{position:sticky;bottom:0;background:#fff;padding-top:12px}}
 @media(max-width:420px){.support-kpis .engine-kpi{padding:12px;gap:8px}.support-kpis .engine-kpi-icon{width:34px;height:34px}.support-kpis .engine-kpi strong{font-size:21px}.support-detail-grid{gap:7px;padding-left:12px;padding-right:12px}.support-detail-grid>div{padding:9px}.support-quick-actions .btn{flex-basis:100%}}
+
+/* AGENDA YA · CMS workspace v1.1 — editor, actions and mobile usability */
+#pageContent .cms-row-actions,#pageContent .cms-detail-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#pageContent .cms-detail-actions .btn{flex:1 1 auto;min-height:40px}
+#pageContent .cms-list .engine-panel-heading>div{min-width:0}
+#pageContent .cms-list .engine-panel-heading>div span{display:block;margin-top:5px;color:#7b8ba1;font-size:12px}
+#pageContent .cms-table tbody tr.is-selected{background:#f0f6ff}
+#pageContent .cms-tools .btn{min-height:42px}
+#pageContent .cms-preview-image{width:100%;max-height:180px;object-fit:cover}
+#pageContent .cms-detail-empty{color:#6f8097}
+#genericDialog .cms-edit-form textarea[name="body"]{min-height:190px;line-height:1.55}
+#genericDialog .cms-edit-form input[name="featured_image"]{width:100%}
+@media(max-width:900px){#pageContent .cms-workspace{grid-template-columns:minmax(0,1fr)}#pageContent .cms-detail{order:0}#pageContent .cms-list{order:1}}
+@media(max-width:640px){
+ #pageContent .cms-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #pageContent .cms-kpis .engine-kpi{padding:11px;gap:7px}
+ #pageContent .cms-kpis .engine-kpi strong{font-size:21px;overflow-wrap:anywhere}
+ #pageContent .cms-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible;padding:8px;gap:7px}
+ #pageContent .cms-tab{width:100%;min-height:42px;padding:9px 7px;text-align:center;font-size:11px}
+ #pageContent .cms-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:10px;gap:8px}
+ #pageContent .cms-tools .engine-search{grid-column:1/-1;width:100%;flex:auto}
+ #pageContent .cms-filter{display:grid;grid-template-columns:1fr;gap:5px;width:100%;font-size:11px}
+ #pageContent .cms-filter select{width:100%;height:42px;min-width:0}
+ #pageContent .cms-tools>.btn{grid-column:1/-1;width:100%}
+ #pageContent .cms-list .engine-panel-heading{align-items:stretch}
+ #pageContent .cms-list .engine-panel-heading>.btn{width:100%;min-height:42px}
+ #pageContent .cms-table{min-width:680px}
+ #pageContent .cms-detail{padding:13px}
+ #pageContent .cms-detail-info dl{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;font-size:12px}
+ #pageContent .cms-detail-actions{display:grid;grid-template-columns:1fr}
+ #genericDialog .cms-edit-form{grid-template-columns:minmax(0,1fr)}
+ #genericDialog .cms-edit-form .engine-form-field{grid-column:1/-1}
+ #genericDialog .cms-edit-form .framework-form-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
+}
