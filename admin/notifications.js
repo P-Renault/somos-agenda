@@ -34,6 +34,9 @@
         min-width: 0;
       }
       #adminNotificationsPanel .admin-notifications-head {
+        padding: 16px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #fff;
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
@@ -49,6 +52,7 @@
         text-align: right;
       }
       #adminNotificationsPanel .admin-notifications-list {
+        background: #fff;
         flex: 1 1 auto;
         min-height: 0;
         overflow-x: hidden;
@@ -57,9 +61,45 @@
         -webkit-overflow-scrolling: touch;
       }
       #adminNotificationsPanel .admin-notifications-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 14px;
+        border-top: 1px solid #e2e8f0;
+        background: #f8fafc;
         flex: 0 0 auto;
         flex-wrap: wrap;
       }
+      #adminNotificationsPanel button {
+        font: inherit; cursor: pointer; max-width: 100%;
+        border: 1px solid #d7e0ec; border-radius: 9px;
+        padding: 8px 10px; background: #fff; color: #183153;
+      }
+      #adminNotificationsPanel button:disabled { opacity: .5; cursor: not-allowed; }
+      #adminNotificationsPanel .admin-notification-item {
+        display: flex; align-items: flex-start; gap: 12px;
+        padding: 14px 16px; border-bottom: 1px solid #edf1f6;
+        background: #fff;
+      }
+      #adminNotificationsPanel .admin-notification-item.is-unread { background: #f3f7ff; }
+      #adminNotificationsPanel .admin-notification-mark {
+        width: 10px; height: 10px; border-radius: 50%; flex: 0 0 10px;
+        margin-top: 5px; background: #2563eb;
+      }
+      #adminNotificationsPanel .admin-notification-mark.success { background: #16a34a; }
+      #adminNotificationsPanel .admin-notification-mark.warning { background: #d97706; }
+      #adminNotificationsPanel .admin-notification-mark.error { background: #dc2626; }
+      #adminNotificationsPanel .admin-notification-mark.support { background: #7c3aed; }
+      #adminNotificationsPanel .admin-notification-mark.payment { background: #0891b2; }
+      #adminNotificationsPanel .admin-notification-mark.subscription { background: #9333ea; }
+      #adminNotificationsPanel .admin-notification-copy > strong { display:block; line-height:1.4; color:#172b4d; }
+      #adminNotificationsPanel .admin-notification-copy p { margin:5px 0; color:#52627a; line-height:1.45; }
+      #adminNotificationsPanel .admin-notification-copy small { display:block; color:#78879b; font-size:11px; margin-top:5px; }
+      #adminNotificationsPanel .admin-notification-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+      #adminNotificationsPanel .admin-notification-actions button[data-notification-open] { background:#eaf2ff; border-color:#c8dcff; color:#1554b5; font-weight:600; }
+      #adminNotificationsPanel .admin-notifications-empty,
+      #adminNotificationsPanel .admin-notifications-state { padding:22px 16px; text-align:center; color:#52627a; }
       #adminNotificationsPanel .admin-notifications-foot span { overflow-wrap: anywhere; }
       #adminNotificationsPanel .admin-notification-copy { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
       #adminNotificationsPanel .admin-notification-copy p { overflow-wrap: anywhere; word-break: normal; }
@@ -75,6 +115,8 @@
           border-radius: 15px !important;
         }
         #adminNotificationsPanel .admin-notifications-head { padding: 13px !important; gap: 8px; }
+        #adminNotificationsPanel .admin-notifications-foot button { flex: 1 1 120px; }
+        #adminNotificationsPanel .admin-notification-actions button { flex: 1 1 auto; }
         #adminNotificationsPanel .admin-notifications-head strong { font-size: 15px; }
         #adminNotificationsPanel .admin-notifications-head small { font-size: 11px; line-height: 1.4; }
         #adminNotificationsPanel .admin-notifications-readall { max-width: 45%; font-size: 10px; line-height: 1.35; }
@@ -146,7 +188,7 @@
       const type = ['success','warning','error','support','payment','subscription'].includes(n.type) ? n.type : 'info';
       const date = n.created_at ? new Date(n.created_at) : null;
       const dateLabel = date && !Number.isNaN(date.getTime()) ? new Intl.DateTimeFormat('es-CL',{dateStyle:'medium',timeStyle:'short'}).format(date) : '';
-      return `<article class="admin-notification-item ${n.is_read ? 'is-read' : 'is-unread'}" data-notification-id="${esc(n.id)}"><span class="admin-notification-mark ${type}" aria-hidden="true"></span><div class="admin-notification-copy"><strong>${esc(n.title)}</strong><p>${esc(n.message)}</p><small>${esc(dateLabel)}</small><div class="admin-notification-actions">${n.target_module ? `<button type="button" data-notification-open="${esc(n.target_module)}" data-notification-id="${esc(n.id)}">Ver módulo</button>` : ''}${n.is_read ? '<span>Leída</span>' : `<button type="button" data-notification-read="${esc(n.id)}">Marcar leída</button>`}</div></div></article>`;
+      return `<article class="admin-notification-item ${n.is_read ? 'is-read' : 'is-unread'}" data-notification-id="${esc(n.id)}"><span class="admin-notification-mark ${type}" aria-hidden="true"></span><div class="admin-notification-copy"><strong>${esc(n.title)}</strong><p>${esc(n.message)}</p><small>${esc(dateLabel)}</small><div class="admin-notification-actions">${n.target_module ? `<button type="button" data-notification-open="${esc(n.target_module)}" data-notification-id="${esc(n.id)}" data-notification-target-id="${esc(n.target_id || '')}">Ver módulo</button>` : ''}${n.is_read ? '<span>Leída</span>' : `<button type="button" data-notification-read="${esc(n.id)}">Marcar leída</button>`}</div></div></article>`;
     }).join('');
   }
 
@@ -201,8 +243,17 @@
     if (read) { read.disabled = true; try { await markRead(read.dataset.notificationRead); } catch (e) { window.alert(e.message); } return; }
     const open = event.target.closest('[data-notification-open]');
     if (open) {
-      try { await markRead(open.dataset.notificationId); } catch (_) {}
-      setOpen(false); location.hash = open.dataset.notificationOpen; return;
+      const module = String(open.dataset.notificationOpen || '').trim();
+      const targetId = String(open.dataset.notificationTargetId || '').trim();
+      const notificationId = String(open.dataset.notificationId || '').trim();
+      try { await markRead(notificationId); } catch (_) {}
+      setOpen(false);
+      // Preserve the event target for modules that support deep-link selection.
+      const destination = { module, targetId, notificationId, at: Date.now() };
+      try { sessionStorage.setItem('agendaAdminNotificationTarget', JSON.stringify(destination)); } catch (_) {}
+      if (module) location.hash = module;
+      window.dispatchEvent(new CustomEvent('admin:notification:navigate', { detail: destination }));
+      return;
     }
     if (!event.target.closest('#adminNotificationsPanel')) setOpen(false);
   }, true);
