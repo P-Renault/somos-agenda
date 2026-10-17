@@ -83,3 +83,50 @@ body{background:linear-gradient(180deg,#f8faff 0%,#f3f7fc 100%)}
   .ay-header-actions .ay-mobile-support-link{flex-basis:28px;width:28px}
   .ay-header-actions{gap:3px}
 }
+
+
+/* Agenda YA — perfil de negocio móvil: proporción compacta de referencia */
+@media (max-width: 700px) {
+  .ay-profile-panel {
+    top: 50%;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: min(84dvh, 760px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 18px 16px 16px;
+    border-radius: 24px;
+    transform: translateY(calc(-50% - 8px));
+  }
+  .ay-profile-panel.is-open { transform: translateY(-50%); }
+  .ay-profile-panel-head { align-items: center; gap: 10px; }
+  .ay-profile-panel-head h2 { font-size: clamp(22px, 6vw, 30px); line-height: 1.12; }
+  .ay-eyebrow { font-size: 11px; letter-spacing: .11em; }
+  .ay-panel-close { width: 42px; height: 42px; flex: 0 0 42px; border-radius: 14px; font-size: 25px; }
+  .ay-profile-summary {
+    gap: 12px;
+    margin: 16px 0 18px;
+    padding: 12px;
+    border-radius: 18px;
+  }
+  .ay-profile-panel-avatar { width: 76px; height: 76px; flex: 0 0 76px; font-size: 19px; }
+  .ay-profile-summary strong { font-size: 16px; line-height: 1.2; }
+  .ay-profile-summary span { font-size: 12px; overflow-wrap: anywhere; }
+  .ay-profile-summary em { font-size: 11px; padding: 5px 9px; }
+  .ay-profile-fields { gap: 12px; }
+  .ay-profile-fields label { gap: 6px; font-size: 12px; }
+  .ay-profile-fields input { min-height: 48px; padding: 10px 12px; border-radius: 13px; font-size: 16px; }
+  .ay-profile-grid-2 { gap: 12px 10px; }
+  .ay-profile-panel-status { min-height: 0; margin: 8px 0; }
+  .ay-profile-save { min-height: 52px; border-radius: 14px; font-size: 15px; }
+}
+@media (max-width: 380px), (max-height: 720px) and (max-width: 700px) {
+  .ay-profile-panel { padding: 14px 12px 12px; max-height: 88dvh; }
+  .ay-profile-summary { margin: 12px 0 14px; padding: 9px; }
+  .ay-profile-panel-avatar { width: 58px; height: 58px; flex-basis: 58px; }
+  .ay-profile-fields { gap: 9px; }
+  .ay-profile-fields input { min-height: 42px; padding: 8px 10px; }
+  .ay-profile-grid-2 { gap: 9px 8px; }
+  .ay-profile-save { min-height: 46px; }
+}
