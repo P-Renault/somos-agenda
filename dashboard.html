@@ -84,21 +84,41 @@ body.ay-profile-open{overflow:hidden}
 </style>
 
 <style id="ay-profile-mobile-final">
-/* Perfil móvil: panel centrado y contenido íntegro dentro del viewport */
-@media (max-width: 700px) {
+/* Perfil móvil: modal compacto, coherente con la identidad visual de Agenda YA */
+@media (max-width:700px) {
   html:has(#ayProfilePanel), body:has(#ayProfilePanel) { max-width:100%; overflow-x:hidden; }
-  #ayProfileBackdrop { position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important; z-index:9998!important; }
-  #ayProfilePanel { position:fixed!important; z-index:9999!important; inset: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom)) 10px!important; width:auto!important; max-width:none!important; height:auto!important; max-height:none!important; min-width:0!important; box-sizing:border-box!important; margin:0!important; transform:none!important; border-radius:24px!important; overflow-x:hidden!important; overflow-y:auto!important; overscroll-behavior:contain!important; -webkit-overflow-scrolling:touch!important; padding:18px!important; }
+  #ayProfileBackdrop { position:fixed!important; inset:0!important; width:100vw!important; height:100dvh!important; z-index:9998!important; background:rgba(17,35,62,.48)!important; backdrop-filter:blur(3px); }
+  #ayProfilePanel { position:fixed!important; z-index:9999!important; top:50%!important; left:50%!important; right:auto!important; bottom:auto!important; transform:translate(-50%,-50%)!important; width:calc(100vw - 28px)!important; max-width:520px!important; height:auto!important; max-height:calc(100dvh - 36px)!important; min-width:0!important; box-sizing:border-box!important; margin:0!important; border-radius:22px!important; overflow-x:hidden!important; overflow-y:auto!important; overscroll-behavior:contain!important; -webkit-overflow-scrolling:touch!important; padding:16px!important; background:#fff!important; box-shadow:0 20px 60px rgba(14,35,65,.22)!important; }
   #ayProfilePanel *, #ayProfilePanel *::before, #ayProfilePanel *::after { box-sizing:border-box!important; min-width:0; }
-  #ayProfilePanel .ay-profile-panel-head { position:sticky; top:-18px; z-index:2; padding:4px 0 12px; background:rgba(255,255,255,.97); }
-  #ayProfilePanel .ay-profile-summary { display:flex!important; align-items:center!important; gap:12px!important; padding:14px!important; }
-  #ayProfilePanel .ay-profile-panel-avatar { flex:0 0 56px!important; width:56px!important; height:56px!important; border-radius:50%!important; }
-  #ayProfilePanel .ay-profile-grid-2 { display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:12px!important; }
-  #ayProfilePanel .ay-profile-fields label { display:block!important; width:100%!important; margin:0 0 12px!important; }
-  #ayProfilePanel input, #ayProfilePanel select, #ayProfilePanel textarea { display:block!important; width:100%!important; max-width:100%!important; min-width:0!important; }
-  #ayProfilePanel .ay-profile-save { width:100%!important; min-height:52px!important; position:sticky; bottom:0; z-index:2; margin-top:12px!important; }
+  #ayProfilePanel .ay-profile-panel-head { display:flex!important; align-items:center!important; justify-content:space-between!important; gap:10px!important; margin:0 0 10px!important; padding:0!important; background:transparent!important; }
+  #ayProfilePanel .ay-profile-panel-head h2 { margin:3px 0 0!important; font-size:23px!important; line-height:1.15!important; }
+  #ayProfilePanel .ay-panel-close { flex:0 0 40px!important; width:40px!important; height:40px!important; border-radius:13px!important; }
+  #ayProfilePanel .ay-profile-summary { display:flex!important; align-items:center!important; gap:10px!important; padding:10px!important; margin:0 0 12px!important; border:1px solid #e3eaf3!important; border-radius:16px!important; background:#f7faff!important; }
+  #ayProfilePanel .ay-profile-panel-avatar { flex:0 0 46px!important; width:46px!important; height:46px!important; border-radius:50%!important; }
+  #ayProfilePanel .ay-profile-summary strong { display:block!important; font-size:15px!important; line-height:1.25!important; }
+  #ayProfilePanel .ay-profile-summary span { display:block!important; margin-top:3px!important; font-size:12px!important; overflow-wrap:anywhere!important; }
+  #ayProfilePanel .ay-profile-summary em { display:inline-block!important; margin-top:5px!important; font-size:11px!important; }
+  #ayProfilePanel .ay-profile-fields { display:grid!important; grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important; gap:9px 10px!important; }
+  #ayProfilePanel .ay-profile-fields>label { display:flex!important; flex-direction:column!important; gap:4px!important; width:100%!important; margin:0!important; font-size:12px!important; line-height:1.2!important; font-weight:700!important; color:#243b5a!important; }
+  #ayProfilePanel .ay-profile-fields>label:nth-child(1), #ayProfilePanel .ay-profile-fields>label:nth-child(2) { grid-column:1/-1!important; }
+  #ayProfilePanel .ay-profile-grid-2 { display:contents!important; }
+  #ayProfilePanel .ay-profile-grid-2 label { display:flex!important; flex-direction:column!important; gap:4px!important; width:100%!important; margin:0!important; font-size:12px!important; line-height:1.2!important; font-weight:700!important; color:#243b5a!important; }
+  #ayProfilePanel input, #ayProfilePanel select, #ayProfilePanel textarea { display:block!important; width:100%!important; max-width:100%!important; min-width:0!important; height:42px!important; min-height:42px!important; padding:8px 10px!important; border:1px solid #d9e2ed!important; border-radius:11px!important; background:#fff!important; color:#243247!important; font-size:14px!important; box-shadow:none!important; }
+  #ayProfilePanel .ay-profile-panel-status { margin:7px 0 0!important; font-size:12px!important; }
+  #ayProfilePanel .ay-profile-save { display:block!important; width:100%!important; min-height:44px!important; height:44px!important; position:static!important; margin:12px 0 0!important; border-radius:12px!important; font-size:14px!important; box-shadow:none!important; }
 }
-@media (max-width:380px) { #ayProfilePanel { inset: max(7px, env(safe-area-inset-top)) 7px max(7px, env(safe-area-inset-bottom)) 7px!important; padding:14px!important; border-radius:20px!important; } }
+@media (max-width:380px) {
+  #ayProfilePanel { width:calc(100vw - 20px)!important; padding:12px!important; border-radius:18px!important; }
+  #ayProfilePanel .ay-profile-fields { gap:8px!important; }
+  #ayProfilePanel input, #ayProfilePanel select { height:39px!important; min-height:39px!important; font-size:13px!important; }
+}
+@media (max-height:650px) and (max-width:700px) {
+  #ayProfilePanel { max-height:calc(100dvh - 16px)!important; padding:11px!important; }
+  #ayProfilePanel .ay-profile-summary { padding:7px!important; margin-bottom:8px!important; }
+  #ayProfilePanel .ay-profile-fields { gap:6px 8px!important; }
+  #ayProfilePanel input, #ayProfilePanel select { height:35px!important; min-height:35px!important; }
+  #ayProfilePanel .ay-profile-save { height:39px!important; min-height:39px!important; margin-top:8px!important; }
+}
 </style>
 
 
@@ -147,52 +167,6 @@ body.ay-profile-open{overflow:hidden}
   #ayProfilePanel:not([hidden]) { position:fixed; top:max(10px,env(safe-area-inset-top)); right:10px; bottom:max(10px,env(safe-area-inset-bottom)); left:10px; width:auto; max-width:620px; height:auto; max-height:calc(100dvh - 24px); margin:auto; transform:none; overflow-x:hidden; overflow-y:auto; border-radius:22px; -webkit-overflow-scrolling:touch; }
 }
 </style>
-
-<style id="ay-profile-one-screen-mobile-v1">
-/* Perfil de negocio/cliente: compacto, completo y sin scroll interno en móvil. */
-#ayProfileBusinessFields[hidden], #ayProfileCustomerFields[hidden] { display:none!important; }
-@media (max-width:700px) {
-  #ayProfilePanel {
-    inset: max(6px,env(safe-area-inset-top)) 8px max(6px,env(safe-area-inset-bottom)) 8px!important;
-    width:auto!important; height:auto!important; max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px)!important;
-    padding:10px!important; border-radius:17px!important; overflow:hidden!important;
-    display:flex!important; flex-direction:column!important; gap:0!important;
-  }
-  #ayProfilePanel .ay-profile-panel-head { flex:0 0 auto; margin:0 0 6px!important; padding:0!important; position:static!important; gap:8px!important; align-items:center!important; background:transparent!important; }
-  #ayProfilePanel .ay-profile-panel-head h2 { margin:2px 0 0!important; font-size:20px!important; line-height:1.05!important; }
-  #ayProfilePanel .ay-profile-panel-head .ay-eyebrow { font-size:9px!important; letter-spacing:.08em; }
-  #ayProfilePanel .ay-panel-close { width:31px!important; height:31px!important; flex-basis:31px!important; font-size:22px!important; }
-  #ayProfilePanel .ay-profile-summary { flex:0 0 auto; padding:7px 9px!important; margin:0 0 8px!important; gap:9px!important; border-radius:12px!important; }
-  #ayProfilePanel .ay-profile-panel-avatar { flex:0 0 38px!important; width:38px!important; height:38px!important; font-size:12px!important; }
-  #ayProfilePanel .ay-profile-summary strong { font-size:13px!important; line-height:1.1!important; }
-  #ayProfilePanel .ay-profile-summary span { font-size:10px!important; line-height:1.15!important; }
-  #ayProfilePanel .ay-profile-summary em { font-size:10px!important; line-height:1.1!important; }
-  #ayProfilePanel .ay-profile-fields:not([hidden]) { flex:0 1 auto; display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:5px!important; min-height:0!important; }
-  #ayProfilePanel .ay-profile-fields label { display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:3px!important; width:auto!important; margin:0!important; font-size:10px!important; line-height:1.1!important; }
-  #ayProfilePanel #ayProfileBusinessFields:not([hidden]) { grid-template-columns:repeat(2,minmax(0,1fr))!important; column-gap:8px!important; row-gap:5px!important; }
-  #ayProfilePanel #ayProfileBusinessFields:not([hidden]) > label:nth-child(-n+2) { grid-column:1/-1!important; }
-  #ayProfilePanel .ay-profile-grid-2 { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:5px 8px!important; }
-  #ayProfilePanel .ay-profile-fields input, #ayProfilePanel .ay-profile-fields select { width:100%!important; height:32px!important; min-height:32px!important; padding:0 8px!important; border-radius:8px!important; font-size:14px!important; line-height:1.1!important; }
-  #ayProfilePanel .ay-profile-panel-status { flex:0 0 auto; margin:5px 0 0!important; font-size:10px!important; line-height:1.15!important; }
-  #ayProfilePanel .ay-profile-save { flex:0 0 38px!important; width:100%!important; height:38px!important; min-height:38px!important; margin:6px 0 0!important; padding:0 10px!important; border-radius:10px!important; font-size:13px!important; position:static!important; box-shadow:none!important; }
-}
-@media (max-width:380px) {
-  #ayProfilePanel { padding:8px!important; }
-  #ayProfilePanel .ay-profile-summary { margin-bottom:6px!important; }
-  #ayProfilePanel .ay-profile-fields label { font-size:9px!important; }
-  #ayProfilePanel .ay-profile-fields input { height:30px!important; min-height:30px!important; font-size:13px!important; }
-  #ayProfilePanel .ay-profile-save { height:36px!important; min-height:36px!important; flex-basis:36px!important; }
-}
-@media (max-height:620px) and (max-width:700px) {
-  #ayProfilePanel { padding:7px!important; }
-  #ayProfilePanel .ay-profile-summary { padding:5px 7px!important; margin-bottom:5px!important; }
-  #ayProfilePanel .ay-profile-panel-avatar { width:32px!important; height:32px!important; flex-basis:32px!important; }
-  #ayProfilePanel .ay-profile-fields:not([hidden]), #ayProfilePanel #ayProfileBusinessFields:not([hidden]) { row-gap:3px!important; }
-  #ayProfilePanel .ay-profile-fields input { height:28px!important; min-height:28px!important; }
-  #ayProfilePanel .ay-profile-save { height:34px!important; min-height:34px!important; flex-basis:34px!important; margin-top:4px!important; }
-}
-</style>
-
 </head>
 <body>
 <div class="ay-app" id="ayApp" hidden>
