@@ -57,6 +57,7 @@
     const avatar=$('ayProfileAvatar');
     if(avatar){ avatar.textContent=initials(display,ctx.user.email); if(avatarUrl){avatar.style.backgroundImage=`url(${encodeURI(avatarUrl)})`;avatar.classList.add('has-image');}else{avatar.style.backgroundImage='';avatar.classList.remove('has-image');} }
     $('ayProfileName').textContent=display||'Mi perfil';
+    const profileTitle=$('ayProfileTitle'); if(profileTitle) profileTitle.textContent=role==='business'?'Perfil del negocio':'Mi perfil';
     $('ayProfileEmail').textContent=ctx.user.email||'';
     $('ayProfileRole').textContent=role==='business'?'Perfil de negocio':'Perfil cliente';
     $('ayProfileBusinessFields').hidden=role!=='business';
