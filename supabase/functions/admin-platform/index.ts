@@ -1,5 +1,16 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const cors={'Access-Control-Allow-Origin':'https://agenda-ya.cl','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Access-Control-Allow-Methods':'POST, OPTIONS','Vary':'Origin'};
+const allowedOrigins = new Set(['https://agenda-ya.cl', 'https://www.agenda-ya.cl']);
+function corsHeaders(req: Request) {
+ const origin = req.headers.get('Origin') || '';
+ return {
+  'Access-Control-Allow-Origin': allowedOrigins.has(origin) ? origin : 'https://agenda-ya.cl',
+  'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Max-Age': '86400',
+  'Vary': 'Origin',
+ };
+}
+const cors = { 'Access-Control-Allow-Origin': 'https://agenda-ya.cl', 'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Max-Age': '86400', 'Vary': 'Origin' };
 const specs:Record<string,{table:string;select:string;search:string[];editable:string[];create:string[];order:string}>={
  businesses:{table:'businesses',select:'id,name,slug,email,phone,description,city,comuna,logo_url,active,created_at,updated_at',search:['name','slug','email','phone','city','comuna'],editable:['name','slug','email','phone','description','city','comuna','active'],create:['name','slug','email','phone','description','city','comuna','active'],order:'created_at'},
  marketplace:{table:'business_public_profiles',select:'id,business_id,display_name,description,category_id,address,comuna,city,public_enabled,cover_url,updated_at,businesses(id,name,slug,email,phone,logo_url,active)',search:['display_name','description','city','comuna'],editable:['public_enabled'],create:[],order:'updated_at'},
@@ -14,7 +25,7 @@ const specs:Record<string,{table:string;select:string;search:string[];editable:s
 function json(body:unknown,status=200){return new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json'}})}
 function safeData(input:Record<string,unknown>,allow:string[]){const out:Record<string,unknown>={};for(const k of allow)if(Object.prototype.hasOwnProperty.call(input,k))out[k]=input[k];return out}
 Deno.serve(async req=>{
- if(req.method==='OPTIONS')return new Response('ok',{headers:cors});if(req.method!=='POST')return json({error:'Método no permitido'},405);
+ if(req.method==='OPTIONS')return new Response('ok',{headers:corsHeaders(req)});if(req.method!=='POST')return json({error:'Método no permitido'},405);
  const url=Deno.env.get('SUPABASE_URL'),anon=Deno.env.get('SUPABASE_ANON_KEY'),service=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');if(!url||!anon||!service)return json({error:'Configuración incompleta de la función'},500);
  const auth=req.headers.get('Authorization')||'';if(!auth.startsWith('Bearer '))return json({error:'Se requiere sesión administrativa'},401);
  const userClient=createClient(url,anon,{global:{headers:{Authorization:auth}}});const {data:{user},error:userError}=await userClient.auth.getUser();if(userError||!user)return json({error:'Sesión inválida o vencida'},401);
@@ -143,20 +154,47 @@ Deno.serve(async req=>{
  if(action==='create'){
  if(!spec.create.length)return json({error:'La creación no está habilitada en este módulo'},405);const data=safeData(body.data||{},spec.create);if(key==='businesses')data.created_by=user.id;if(key==='settings')return json({error:'Las claves de configuración se administran mediante upsert explícito'},405);const {data:row,error}=await admin.from(spec.table).insert(data).select(spec.select).single();if(error)return json({error:error.message},400);await admin.from('audit_logs').insert({actor_user_id:user.id,action:'create',entity_type:key,entity_id:row.id||null,metadata:{module:key,fields:Object.keys(data)}});return json({row});}
  if(action==='update'){
- if(!spec.editable.length)return json({error:'Este módulo es de solo lectura desde el panel'},405);const id=String(body.id||'');if(!id)return json({error:'Falta el identificador del registro'},400);const data=safeData(body.data||{},spec.editable);if(!Object.keys(data).length)return json({error:'No hay cambios válidos'},400);
- if(key==='marketplace'){
-  if(typeof data.public_enabled!=='boolean')return json({error:'Debes seleccionar una visibilidad válida (Sí o No).'},400);
-  const {data:before,error:beforeError}=await admin.from('business_public_profiles').select('id,public_enabled').eq('id',id).maybeSingle();
-  if(beforeError)return json({error:`No se pudo consultar el perfil: ${beforeError.message}`},400);
-  if(!before)return json({error:'No existe el perfil público seleccionado.'},404);
-  const {data:row,error:updateError}=await admin.from('business_public_profiles').update({public_enabled:data.public_enabled,updated_at:new Date().toISOString()}).eq('id',id).select(spec.select).maybeSingle();
-  if(updateError)return json({error:`No se pudo guardar la visibilidad pública: ${updateError.message}`},400);
-  if(!row)return json({error:'La base de datos no devolvió el perfil actualizado. Verifica permisos y políticas de la tabla.'},409);
-  if(row.public_enabled!==data.public_enabled)return json({error:'El estado guardado no coincide con el solicitado. Vuelve a cargar el perfil.'},409);
-  const {error:auditError}=await admin.from('audit_logs').insert({actor_user_id:user.id,action:'marketplace_visibility_update',entity_type:'business_public_profiles',entity_id:id,metadata:{previous_public_enabled:before.public_enabled,public_enabled:row.public_enabled}});
-  return json({ok:true,row,public_enabled:row.public_enabled,audit_warning:auditError?auditError.message:null});
+  if(!spec.editable.length)return json({error:'Este módulo es de solo lectura desde el panel'},405);
+  const id=String(body.id||'').trim();
+  if(!id)return json({error:'Falta el identificador del registro'},400);
+  const data=safeData(body.data||{},spec.editable);
+  if(!Object.keys(data).length)return json({error:'No hay cambios válidos'},400);
+
+  // Guardado específico de la visibilidad del Marketplace.
+  // Usa el ID del perfil en business_public_profiles, no business_id.
+  if(key==='marketplace'){
+   let enabled: boolean;
+   const raw=data.public_enabled;
+   if(typeof raw==='boolean')enabled=raw;
+   else if(raw==='true'||raw===1||raw==='1')enabled=true;
+   else if(raw==='false'||raw===0||raw==='0')enabled=false;
+   else return json({error:'La visibilidad debe ser true o false',received:raw??null},400);
+
+   const {data:before,error:beforeError}=await admin.from('business_public_profiles').select('id,business_id,public_enabled').eq('id',id).maybeSingle();
+   if(beforeError)return json({error:`No se pudo consultar el perfil público: ${beforeError.message}`},400);
+   if(!before)return json({error:'No existe el perfil público seleccionado',profile_id:id},404);
+
+   const {data:row,error:updateError}=await admin.from('business_public_profiles').update({public_enabled:enabled,updated_at:new Date().toISOString()}).eq('id',id).select('id,business_id,public_enabled,updated_at').maybeSingle();
+   if(updateError)return json({error:`No se pudo guardar la visibilidad: ${updateError.message}`},400);
+   if(!row)return json({error:'No se confirmó ninguna fila actualizada. Comprueba el ID del perfil y el despliegue de la función.'},409);
+   if(row.public_enabled!==enabled)return json({error:'El estado devuelto por Supabase no coincide con el solicitado',requested:enabled,saved:row.public_enabled},409);
+
+   const {error:auditError}=await admin.from('audit_logs').insert({actor_user_id:user.id,action:enabled?'marketplace_visibility_enabled':'marketplace_visibility_disabled',entity_type:'business_public_profiles',entity_id:id,metadata:{business_id:row.business_id,previous_public_enabled:before.public_enabled,public_enabled:row.public_enabled}});
+   return json({ok:true,row,public_enabled:row.public_enabled,audit_warning:auditError?auditError.message:null});
+  }
+
+  if(key==='settings'){
+   const update={value:data.value,description:data.description,updated_by:user.id,updated_at:new Date().toISOString()};
+   const {data:row,error}=await admin.from(spec.table).update(update).eq('key',id).select(spec.select).single();
+   if(error)return json({error:error.message},400);
+   return json({row});
+  }
+
+  const {data:row,error}=await admin.from(spec.table).update(data).eq('id',id).select(spec.select).single();
+  if(error)return json({error:error.message},400);
+  await admin.from('audit_logs').insert({actor_user_id:user.id,action:'update',entity_type:key,entity_id:id,metadata:{module:key,fields:Object.keys(data)}});
+  return json({row});
  }
- if(key==='settings'){const value=data.value;const {data:row,error}=await admin.from(spec.table).update({value,description:data.description,updated_by:user.id,updated_at:new Date().toISOString()}).eq('key',id).select(spec.select).single();if(error)return json({error:error.message},400);return json({row})}const {data:row,error}=await admin.from(spec.table).update(data).eq('id',id).select(spec.select).single();if(error)return json({error:error.message},400);await admin.from('audit_logs').insert({actor_user_id:user.id,action:'update',entity_type:key,entity_id:id,metadata:{module:key,fields:Object.keys(data)}});return json({row});}
  return json({error:'Acción no permitida'},400);
  }catch(e){return json({error:e instanceof Error?e.message:'Error interno'},500)}
 });
