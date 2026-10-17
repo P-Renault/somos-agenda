@@ -147,6 +147,52 @@ body.ay-profile-open{overflow:hidden}
   #ayProfilePanel:not([hidden]) { position:fixed; top:max(10px,env(safe-area-inset-top)); right:10px; bottom:max(10px,env(safe-area-inset-bottom)); left:10px; width:auto; max-width:620px; height:auto; max-height:calc(100dvh - 24px); margin:auto; transform:none; overflow-x:hidden; overflow-y:auto; border-radius:22px; -webkit-overflow-scrolling:touch; }
 }
 </style>
+
+<style id="ay-profile-one-screen-mobile-v1">
+/* Perfil de negocio/cliente: compacto, completo y sin scroll interno en móvil. */
+#ayProfileBusinessFields[hidden], #ayProfileCustomerFields[hidden] { display:none!important; }
+@media (max-width:700px) {
+  #ayProfilePanel {
+    inset: max(6px,env(safe-area-inset-top)) 8px max(6px,env(safe-area-inset-bottom)) 8px!important;
+    width:auto!important; height:auto!important; max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px)!important;
+    padding:10px!important; border-radius:17px!important; overflow:hidden!important;
+    display:flex!important; flex-direction:column!important; gap:0!important;
+  }
+  #ayProfilePanel .ay-profile-panel-head { flex:0 0 auto; margin:0 0 6px!important; padding:0!important; position:static!important; gap:8px!important; align-items:center!important; background:transparent!important; }
+  #ayProfilePanel .ay-profile-panel-head h2 { margin:2px 0 0!important; font-size:20px!important; line-height:1.05!important; }
+  #ayProfilePanel .ay-profile-panel-head .ay-eyebrow { font-size:9px!important; letter-spacing:.08em; }
+  #ayProfilePanel .ay-panel-close { width:31px!important; height:31px!important; flex-basis:31px!important; font-size:22px!important; }
+  #ayProfilePanel .ay-profile-summary { flex:0 0 auto; padding:7px 9px!important; margin:0 0 8px!important; gap:9px!important; border-radius:12px!important; }
+  #ayProfilePanel .ay-profile-panel-avatar { flex:0 0 38px!important; width:38px!important; height:38px!important; font-size:12px!important; }
+  #ayProfilePanel .ay-profile-summary strong { font-size:13px!important; line-height:1.1!important; }
+  #ayProfilePanel .ay-profile-summary span { font-size:10px!important; line-height:1.15!important; }
+  #ayProfilePanel .ay-profile-summary em { font-size:10px!important; line-height:1.1!important; }
+  #ayProfilePanel .ay-profile-fields:not([hidden]) { flex:0 1 auto; display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:5px!important; min-height:0!important; }
+  #ayProfilePanel .ay-profile-fields label { display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:3px!important; width:auto!important; margin:0!important; font-size:10px!important; line-height:1.1!important; }
+  #ayProfilePanel #ayProfileBusinessFields:not([hidden]) { grid-template-columns:repeat(2,minmax(0,1fr))!important; column-gap:8px!important; row-gap:5px!important; }
+  #ayProfilePanel #ayProfileBusinessFields:not([hidden]) > label:nth-child(-n+2) { grid-column:1/-1!important; }
+  #ayProfilePanel .ay-profile-grid-2 { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:5px 8px!important; }
+  #ayProfilePanel .ay-profile-fields input, #ayProfilePanel .ay-profile-fields select { width:100%!important; height:32px!important; min-height:32px!important; padding:0 8px!important; border-radius:8px!important; font-size:14px!important; line-height:1.1!important; }
+  #ayProfilePanel .ay-profile-panel-status { flex:0 0 auto; margin:5px 0 0!important; font-size:10px!important; line-height:1.15!important; }
+  #ayProfilePanel .ay-profile-save { flex:0 0 38px!important; width:100%!important; height:38px!important; min-height:38px!important; margin:6px 0 0!important; padding:0 10px!important; border-radius:10px!important; font-size:13px!important; position:static!important; box-shadow:none!important; }
+}
+@media (max-width:380px) {
+  #ayProfilePanel { padding:8px!important; }
+  #ayProfilePanel .ay-profile-summary { margin-bottom:6px!important; }
+  #ayProfilePanel .ay-profile-fields label { font-size:9px!important; }
+  #ayProfilePanel .ay-profile-fields input { height:30px!important; min-height:30px!important; font-size:13px!important; }
+  #ayProfilePanel .ay-profile-save { height:36px!important; min-height:36px!important; flex-basis:36px!important; }
+}
+@media (max-height:620px) and (max-width:700px) {
+  #ayProfilePanel { padding:7px!important; }
+  #ayProfilePanel .ay-profile-summary { padding:5px 7px!important; margin-bottom:5px!important; }
+  #ayProfilePanel .ay-profile-panel-avatar { width:32px!important; height:32px!important; flex-basis:32px!important; }
+  #ayProfilePanel .ay-profile-fields:not([hidden]), #ayProfilePanel #ayProfileBusinessFields:not([hidden]) { row-gap:3px!important; }
+  #ayProfilePanel .ay-profile-fields input { height:28px!important; min-height:28px!important; }
+  #ayProfilePanel .ay-profile-save { height:34px!important; min-height:34px!important; flex-basis:34px!important; margin-top:4px!important; }
+}
+</style>
+
 </head>
 <body>
 <div class="ay-app" id="ayApp" hidden>
