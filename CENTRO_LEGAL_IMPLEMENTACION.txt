@@ -1,0 +1,18 @@
+AGENDA YA · CENTRO LEGAL Y ACEPTACIÓN v1.0
+
+Incluye:
+- legal-center.js / legal-center.css: centro legal responsive, acceso a los seis PDF y panel de preferencias.
+- index.html, login.html, profile.html: integración del centro legal.
+- login.html + auth.js: casillas obligatorias de condiciones y reconocimiento de privacidad en registro por email; consentimiento comercial opcional.
+- supabase/migrations/20261029_legal_center_v1.sql: tablas RLS, catálogo legal y trigger para guardar evidencias a partir de metadatos de Supabase Auth.
+
+PASOS OBLIGATORIOS ANTES DE PRODUCCIÓN:
+1. Ejecutar la migración SQL en Supabase SQL Editor en un entorno controlado, tras respaldo y revisión del esquema.
+2. Confirmar que los seis PDF existen en docs/legal/ y que sus versiones son las aprobadas.
+3. Probar registro con confirmación de correo habilitada y deshabilitada; verificar que se crean dos registros en user_legal_acceptances.
+4. Probar login existente, recuperación, Google/Facebook, móvil y escritorio. La aceptación pendiente de proveedores sociales se conserva temporalmente en sessionStorage y se persiste al regresar; validar cada callback en staging.
+5. Auditar cookies/scripts de producción. El panel no afirma que analítica o marketing estén instalados; por ahora las preferencias se guardan en el navegador (localStorage). La tabla user_privacy_preferences queda preparada para sincronización autenticada posterior; no se sincroniza automáticamente en esta versión.
+6. Completar la identidad legal del operador y realizar revisión jurídica antes de publicación definitiva.
+
+NOTA DE SEGURIDAD:
+La migración no se ha ejecutado en tu proyecto Supabase desde aquí. El código y SQL se entregan para revisión y despliegue controlado; no se afirma que el backend remoto ya esté actualizado.

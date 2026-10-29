@@ -95,6 +95,9 @@
     title.textContent = signup ? "Crear cuenta en Agenda Ya" : "Bienvenido a Agenda Ya";
     subtitle.textContent = signup ? "Crea tu acceso para comenzar a configurar tu perfil." : "Gestiona tu negocio y recibe más reservas desde un solo lugar.";
     confirmWrap.hidden = !signup;
+    if (signupConsents) signupConsents.hidden = !signup;
+    if (acceptTerms) acceptTerms.required = signup;
+    if (acknowledgePrivacy) acknowledgePrivacy.required = signup;
     recovery.hidden = signup;
     password.autocomplete = signup ? "new-password" : "current-password";
     submit.textContent = signup ? "Crear cuenta" : "Iniciar sesión";
@@ -271,16 +274,114 @@
     }
   }
 
+  async function persistLegalAcceptance(user, method = "legal-gate") {
+    const acceptedAt = new Date().toISOString();
+    const terms = await client.from("user_legal_acceptances").upsert({
+      user_id: user.id, document_slug: "terms-of-use", document_version: "1.0",
+      acceptance_method: method, metadata: { source: "agenda-ya-legal-gate" }
+    }, { onConflict: "user_id,document_slug,document_version", ignoreDuplicates: true });
+    if (terms.error) throw terms.error;
+    const privacy = await client.from("user_legal_acceptances").upsert({
+      user_id: user.id, document_slug: "privacy-policy-acknowledgement", document_version: "1.0",
+      acceptance_method: method, metadata: { source: "agenda-ya-legal-gate", acknowledged: true }
+    }, { onConflict: "user_id,document_slug,document_version", ignoreDuplicates: true });
+    if (privacy.error) throw privacy.error;
+    const updated = await client.auth.updateUser({ data: {
+      ay_legal_terms_accepted: true,
+      ay_legal_privacy_acknowledged: true,
+      ay_legal_terms_version: "1.0",
+      ay_legal_privacy_version: "1.0",
+      ay_legal_acceptance_method: method,
+      ay_legal_accepted_at_client: acceptedAt
+    }});
+    if (updated.error) throw updated.error;
+  }
+
+  function showLegalAcceptanceGate() {
+    return new Promise(resolve => {
+      document.getElementById("ayLegalAcceptanceGate")?.remove();
+      const gate = document.createElement("section");
+      gate.id = "ayLegalAcceptanceGate";
+      gate.innerHTML = `
+        <div class="ay-legal-gate-card" role="dialog" aria-modal="true" aria-labelledby="ayLegalGateTitle">
+          <span class="ay-legal-gate-eyebrow">AGENDA YA · ACTUALIZACIÓN LEGAL</span>
+          <h2 id="ayLegalGateTitle">Antes de continuar</h2>
+          <p>Para continuar usando tu cuenta, revisa las condiciones y confirma que has leído la política de privacidad.</p>
+          <label><input type="checkbox" id="ayGateTerms"><span>Acepto las <a href="docs/legal/14-condiciones-de-uso.pdf" target="_blank" rel="noopener">Condiciones de uso</a>.</span></label>
+          <label><input type="checkbox" id="ayGatePrivacy"><span>He leído la <a href="docs/legal/13-politica-privacidad-proteccion-datos.pdf" target="_blank" rel="noopener">Política de privacidad</a>.</span></label>
+          <p class="ay-legal-gate-error" id="ayGateError" aria-live="polite"></p>
+          <div class="ay-legal-gate-actions"><button type="button" id="ayGateExit">Cerrar sesión</button><button type="button" id="ayGateAccept">Confirmar y continuar</button></div>
+          <small>La aceptación se asociará a tu cuenta y a la versión del documento.</small>
+        </div>`;
+      document.body.appendChild(gate);
+      const finish = value => { gate.remove(); resolve(value); };
+      gate.querySelector("#ayGateExit").addEventListener("click", async () => {
+        try { await client.auth.signOut(); } catch (_) {}
+        finish(false);
+      });
+      gate.querySelector("#ayGateAccept").addEventListener("click", async () => {
+        const terms = gate.querySelector("#ayGateTerms").checked;
+        const privacy = gate.querySelector("#ayGatePrivacy").checked;
+        if (!terms || !privacy) { gate.querySelector("#ayGateError").textContent = "Debes aceptar las condiciones y confirmar la lectura de privacidad."; return; }
+        const button = gate.querySelector("#ayGateAccept"); button.disabled = true; button.textContent = "Guardando…";
+        try { await persistLegalAcceptance(currentUser, "authenticated-legal-gate"); finish(true); }
+        catch (error) { button.disabled = false; button.textContent = "Confirmar y continuar"; gate.querySelector("#ayGateError").textContent = "No pudimos registrar la aceptación. Comprueba que la migración legal esté aplicada y vuelve a intentarlo."; console.error("Legal acceptance:", error); }
+      });
+      gate.querySelector("#ayGateTerms").focus();
+    });
+  }
+
+  async function ensureLegalAcceptance(user) {
+    if (!user?.id || !client) return false;
+    const pendingRaw = (() => { try { return sessionStorage.getItem("agendaYaPendingSocialLegalAcceptance"); } catch (_) { return null; } })();
+    let pending = null; try { pending = pendingRaw ? JSON.parse(pendingRaw) : null; } catch (_) {}
+    const meta = user.user_metadata || {};
+    const metadataAccepted = meta.ay_legal_terms_accepted === true && meta.ay_legal_privacy_acknowledged === true;
+    try {
+      const existing = await client.from("user_legal_acceptances")
+        .select("document_slug,document_version")
+        .eq("user_id", user.id)
+        .in("document_slug", ["terms-of-use", "privacy-policy-acknowledgement"]);
+      if (existing.error) throw existing.error;
+      const termsRecorded = existing.data?.some(x => x.document_slug === "terms-of-use" && x.document_version === "1.0");
+      const privacyRecorded = existing.data?.some(x => x.document_slug === "privacy-policy-acknowledgement" && x.document_version === "1.0");
+      if (termsRecorded && privacyRecorded) return true;
+      if (pending?.terms && pending?.privacy) {
+        await persistLegalAcceptance(user, pending.method || "social-signup");
+        try { sessionStorage.removeItem("agendaYaPendingSocialLegalAcceptance"); } catch (_) {}
+        return true;
+      }
+      if (metadataAccepted) {
+        await persistLegalAcceptance(user, meta.ay_legal_acceptance_method || "signup-metadata-recovery");
+        return true;
+      }
+    } catch (error) {
+      console.error("No se pudo comprobar el historial legal:", error);
+      showAuth();
+      setStatus("No se pudo verificar tu aceptación legal. El administrador debe aplicar la migración del Centro Legal en Supabase.", "error");
+      return false;
+    }
+    showAuth();
+    const accepted = await showLegalAcceptanceGate();
+    return accepted;
+  }
+
   async function routeSession(user) {
     if (!user) return;
     if (routingInProgress && currentUser?.id === user.id) {
-      // A second auth event may arrive while hydration is running.
-      // Never block navigation because of it.
-      showProfile();
+      // Ignore duplicate auth events; do not bypass the legal gate or current route.
       return;
     }
     routingInProgress = true;
     currentUser = user;
+
+    const legalAccepted = await ensureLegalAcceptance(user);
+    if (!legalAccepted) {
+      routingInProgress = false;
+      showAuth();
+      setStatus("Para acceder a Agenda YA, completa la aceptación legal.", "error");
+      return;
+    }
 
     // CRITICAL: the authenticated user must see Profile immediately.
     // Database reads are hydration only and must never block navigation.
@@ -352,6 +453,9 @@
     if (!emailValue || !passwordValue) return setStatus("Completa email y contraseña.","error");
     if (passwordValue.length < 6) return setStatus("La contraseña debe tener al menos 6 caracteres.","error");
     if (mode === "signup" && passwordValue !== confirm.value) return setStatus("Las contraseñas no coinciden.","error");
+    if (mode === "signup" && (!acceptTerms?.checked || !acknowledgePrivacy?.checked)) {
+      return setStatus("Para crear la cuenta, acepta las Condiciones de uso y confirma que has leído la Política de privacidad.","error");
+    }
 
     submit.disabled = true;
     setStatus(mode === "signup" ? "Creando tu cuenta…" : "Iniciando sesión…");
@@ -359,7 +463,22 @@
     try {
       const result = await withTimeout(
         mode === "signup"
-          ? client.auth.signUp({ email: emailValue, password: passwordValue, options: { emailRedirectTo: REDIRECT_URL } })
+          ? client.auth.signUp({
+              email: emailValue,
+              password: passwordValue,
+              options: {
+                emailRedirectTo: REDIRECT_URL,
+                data: {
+                  ay_legal_terms_accepted: true,
+                  ay_legal_privacy_acknowledged: true,
+                  ay_legal_terms_version: "1.0",
+                  ay_legal_privacy_version: "1.0",
+                  ay_legal_acceptance_method: "signup-form",
+                  ay_legal_accepted_at_client: new Date().toISOString(),
+                  ay_marketing_consent: !!marketingConsent?.checked
+                }
+              }
+            })
           : client.auth.signInWithPassword({ email: emailValue, password: passwordValue }),
         15000,
         "La autenticación está tardando demasiado. Revisa la conexión y vuelve a intentar."
@@ -423,6 +542,12 @@
 
   async function oauth(provider) {
     if (!client) return setStatus("Supabase no está disponible.","error");
+    if (mode === "signup" && (!acceptTerms?.checked || !acknowledgePrivacy?.checked)) {
+      return setStatus("Para crear una cuenta con un proveedor social, acepta las Condiciones de uso y confirma que has leído la Política de privacidad.","error");
+    }
+    if (mode === "signup") {
+      try { sessionStorage.setItem("agendaYaPendingSocialLegalAcceptance", JSON.stringify({terms:true,privacy:true,termsVersion:"1.0",privacyVersion:"1.0",marketing:!!marketingConsent?.checked,acceptedAt:new Date().toISOString(),method:"social-signup"})); } catch (_) {}
+    }
     if (socialBusy) return;
     setSocialBusy(true);
     const label = socialLabel(provider);
