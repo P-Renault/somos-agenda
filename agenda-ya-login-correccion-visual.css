@@ -1,0 +1,65 @@
+/* Corrección visual solicitada · Agenda YA
+   Oculta elementos de marca/badges promocionales del panel azul.
+   No altera formularios, IDs, eventos ni autenticación. */
+
+/* El logotipo de la cabecera izquierda se elimina; la marca queda expresada
+   por el contenido tipográfico del panel, sin imagen duplicada. */
+#ayAuthView .ay-auth-brand {
+  display: none !important;
+}
+
+/* Los elementos flotantes no forman parte del contenido funcional.
+   Se neutralizan posibles variantes de clases y pseudoelementos heredados. */
+#ayAuthView .ay-login-floating-note,
+#ayAuthView .ay-login-count,
+#ayAuthView .ay-login-confirmation,
+#ayAuthView .ay-login-reservation,
+#ayAuthView .ay-login-stat,
+#ayAuthView .ay-login-floating-card,
+#ayAuthView [class*="reservation-card"],
+#ayAuthView [class*="floating-note"],
+#ayAuthView [class*="login-count"],
+#ayAuthView [class*="booking-confirm"],
+#ayAuthView [data-login-decoration] {
+  display: none !important;
+}
+#ayAuthView .ay-login-marketing::before,
+#ayAuthView .ay-login-marketing::after,
+#ayAuthView .ay-login-marketing-inner::before,
+#ayAuthView .ay-login-marketing-inner::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Retira textos secundarios de marca/dominio que se imprimían al pie. */
+#ayAuthView .ay-login-marketing-footer,
+#ayAuthView .ay-login-marketing small.ay-login-domain,
+#ayAuthView .ay-login-domain {
+  display: none !important;
+}
+
+/* Conserva los textos del panel azul con blanco suave y legible. */
+#ayAuthView .ay-login-kicker {
+  color: rgba(255,255,255,.88) !important;
+  text-shadow: 0 1px 10px rgba(255,255,255,.12) !important;
+}
+#ayAuthView .ay-login-description {
+  color: rgba(255,255,255,.86) !important;
+  text-shadow: 0 1px 8px rgba(255,255,255,.08) !important;
+}
+#ayAuthView .ay-login-benefits strong {
+  color: rgba(255,255,255,.96) !important;
+  text-shadow: 0 1px 8px rgba(255,255,255,.12) !important;
+}
+#ayAuthView .ay-login-benefits small {
+  color: rgba(255,255,255,.80) !important;
+  text-shadow: 0 1px 8px rgba(255,255,255,.08) !important;
+}
+
+/* Mantiene las tres tarjetas de beneficios como elemento principal del panel. */
+#ayAuthView .ay-login-benefits article {
+  background: linear-gradient(145deg,rgba(255,255,255,.14),rgba(30,133,218,.10)) !important;
+  border: 1px solid rgba(62,197,255,.38) !important;
+  backdrop-filter: blur(15px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(145%) !important;
+}
