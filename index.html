@@ -40,7 +40,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css">\n  <link rel="stylesheet" href="agenda-ya-commercial-section.css">
   <style id="agenda-ya-b11-header">
     .topbar .brand {
       display:flex;
@@ -392,14 +392,25 @@
       </div>
     </section>
 
-    <section class="split-cards" id="planes">
-      <article class="for-client"><div class="person">◯</div><div><label>♙ Para clientes</label><h2>Todo lo que necesitas,<br>en un solo lugar.</h2><ul><li>Encuentra negocios confiables</li><li>Compara servicios y precios</li><li>Agenda en segundos</li><li>Recibe confirmación inmediata</li></ul><a href="explorer.html">Buscar servicios →</a></div></article>
-      <article class="for-business"><div class="person">◯</div><div><label>♙ Para negocios</label><h2>Haz crecer tu negocio<br>con Agenda YA.</h2><ul><li>Llega a más clientes</li><li>Gestiona tus reservas</li><li>Controla tu disponibilidad</li><li>Aumenta tus ingresos</li></ul><a href="login.html"><span>Regístrate</span><span>Inicia sesión</span> →</a></div></article>
-    </section>
-
-    <section class="why">
-      <h2>¿Por qué elegir Agenda YA?</h2><p>Una plataforma para ti, con todo lo que necesitas.</p>
-      <div class="why-grid"><article><b>✓</b><h3>Seguro y confiable</h3><p>Negocios verificados y opiniones reales.</p></article><article><b>◷</b><h3>Ahorra tiempo</h3><p>Agenda en pocos clics, sin llamadas.</p></article><article><b>☆</b><h3>Calidad garantizada</h3><p>Servicios de calidad cerca de ti.</p></article><article><b>⌖</b><h3>En tu ciudad</h3><p>Encuentra negocios locales.</p></article></div>
+    <section class="ay-commercial-visual" id="planes" aria-label="Agenda YA para clientes y negocios">
+      <div class="ay-commercial-desktop">
+        <img src="assets/agenda-ya-clientes-negocios-desktop.webp"
+             alt="Agenda YA: encuentra servicios en un solo lugar y haz crecer tu negocio con una plataforma de reservas."
+             width="1672" height="941" loading="lazy" decoding="async">
+        <a class="ay-hotspot ay-hotspot-client" href="explorer.html" aria-label="Buscar servicios en Agenda YA"></a>
+        <a class="ay-hotspot ay-hotspot-business" href="login.html" aria-label="Registrar mi negocio en Agenda YA"></a>
+      </div>
+      <div class="ay-commercial-mobile">
+        <a class="ay-mobile-panel" href="explorer.html" aria-label="Buscar servicios para clientes en Agenda YA">
+          <img src="assets/agenda-ya-clientes-mobile.webp" alt="Para clientes: todo lo que necesitas en un solo lugar. Encuentra negocios, compara servicios y agenda." width="778" height="555" loading="lazy" decoding="async">
+        </a>
+        <a class="ay-mobile-panel" href="login.html" aria-label="Registrar un negocio en Agenda YA">
+          <img src="assets/agenda-ya-negocios-mobile.webp" alt="Para negocios: haz crecer tu negocio con Agenda YA. Gestiona reservas y disponibilidad." width="782" height="555" loading="lazy" decoding="async">
+        </a>
+        <img class="ay-mobile-benefits" src="assets/agenda-ya-beneficios-mobile.webp"
+             alt="Beneficios de Agenda YA: seguridad, ahorro de tiempo, calidad y negocios en tu ciudad."
+             width="1572" height="265" loading="lazy" decoding="async">
+      </div>
     </section>
 
     <section class="ay-premium-carousel" id="agendaYaCarousel" aria-label="Conoce Agenda YA">
@@ -491,42 +502,6 @@
     } catch (_) { return; }
     if (!session?.user) return;
 
-    // Centro legal: persiste la aceptación explícita realizada antes del registro social.
-    const legalPendingKey = "agendaYaPendingSocialLegalAcceptance";
-    let pendingLegal = null;
-    try { pendingLegal = JSON.parse(sessionStorage.getItem(legalPendingKey) || "null"); } catch (_) {}
-    if (pendingLegal?.terms && pendingLegal?.privacy) {
-      try {
-        const writes = await Promise.all([
-          client.from("user_legal_acceptances").upsert({ user_id: session.user.id, document_slug: "terms-of-use", document_version: pendingLegal.termsVersion || "1.0", acceptance_method: pendingLegal.method || "social-signup", metadata: { source: "social-signup-return" } }, { onConflict: "user_id,document_slug,document_version", ignoreDuplicates: true }),
-          client.from("user_legal_acceptances").upsert({ user_id: session.user.id, document_slug: "privacy-policy-acknowledgement", document_version: pendingLegal.privacyVersion || "1.0", acceptance_method: pendingLegal.method || "social-signup", metadata: { source: "social-signup-return", acknowledged: true } }, { onConflict: "user_id,document_slug,document_version", ignoreDuplicates: true })
-        ]);
-        const failure = writes.find(x => x.error);
-        if (failure) throw failure.error;
-        const updated = await client.auth.updateUser({ data: { ay_legal_terms_accepted: true, ay_legal_privacy_acknowledged: true, ay_legal_terms_version: pendingLegal.termsVersion || "1.0", ay_legal_privacy_version: pendingLegal.privacyVersion || "1.0", ay_legal_acceptance_method: pendingLegal.method || "social-signup" } });
-        if (updated.error) throw updated.error;
-        sessionStorage.removeItem(legalPendingKey);
-      } catch (error) {
-        console.error("Agenda YA: no se pudo persistir la aceptación social:", error);
-        window.location.replace("login.html?legal=required");
-        return;
-      }
-    } else {
-      // Existing users without legal evidence are sent through the explicit acceptance gate.
-      try {
-        const legalCheck = await client.from("user_legal_acceptances").select("document_slug,document_version").eq("user_id", session.user.id).in("document_slug", ["terms-of-use", "privacy-policy-acknowledgement"]);
-        const hasTerms = legalCheck.data?.some(x => x.document_slug === "terms-of-use" && x.document_version === "1.0");
-        const hasPrivacy = legalCheck.data?.some(x => x.document_slug === "privacy-policy-acknowledgement" && x.document_version === "1.0");
-        if (legalCheck.error || !hasTerms || !hasPrivacy) {
-          window.location.replace("login.html?legal=required");
-          return;
-        }
-      } catch (_) {
-        window.location.replace("login.html?legal=required");
-        return;
-      }
-    }
-
     /* Prioridad absoluta: reserva pendiente. Nunca volver a Marketplace. */
     if (pending?.slug) {
       go('public-profile.html', { slug: pending.slug, resume: '1' });
@@ -571,6 +546,5 @@
   });
 })();
 </script>
-<script src="legal-center.js" defer></script>
 </body>
 </html>

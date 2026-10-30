@@ -1,0 +1,81 @@
+/* Agenda YA — sección comercial basada en el arte aprobado */
+.ay-commercial-visual{
+  width:min(100% - 48px, 1600px);
+  margin:34px auto 48px;
+  position:relative;
+}
+.ay-commercial-desktop{
+  position:relative;
+  width:100%;
+  line-height:0;
+  overflow:hidden;
+  border-radius:24px;
+}
+.ay-commercial-desktop > img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1672 / 941;
+  object-fit:contain;
+}
+.ay-hotspot{
+  position:absolute;
+  display:block;
+  z-index:2;
+  border-radius:16px;
+  outline-offset:4px;
+}
+/* Áreas CTA sobre los botones azules del diseño de referencia */
+.ay-hotspot-client{
+  left:5.0%;
+  top:48.4%;
+  width:18.0%;
+  height:8.0%;
+}
+.ay-hotspot-business{
+  left:52.0%;
+  top:48.0%;
+  width:18.0%;
+  height:8.5%;
+}
+.ay-hotspot:focus-visible{
+  outline:3px solid #0876dc;
+}
+.ay-commercial-mobile{display:none}
+@media (max-width:760px){
+  .ay-commercial-visual{
+    width:100%;
+    margin:18px auto 32px;
+    padding:0 14px;
+    box-sizing:border-box;
+  }
+  .ay-commercial-desktop{display:none}
+  .ay-commercial-mobile{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .ay-mobile-panel{
+    display:block;
+    width:100%;
+    overflow:hidden;
+    border-radius:18px;
+    line-height:0;
+    box-shadow:0 8px 24px rgba(27,73,126,.08);
+  }
+  .ay-mobile-panel img{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .ay-mobile-benefits{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:16px;
+  }
+}
+@media (prefers-reduced-motion:no-preference){
+  .ay-mobile-panel{transition:transform .2s ease, box-shadow .2s ease}
+  .ay-mobile-panel:active{transform:scale(.99)}
+}
