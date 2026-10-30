@@ -325,31 +325,30 @@
     <div class="ay-auth-bg-shape ay-auth-bg-shape-b" aria-hidden="true"></div>
     <div class="ay-auth-bg-shape ay-auth-bg-shape-c" aria-hidden="true"></div>
     <div class="ay-auth-wrap">
-    <aside class="ay-login-marketing" aria-label="Beneficios de Agenda YA">
-      <div class="ay-login-marketing-inner">
-        <p class="ay-login-kicker"><span></span> RESERVAS INTELIGENTES · AGENDA YA</p>
-        <h2>Tu tiempo,<br>tus reservas,<br><em>todo en un solo lugar.</em></h2>
-        <p class="ay-login-description">Conecta con tus clientes, organiza tus servicios y gestiona tu agenda desde una plataforma sencilla.</p>
-        <div class="ay-login-benefits">
-          <article><span class="ay-login-benefit-icon">✓</span><div><strong>Reservas organizadas</strong><small>Tu agenda siempre bajo control</small></div></article>
-          <article><span class="ay-login-benefit-icon">↗</span><div><strong>Haz crecer tu negocio</strong><small>Más visibilidad y nuevos clientes</small></div></article>
-          <article><span class="ay-login-benefit-icon">◷</span><div><strong>Ahorra tiempo</strong><small>Menos coordinación, más atención</small></div></article>
+      <aside class="ay-login-marketing" aria-label="Beneficios de Agenda YA">
+        <div class="ay-login-marketing-inner">
+          <p class="ay-login-kicker"><span aria-hidden="true"></span> RESERVAS INTELIGENTES · AGENDA YA</p>
+          <h2>Tu tiempo,<br>tus reservas,<br><em>todo en un solo lugar.</em></h2>
+          <p class="ay-login-description">Conecta con tus clientes, organiza tus servicios y gestiona tu agenda desde una plataforma sencilla.</p>
+          <div class="ay-login-benefits">
+            <article><span class="ay-login-benefit-icon" aria-hidden="true">✓</span><div><strong>Reservas organizadas</strong><small>Tu agenda siempre bajo control</small></div></article>
+            <article><span class="ay-login-benefit-icon" aria-hidden="true">↗</span><div><strong>Haz crecer tu negocio</strong><small>Más visibilidad y nuevos clientes</small></div></article>
+            <article><span class="ay-login-benefit-icon" aria-hidden="true">◷</span><div><strong>Ahorra tiempo</strong><small>Menos coordinación, más atención</small></div></article>
+          </div>
+          <div class="ay-login-device" aria-hidden="true">
+            <div class="ay-login-device-camera"></div>
+            <div class="ay-login-device-brand">Agenda <b>YA</b></div>
+            <div class="ay-login-device-search">⌕ &nbsp; ¿Qué servicio necesitas?</div>
+            <div class="ay-login-device-label">Tu agenda de hoy</div>
+            <div class="ay-login-device-row"><b>09:00</b><span><strong>Corte de cabello</strong><small>Reserva confirmada</small></span><i>✓</i></div>
+            <div class="ay-login-device-row"><b>10:30</b><span><strong>Manicure</strong><small>Próxima reserva</small></span><i>✓</i></div>
+            <div class="ay-login-device-row"><b>12:00</b><span><strong>Masaje</strong><small>Agenda organizada</small></span><i>✓</i></div>
+          </div>
+          <div class="ay-login-floating-note"><b>✓</b><span><strong>Reserva confirmada</strong><small>¡Tu cita está agendada!</small></span></div>
+          <div class="ay-login-count"><strong>+12</strong><span>reservas hoy</span></div>
+          <div class="ay-login-marketing-footer"><span>Encuentra. Elige. Agenda.</span><span>agenda-ya.cl</span></div>
         </div>
-        <div class="ay-login-device" aria-hidden="true">
-          <div class="ay-login-device-camera"></div>
-          <div class="ay-login-device-brand">Agenda <b>YA</b></div>
-          <div class="ay-login-device-search">⌕ &nbsp; ¿Qué servicio necesitas?</div>
-          <div class="ay-login-device-label">Tu agenda de hoy</div>
-          <div class="ay-login-device-row"><b>09:00</b><span><strong>Corte de cabello</strong><small>Reserva confirmada</small></span><i>✓</i></div>
-          <div class="ay-login-device-row"><b>10:30</b><span><strong>Manicure</strong><small>Próxima reserva</small></span><i>✓</i></div>
-          <div class="ay-login-device-row"><b>12:00</b><span><strong>Masaje</strong><small>Agenda organizada</small></span><i>✓</i></div>
-        </div>
-        <div class="ay-login-floating-note"><b>✓</b><span><strong>Reserva confirmada</strong><small>¡Tu cita está agendada!</small></span></div>
-        <div class="ay-login-count"><strong>+12</strong><span>reservas hoy</span></div>
-        <div class="ay-login-marketing-footer"><span>Encuentra. Elige. Agenda.</span><span>agenda-ya.cl</span></div>
-      </div>
-    </aside>
-
+      </aside>
       <div class="ay-auth-topbar">
         <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver a Agenda YA"
       onclick="if(history.length>1){history.back()}else{location.href='landing.html'}">
@@ -394,7 +393,7 @@
       </span><span class="ay-social-text">Continuar con Facebook</span><b>→</b>
     </button>
           </div>
-          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button" aria-controls="ayAuthForm" aria-label="Cambiar entre iniciar sesión y crear cuenta">Crear cuenta</button></div>
+          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
           <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
         </div>
         <div id="ayAuthPostLogin" class="ay-auth-state">
@@ -618,14 +617,13 @@
   })();
   </script>
 <script src="legal-center.js" defer></script>
-  <script id="ay-login-clean-stray-text">
+  <script id="ay-login-remove-stray-literal">
   (() => {
     const clean = () => {
-      const body = document.body;
-      if (!body) return;
-      for (const node of Array.from(body.childNodes)) {
+      const roots = [document.body, document.documentElement].filter(Boolean);
+      roots.forEach(root => Array.from(root.childNodes).forEach(node => {
         if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() === "\\n") node.remove();
-      }
+      }));
     };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", clean, { once: true });
     else clean();
