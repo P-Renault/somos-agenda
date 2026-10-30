@@ -6,6 +6,7 @@
   <title>Agenda Ya — Acceso</title>
   <link rel="stylesheet" href="agenda-ya-shell.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="agenda-ya-login-fit.css">
 
   <style id="ay-b13-notification-header-inline">
     .ay-notification-trigger{position:relative;display:inline-flex!important;align-items:center;justify-content:center;}
@@ -317,63 +318,54 @@
     #aySignupLegalConsents p{margin:0;color:#748399;font-size:10px;line-height:1.45}
   </style>
 
-  <link rel="stylesheet" href="agenda-ya-login-premium.css">\n</head>
+</head>
 <body>
   <section class="ay-auth" id="ayAuthView" aria-label="Acceso Agenda Ya">
     <div class="ay-auth-bg-shape ay-auth-bg-shape-a" aria-hidden="true"></div>
     <div class="ay-auth-bg-shape ay-auth-bg-shape-b" aria-hidden="true"></div>
     <div class="ay-auth-bg-shape ay-auth-bg-shape-c" aria-hidden="true"></div>
     <div class="ay-auth-wrap">
+    <aside class="ay-login-marketing" aria-label="Beneficios de Agenda YA">
+      <div class="ay-login-marketing-inner">
+        <p class="ay-login-kicker"><span></span> RESERVAS INTELIGENTES · AGENDA YA</p>
+        <h2>Tu tiempo,<br>tus reservas,<br><em>todo en un solo lugar.</em></h2>
+        <p class="ay-login-description">Conecta con tus clientes, organiza tus servicios y gestiona tu agenda desde una plataforma sencilla.</p>
+        <div class="ay-login-benefits">
+          <article><span class="ay-login-benefit-icon">✓</span><div><strong>Reservas organizadas</strong><small>Tu agenda siempre bajo control</small></div></article>
+          <article><span class="ay-login-benefit-icon">↗</span><div><strong>Haz crecer tu negocio</strong><small>Más visibilidad y nuevos clientes</small></div></article>
+          <article><span class="ay-login-benefit-icon">◷</span><div><strong>Ahorra tiempo</strong><small>Menos coordinación, más atención</small></div></article>
+        </div>
+        <div class="ay-login-device" aria-hidden="true">
+          <div class="ay-login-device-camera"></div>
+          <div class="ay-login-device-brand">Agenda <b>YA</b></div>
+          <div class="ay-login-device-search">⌕ &nbsp; ¿Qué servicio necesitas?</div>
+          <div class="ay-login-device-label">Tu agenda de hoy</div>
+          <div class="ay-login-device-row"><b>09:00</b><span><strong>Corte de cabello</strong><small>Reserva confirmada</small></span><i>✓</i></div>
+          <div class="ay-login-device-row"><b>10:30</b><span><strong>Manicure</strong><small>Próxima reserva</small></span><i>✓</i></div>
+          <div class="ay-login-device-row"><b>12:00</b><span><strong>Masaje</strong><small>Agenda organizada</small></span><i>✓</i></div>
+        </div>
+        <div class="ay-login-floating-note"><b>✓</b><span><strong>Reserva confirmada</strong><small>¡Tu cita está agendada!</small></span></div>
+        <div class="ay-login-count"><strong>+12</strong><span>reservas hoy</span></div>
+        <div class="ay-login-marketing-footer"><span>Encuentra. Elige. Agenda.</span><span>agenda-ya.cl</span></div>
+      </div>
+    </aside>
 
-      <div class="ay-auth-premium">
-        <aside class="ay-auth-promo" aria-label="Beneficios de Agenda YA">
-          <div class="ay-auth-promo-glow ay-auth-promo-glow-one" aria-hidden="true"></div>
-          <div class="ay-auth-promo-glow ay-auth-promo-glow-two" aria-hidden="true"></div>
-          <div class="ay-auth-promo-top">
-            <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver a Agenda YA"
-              onclick="if(history.length>1){history.back()}else{location.href='landing.html'}">
-              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20.5 6.5 11 16l9.5 9.5M12 16h17"/></svg>
-              <span>Volver a Agenda YA</span>
-            </button>
-            <div class="ay-auth-brand" aria-label="Agenda Ya">
-              <img src="assets/agenda-ya-logo-transparent.png" alt="Agenda Ya">
-            </div>
-          </div>
-          <div class="ay-auth-promo-copy">
-            <p class="ay-auth-eyebrow">RESERVAS INTELIGENTES · AGENDA YA</p>
-            <h2>Tu tiempo,<br>tus reservas,<br><span>todo en un solo lugar.</span></h2>
-            <p class="ay-auth-promo-description">Conecta con tus clientes, organiza tus servicios y gestiona tu agenda desde una plataforma sencilla.</p>
-            <div class="ay-auth-promo-features">
-              <div><span class="ay-auth-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span><span><strong>Reservas organizadas</strong><small>Tu agenda siempre bajo control</small></span></div>
-              <div><span class="ay-auth-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-7"/></svg></span><span><strong>Haz crecer tu negocio</strong><small>Más visibilidad y nuevos clientes</small></span></div>
-              <div><span class="ay-auth-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></span><span><strong>Ahorra tiempo</strong><small>Menos coordinación, más atención</small></span></div>
-            </div>
-          </div>
-          <div class="ay-auth-promo-art" aria-hidden="true">
-            <div class="ay-auth-orbit ay-auth-orbit-a"></div><div class="ay-auth-orbit ay-auth-orbit-b"></div>
-            <div class="ay-auth-phone">
-              <div class="ay-auth-phone-camera"></div>
-              <div class="ay-auth-phone-brand">Agenda <b>YA</b></div>
-              <div class="ay-auth-phone-search"><span></span> ¿Qué servicio necesitas?</div>
-              <div class="ay-auth-phone-caption">Tu agenda de hoy</div>
-              <div class="ay-auth-phone-row"><i>09:00</i><span><b>Corte de cabello</b><small>Reserva confirmada</small></span><em>✓</em></div>
-              <div class="ay-auth-phone-row"><i>10:30</i><span><b>Manicure</b><small>Próxima reserva</small></span><em>✓</em></div>
-              <div class="ay-auth-phone-row"><i>12:00</i><span><b>Masaje</b><small>Agenda organizada</small></span><em>✓</em></div>
-              <div class="ay-auth-phone-nav"><span>⌂</span><span>⌕</span><span>▦</span><span>♙</span></div>
-            </div>
-            <div class="ay-auth-floating-note"><span>✓</span><div><b>Reserva confirmada</b><small>Tu cita está agendada</small></div></div>
-            <div class="ay-auth-floating-stat"><b>+12</b><span>reservas hoy</span></div>
-          </div>
-          <div class="ay-auth-promo-footer"><span>Encuentra. Elige. Agenda.</span><span>agenda-ya.cl</span></div>
-        </aside>
-        <main class="ay-auth-panel" aria-label="Formulario de acceso">
-          <div class="ay-auth-panel-inner">
-            <div class="ay-auth-panel-heading">
-              <p class="ay-auth-eyebrow">AGENDA YA · ACCESO SEGURO</p>
-              <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a <span>Agenda Ya</span></h1>
-              <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas desde un solo lugar.</p>
-            </div>
-                  <div class="ay-auth-card">
+      <div class="ay-auth-topbar">
+        <button class="ay-auth-back" id="ayAuthBack" type="button" aria-label="Volver a Agenda YA"
+      onclick="if(history.length>1){history.back()}else{location.href='landing.html'}">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M20.5 6.5 11 16l9.5 9.5M12 16h17"/></svg>
+      <span>Volver a Agenda YA</span>
+    </button>
+        <div class="ay-auth-brand" aria-label="Agenda Ya">
+          <img src="assets/agenda-ya-logo-transparent.png" alt="Agenda Ya">
+        </div>
+      </div>
+      <div class="ay-auth-intro">
+        <p class="ay-auth-eyebrow">AGENDA YA · ACCESO</p>
+        <h1 class="ay-auth-title" id="ayAuthTitle">Bienvenido a <span>Agenda Ya</span></h1>
+        <p class="ay-auth-subtitle" id="ayAuthSubtitle">Gestiona tu negocio y recibe más reservas<br class="ay-auth-title-break"> desde un solo lugar.</p>
+      </div>
+      <div class="ay-auth-card">
         <div id="ayAuthFormPanel" class="ay-auth-state is-visible">
           <form class="ay-auth-form" id="ayAuthForm" novalidate>
             <label class="ay-auth-field"><span class="ay-auth-field-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="3"/><path d="m5 9 11 9L27 9"/></svg></span><span class="ay-auth-field-copy"><span class="ay-auth-label">Email</span><input class="ay-auth-input" id="ayAuthEmail" type="email" autocomplete="email" placeholder="tu@email.com" required></span></label>
@@ -402,7 +394,7 @@
       </span><span class="ay-social-text">Continuar con Facebook</span><b>→</b>
     </button>
           </div>
-          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button">Crear cuenta</button></div>
+          <div class="ay-auth-switch"><span id="ayAuthSwitchText">¿No tienes una cuenta?</span> <button id="ayAuthSwitch" type="button" aria-controls="ayAuthForm" aria-label="Cambiar entre iniciar sesión y crear cuenta">Crear cuenta</button></div>
           <p class="ay-auth-foot">Acceso seguro con Supabase Auth</p>
         </div>
         <div id="ayAuthPostLogin" class="ay-auth-state">
@@ -413,10 +405,6 @@
           <button class="ay-auth-primary" id="ayAuthContinueSetup" type="button"><span>Continuar</span><b>→</b></button>
         </div>
       </div>
-          </div>
-        </main>
-      </div>
-
     </div>
   </section>
 
@@ -630,5 +618,18 @@
   })();
   </script>
 <script src="legal-center.js" defer></script>
+  <script id="ay-login-clean-stray-text">
+  (() => {
+    const clean = () => {
+      const body = document.body;
+      if (!body) return;
+      for (const node of Array.from(body.childNodes)) {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() === "\\n") node.remove();
+      }
+    };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", clean, { once: true });
+    else clean();
+  })();
+  </script>
 </body>
 </html>
