@@ -70,7 +70,7 @@
   function formatTime(v){ return String(v).slice(0,5); }
   function formatDate(v){ return parseDateKey(v).toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'}); }
   function normalizePhone(v){ return String(v||'').replace(/\D/g,''); }
-  function showError(message){ $('stateLoading').hidden=true; $('businessProfile').hidden=true; $('stateError').hidden=false; $('errorMessage').textContent=message||'El perfil puede no estar publicado o el enlace puede ser incorrecto.'; }
+  function showError(message){ let robots=document.head.querySelector('meta[name="robots"]'); if(!robots){robots=document.createElement('meta');robots.name='robots';document.head.appendChild(robots);} robots.content='noindex,follow'; $('stateLoading').hidden=true; $('businessProfile').hidden=true; $('stateError').hidden=false; $('errorMessage').textContent=message||'El perfil puede no estar publicado o el enlace puede ser incorrecto.'; }
   function categoryImage(data){ return data?.profile?.cover_url || stableCategoryImage(data?.category?.slug, data?.business?.slug); }
   function mapQuery(p){ return [p.address,p.comuna,p.city].filter(Boolean).join(', '); }
   function renderMap(p){ const query=mapQuery(p); if(!query)return; const encoded=encodeURIComponent(query); $('mapFrame').src=`https://www.google.com/maps?q=${encoded}&output=embed`; $('mapWrap').hidden=false; $('mapLink').href=`https://www.google.com/maps/search/?api=1&query=${encoded}`; $('mapLink').hidden=false; }
@@ -89,9 +89,79 @@
     }).join(''); section.hidden=false;
   }
 
+
+  // SEO dinámico para cada perfil público publicado.
+  // El slug identifica una URL canónica única; los datos proceden de la RPC pública existente.
+  function setSeoMeta(data){
+    const b=data?.business||{}, p=data?.profile||{}, c=data?.category||{};
+    const name=String(b.name||'Negocio en Agenda YA').trim();
+    const place=[p.comuna,p.city].filter(Boolean).join(', ');
+    const services=Array.isArray(data?.services)?data.services:[];
+    const baseDescription=String(p.description||`Conoce los servicios de ${name}${place?` en ${place}`:''} y reserva una hora online con Agenda YA.`).replace(/\s+/g,' ').trim();
+    const description=baseDescription.slice(0,300);
+    const slug=String(b.slug||params().get('slug')||'').trim();
+    const canonical=slug
+      ? `https://agenda-ya.cl/public-profile.html?slug=${encodeURIComponent(slug)}`
+      : 'https://agenda-ya.cl/explorer.html';
+    const image=String(b.logo_url||p.cover_url||'https://agenda-ya.cl/og-agenda-ya.jpg');
+    const setMeta=(selector,attr,value)=>{
+      let el=document.head.querySelector(selector);
+      if(!el){el=document.createElement('meta');const [key,val]=selector.match(/\[(name|property)="([^"]+)"\]/).slice(1);el.setAttribute(key,val);document.head.appendChild(el);}
+      el.setAttribute(attr,value);
+    };
+    document.title=`${name}${c.name?` · ${c.name}`:''} | Agenda YA`;
+    setMeta('meta[name="description"]','content',description);
+    setMeta('meta[name="robots"]','content','index,follow,max-image-preview:large,max-snippet:-1');
+    setMeta('meta[property="og:type"]','content','business.business');
+    setMeta('meta[property="og:title"]','content',document.title);
+    setMeta('meta[property="og:description"]','content',description);
+    setMeta('meta[property="og:url"]','content',canonical);
+    setMeta('meta[property="og:image"]','content',image);
+    setMeta('meta[name="twitter:card"]','content','summary_large_image');
+    setMeta('meta[name="twitter:title"]','content',document.title);
+    setMeta('meta[name="twitter:description"]','content',description);
+    let link=document.head.querySelector('link[rel="canonical"]');
+    if(!link){link=document.createElement('link');link.rel='canonical';document.head.appendChild(link);}
+    link.href=canonical;
+
+    const addressParts=[p.address,p.comuna,p.city].filter(Boolean);
+    const schema={
+      '@context':'https://schema.org',
+      '@type':'LocalBusiness',
+      name,
+      description,
+      url:canonical,
+      image,
+      ...(b.phone||p.phone ? {telephone:String(p.phone||b.phone)} : {}),
+      ...(addressParts.length ? {'address':{
+        '@type':'PostalAddress',
+        ...(p.address?{streetAddress:String(p.address)}:{}),
+        ...(p.comuna?{addressLocality:String(p.comuna)}:{}),
+        ...(p.city?{addressRegion:String(p.city)}:{}),
+        addressCountry:'CL'
+      }} : {}),
+      ...(p.city?{areaServed:{'@type':'City',name:String(p.city)}}:{}),
+      ...(services.length?{hasOfferCatalog:{
+        '@type':'OfferCatalog',
+        name:`Servicios de ${name}`,
+        itemListElement:services.slice(0,30).map((service,index)=>({
+          '@type':'Offer',
+          itemOffered:{
+            '@type':'Service',
+            name:String(service.name||`Servicio ${index+1}`),
+            ...(service.description?{description:String(service.description)}:{})
+          }
+        }))
+      }}:{})
+    };
+    let script=document.getElementById('agenda-ya-business-jsonld');
+    if(!script){script=document.createElement('script');script.id='agenda-ya-business-jsonld';script.type='application/ld+json';document.head.appendChild(script);}
+    script.textContent=JSON.stringify(schema).replace(/</g,'\\u003c');
+  }
+
   function render(data){
     profileData=data; const b=data.business||{},p=data.profile||{},c=data.category||null,services=Array.isArray(data.services)?data.services:[],professionals=Array.isArray(data.professionals)?data.professionals:[];
-    document.title=`${b.name||'Perfil'} · Agenda Ya`; $('businessName').textContent=b.name||'Negocio'; $('category').textContent=c?.name||'Servicios';
+    setSeoMeta(data); $('businessName').textContent=b.name||'Negocio'; $('category').textContent=c?.name||'Servicios';
     $('location').textContent=[p.comuna,p.city].filter(Boolean).join(', ')||'Ubicación no informada'; $('description').textContent=p.description||'Este negocio aún no ha agregado una descripción pública.';
     $('address').textContent=p.address||'Dirección no publicada'; $('city').textContent=[p.comuna,p.city].filter(Boolean).join(', ');
     const logo=$('logo'); if(b.logo_url)logo.innerHTML=`<img src="${esc(b.logo_url)}" alt="Logo de ${esc(b.name)}">`; else logo.textContent=initials(b.name);
