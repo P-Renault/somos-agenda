@@ -4,7 +4,7 @@
   if(window.AgendaYaSubscriptionLifecycleEngine)return;
   const cfg=window.SOMOS_CONFIG||{};let client=null;
   const $=(s,r=document)=>r.querySelector(s);
-  function c(){if(!client&&window.supabase&&cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY)client=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return client;}
+  function c(){if(!client&&window.AgendaYaSupabase?.getClient)client=window.AgendaYaSupabase.getClient();return client;}
   const labels={trialing:['Trial','Inicio'],active:['Activo','Pago confirmado'],past_due:['Pago pendiente','Grace period'],suspended:['Suspendido','Acceso restringido'],cancelled:['Cancelado','Fin de suscripción'],expired:['Expirado','Fin de período']};
   async function load(){
     const x=c();if(!x)return;const r=await x.rpc('get_business_membership');if(r.error){console.warn('Agenda Ya B17 Lifecycle:',r.error);return;}const row=Array.isArray(r.data)?r.data[0]:r.data;if(!row)return;

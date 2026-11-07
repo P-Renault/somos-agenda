@@ -6,9 +6,8 @@
   let client = null, billing = null, busy = false;
   const $ = (s, r = document) => r.querySelector(s);
   function c() {
-    if (!client && window.supabase && cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY)
-      client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY,
-        { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    if (!client && window.AgendaYaSupabase?.getClient)
+      client = window.AgendaYaSupabase.getClient();
     return client;
   }
   function renderPayments() {

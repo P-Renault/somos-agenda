@@ -1,9 +1,7 @@
 (() => {
   'use strict';
   const cfg=window.SOMOS_CONFIG||{};
-  const client=window.supabase?.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{
-    auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
-  });
+  const client=window.AgendaYaSupabase?.getClient?.() || null;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   let reviews=new Map();
 

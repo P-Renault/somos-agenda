@@ -44,11 +44,8 @@
   ensureStyles();
 
   function getClient() {
-    if (!client && cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && window.supabase) {
-      client = window.supabase.createClient(
-        cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY,
-        { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }
-      );
+    if (!client && window.AgendaYaSupabase?.getClient) {
+      client = window.AgendaYaSupabase.getClient();
     }
     return client;
   }

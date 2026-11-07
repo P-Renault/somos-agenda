@@ -5,7 +5,7 @@
   const cfg=window.SOMOS_CONFIG||{};let client=null;
   const $=(s,r=document)=>r.querySelector(s);
   const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  function c(){if(!client&&window.supabase&&cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY)client=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return client;}
+  function c(){if(!client&&window.AgendaYaSupabase?.getClient)client=window.AgendaYaSupabase.getClient();return client;}
   function display(data){
     const root=$('#ayEntitlementsView');if(!root)return;
     const map={

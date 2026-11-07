@@ -54,19 +54,10 @@
   }
 
   async function createClient() {
-    if (!window.supabase?.createClient) {
-      throw new Error("Supabase no está disponible.");
+    if (!window.AgendaYaSupabase?.getClient) {
+      throw new Error("El registro central de Supabase no está disponible.");
     }
-    if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
-      throw new Error("La configuración de Supabase no está disponible.");
-    }
-    return window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    });
+    return window.AgendaYaSupabase.getClient();
   }
 
   async function resolveBusiness() {
