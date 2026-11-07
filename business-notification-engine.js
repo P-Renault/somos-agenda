@@ -124,6 +124,31 @@
     results.forEach((x,i)=>{if(x.error&&!/does not exist|Could not find the function/i.test(x.error.message||''))console.warn('Agenda YA mark read:',jobs[i][0],x.error.message);});
     state.rows=state.rows.map(r=>({...r,read_at:r.read_at||new Date().toISOString()}));state.unread=0;render();
   }
-  function boot(){if(state.booted)return;state.booted=true;const retry=()=>{if(!mount()){state.booted=false;setTimeout(boot,300);return;}const wait=()=>{const c=window.AgendaYaAuth?.getClient?.();if(c){state.client=c;load();state.timer=setInterval(load,30000);}else setTimeout(wait,300);};wait();document.addEventListener('click',e=>{const p=$('#ayB13BusinessNotifPanel'),b=getButton();if(state.open&&p&&!p.contains(e.target)&&!b?.contains(e.target))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});};retry();}
+  function boot(){
+    if(state.booted)return;
+    state.booted=true;
+    const retryMount=()=>{
+      if(!mount()){setTimeout(retryMount,300);return;}
+      document.addEventListener('click',e=>{const p=$('#ayB13BusinessNotifPanel'),b=getButton();if(state.open&&p&&!p.contains(e.target)&&!b?.contains(e.target))close();});
+      document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+      waitForAuthenticatedDashboard();
+    };
+    retryMount();
+  }
+  function waitForAuthenticatedDashboard(){
+    const c=window.AgendaYaAuth?.getClient?.();
+    if(!c){setTimeout(waitForAuthenticatedDashboard,300);return;}
+    c.auth.getSession().then(({data,error})=>{
+      if(error){console.warn('Agenda YA notifications: no se pudo validar la sesión.',error.message);setTimeout(waitForAuthenticatedDashboard,1500);return;}
+      const session=data?.session;
+      if(!session?.user){state.client=null;setTimeout(waitForAuthenticatedDashboard,1000);return;}
+      state.client=c;
+      if(!state.timer){load();state.timer=setInterval(async()=>{
+        const current=await c.auth.getSession();
+        if(!current.data?.session?.user){clearInterval(state.timer);state.timer=null;state.client=null;state.rows=[];state.unread=0;close();return;}
+        load();
+      },30000);}
+    }).catch(error=>{console.warn('Agenda YA notifications: sesión no disponible.',error?.message||error);setTimeout(waitForAuthenticatedDashboard,1500);});
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

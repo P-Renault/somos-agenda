@@ -1,0 +1,25 @@
+AGENDA YA 6.0 — Corrección de inicialización de notificaciones
+
+CAMBIOS APLICADOS
+1. login.html: se retiró la carga de business-notification-engine.js. El formulario de acceso ya no dispara consultas RPC de notificaciones antes de iniciar sesión.
+2. business-notification-engine.js: el motor ahora espera a que dashboard.js publique AgendaYaAuth y comprueba una sesión autenticada antes de consultar RPC. También detiene el refresco al cerrar sesión.
+
+HALLAZGOS DE BASE DE DATOS
+- El paquete no contiene una migración SQL que cree las funciones RPC usadas por el motor: get_business_notifications, get_business_plan_notifications, get_welcome_notifications, get_business_payment_notifications, get_app_notifications y get_agenda_notifications.
+- Tampoco contiene las funciones de marcado de lectura llamadas por markRead().
+- Los SQL incluidos en este ZIP no definen esas funciones. Por tanto, el error de agenda (función no encontrada en la caché del esquema) y los errores de permisos de RPC en el dashboard no pueden resolverse de forma segura solo con JavaScript.
+- No se inventó una migración SQL: el paquete no aporta el esquema completo de las tablas de notificaciones, relaciones, políticas RLS ni firmas de las funciones originales. Crear funciones sobre supuestos podría exponer datos de otros negocios o romper el flujo de reservas.
+
+CONFIGURACIÓN SUPABASE
+- config.js contiene una clave publishable en el frontend. Esto es aceptable si corresponde a la clave pública del proyecto; nunca debe sustituirse por service_role.
+- No se puede confirmar desde el ZIP que la clave y el proyecto estén activos ni que las funciones tengan GRANT EXECUTE/RLS correctos.
+
+DESPLIEGUE Y VALIDACIÓN PENDIENTE
+1. Publicar los dos archivos modificados manteniendo sus rutas.
+2. Probar login: ya no deben aparecer llamadas de notificaciones desde login.html.
+3. En dashboard, verificar sesión y después revisar cada RPC en Supabase SQL Editor / Database Functions y permisos.
+4. Para completar la reparación de notificaciones se requiere el SQL real de creación de tablas/funciones o un volcado de esquema (sin datos ni secretos) del proyecto Supabase.
+
+VALIDACIÓN LOCAL
+- Sintaxis JavaScript validada con node --check para business-notification-engine.js.
+- No se ejecutó SQL contra Supabase ni se realizaron cambios en el proyecto remoto.
