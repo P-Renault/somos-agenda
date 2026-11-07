@@ -58,8 +58,8 @@
 
   async function context(force=false){
     if(!client){
-      if(validConfig() && window.supabase) client=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);
-      else { status("Configuración de Supabase no disponible.","error"); return false; }
+      if(validConfig() && window.AgendaYaSupabase?.getClient) client=window.AgendaYaSupabase.getClient();
+      else { status("Configuración o cliente central de Supabase no disponible.","error"); return false; }
     }
     if(!force && user?.id && contextState.businessId && business?.id) return true;
 

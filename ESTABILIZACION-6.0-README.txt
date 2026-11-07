@@ -1,0 +1,15 @@
+AGENDA YA 6.0 — ESTABILIZACIÓN DE SHELL Y CLIENTE SUPABASE
+
+Cambios incluidos:
+1. agenda-ya-modules.js obtiene el cliente desde window.AgendaYaSupabase.getClient(); deja de crear una instancia GoTrueClient propia.
+2. agenda-ya-shell.js protege las referencias DOM opcionales y navega a la vista dedicada view-public-profile sin intentar escribir en los nodos del workspace genérico.
+3. dashboard.html actualiza la versión del shell para evitar servir una copia antigua desde caché.
+
+Despliegue:
+- Reemplazar los archivos conservando sus rutas: agenda-ya-modules.js, agenda-ya-shell.js y dashboard.html.
+- Publicar juntos en el mismo despliegue.
+- En Chrome, cerrar sesión, borrar caché del sitio o usar Ctrl+Shift+R y volver a iniciar sesión.
+- Verificar Console y Network.
+
+Validación estática realizada: revisión de referencias createClient en el módulo operativo y comprobación de guards DOM.
+No se ha realizado una prueba E2E contra el proyecto Supabase de producción.
