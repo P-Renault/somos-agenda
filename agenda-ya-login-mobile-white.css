@@ -1,0 +1,406 @@
+/* Agenda YA · Login móvil blanco y flujo desde el acceso
+   Capa visual móvil únicamente. No modifica IDs, eventos ni autenticación. */
+@media (max-width: 760px) {
+  html,
+  body {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: #fff !important;
+  }
+
+  body {
+    margin: 0 !important;
+    color: #10294b !important;
+  }
+
+  #ayAuthView {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  #ayAuthView .ay-auth-bg-shape,
+  #ayAuthView .ay-auth-bg-shape-a,
+  #ayAuthView .ay-auth-bg-shape-b,
+  #ayAuthView .ay-auth-bg-shape-c,
+  #ayAuthView .ay-login-marketing {
+    display: none !important;
+    visibility: hidden !important;
+    background: #fff !important;
+  }
+
+  #ayAuthView .ay-auth-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 0 calc(22px + env(safe-area-inset-bottom)) !important;
+    gap: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  #ayAuthView .ay-auth-topbar {
+    position: relative !important;
+    inset: auto !important;
+    order: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: max(12px, env(safe-area-inset-top)) 20px 0 !important;
+    background: #fff !important;
+    z-index: 2 !important;
+  }
+
+  #ayAuthView .ay-auth-back {
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 30px !important;
+    margin: 0 !important;
+    padding: 4px 0 !important;
+    color: #0878ea !important;
+    background: #fff !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+  }
+
+  #ayAuthView .ay-auth-back svg {
+    display: block !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  #ayAuthView .ay-auth-intro {
+    position: relative !important;
+    inset: auto !important;
+    order: 1 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 24px 24px 0 !important;
+    text-align: left !important;
+    background: #fff !important;
+    z-index: 1 !important;
+  }
+
+  #ayAuthView .ay-auth-eyebrow {
+    display: block !important;
+    margin: 0 0 7px !important;
+    color: #0878ea !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+    font-weight: 850 !important;
+    letter-spacing: .12em !important;
+  }
+
+  #ayAuthView .ay-auth-title {
+    display: block !important;
+    margin: 0 !important;
+    color: #10294b !important;
+    font-size: clamp(25px, 7vw, 32px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -.8px !important;
+    font-weight: 850 !important;
+    text-align: left !important;
+  }
+
+  #ayAuthView .ay-auth-title span {
+    color: #10294b !important;
+  }
+
+  #ayAuthView .ay-auth-title-break {
+    display: none !important;
+  }
+
+  #ayAuthView .ay-auth-subtitle {
+    display: block !important;
+    max-width: 100% !important;
+    margin: 8px 0 0 !important;
+    padding: 0 !important;
+    color: #6e7887 !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+    font-weight: 400 !important;
+    text-align: left !important;
+  }
+
+  #ayAuthView .ay-auth-card {
+    position: relative !important;
+    inset: auto !important;
+    order: 2 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 22px 24px 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+  }
+
+  #ayAuthView .ay-auth-form {
+    display: grid !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  #ayAuthView .ay-auth-field {
+    display: flex !important;
+    align-items: center !important;
+    gap: 11px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 62px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 9px 13px !important;
+    border: 1px solid #dfe4eb !important;
+    border-radius: 13px !important;
+    background: #fff !important;
+    box-shadow: 0 2px 5px rgba(16, 42, 76, .035) !important;
+  }
+
+  #ayAuthView .ay-auth-field-icon {
+    position: static !important;
+    flex: 0 0 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    color: #8a9bb0 !important;
+    background: transparent !important;
+  }
+
+  #ayAuthView .ay-auth-field-icon svg {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  #ayAuthView .ay-auth-field-copy {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #ayAuthView .ay-auth-label {
+    display: block !important;
+    margin: 0 0 3px !important;
+    color: #183454 !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    font-weight: 750 !important;
+  }
+
+  #ayAuthView .ay-auth-input {
+    display: block !important;
+    width: 100% !important;
+    height: 25px !important;
+    min-height: 25px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    color: #26384e !important;
+    box-shadow: none !important;
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+  }
+
+  #ayAuthView .ay-auth-input::placeholder {
+    color: #7a8491 !important;
+    opacity: 1 !important;
+  }
+
+  #ayAuthView .ay-auth-eye {
+    position: static !important;
+    flex: 0 0 25px !important;
+    width: 25px !important;
+    height: 25px !important;
+    margin: 0 !important;
+    padding: 4px !important;
+    background: transparent !important;
+  }
+
+  #ayAuthView .ay-auth-primary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    margin: 1px 0 0 !important;
+    padding: 0 16px !important;
+    border: 0 !important;
+    border-radius: 13px !important;
+    background: linear-gradient(100deg, #087cf0, #13a8e9) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px rgba(8, 124, 240, .16) !important;
+    font-size: 16px !important;
+    font-weight: 850 !important;
+  }
+
+  #ayAuthView .ay-auth-status:not(:empty) {
+    margin: 8px 0 0 !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  #ayAuthView .ay-auth-link {
+    display: block !important;
+    width: 100% !important;
+    margin: 11px 0 0 !important;
+    padding: 0 !important;
+    font-size: 13px !important;
+    text-align: right !important;
+  }
+
+  #ayAuthView .ay-auth-divider {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 20px 0 12px !important;
+    color: #8994a3 !important;
+    font-size: 11px !important;
+  }
+
+  #ayAuthView .ay-auth-divider::before,
+  #ayAuthView .ay-auth-divider::after {
+    height: 1px !important;
+    background: #e1e5eb !important;
+  }
+
+  #ayAuthView .ay-auth-socials {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: 100% !important;
+  }
+
+  #ayAuthView .ay-auth-secondary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 49px !important;
+    min-height: 49px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    border: 1px solid #dce2e9 !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    color: #183454 !important;
+    box-shadow: 0 2px 5px rgba(16, 42, 76, .03) !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  #ayAuthView .ay-social-icon,
+  #ayAuthView .ay-social-icon svg {
+    position: static !important;
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    transform: none !important;
+  }
+
+  #ayAuthView .ay-social-text {
+    display: block !important;
+    min-width: 0 !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+
+  #ayAuthView .ay-auth-switch {
+    margin: 17px 0 0 !important;
+    padding: 0 !important;
+    color: #778496 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    text-align: center !important;
+  }
+
+  #ayAuthView .ay-auth-switch button {
+    display: inline-block !important;
+    margin-left: 4px !important;
+    padding: 3px 2px !important;
+    font-size: inherit !important;
+  }
+
+  #ayAuthView .ay-auth-foot {
+    margin: 9px 0 0 !important;
+    padding: 0 !important;
+    color: #929cab !important;
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+  }
+
+  #ayAuthView .ay-legal-signup-consents {
+    margin: 4px 0 !important;
+    padding: 10px !important;
+    background: #f8fbff !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+  }
+
+  #ayAuthView .ay-legal-signup-consents p {
+    font-size: 9px !important;
+  }
+
+  #ayAuthView #ayAuthFormPanel[hidden],
+  #ayAuthView #ayPasswordConfirmWrap[hidden],
+  #ayAuthView[hidden] {
+    display: none !important;
+  }
+}
+
+@media (max-width: 380px) {
+  #ayAuthView .ay-auth-intro {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  #ayAuthView .ay-auth-card {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  #ayAuthView .ay-auth-socials {
+    grid-template-columns: 1fr !important;
+  }
+}
