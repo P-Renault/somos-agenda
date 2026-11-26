@@ -1,0 +1,482 @@
+/* Agenda YA · Login móvil según referencia aprobada
+   Solo presentación. No modifica IDs, formularios ni autenticación. */
+@media (max-width: 700px) {
+  html, body {
+    margin: 0 !important;
+    min-height: 100% !important;
+    background: #fff !important;
+    color: #13264b !important;
+  }
+
+  #ayAuthView,
+  #ayAuthView.ay-auth {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 100svh !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #13264b !important;
+    align-items: initial !important;
+    justify-content: initial !important;
+  }
+
+  #ayAuthView .ay-auth-bg-shape,
+  #ayAuthView .ay-login-marketing,
+  #ayAuthView .ay-auth-brand {
+    display: none !important;
+  }
+
+  #ayAuthView .ay-auth-wrap {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 100svh !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 0 calc(34px + env(safe-area-inset-bottom)) !important;
+    gap: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+  }
+
+  /* Volver a Agenda YA */
+  #ayAuthView .ay-auth-topbar {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 18px 30px 0 !important;
+    background: #fff !important;
+    z-index: 2 !important;
+  }
+
+  #ayAuthView .ay-auth-back {
+    position: relative !important;
+    inset: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #0878df !important;
+    box-shadow: none !important;
+    font-size: clamp(17px, 4.4vw, 21px) !important;
+    font-weight: 750 !important;
+    line-height: 1.25 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+  }
+
+  #ayAuthView .ay-auth-back svg {
+    display: block !important;
+    flex: 0 0 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+  }
+
+  /* Marca y descripción */
+  #ayAuthView .ay-auth-intro {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: clamp(52px, 11vh, 92px) 0 0 !important;
+    padding: 0 7vw !important;
+    text-align: center !important;
+    background: #fff !important;
+    z-index: 1 !important;
+  }
+
+  #ayAuthView .ay-auth-intro:before {
+    content: "" !important;
+    display: block !important;
+    width: min(82vw, 520px) !important;
+    height: auto !important;
+    aspect-ratio: 2009 / 652 !important;
+    margin: 0 auto clamp(48px, 8vh, 72px) !important;
+    background: url("assets/agenda-ya-logo-transparent.png") center / contain no-repeat !important;
+  }
+
+  #ayAuthView .ay-auth-intro .ay-auth-eyebrow,
+  #ayAuthView .ay-auth-intro .ay-auth-title {
+    display: none !important;
+  }
+
+  #ayAuthView .ay-auth-subtitle {
+    display: block !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    color: #737b89 !important;
+    font-size: clamp(22px, 4.7vw, 29px) !important;
+    font-weight: 400 !important;
+    line-height: 1.38 !important;
+    text-align: center !important;
+  }
+
+  #ayAuthView .ay-auth-title-break {
+    display: none !important;
+  }
+
+  /* Formulario en flujo normal: evita solapamientos y permite scroll */
+  #ayAuthView .ay-auth-card {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 650px !important;
+    min-width: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: clamp(62px, 9vh, 82px) auto 0 !important;
+    padding: 0 7vw !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    color: #13264b !important;
+  }
+
+  #ayAuthView #ayAuthFormPanel {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #ayAuthView .ay-auth-form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  #ayAuthView .ay-auth-field {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 84px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 11px 20px !important;
+    border: 1.5px solid #e0e2e6 !important;
+    border-radius: 19px !important;
+    background: #fff !important;
+    box-shadow: 0 1px 2px rgba(20, 40, 70, .03) !important;
+  }
+
+  #ayAuthView .ay-auth-field:focus-within {
+    border-color: #1684e8 !important;
+    box-shadow: 0 0 0 3px rgba(22, 132, 232, .09) !important;
+  }
+
+  #ayAuthView .ay-auth-field-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 30px !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    color: #7e8794 !important;
+  }
+
+  #ayAuthView .ay-auth-field-icon svg {
+    display: block !important;
+    width: 30px !important;
+    height: 30px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+  }
+
+  #ayAuthView .ay-auth-field-copy {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #ayAuthView .ay-auth-label {
+    display: block !important;
+    margin: 0 0 3px !important;
+    color: #13264b !important;
+    font-size: 15px !important;
+    font-weight: 750 !important;
+    line-height: 1.15 !important;
+  }
+
+  #ayAuthView .ay-auth-input {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #13264b !important;
+    font-size: 21px !important;
+    font-weight: 400 !important;
+    line-height: 1.25 !important;
+  }
+
+  #ayAuthView .ay-auth-input::placeholder {
+    color: #777b82 !important;
+    opacity: 1 !important;
+  }
+
+  #ayAuthView .ay-auth-password-copy {
+    position: relative !important;
+    padding-right: 36px !important;
+  }
+
+  #ayAuthView .ay-auth-eye {
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-25%) !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 32px !important;
+    height: 36px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #7e8794 !important;
+  }
+
+  #ayAuthView .ay-auth-eye svg {
+    width: 27px !important;
+    height: 27px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+  }
+
+  #ayAuthView .ay-auth-primary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    width: 100% !important;
+    min-height: 86px !important;
+    height: 86px !important;
+    margin: 2px 0 0 !important;
+    padding: 14px 18px !important;
+    border: 0 !important;
+    border-radius: 19px !important;
+    background: linear-gradient(100deg, #087cf0, #079de5) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 24px rgba(8, 124, 240, .15) !important;
+    font-size: 23px !important;
+    font-weight: 800 !important;
+  }
+
+  #ayAuthView .ay-auth-primary span {
+    display: inline !important;
+  }
+
+  #ayAuthView .ay-auth-primary b {
+    font-size: 25px !important;
+  }
+
+  #ayAuthView .ay-auth-status {
+    min-height: 0 !important;
+    margin: 8px 0 0 !important;
+    font-size: 13px !important;
+  }
+
+  #ayAuthView .ay-auth-link {
+    display: block !important;
+    width: 100% !important;
+    min-height: 45px !important;
+    margin: 17px 0 0 !important;
+    padding: 6px 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #0878df !important;
+    box-shadow: none !important;
+    font-size: 21px !important;
+    font-weight: 750 !important;
+    text-align: right !important;
+  }
+
+  #ayAuthView .ay-auth-divider {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    margin: 39px 0 27px !important;
+    color: #818792 !important;
+    font-size: 19px !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+  }
+
+  #ayAuthView .ay-auth-divider:before,
+  #ayAuthView .ay-auth-divider:after {
+    content: "" !important;
+    display: block !important;
+    flex: 1 1 auto !important;
+    height: 1.5px !important;
+    background: #e1e3e7 !important;
+  }
+
+  #ayAuthView .ay-auth-socials {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 22px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  #ayAuthView .ay-auth-secondary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 20px !important;
+    width: 100% !important;
+    min-height: 82px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 14px 16px !important;
+    border: 1.5px solid #e0e2e6 !important;
+    border-radius: 19px !important;
+    background: #fff !important;
+    color: #13264b !important;
+    box-shadow: 0 1px 2px rgba(20, 40, 70, .03) !important;
+    font-size: 20px !important;
+    font-weight: 750 !important;
+    white-space: normal !important;
+  }
+
+  #ayAuthView .ay-social-icon,
+  #ayAuthView .ay-social-icon svg {
+    display: inline-flex !important;
+    flex: 0 0 43px !important;
+    width: 43px !important;
+    height: 43px !important;
+    margin: 0 !important;
+  }
+
+  #ayAuthView .ay-auth-secondary .ay-social-text {
+    display: inline-block !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    color: #13264b !important;
+    font-size: 20px !important;
+    font-weight: 750 !important;
+  }
+
+  #ayAuthView .ay-auth-secondary b {
+    display: none !important;
+  }
+
+  #ayAuthView .ay-auth-switch {
+    margin: 38px 0 0 !important;
+    color: #7b818c !important;
+    font-size: 21px !important;
+    line-height: 1.45 !important;
+    text-align: center !important;
+  }
+
+  #ayAuthView .ay-auth-switch button {
+    margin-left: 5px !important;
+    color: #0878df !important;
+    font-size: inherit !important;
+    font-weight: 800 !important;
+  }
+
+  #ayAuthView .ay-auth-foot {
+    display: block !important;
+    margin: 25px 0 0 !important;
+    color: #89909b !important;
+    font-size: 18px !important;
+    line-height: 1.4 !important;
+    text-align: center !important;
+  }
+
+  #ayAuthView #ayAuthPostLogin {
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  /* Recuadro de confirmación de contraseña al crear cuenta */
+  #ayAuthView .ay-auth-confirm-field .ay-auth-confirm-control {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    height: 48px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e0e2e6 !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+  }
+  #ayAuthView .ay-auth-confirm-field .ay-auth-confirm-control .ay-auth-input {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  @media (max-width: 390px) {
+    #ayAuthView .ay-auth-topbar { padding-left: 22px !important; padding-right: 22px !important; }
+    #ayAuthView .ay-auth-intro { margin-top: 42px !important; }
+    #ayAuthView .ay-auth-intro:before { margin-bottom: 38px !important; }
+    #ayAuthView .ay-auth-subtitle { font-size: 21px !important; }
+    #ayAuthView .ay-auth-card { margin-top: 48px !important; padding-left: 6vw !important; padding-right: 6vw !important; }
+    #ayAuthView .ay-auth-field { min-height: 76px !important; padding: 10px 15px !important; gap: 12px !important; }
+    #ayAuthView .ay-auth-label { font-size: 14px !important; }
+    #ayAuthView .ay-auth-input { font-size: 18px !important; }
+    #ayAuthView .ay-auth-primary { min-height: 76px !important; height: 76px !important; font-size: 21px !important; }
+    #ayAuthView .ay-auth-secondary { min-height: 72px !important; font-size: 18px !important; gap: 13px !important; }
+    #ayAuthView .ay-auth-secondary .ay-social-text { font-size: 18px !important; }
+    #ayAuthView .ay-social-icon, #ayAuthView .ay-social-icon svg { flex-basis: 38px !important; width: 38px !important; height: 38px !important; }
+    #ayAuthView .ay-auth-switch { font-size: 19px !important; }
+    #ayAuthView .ay-auth-foot { font-size: 16px !important; }
+  }
+}
