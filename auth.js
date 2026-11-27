@@ -12,6 +12,7 @@
   const confirmWrap = $("ayPasswordConfirmWrap"), title = $("ayAuthTitle"), subtitle = $("ayAuthSubtitle"), submit = $("ayAuthSubmit");
   const switchBtn = $("ayAuthSwitch"), switchText = $("ayAuthSwitchText"), status = $("ayAuthStatus"), recovery = $("ayRecoveryBtn");
   const signupConsents = $("aySignupLegalConsents"), acceptTerms = $("ayAcceptTerms"), acknowledgePrivacy = $("ayAcknowledgePrivacy");
+  const marketingConsent = $("ayMarketingConsent");
   const google = $("ayAuthGoogle"), facebook = $("ayAuthFacebook"), formPanel = $("ayAuthFormPanel"), postLogin = $("ayAuthPostLogin");
   const postStatus = $("ayAuthPostStatus"), continueSetup = $("ayAuthContinueSetup"), accountName = $("ayAuthAccountName"), accountEmail = $("ayAuthAccountEmail");
   const businessForm = $("ayBusinessProfileForm"), businessScheduleForm = $("ayBusinessScheduleForm"), customerForm = $("ayCustomerProfileForm");
@@ -92,6 +93,7 @@
   }
   function setMode(next) {
     mode = next;
+    document.body.dataset.authMode = mode;
     const signup = mode === "signup";
     title.textContent = signup ? "Crear cuenta en Agenda Ya" : "Bienvenido a Agenda Ya";
     subtitle.textContent = signup ? "Crea tu acceso para comenzar a configurar tu perfil." : "Gestiona tu negocio y recibe más reservas desde un solo lugar.";
