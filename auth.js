@@ -11,6 +11,7 @@
   const form = $("ayAuthForm"), email = $("ayAuthEmail"), password = $("ayAuthPassword"), confirm = $("ayAuthPasswordConfirm");
   const confirmWrap = $("ayPasswordConfirmWrap"), title = $("ayAuthTitle"), subtitle = $("ayAuthSubtitle"), submit = $("ayAuthSubmit");
   const switchBtn = $("ayAuthSwitch"), switchText = $("ayAuthSwitchText"), status = $("ayAuthStatus"), recovery = $("ayRecoveryBtn");
+  const signupConsents = $("aySignupLegalConsents"), acceptTerms = $("ayAcceptTerms"), acknowledgePrivacy = $("ayAcknowledgePrivacy");
   const google = $("ayAuthGoogle"), facebook = $("ayAuthFacebook"), formPanel = $("ayAuthFormPanel"), postLogin = $("ayAuthPostLogin");
   const postStatus = $("ayAuthPostStatus"), continueSetup = $("ayAuthContinueSetup"), accountName = $("ayAuthAccountName"), accountEmail = $("ayAuthAccountEmail");
   const businessForm = $("ayBusinessProfileForm"), businessScheduleForm = $("ayBusinessScheduleForm"), customerForm = $("ayCustomerProfileForm");
@@ -734,6 +735,13 @@
 
   async function boot() {
     showAuth(); initHours();
+    if (switchBtn && !switchBtn.dataset.ayModeBound) {
+      switchBtn.dataset.ayModeBound = "1";
+      switchBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        setMode(mode === "login" ? "signup" : "login");
+      });
+    }
     if(!validConfig()||!window.supabase?.createClient)
       return setStatus("No se pudo inicializar la autenticación. Revisa Supabase y config.js.","error");
 
@@ -743,7 +751,6 @@
     populateBusinessCategories().catch(err => console.warn("Categorías no disponibles:", err));
 
     form.addEventListener("submit",submitAuth);
-    switchBtn.addEventListener("click",()=>setMode(mode==="login"?"signup":"login"));
     recovery.addEventListener("click",recoveryFlow);
     google.addEventListener("click",()=>oauth("google"));
     facebook.addEventListener("click",()=>oauth("facebook"));
