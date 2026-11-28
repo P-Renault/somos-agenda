@@ -16,7 +16,9 @@
     hogar:['assets/category-covers/hogar-01.jpg','assets/category-covers/hogar-02.jpg','assets/category-covers/hogar-03.jpg','assets/category-covers/hogar-04.jpg','assets/category-covers/hogar-05.jpg','assets/category-covers/hogar-06.jpg','assets/category-covers/hogar-07.jpg','assets/category-covers/hogar-08.jpg'],
     automotriz:['assets/category-covers/automotriz-01.jpg','assets/category-covers/automotriz-02.jpg','assets/category-covers/automotriz-03.jpg','assets/category-covers/automotriz-04.jpg','assets/category-covers/automotriz-05.jpg','assets/category-covers/automotriz-06.jpg','assets/category-covers/automotriz-07.jpg','assets/category-covers/automotriz-08.jpg'],
     mascotas:['assets/category-covers/mascotas-01.jpg','assets/category-covers/mascotas-02.jpg','assets/category-covers/mascotas-03.jpg','assets/category-covers/mascotas-04.jpg','assets/category-covers/mascotas-05.jpg','assets/category-covers/mascotas-06.jpg','assets/category-covers/mascotas-07.jpg','assets/category-covers/mascotas-08.jpg'],
-    otros:['assets/category-covers/otros-01.jpg','assets/category-covers/otros-02.jpg','assets/category-covers/otros-03.jpg','assets/category-covers/otros-04.jpg','assets/category-covers/otros-05.jpg','assets/category-covers/otros-06.jpg','assets/category-covers/otros-07.jpg','assets/category-covers/otros-08.jpg']
+    otros:['assets/category-covers/otros-01.jpg','assets/category-covers/otros-02.jpg','assets/category-covers/otros-03.jpg','assets/category-covers/otros-04.jpg','assets/category-covers/otros-05.jpg','assets/category-covers/otros-06.jpg','assets/category-covers/otros-07.jpg','assets/category-covers/otros-08.jpg'],
+    'pesca-caza':['assets/category-covers/pesca-caza-01.svg','assets/category-covers/pesca-caza-02.svg','assets/category-covers/pesca-caza-03.svg','assets/category-covers/pesca-caza-04.svg','assets/category-covers/pesca-caza-05.svg','assets/category-covers/pesca-caza-06.svg','assets/category-covers/pesca-caza-07.svg','assets/category-covers/pesca-caza-08.svg'],
+    'artesania-tejido':['assets/category-covers/artesania-tejido-01.svg','assets/category-covers/artesania-tejido-02.svg','assets/category-covers/artesania-tejido-03.svg','assets/category-covers/artesania-tejido-04.svg','assets/category-covers/artesania-tejido-05.svg','assets/category-covers/artesania-tejido-06.svg','assets/category-covers/artesania-tejido-07.svg','assets/category-covers/artesania-tejido-08.svg']
   };
   function stableCategoryImage(slug, key='') {
     const pool = imageByCategory[slug] || imageByCategory.otros;
@@ -24,7 +26,7 @@
     let hash = 0; for (let i=0; i<text.length; i++) hash = ((hash * 31) + text.charCodeAt(i)) >>> 0;
     return pool[hash % pool.length];
   }
-  const iconByCategory = {barberia:'✂',peluqueria:'✂',estetica:'✿',salud:'♥',bienestar:'✧',entrenamiento:'♜',educacion:'▣','servicios-profesionales':'▣',hogar:'⌂',automotriz:'●',mascotas:'●',otros:'•'};
+  const iconByCategory = { 'pesca-caza':'🎣','artesania-tejido':'🧶',barberia:'✂',peluqueria:'✂',estetica:'✿',salud:'♥',bienestar:'✧',entrenamiento:'♜',educacion:'▣','servicios-profesionales':'▣',hogar:'⌂',automotriz:'●',mascotas:'●',otros:'•'};
   let categoriesData = [];
 
   function categoryImage(item){
@@ -172,12 +174,20 @@
     if (r.error) return;
     categoriesData = r.data || [];
     $('category').innerHTML = '<option value="">Todas las categorías</option>' + categoriesData.map(c=>`<option value="${esc(c.slug)}">${esc(c.name)}</option>`).join('');
+    const params = new URLSearchParams(window.location.search);
+    const rawCategory = params.get('category') || '';
+    const categoryAliases = {todas:'',belleza:'estetica',deporte:'entrenamiento',profesionales:'servicios-profesionales'};
+    const requestedCategory = Object.prototype.hasOwnProperty.call(categoryAliases,rawCategory) ? categoryAliases[rawCategory] : rawCategory;
+    if (categoriesData.some(c=>c.slug===requestedCategory)) $('category').value = requestedCategory;
     $('categoryRail').innerHTML = `<button class="category-chip active" data-category=""><span>⊞</span>Todas</button>` + categoriesData.map(c=>`<button class="category-chip" data-category="${esc(c.slug)}"><span>${esc(iconByCategory[c.slug] || '•')}</span>${esc(c.name)}</button>`).join('');
-    $('categoryRail').querySelectorAll('.category-chip').forEach(btn=>btn.addEventListener('click',()=>{
-      $('category').value = btn.dataset.category || '';
-      $('categoryRail').querySelectorAll('.category-chip').forEach(x=>x.classList.toggle('active',x===btn));
-      search();
-    }));
+    $('categoryRail').querySelectorAll('.category-chip').forEach(btn=>{
+      btn.classList.toggle('active',(btn.dataset.category||'')===($('category').value||''));
+      btn.addEventListener('click',()=>{
+        $('category').value = btn.dataset.category || '';
+        $('categoryRail').querySelectorAll('.category-chip').forEach(x=>x.classList.toggle('active',x===btn));
+        search();
+      });
+    });
   }
 
   function setLoading(text='Buscando negocios...'){ $('resultStatus').textContent=text; $('results').innerHTML='<div class="loading-card"><span class="loading-dot"></span><span>Cargando negocios disponibles...</span></div>'; }
@@ -202,5 +212,8 @@
   $('searchForm').addEventListener('submit',e=>{e.preventDefault();search();});
   $('clearFilters').addEventListener('click',()=>{ $('query').value=''; $('city').value=''; $('category').value=''; $('categoryRail').querySelectorAll('.category-chip').forEach((x,i)=>x.classList.toggle('active',i===0)); search(); });
   $('category').addEventListener('change',()=>{ const v=$('category').value; $('categoryRail').querySelectorAll('.category-chip').forEach(x=>x.classList.toggle('active',(x.dataset.category||'')===v)); search(); });
+  const initialParams = new URLSearchParams(window.location.search);
+  if (initialParams.get('q')) $('query').value = initialParams.get('q');
+  if (initialParams.get('location')) $('city').value = initialParams.get('location');
   Promise.all([sessionRole(),loadCategories()]).then(search);
 })();
