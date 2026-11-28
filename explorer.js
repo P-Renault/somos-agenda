@@ -39,8 +39,16 @@
       ? `<span class="business-avatar has-image"><img src="${esc(url)}" alt="" loading="lazy"></span>`
       : `<span class="business-avatar"><span>${esc(initials(item.name))}</span></span>`;
   }
-  function ratingMarkup(item){
-    return `<div class="card-rating"><span class="star">★</span><strong>${item.rating ? esc(item.rating) : 'Nuevo'}</strong>${item.review_count ? `<span>(${esc(item.review_count)})</span>` : ''}</div>`;
+  function reputationMarkup(item){
+    const completed = Math.max(0, Number(item.completed_service_count || 0));
+    const ratingValue = Number(item.rating);
+    const hasRating = item.rating != null && Number.isFinite(ratingValue) && ratingValue > 0;
+    const rating = hasRating ? ratingValue.toFixed(1) : 'Sin valoraciones';
+    const reviews = Math.max(0, Number(item.review_count || 0));
+    return `<div class="business-reputation" aria-label="${completed} servicios realizados; valoración ${hasRating ? rating + ' de 5' : 'sin valoraciones'}">
+      <span class="reputation-completed" title="${completed} servicios realizados"><span class="reputation-check" aria-hidden="true">✓</span><strong>${completed.toLocaleString('es-CL')}</strong><span>realizados</span></span>
+      <span class="reputation-rating" title="${hasRating ? 'Valoración promedio' : 'Este negocio aún no tiene valoraciones'}"><span class="star" aria-hidden="true">★</span><strong>${esc(rating)}</strong>${reviews ? `<span class="reputation-review-count">(${reviews.toLocaleString('es-CL')})</span>` : ''}</span>
+    </div>`;
   }
   function card(item){
     const duration = Number(item.min_duration_minutes || 0);
@@ -57,7 +65,7 @@
         ${logoMarkup(item)}
         <div class="business-main">
           <h2>${esc(item.name)}</h2>
-          ${ratingMarkup(item)}
+          ${reputationMarkup(item)}
           <div class="business-location"><span>⌖</span>${esc(loc)}</div>
           <span class="category-pill">${esc(category)}</span>
         </div>
