@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e9b7"/><stop offset="1" stop-color="#d1a44d"/></linearGradient>
+ <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#75c9e8"/><stop offset="1" stop-color="#236d9c"/></linearGradient>
+ <linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6ed"/><stop offset="1" stop-color="#6f4a20"/></linearGradient>
+ <filter id="shadow"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#bg)"/>
+<circle cx="1040" cy="230" r="236" fill="#ffffff" opacity=".34"/>
+<path d="M0 610 Q250 510 500 620 T1000 600 T1600 560 V900 H0Z" fill="#6f4a20" opacity=".34"/>
+<ellipse cx="800" cy="760" rx="450" ry="80" fill="#163a52" opacity=".13" filter="url(#shadow)"/>
+<path d="M420 260 H1180 V710 H420Z" fill="#f3d7b7" stroke="#b47c55" stroke-width="18"/>
+<g stroke="#c28c5d" stroke-width="15"><path d="M470 310 H1130 M470 370 H1130 M470 430 H1130 M470 490 H1130 M470 550 H1130 M470 610 H1130 M470 670 H1130"/></g>
+<g stroke="#8c567d" stroke-width="28" fill="none"><path d="M520 320 Q600 430 680 320 T840 320 T1000 320 T1120 320"/><path d="M520 500 Q600 610 680 500 T840 500 T1000 500 T1120 500"/></g>
+<path d="M300 760 Q800 690 1300 760" stroke="#ffffff" stroke-width="30" fill="none" opacity=".65"/>
+<g opacity=".16" fill="#fff"><circle cx="160" cy="140" r="7"/><circle cx="250" cy="210" r="4"/><circle cx="1380" cy="260" r="8"/><circle cx="1450" cy="180" r="4"/></g>
+</svg>
