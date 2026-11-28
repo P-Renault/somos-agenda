@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Pesca al aire libre">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#183b56"/><stop offset="1" stop-color="#206a5d"/></linearGradient><linearGradient id="ground" x2="0" y2="1"><stop stop-color="#b5d9c7"/><stop offset="1" stop-color="#206a5d"/></linearGradient></defs>
+<rect width="800" height="500" fill="url(#sky)"/>
+<circle cx="567" cy="112" r="56" fill="#f4c95d" opacity=".9"/>
+<path d="M0 270 L150 155 L280 255 L430 130 L610 260 L730 175 L800 240 L800 500 L0 500 Z" fill="#0e2e3c" opacity=".42"/>
+<path d="M0 330 Q140 280 280 330 T560 330 T800 315 L800 500 L0 500 Z" fill="url(#ground)"/>
+
+        <path d="M 90 95 Q 216 30 285 130" stroke="#f5f2e8" stroke-width="5" fill="none" opacity=".9"/>
+        <path d="M 285 130 l 18 10 l -14 13" stroke="#f5f2e8" stroke-width="4" fill="none"/>
+        <path d="M 244 322 q 65 -58 130 0 q -65 58 -130 0 l -45 -34 l 0 68 z" fill="#f6d365" opacity=".95"/>
+        <circle cx="331" cy="314" r="6" fill="#17384b"/>
+        <path d="M 279 322 q 28 -35 58 0 q -30 34 -58 0" fill="#e89b52"/>
+        <g opacity=".35" stroke="#fff" stroke-width="3"><path d="M 50 360 Q 170 335 280 360 T 510 360 T 760 360"/><path d="M 30 420 Q 150 395 270 420 T 500 420 T 770 420"/></g>
+        
+<path d="M0 465 Q160 420 320 465 T640 465 T800 450 L800 500 L0 500 Z" fill="#0c2635" opacity=".65"/>
+<text x="36" y="54" font-family="Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="3" fill="#fff" opacity=".92">AGENDA YA · PESCA</text>
+<text x="38" y="88" font-family="Arial,sans-serif" font-size="14" letter-spacing="2" fill="#fff" opacity=".7">EXPERIENCIAS AL AIRE LIBRE</text>
+</svg>

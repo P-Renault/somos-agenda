@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Caza al aire libre">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#142f43"/><stop offset="1" stop-color="#367b72"/></linearGradient><linearGradient id="ground" x2="0" y2="1"><stop stop-color="#a9cbb9"/><stop offset="1" stop-color="#367b72"/></linearGradient></defs>
+<rect width="800" height="500" fill="url(#sky)"/>
+<circle cx="509" cy="134" r="48" fill="#f2b86b" opacity=".9"/>
+<path d="M0 270 L150 155 L280 255 L430 130 L610 260 L730 175 L800 240 L800 500 L0 500 Z" fill="#0e2e3c" opacity=".42"/>
+<path d="M0 330 Q140 280 280 330 T560 330 T800 315 L800 500 L0 500 Z" fill="url(#ground)"/>
+
+        <g fill="#f1d7a5" stroke="#f1d7a5" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="442" cy="315" rx="82" ry="36"/>
+          <path d="M 490 300 Q 522 250 552 260 L 570 275 L 546 292 L 537 340 L 524 340 L 522 305 L 477 320 Z"/>
+          <path d="M 397 335 L 386 410 L 399 410 L 417 345 M 470 335 L 482 410 L 495 410 L 487 330" stroke-width="13" fill="none"/>
+          <path d="M 547 263 L 560 225 L 542 242 L 535 210 M 555 247 L 587 220 L 570 250" stroke-width="7" fill="none"/>
+        </g>
+        <g fill="#17384b" opacity=".8"><path d="M 100 440 L 100 270 L 45 340 L 80 340 L 35 390 L 92 375 L 155 400 L 120 345 L 155 345 Z"/><path d="M 660 440 L 660 250 L 600 330 L 640 330 L 590 390 L 650 370 L 710 400 L 675 345 L 715 345 Z"/></g>
+        
+<path d="M0 465 Q160 420 320 465 T640 465 T800 450 L800 500 L0 500 Z" fill="#0c2635" opacity=".65"/>
+<text x="36" y="54" font-family="Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="3" fill="#fff" opacity=".92">AGENDA YA · CAZA</text>
+<text x="38" y="88" font-family="Arial,sans-serif" font-size="14" letter-spacing="2" fill="#fff" opacity=".7">EXPERIENCIAS AL AIRE LIBRE</text>
+</svg>
