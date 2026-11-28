@@ -1,4 +1,4 @@
-/* Agenda YA - CTA destacado para crear cuenta */
+/* Agenda YA · CTA de acceso/registro alineado con el botón de navegación */
 #ayAuthView .ay-auth-switch {
   display: flex !important;
   flex-direction: column !important;
@@ -8,11 +8,15 @@
   width: 100% !important;
   box-sizing: border-box !important;
   margin: 22px 0 0 !important;
-  padding: 16px 0 0 !important;
+  padding: 16px 12px 12px !important;
   text-align: center !important;
   color: #52647a !important;
   font-size: 14px !important;
   line-height: 1.45 !important;
+  background: linear-gradient(180deg, #f2f6fc 0%, #e8eff9 100%) !important;
+  border: 1px solid #d8e3f1 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 22px rgba(16, 54, 109, .08) !important;
 }
 #ayAuthView #ayAuthSwitch {
   display: flex !important;
@@ -20,42 +24,54 @@
   justify-content: center !important;
   width: 100% !important;
   min-height: 64px !important;
+  height: 64px !important;
   box-sizing: border-box !important;
   margin: 0 !important;
-  padding: 18px 24px !important;
-  border: 1px solid #087c68 !important;
-  border-radius: 16px !important;
-  background: linear-gradient(135deg, #087c68 0%, #075b52 100%) !important;
+  padding: 0 22px !important;
+  border: 1px solid #0b2e63 !important;
+  border-radius: 15px !important;
+  background: linear-gradient(135deg, #153b75 0%, #0b2858 100%) !important;
   color: #ffffff !important;
   font-family: inherit !important;
-  font-size: 18px !important;
+  font-size: 17px !important;
   font-weight: 800 !important;
-  letter-spacing: .2px !important;
-  line-height: 1.25 !important;
+  letter-spacing: .15px !important;
+  line-height: 1.2 !important;
   text-align: center !important;
   text-decoration: none !important;
-  box-shadow: 0 8px 20px rgba(7, 105, 88, .22) !important;
+  box-shadow: 0 7px 18px rgba(11, 40, 88, .20) !important;
   cursor: pointer !important;
   touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
 }
+/* Igualamos la altura del botón principal de login/registro a 64px */
+#ayAuthView #ayAuthSubmit {
+  min-height: 64px !important;
+  height: 64px !important;
+  padding: 0 20px !important;
+  box-sizing: border-box !important;
+  border-radius: 15px !important;
+}
 #ayAuthView #ayAuthSwitch:focus-visible {
-  outline: 3px solid #8bd8cb !important;
+  outline: 3px solid #8fb7ed !important;
   outline-offset: 3px !important;
 }
-#ayAuthView #ayAuthSwitch:active {
+#ayAuthView #ayAuthSwitch:active,
+#ayAuthView #ayAuthSubmit:active {
   transform: translateY(1px) !important;
-  box-shadow: 0 4px 12px rgba(7, 105, 88, .2) !important;
 }
 @media (max-width: 620px) {
   #ayAuthView .ay-auth-switch {
     margin-top: 18px !important;
-    padding-top: 12px !important;
+    padding: 12px 10px 10px !important;
     gap: 8px !important;
+    border-radius: 16px !important;
   }
-  #ayAuthView #ayAuthSwitch {
-    min-height: 66px !important;
-    font-size: 18px !important;
+  #ayAuthView #ayAuthSwitch,
+  #ayAuthView #ayAuthSubmit {
+    min-height: 64px !important;
+    height: 64px !important;
+    font-size: 17px !important;
     border-radius: 15px !important;
   }
 }
