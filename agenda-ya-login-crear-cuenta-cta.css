@@ -1,0 +1,61 @@
+/* Agenda YA - CTA destacado para crear cuenta */
+#ayAuthView .ay-auth-switch {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 22px 0 0 !important;
+  padding: 16px 0 0 !important;
+  text-align: center !important;
+  color: #52647a !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+}
+#ayAuthView #ayAuthSwitch {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 64px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 18px 24px !important;
+  border: 1px solid #087c68 !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #087c68 0%, #075b52 100%) !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: .2px !important;
+  line-height: 1.25 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  box-shadow: 0 8px 20px rgba(7, 105, 88, .22) !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+#ayAuthView #ayAuthSwitch:focus-visible {
+  outline: 3px solid #8bd8cb !important;
+  outline-offset: 3px !important;
+}
+#ayAuthView #ayAuthSwitch:active {
+  transform: translateY(1px) !important;
+  box-shadow: 0 4px 12px rgba(7, 105, 88, .2) !important;
+}
+@media (max-width: 620px) {
+  #ayAuthView .ay-auth-switch {
+    margin-top: 18px !important;
+    padding-top: 12px !important;
+    gap: 8px !important;
+  }
+  #ayAuthView #ayAuthSwitch {
+    min-height: 66px !important;
+    font-size: 18px !important;
+    border-radius: 15px !important;
+  }
+}
